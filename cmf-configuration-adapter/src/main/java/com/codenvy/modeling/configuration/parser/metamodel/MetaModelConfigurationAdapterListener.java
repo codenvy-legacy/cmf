@@ -20,6 +20,8 @@ import com.codenvy.modeling.configuration.impl.metamodel.*;
 import com.codenvy.modeling.configuration.metamodel.ElementProperty;
 import com.codenvy.modeling.configuration.metamodel.ElementRelation;
 import com.codenvy.modeling.configuration.metamodel.MetaModel;
+import com.codenvy.modeling.configuration.parser.metamodel.generated.MetaModelBaseListener;
+import com.codenvy.modeling.configuration.parser.metamodel.generated.MetaModelParser;
 import org.antlr.v4.runtime.misc.NotNull;
 
 import java.util.Stack;

@@ -49,7 +49,7 @@
         <gwt.links.version>1.4.2</gwt.links.version>
         <gwt.version>2.6.0</gwt.version>
         <junit.junit>4.10</junit.junit>
-        <org.antlr.antlr4.runtime>4.2.1</org.antlr.antlr4.runtime>
+        <org.antlr.antlr4>4.2.2</org.antlr.antlr4>
 
         <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
     </properties>

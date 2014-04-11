@@ -19,6 +19,8 @@ package com.codenvy.modeling.adapter.metamodel;
 import com.codenvy.modeling.adapter.Adapter;
 import com.codenvy.modeling.configuration.metamodel.MetaModel;
 import com.codenvy.modeling.configuration.parser.metamodel.MetaModelConfigurationAdapterListener;
+import com.codenvy.modeling.configuration.parser.metamodel.generated.MetaModelLexer;
+import com.codenvy.modeling.configuration.parser.metamodel.generated.MetaModelParser;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;

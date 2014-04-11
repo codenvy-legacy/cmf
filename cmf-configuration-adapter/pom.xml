@@ -30,6 +30,11 @@
     <packaging>jar</packaging>
     <name>↳ Configuration Adapter</name>
 
+    <properties>
+        <parser.location>${project.basedir}/src/main/java/com/codenvy/modeling/configuration/parser/metamodel/generated/</parser.location>
+        <parser.package.name>${project.groupId}.modeling.configuration.parser.metamodel.generated</parser.package.name>
+    </properties>
+
     <dependencies>
         <!-- Internal Dependencies -->
         <dependency>
@@ -37,14 +42,12 @@
             <artifactId>cmf-configuration-core</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
-
         <!-- External Dependencies -->
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
-            <version>${org.antlr.antlr4.runtime}</version>
+            <version>${org.antlr.antlr4}</version>
         </dependency>
-
         <!-- Unit Test Dependencies -->
         <dependency>
             <groupId>junit</groupId>
@@ -53,4 +56,32 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.antlr</groupId>
+                <artifactId>antlr4-maven-plugin</artifactId>
+                <version>${org.antlr.antlr4}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>antlr4</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>${project.basedir}/src/main/antlr4</sourceDirectory>
+                            <listener>true</listener>
+                            <visitor>false</visitor>
+                            <outputDirectory>${parser.location}</outputDirectory>
+                            <arguments>
+                                <argument>-package</argument>
+                                <argument>${parser.package.name}</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>
