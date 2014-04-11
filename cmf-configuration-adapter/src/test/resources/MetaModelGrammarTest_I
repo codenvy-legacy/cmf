@@ -1,0 +1,27 @@
+StaticConstraints{
+    Element{
+        type        : example_type
+        Property{
+            name        : example_property_name
+            type        : integer
+            value       : 1238
+            visibility  : header
+        }
+
+        Property{
+            name        : another_example_property_name
+            type        : string
+            value       : test123
+            visibility  : HIDDEN
+        }
+
+        element     : test1
+        element     : test2
+    }
+
+    Relation{
+        alignment   : vertical
+        direction   : directed
+        relation    : test1 - test2
+    }
+}
