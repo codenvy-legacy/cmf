@@ -31,7 +31,9 @@
     <name>↳ Configuration Adapter</name>
 
     <properties>
-        <parser.location>${project.basedir}/src/main/java/com/codenvy/modeling/configuration/parser/metamodel/generated/</parser.location>
+        <parser.location>
+            ${project.basedir}/src/main/java/com/codenvy/modeling/configuration/parser/metamodel/generated/
+        </parser.location>
         <parser.package.name>${project.groupId}.modeling.configuration.parser.metamodel.generated</parser.package.name>
     </properties>
 
@@ -72,6 +74,9 @@
                             <sourceDirectory>${project.basedir}/src/main/antlr4</sourceDirectory>
                             <listener>true</listener>
                             <visitor>false</visitor>
+                            <includes>
+                                <include>MetaModel.g4</include>
+                            </includes>
                             <outputDirectory>${parser.location}</outputDirectory>
                             <arguments>
                                 <argument>-package</argument>
