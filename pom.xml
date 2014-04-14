@@ -42,14 +42,17 @@
 
     <properties>
         <!-- Dependencies Versions -->
-        <gin.version>2.1.2</gin.version>
-        <google.findbugs.version>2.0.2</google.findbugs.version>
-        <gwt.dnd.version>3.2.3</gwt.dnd.version>
-        <gwt.incubator.version>2.0.1</gwt.incubator.version>
-        <gwt.links.version>1.4.2</gwt.links.version>
-        <gwt.version>2.6.0</gwt.version>
-        <junit.junit>4.10</junit.junit>
-        <org.antlr.antlr4>4.2.2</org.antlr.antlr4>
+        <version.antlr4>4.2.2</version.antlr4>
+        <version.gin>2.1.2</version.gin>
+        <version.google.findbugs>2.0.2</version.google.findbugs>
+        <version.guice>3.0</version.guice>
+        <version.gwt>2.6.0</version.gwt>
+        <version.gwt.dnd>3.2.3</version.gwt.dnd>
+        <version.gwt.incubator>2.0.1</version.gwt.incubator>
+        <version.gwt.links>1.4.2</version.gwt.links>
+        <version.joist>1.6.5</version.joist>
+        <version.junit>4.11</version.junit>
+        <version.mockito>1.9.5</version.mockito>
 
         <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
     </properties>

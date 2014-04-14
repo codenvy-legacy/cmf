@@ -48,13 +48,13 @@
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
-            <version>${org.antlr.antlr4}</version>
+            <version>${version.antlr4}</version>
         </dependency>
         <!-- Unit Test Dependencies -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>${junit.junit}</version>
+            <version>${version.junit}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -64,7 +64,7 @@
             <plugin>
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr4-maven-plugin</artifactId>
-                <version>${org.antlr.antlr4}</version>
+                <version>${version.antlr4}</version>
                 <executions>
                     <execution>
                         <goals>

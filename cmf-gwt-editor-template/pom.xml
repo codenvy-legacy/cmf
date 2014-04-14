@@ -33,7 +33,7 @@
         <dependency>
             <groupId>com.allen-sauer.gwt.dnd</groupId>
             <artifactId>gwt-dnd</artifactId>
-            <version>${gwt.dnd.version}</version>
+            <version>${version.gwt.dnd}</version>
         </dependency>
         <dependency>
             <groupId>com.codenvy</groupId>
@@ -43,28 +43,28 @@
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>annotations</artifactId>
-            <version>${google.findbugs.version}</version>
+            <version>${version.google.findbugs}</version>
         </dependency>
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-incubator</artifactId>
-            <version>${gwt.incubator.version}</version>
+            <version>${version.gwt.incubator}</version>
         </dependency>
         <dependency>
             <groupId>com.google.gwt.inject</groupId>
             <artifactId>gin</artifactId>
-            <version>${gin.version}</version>
+            <version>${version.gin}</version>
         </dependency>
         <!--TODO this dependency is absent in codenvy maven repo-->
         <dependency>
             <groupId>com.orange.links</groupId>
             <artifactId>gwt-links</artifactId>
-            <version>${gwt.links.version}</version>
+            <version>${version.gwt.links}</version>
         </dependency>
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
-            <version>${gwt.version}</version>
+            <version>${version.gwt}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
