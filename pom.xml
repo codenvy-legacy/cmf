@@ -52,6 +52,7 @@
         <version.gwt.links>1.4.2</version.gwt.links>
         <version.joist>1.6.5</version.joist>
         <version.junit>4.11</version.junit>
+        <version.logback>1.1.1</version.logback>
         <version.mockito>1.9.5</version.mockito>
 
         <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
