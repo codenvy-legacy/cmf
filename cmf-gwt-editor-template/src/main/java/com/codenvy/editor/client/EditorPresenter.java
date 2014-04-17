@@ -40,6 +40,7 @@ public class EditorPresenter extends AbstractEditor implements EditorView.Action
     @Inject
     public EditorPresenter(EditorView view,
                            EditorFactory editorFactory,
+                           SelectionManager selectionManager,
                            Shape1PropertiesPanelPresenter shape1PropertiesPanelPresenter,
                            Shape2PropertiesPanelPresenter shape2PropertiesPanelPresenter,
                            Link1PropertiesPanelPresenter link1PropertiesPanelPresenter,
@@ -47,12 +48,11 @@ public class EditorPresenter extends AbstractEditor implements EditorView.Action
         super(view);
 
         EditorState<State> state = new EditorState<>(State.CREATING_NOTING);
-        SelectionManager selectionManager = new SelectionManager();
 
         this.workspace = editorFactory.createWorkspace(state, selectionManager);
         this.toolbar = editorFactory.createToolbar(state);
 
-        PropertiesPanelManager propertiesPanelManager = new PropertiesPanelManager(view.getPropertiesPanel());
+        PropertiesPanelManager propertiesPanelManager = editorFactory.createPropertiesPanelManager(view.getPropertiesPanel());
         propertiesPanelManager.register(Shape1.class, shape1PropertiesPanelPresenter);
         propertiesPanelManager.register(Shape2.class, shape2PropertiesPanelPresenter);
         propertiesPanelManager.register(Link1.class, link1PropertiesPanelPresenter);

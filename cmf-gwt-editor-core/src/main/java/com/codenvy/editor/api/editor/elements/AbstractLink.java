@@ -18,17 +18,20 @@ package com.codenvy.editor.api.editor.elements;
 import javax.annotation.Nonnull;
 
 /**
+ * The abstract implementation of {@link Link}. It contains the implementation of general methods which might not be changed.
+ *
  * @author Andrey Plotnikov
  */
 public abstract class AbstractLink extends AbstractElement implements Link {
 
-    protected Shape source;
-    protected Shape target;
+    private Shape source;
+    private Shape target;
 
-    protected AbstractLink(@Nonnull String name, @Nonnull Shape target, @Nonnull Shape source) {
-        super(name);
-        this.target = target;
+    protected AbstractLink(@Nonnull Shape source, @Nonnull Shape target) {
+        super();
+
         this.source = source;
+        this.target = target;
     }
 
     /** {@inheritDoc} */

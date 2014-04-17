@@ -13,17 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codenvy.editor.api.editor.propertiespanel.empty;
 
-import com.codenvy.editor.api.mvp.AbstractView;
-import com.google.inject.ImplementedBy;
+package com.codenvy.editor.api.editor.elements;
 
 /**
- * The abstract presentation of empty properties panel.
+ * The main element of diagram. All other elements are contained into this one.
  *
  * @author Andrey Plotnikov
  */
-@ImplementedBy(EmptyPropertiesPanelViewImpl.class)
-public abstract class EmptyPropertiesPanelView extends AbstractView<AbstractView.ActionDelegate> {
+public class MainElement extends AbstractShape {
 
 }

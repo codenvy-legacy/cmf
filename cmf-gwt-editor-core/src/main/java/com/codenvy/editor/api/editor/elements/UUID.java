@@ -18,12 +18,16 @@ package com.codenvy.editor.api.editor.elements;
 import javax.annotation.Nonnull;
 
 /**
+ * The generator of unique identifiers. It provides ana ability to generate a unique identifier for diagram elements.
+ * This class is need for GWT client code because It is impossible to use {@link java.util.UUID} class on GWT client side.
+ *
  * @author Andrey Plotnikov
  */
 public class UUID {
 
     private static final char[] CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
 
+    /** @return a new unique identifier */
     @Nonnull
     public static String get() {
         char[] uuid = new char[36];

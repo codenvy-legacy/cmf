@@ -18,18 +18,34 @@ package com.codenvy.editor.api.editor.elements;
 import javax.annotation.Nonnull;
 
 /**
+ * The main presentation of a link diagram element. It provides an ability to connect shape elements.
+ *
  * @author Andrey Plotnikov
  */
 public interface Link extends Element {
 
+    /** @return a source shape element */
     @Nonnull
     Shape getSource();
 
+    /**
+     * Change a source shape element.
+     *
+     * @param source
+     *         a source element that need to be applied
+     */
     void setSource(@Nonnull Shape source);
 
+    /** @return a target shape element */
     @Nonnull
     Shape getTarget();
 
+    /**
+     * Change a target shape element.
+     *
+     * @param target
+     *         a source element that need to be applied
+     */
     void setTarget(@Nonnull Shape target);
 
 }

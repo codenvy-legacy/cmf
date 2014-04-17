@@ -20,10 +20,18 @@ import com.google.gwt.user.client.ui.IsWidget;
 import javax.annotation.Nonnull;
 
 /**
+ * The general presentation of view.
+ *
+ * @param <T>
+ *         type of action delegate
  * @author Andrey Plotnikov
  */
 public interface View<T> extends IsWidget {
-
+    /**
+     * Set a delegate that receives events from view to presenter.
+     *
+     * @param delegate
+     *         delgate that need to be applied
+     */
     void setDelegate(@Nonnull T delegate);
-
 }

@@ -18,13 +18,24 @@ package com.codenvy.editor.api.editor;
 import javax.annotation.Nonnull;
 
 /**
+ * The class that implements this interface contains an editor state.
+ *
+ * @param <T>
+ *         type of editor state
  * @author Andrey Plotnikov
  */
 public interface HasState<T> {
 
+    /** @return a current editor state */
     @Nonnull
-    EditorState<T> getState();
+    T getState();
 
-    void setState(@Nonnull EditorState<T> state);
+    /**
+     * Change current editor state.
+     *
+     * @param state
+     *         state that need to be applied
+     */
+    void setState(@Nonnull T state);
 
 }

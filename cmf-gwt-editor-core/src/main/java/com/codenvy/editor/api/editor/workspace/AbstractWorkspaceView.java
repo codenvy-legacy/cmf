@@ -20,20 +20,51 @@ import com.codenvy.editor.api.mvp.AbstractView;
 import javax.annotation.Nonnull;
 
 /**
+ * The abstract presentation of an editor workspace view.
+ *
  * @author Andrey Plotnikov
  */
 public abstract class AbstractWorkspaceView extends AbstractView<AbstractWorkspaceView.ActionDelegate> {
 
+    /** Required for delegating functions in the view. */
     public interface ActionDelegate extends AbstractView.ActionDelegate {
-
+        /**
+         * Performs some actions in response to a user's doing right mouse click.
+         *
+         * @param x
+         *         the mouse x-position
+         * @param y
+         *         the mouse y-position
+         */
         void onRightMouseButtonClicked(int x, int y);
 
+        /**
+         * Performs some actions in response to a user's doing left mouse click.
+         *
+         * @param x
+         *         the mouse x-position
+         * @param y
+         *         the mouse y-position
+         */
         void onLeftMouseButtonClicked(int x, int y);
 
+        /**
+         * Performs some actions in response to a user's moving mouse.
+         *
+         * @param x
+         *         the mouse x-position
+         * @param y
+         *         the mouse y-position
+         */
         void onMouseMoved(int x, int y);
 
+        /**
+         * Performs some actions in response to a user's clicking on diagram element.
+         *
+         * @param elementId
+         *         the identifier of clicked diagram element
+         */
         void onDiagramElementClicked(@Nonnull String elementId);
-
     }
 
 }

@@ -16,18 +16,44 @@
 package com.codenvy.editor.api.editor.elements;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
+ * The main presentation of diagram elements. All diagram elements will implement this class. It contains general information for all
+ * diagram elements.
+ *
  * @author Andrey Plotnikov
  */
 public interface Element {
-
+    /**
+     * @return an unique element identifier. All instances of elements will have an unique identifier. This means that anyone can find
+     * needed diagram element.
+     */
     @Nonnull
     String getId();
 
+    /** @return a title of a shape diagram element. This title will show in GWT widget. */
     @Nonnull
-    String getName();
+    String getTitle();
 
-    void setName(@Nonnull String name);
+    /**
+     * Change title of a shape diagram element to a new one.
+     *
+     * @param title
+     *         title that need to be applied
+     */
+    void setTitle(@Nonnull String title);
+
+    /** @return parent of this graphical element */
+    @Nullable
+    Shape getParent();
+
+    /**
+     * Change a parent of the graphical element.
+     *
+     * @param parent
+     *         parent that needs to be applied
+     */
+    void setParent(@Nullable Shape parent);
 
 }

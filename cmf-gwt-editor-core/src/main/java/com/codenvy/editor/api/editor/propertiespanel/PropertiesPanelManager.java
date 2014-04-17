@@ -18,30 +18,54 @@ package com.codenvy.editor.api.editor.propertiespanel;
 import com.codenvy.editor.api.editor.SelectionManager;
 import com.codenvy.editor.api.editor.elements.Element;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
+ * The manager of properties panel. It provides an ability to show a needed properties panel in response to context (current selected
+ * diagram element).
+ *
  * @author Andrey Plotnikov
  */
 public class PropertiesPanelManager implements SelectionManager.SelectionStateListener {
 
-    private HashMap          panels;
-    private AcceptsOneWidget container;
+    private final Map<Class, Object> panels;
+    private final AcceptsOneWidget   container;
 
-
-    public PropertiesPanelManager(@Nonnull AcceptsOneWidget container) {
+    @Inject
+    public PropertiesPanelManager(@Assisted AcceptsOneWidget container) {
         this.container = container;
-        this.panels = new HashMap();
+        this.panels = new HashMap<>();
     }
 
+    /**
+     * Register a new properties panel. In case a given kind of diagram element is selected a given properties panel will be shown.
+     *
+     * @param diagramElement
+     *         a class of diagram element that have own properties panel
+     * @param panel
+     *         a panel that need to be mapped to a given diagram element
+     * @param <T>
+     *         type of diagram element
+     */
     @SuppressWarnings("unchecked")
-    public <T extends Element> void register(@Nullable Class<T> key, @Nonnull AbstractPropertiesPanel<T> value) {
-        panels.put(key, value);
+    public <T extends Element> void register(@Nullable Class<T> diagramElement, @Nonnull AbstractPropertiesPanel<T> panel) {
+        panels.put(diagramElement, panel);
     }
 
+    /**
+     * Show properties panel for a given diagram element.
+     *
+     * @param element
+     *         diagram element that need to be shown in a special properties panel
+     * @param <T>
+     *         type of diagram element
+     */
     @SuppressWarnings("unchecked")
     public <T extends Element> void show(@Nullable T element) {
         Object value = panels.get(element == null ? null : element.getClass());

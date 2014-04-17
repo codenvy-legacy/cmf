@@ -20,10 +20,16 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import javax.annotation.Nonnull;
 
 /**
+ * The general presentation of presenter.
+ *
  * @author Andrey Plotnikov
  */
 public interface Presenter {
-
+    /**
+     * Show view on a given container.
+     *
+     * @param container
+     *         container where view must be contained
+     */
     void go(@Nonnull AcceptsOneWidget container);
-
 }

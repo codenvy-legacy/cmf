@@ -17,15 +17,9 @@ package com.codenvy.editor.client.elements.shape2;
 
 import com.codenvy.editor.api.editor.elements.AbstractShape;
 
-import javax.annotation.Nonnull;
-
 /**
  * @author Andrey Plotnikov
  */
 public class Shape2 extends AbstractShape {
-
-    public Shape2(@Nonnull String name, @Nonnull String title) {
-        super(name, title);
-    }
 
 }

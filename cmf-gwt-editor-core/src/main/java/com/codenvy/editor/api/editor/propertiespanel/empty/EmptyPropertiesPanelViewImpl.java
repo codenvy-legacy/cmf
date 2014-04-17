@@ -20,6 +20,8 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 /**
+ * The implementation of {@link EmptyPropertiesPanelView}.
+ *
  * @author Andrey Plotnikov
  */
 public class EmptyPropertiesPanelViewImpl extends EmptyPropertiesPanelView {

@@ -22,6 +22,10 @@ import com.codenvy.editor.api.mvp.AbstractView;
 import javax.annotation.Nonnull;
 
 /**
+ * The general presentation of properties panel.
+ *
+ * @param <T>
+ *         type of diagram element that this panel supports
  * @author Andrey Plotnikov
  */
 public abstract class AbstractPropertiesPanel<T extends Element> extends AbstractPresenter {
@@ -30,6 +34,12 @@ public abstract class AbstractPropertiesPanel<T extends Element> extends Abstrac
         super(view);
     }
 
+    /**
+     * Set diagram element for showing its properties.
+     *
+     * @param element
+     *         element which properties need to be shown
+     */
     public void setElement(@Nonnull T element) {
         // do nothing
     }

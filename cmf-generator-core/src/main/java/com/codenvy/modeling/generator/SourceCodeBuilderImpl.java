@@ -459,6 +459,7 @@ public class SourceCodeBuilderImpl implements SourceCodeBuilder {
         generatingClass = null;
         generatingField = null;
         generatingMethod = null;
+        generatingConstructor = null;
 
         return code;
     }

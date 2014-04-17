@@ -18,6 +18,11 @@ package com.codenvy.editor.api.editor;
 import javax.annotation.Nonnull;
 
 /**
+ * The class that represents a state of graphical editor. It contains general parameter of available states. The available states will be
+ * generated for current graphical editor.
+ *
+ * @param <T>
+ *         type of available editor states
  * @author Andrey Plotnikov
  */
 public class EditorState<T> {
@@ -28,11 +33,18 @@ public class EditorState<T> {
         this.state = state;
     }
 
+    /** @return current editor state */
     @Nonnull
     public T getState() {
         return state;
     }
 
+    /**
+     * Change current editor state.
+     *
+     * @param state
+     *         state that need to be applied
+     */
     public void setState(@Nonnull T state) {
         this.state = state;
     }

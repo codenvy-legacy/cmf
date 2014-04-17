@@ -42,6 +42,8 @@ import com.google.inject.Inject;
 import javax.annotation.Nonnull;
 
 /**
+ * The widget that represents a shape diagram element on GWT panel.
+ *
  * @author Andrey Plotnikov
  */
 public class ShapeWidget extends Composite implements HasAllMouseHandlers, HasClickHandlers {
@@ -59,20 +61,34 @@ public class ShapeWidget extends Composite implements HasAllMouseHandlers, HasCl
         initWidget(ourUiBinder.createAndBindUi(this));
     }
 
+    /** @return content of title visual element */
     @Nonnull
     public String getTitle() {
         return title.getText();
     }
 
+    /**
+     * Change content of title visual element.
+     *
+     * @param title
+     *         content that need to be applied
+     */
     public void setTitle(@Nonnull String title) {
         this.title.setText(title);
     }
 
+    /** @return content of body visual element */
     @Nonnull
     public String getBody() {
         return body.getText();
     }
 
+    /**
+     * Change content of body visual element.
+     *
+     * @param body
+     *         content that need to be applied
+     */
     public void setBody(@Nonnull String body) {
         this.body.setText(body);
     }

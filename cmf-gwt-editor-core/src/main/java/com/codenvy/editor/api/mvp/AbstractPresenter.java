@@ -20,11 +20,13 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import javax.annotation.Nonnull;
 
 /**
+ * The abstract implementation of presenter. It contains the implementation of general methods which might not be changed.
+ *
  * @author Andrey Plotnikov
  */
 public abstract class AbstractPresenter implements Presenter, AbstractView.ActionDelegate {
 
-    protected AbstractView view;
+    protected final AbstractView view;
 
     @SuppressWarnings("unchecked")
     protected AbstractPresenter(AbstractView view) {

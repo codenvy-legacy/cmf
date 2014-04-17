@@ -18,8 +18,11 @@ package com.codenvy.editor.client.workspace;
 import com.codenvy.editor.api.editor.EditorState;
 import com.codenvy.editor.api.editor.SelectionManager;
 import com.codenvy.editor.api.editor.elements.Element;
+import com.codenvy.editor.api.editor.elements.MainElement;
+import com.codenvy.editor.api.editor.elements.Shape;
 import com.codenvy.editor.api.editor.workspace.AbstractWorkspacePresenter;
 import com.codenvy.editor.client.State;
+import com.codenvy.editor.client.elements.link1.Link1;
 import com.codenvy.editor.client.elements.shape1.Shape1;
 import com.codenvy.editor.client.elements.shape2.Shape2;
 import com.google.gwt.user.client.Window;
@@ -27,8 +30,6 @@ import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
 import javax.annotation.Nonnull;
-import java.util.HashMap;
-import java.util.Map;
 
 import static com.codenvy.editor.client.State.CREATING_LINK1_TARGET;
 import static com.codenvy.editor.client.State.CREATING_NOTING;
@@ -38,23 +39,9 @@ import static com.codenvy.editor.client.State.CREATING_NOTING;
  */
 public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
 
-    private Map<String, Element> elements;
-    private String               selectedElement;
-    private int                  shape1Id;
-    private int                  shape2Id;
-    private int                  link1Id;
-    private SelectionManager     selectionManager;
-
     @Inject
     public WorkspacePresenter(WorkspaceView view, @Assisted EditorState<State> state, @Assisted SelectionManager selectionManager) {
-        super(view, state);
-
-        this.selectionManager = selectionManager;
-        this.elements = new HashMap<>();
-
-        this.shape1Id = 0;
-        this.shape2Id = 0;
-        this.link1Id = 0;
+        super(view, state, new MainElement(), selectionManager);
     }
 
     /** {@inheritDoc} */
@@ -65,37 +52,35 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
     }
 
     /** {@inheritDoc} */
-    @Override
     public void onLeftMouseButtonClicked(int x, int y) {
         selectionManager.setElement(null);
 
-        switch (state.getState()) {
+        switch (getState()) {
             case CREATING_SHAPE1:
-                Shape1 shape1 = new Shape1(Shape1.class.getSimpleName() + ' ' + shape1Id, Shape1.class.getSimpleName() + ' ' + shape1Id);
+                Shape1 shape1 = new Shape1();
 
                 ((WorkspaceView)view).addShape1(x, y, shape1);
                 addElement(shape1);
 
-                state.setState(CREATING_NOTING);
-
-                shape1Id++;
+                setState(CREATING_NOTING);
                 break;
 
             case CREATING_SHAPE2:
-                Shape2 shape2 = new Shape2(Shape2.class.getSimpleName() + ' ' + shape2Id, Shape2.class.getSimpleName() + ' ' + shape2Id);
+                Shape2 shape2 = new Shape2();
 
                 ((WorkspaceView)view).addShape2(x, y, shape2);
                 addElement(shape2);
 
-                state.setState(CREATING_NOTING);
-
-                shape2Id++;
+                setState(CREATING_NOTING);
                 break;
         }
     }
 
     private void addElement(Element element) {
         elements.put(element.getId(), element);
+
+        Shape parent = (Shape)elements.get(selectedElement);
+        parent.addElement(element);
     }
 
     /** {@inheritDoc} */
@@ -114,15 +99,26 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
         Element element = elements.get(elementId);
         selectionManager.setElement(element);
 
-        switch (state.getState()) {
+        switch (getState()) {
             case CREATING_LINK1_SOURCE:
-                state.setState(CREATING_LINK1_TARGET);
+                setState(CREATING_LINK1_TARGET);
                 break;
 
             case CREATING_LINK1_TARGET:
                 ((WorkspaceView)view).addLink(prevSelectedElement, selectedElement);
 
-                state.setState(CREATING_NOTING);
+                Element source = elements.get(prevSelectedElement);
+
+                Link1 link = new Link1((Shape)source, (Shape)element);
+
+                elements.put(element.getId(), element);
+
+                Shape parent = source.getParent();
+                if (parent != null) {
+                    parent.addElement(link);
+                }
+
+                setState(CREATING_NOTING);
                 break;
         }
     }

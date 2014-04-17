@@ -19,6 +19,8 @@ import com.codenvy.editor.api.editor.propertiespanel.AbstractPropertiesPanel;
 import com.google.inject.Inject;
 
 /**
+ * The class that shows when no diagram element is selected. It is empty properties panel.
+ *
  * @author Andrey Plotnikov
  */
 public class EmptyPropertiesPanelPresenter extends AbstractPropertiesPanel {

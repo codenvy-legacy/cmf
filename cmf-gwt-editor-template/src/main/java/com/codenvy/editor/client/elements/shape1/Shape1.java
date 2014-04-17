@@ -17,15 +17,9 @@ package com.codenvy.editor.client.elements.shape1;
 
 import com.codenvy.editor.api.editor.elements.AbstractShape;
 
-import javax.annotation.Nonnull;
-
 /**
  * @author Andrey Plotnikov
  */
 public class Shape1 extends AbstractShape {
-
-    public Shape1(@Nonnull String name, @Nonnull String title) {
-        super(name, title);
-    }
 
 }

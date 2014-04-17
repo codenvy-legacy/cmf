@@ -16,15 +16,37 @@
 package com.codenvy.editor.api.editor.elements;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 /**
+ * The main presentation of shape diagram element. It can contain and manage inner diagram elements. Inner diagram elements mean that this
+ * kind of elements provides an ability to have own diagram inside himself. This ability is optional.
+ *
  * @author Andrey Plotnikov
  */
 public interface Shape extends Element {
 
-    @Nonnull
-    String getTitle();
+    /**
+     * Add an inner diagram element into this one element.
+     *
+     * @param element
+     *         element that need to be added
+     */
+    void addElement(@Nonnull Element element);
 
-    void setTitle(@Nonnull String title);
+    /**
+     * Remove a inner diagram element from this one element.
+     *
+     * @param element
+     *         element that need to be removed
+     */
+    void removeElement(@Nonnull Element element);
+
+    /** @return a list of inner diagram elements */
+    @Nonnull
+    List<Element> getElements();
+
+    /** @return <code>true</code> if this element has inner diagram elements, <code>false</code> it doesn't */
+    boolean hasElements();
 
 }

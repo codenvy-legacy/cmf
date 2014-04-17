@@ -20,10 +20,15 @@ import com.google.gwt.user.client.ui.Widget;
 import javax.annotation.Nonnull;
 
 /**
+ * The abstract implementation of view. It contains the implementation of general methods which might not be changed.
+ *
+ * @param <T>
+ *         type of action delegate
  * @author Andrey Plotnikov
  */
 public abstract class AbstractView<T extends AbstractView.ActionDelegate> implements View<T> {
 
+    /** Required for delegating functions in the view. */
     public interface ActionDelegate {
     }
 

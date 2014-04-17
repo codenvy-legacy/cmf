@@ -24,6 +24,9 @@ import javax.annotation.Nonnull;
 
 
 /**
+ * The abstract presentation of graphical editor. It represents main abilities of editor. Also It contains the implementation of general
+ * methods which might not be changed.
+ *
  * @author Andrey Plotnikov
  */
 public abstract class AbstractEditor<T> extends AbstractPresenter {
@@ -44,9 +47,16 @@ public abstract class AbstractEditor<T> extends AbstractPresenter {
         super.go(container);
     }
 
+    /** @return a serialized text type of diagram */
     @Nonnull
     public abstract String serialize();
 
+    /**
+     * Convert a text type of diagram to a graphical type.
+     *
+     * @param content
+     *         content that need to be parsed
+     */
     public abstract void deserialize(@Nonnull String content);
 
 }

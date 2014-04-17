@@ -38,19 +38,19 @@ public class ToolbarPresenter extends AbstractToolbarPresenter<State> implements
     /** {@inheritDoc} */
     @Override
     public void onShape1ButtonClicked() {
-        state.setState(CREATING_SHAPE1);
+        setState(CREATING_SHAPE1);
     }
 
     /** {@inheritDoc} */
     @Override
     public void onShape2ButtonClicked() {
-        state.setState(CREATING_SHAPE2);
+        setState(CREATING_SHAPE2);
     }
 
     /** {@inheritDoc} */
     @Override
     public void onLink1ButtonClicked() {
-        state.setState(CREATING_LINK1_SOURCE);
+        setState(CREATING_LINK1_SOURCE);
     }
 
 }

@@ -17,9 +17,11 @@ package com.codenvy.editor.client.inject;
 
 import com.codenvy.editor.api.editor.EditorState;
 import com.codenvy.editor.api.editor.SelectionManager;
+import com.codenvy.editor.api.editor.propertiespanel.PropertiesPanelManager;
 import com.codenvy.editor.client.State;
 import com.codenvy.editor.client.toolbar.ToolbarPresenter;
 import com.codenvy.editor.client.workspace.WorkspacePresenter;
+import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 import javax.annotation.Nonnull;
 
@@ -31,5 +33,7 @@ public interface EditorFactory {
     ToolbarPresenter createToolbar(@Nonnull EditorState<State> editorState);
 
     WorkspacePresenter createWorkspace(@Nonnull EditorState<State> editorState, @Nonnull SelectionManager selectionManager);
+
+    PropertiesPanelManager createPropertiesPanelManager(@Nonnull AcceptsOneWidget container);
 
 }

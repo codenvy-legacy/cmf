@@ -16,30 +16,48 @@
 package com.codenvy.editor.api.editor.elements;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
+ * The abstract implementation of {@link Shape}. It contains the implementation of general methods which might not be changed.
+ *
  * @author Andrey Plotnikov
  */
 public abstract class AbstractShape extends AbstractElement implements Shape {
 
-    protected String title;
+    private final List<Element> elements;
 
-    protected AbstractShape(@Nonnull String name, @Nonnull String title) {
-        super(name);
-        this.title = title;
+    protected AbstractShape() {
+        super();
+        this.elements = new ArrayList<>();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void addElement(@Nonnull Element element) {
+        element.setParent(this);
+        elements.add(element);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void removeElement(@Nonnull Element element) {
+        element.setParent(null);
+        elements.remove(element);
     }
 
     /** {@inheritDoc} */
     @Nonnull
     @Override
-    public String getTitle() {
-        return title;
+    public List<Element> getElements() {
+        return elements;
     }
 
     /** {@inheritDoc} */
     @Override
-    public void setTitle(@Nonnull String title) {
-        this.title = title;
+    public boolean hasElements() {
+        return !elements.isEmpty();
     }
 
 }

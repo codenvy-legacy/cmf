@@ -25,6 +25,8 @@ import com.google.inject.Inject;
 import javax.annotation.Nonnull;
 
 /**
+ * The implementation of {@link EditorView}.
+ *
  * @author Andrey Plotnikov
  */
 public class EditorViewImpl extends EditorView {

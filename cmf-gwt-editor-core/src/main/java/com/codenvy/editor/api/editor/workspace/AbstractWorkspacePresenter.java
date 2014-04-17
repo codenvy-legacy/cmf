@@ -17,34 +17,52 @@ package com.codenvy.editor.api.editor.workspace;
 
 import com.codenvy.editor.api.editor.EditorState;
 import com.codenvy.editor.api.editor.HasState;
+import com.codenvy.editor.api.editor.SelectionManager;
+import com.codenvy.editor.api.editor.elements.Element;
+import com.codenvy.editor.api.editor.elements.Shape;
 import com.codenvy.editor.api.mvp.AbstractPresenter;
 
 import javax.annotation.Nonnull;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
+ * The abstract presentation of an editor workspace. It contains the implementation of general methods which might not be changed.
+ *
  * @author Andrey Plotnikov
  */
 public abstract class AbstractWorkspacePresenter<T> extends AbstractPresenter implements AbstractWorkspaceView.ActionDelegate, HasState<T> {
 
-    protected EditorState<T> state;
+    private EditorState<T> state;
 
-    protected AbstractWorkspacePresenter(@Nonnull AbstractWorkspaceView view, @Nonnull EditorState<T> state) {
+    protected       String               selectedElement;
+    protected final Shape                mainElement;
+    protected       SelectionManager     selectionManager;
+    protected       Map<String, Element> elements;
+
+    protected AbstractWorkspacePresenter(@Nonnull AbstractWorkspaceView view,
+                                         @Nonnull EditorState<T> state,
+                                         @Nonnull Shape mainElement,
+                                         @Nonnull SelectionManager selectionManager) {
         super(view);
 
         this.state = state;
+        this.selectionManager = selectionManager;
+        this.mainElement = mainElement;
+        this.elements = new HashMap<>();
     }
 
     /** {@inheritDoc} */
     @Nonnull
     @Override
-    public EditorState<T> getState() {
-        return state;
+    public T getState() {
+        return state.getState();
     }
 
     /** {@inheritDoc} */
     @Override
-    public void setState(@Nonnull EditorState<T> state) {
-        this.state = state;
+    public void setState(@Nonnull T state) {
+        this.state.setState(state);
     }
 
 }

@@ -22,21 +22,22 @@ import com.google.inject.ImplementedBy;
 import javax.annotation.Nonnull;
 
 /**
+ * The general presentation of editor view. It contains a few general places for toolbar, properties panel and workspace.
+ *
  * @author Andrey Plotnikov
  */
 @ImplementedBy(EditorViewImpl.class)
-public abstract class EditorView extends AbstractView<EditorView.ActionDelegate> {
+public abstract class EditorView extends AbstractView<AbstractView.ActionDelegate> {
 
-    public interface ActionDelegate extends AbstractView.ActionDelegate {
-        // nothing for now
-    }
-
+    /** @return place where toolbar need to be located */
     @Nonnull
     public abstract AcceptsOneWidget getToolbarPanel();
 
+    /** @return place where properties panel need to be located */
     @Nonnull
     public abstract AcceptsOneWidget getPropertiesPanel();
 
+    /** @return place where workspace need to be located */
     @Nonnull
     public abstract AcceptsOneWidget getWorkspacePanel();
 

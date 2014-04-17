@@ -23,11 +23,13 @@ import com.codenvy.editor.api.mvp.AbstractView;
 import javax.annotation.Nonnull;
 
 /**
+ * The abstract presentation of an editor toolbar. It contains the implementation of general methods which might not be changed.
+ *
  * @author Andrey Plotnikov
  */
 public abstract class AbstractToolbarPresenter<T> extends AbstractPresenter implements HasState<T> {
 
-    protected EditorState<T> state;
+    private EditorState<T> state;
 
     protected AbstractToolbarPresenter(@Nonnull AbstractView view, @Nonnull EditorState<T> state) {
         super(view);
@@ -38,14 +40,14 @@ public abstract class AbstractToolbarPresenter<T> extends AbstractPresenter impl
     /** {@inheritDoc} */
     @Nonnull
     @Override
-    public EditorState<T> getState() {
-        return state;
+    public T getState() {
+        return state.getState();
     }
 
     /** {@inheritDoc} */
     @Override
-    public void setState(@Nonnull EditorState<T> state) {
-        this.state = state;
+    public void setState(@Nonnull T state) {
+        this.state.setState(state);
     }
 
 }

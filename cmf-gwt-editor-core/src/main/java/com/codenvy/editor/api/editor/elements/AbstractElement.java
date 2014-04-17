@@ -16,17 +16,23 @@
 package com.codenvy.editor.api.editor.elements;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
+ * The abstract implementation of {@link Element}. It contains the implementation of general methods which might not be changed.
+ *
  * @author Andrey Plotnikov
  */
 public abstract class AbstractElement implements Element {
 
-    protected String id;
-    protected String name;
+    private static int INDEX = 0;
 
-    protected AbstractElement(@Nonnull String name) {
-        this.name = name;
+    private final String id;
+    private       Shape  parent;
+    private       String title;
+
+    protected AbstractElement() {
+        this.title = getClass().getSimpleName() + ' ' + INDEX++;
         id = UUID.get();
     }
 
@@ -40,14 +46,27 @@ public abstract class AbstractElement implements Element {
     /** {@inheritDoc} */
     @Nonnull
     @Override
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
     /** {@inheritDoc} */
     @Override
-    public void setName(@Nonnull String name) {
-        this.name = name;
+    public void setTitle(@Nonnull String title) {
+        this.title = title;
+    }
+
+    /** {@inheritDoc} */
+    @Nullable
+    @Override
+    public Shape getParent() {
+        return parent;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setParent(@Nullable Shape parent) {
+        this.parent = parent;
     }
 
 }

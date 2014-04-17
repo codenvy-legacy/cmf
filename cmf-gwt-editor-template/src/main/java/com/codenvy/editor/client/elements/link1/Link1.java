@@ -33,12 +33,12 @@ public class Link1 extends AbstractLink {
 
     private Color color;
 
-    public Link1(@Nonnull String name, @Nonnull Shape target, @Nonnull Shape source) {
-        this(name, target, source, GREEN);
+    public Link1(@Nonnull Shape source, @Nonnull Shape target) {
+        this(target, source, GREEN);
     }
 
-    public Link1(@Nonnull String name, @Nonnull Shape target, @Nonnull Shape source, @Nonnull Color color) {
-        super(name, target, source);
+    public Link1(@Nonnull Shape source, @Nonnull Shape target, @Nonnull Color color) {
+        super(source, target);
 
         this.color = color;
     }

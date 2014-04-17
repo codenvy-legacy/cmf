@@ -718,7 +718,7 @@ public class SourceCodeBuilderImplTest {
     }
 
     @Test
-    public void difficultJavaClassShouldBeCreated() throws Exception {
+    public void complexJavaClassShouldBeCreated() throws Exception {
         Map<String, String> arguments = new HashMap<>();
         arguments.put("field1", "String");
 
@@ -784,7 +784,7 @@ public class SourceCodeBuilderImplTest {
     }
 
     @Test
-    public void difficultJavaAbstractClassShouldBeCreated() throws Exception {
+    public void complexJavaAbstractClassShouldBeCreated() throws Exception {
         Map<String, String> argumentsForMethod2 = new HashMap<>();
         argumentsForMethod2.put("field2", "String");
 
