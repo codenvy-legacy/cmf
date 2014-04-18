@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.codenvy.modeling.generator;
+package com.codenvy.modeling.generator.builders.java;
 
 import joist.sourcegen.GClass;
 import joist.sourcegen.GField;

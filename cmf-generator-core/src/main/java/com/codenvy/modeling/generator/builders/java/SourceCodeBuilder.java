@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package com.codenvy.modeling.generator;
+package com.codenvy.modeling.generator.builders.java;
+
+import com.codenvy.modeling.generator.builders.Builder;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
@@ -25,7 +27,7 @@ import java.util.Map;
  *
  * @author Andrey Plotnikov
  */
-public interface SourceCodeBuilder {
+public interface SourceCodeBuilder extends Builder {
 
     /** The list of available access level for java code */
     enum Access {
@@ -382,15 +384,5 @@ public interface SourceCodeBuilder {
      */
     @Nonnull
     SourceCodeBuilder withConstructorAnnotation(@Nonnull String annotation) throws IllegalStateException;
-
-    /**
-     * Build java source code from given configuration.
-     *
-     * @return the text format of java class
-     * @throws IllegalStateException
-     *         exception happens in case a new java resource had been not initialized before this method was executed
-     */
-    @Nonnull
-    String build() throws IllegalStateException;
 
 }

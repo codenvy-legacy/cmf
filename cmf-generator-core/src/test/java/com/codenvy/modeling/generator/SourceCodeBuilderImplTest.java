@@ -16,6 +16,8 @@
 
 package com.codenvy.modeling.generator;
 
+import com.codenvy.modeling.generator.builders.java.SourceCodeBuilder;
+import com.codenvy.modeling.generator.builders.java.SourceCodeBuilderImpl;
 import com.google.inject.Inject;
 
 import org.junit.Before;
@@ -25,11 +27,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.codenvy.modeling.generator.SourceCodeBuilder.Access;
-import static com.codenvy.modeling.generator.SourceCodeBuilder.Access.DEFAULT;
-import static com.codenvy.modeling.generator.SourceCodeBuilder.Access.PRIVATE;
-import static com.codenvy.modeling.generator.SourceCodeBuilder.Access.PROTECTED;
-import static com.codenvy.modeling.generator.SourceCodeBuilder.Access.PUBLIC;
+import static com.codenvy.modeling.generator.builders.java.SourceCodeBuilder.Access;
+import static com.codenvy.modeling.generator.builders.java.SourceCodeBuilder.Access.DEFAULT;
+import static com.codenvy.modeling.generator.builders.java.SourceCodeBuilder.Access.PRIVATE;
+import static com.codenvy.modeling.generator.builders.java.SourceCodeBuilder.Access.PROTECTED;
+import static com.codenvy.modeling.generator.builders.java.SourceCodeBuilder.Access.PUBLIC;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -174,7 +176,7 @@ public class SourceCodeBuilderImplTest {
 
         String expectedCode = "package com.codenvy.generator;\n" +
                               "\n" +
-                              "import com.codenvy.modeling.generator.SourceCodeBuilder;\n" +
+                              "import com.codenvy.modeling.generator.builders.java.SourceCodeBuilder;\n" +
                               "\n" +
                               "public class A implements SourceCodeBuilder {\n" +
                               "\n" +
@@ -194,7 +196,7 @@ public class SourceCodeBuilderImplTest {
 
         String expectedCode = "package com.codenvy.generator;\n" +
                               "\n" +
-                              "import com.codenvy.modeling.generator.SourceCodeBuilderImpl;\n" +
+                              "import com.codenvy.modeling.generator.builders.java.SourceCodeBuilderImpl;\n" +
                               "\n" +
                               "public class A extends SourceCodeBuilderImpl {\n" +
                               "\n" +
@@ -214,7 +216,7 @@ public class SourceCodeBuilderImplTest {
 
         String expectedCode = "package com.codenvy.generator;\n" +
                               "\n" +
-                              "import com.codenvy.modeling.generator.SourceCodeBuilderImpl;\n" +
+                              "import com.codenvy.modeling.generator.builders.java.SourceCodeBuilderImpl;\n" +
                               "\n" +
                               "public class A {\n" +
                               "\n" +
@@ -746,7 +748,7 @@ public class SourceCodeBuilderImplTest {
 
         String expectedCode = "package com.codenvy.generator;\n" +
                               "\n" +
-                              "import com.codenvy.modeling.generator.SourceCodeBuilderImpl;\n" +
+                              "import com.codenvy.modeling.generator.builders.java.SourceCodeBuilderImpl;\n" +
                               "import com.google.inject.Inject;\n" +
                               "\n" +
                               "@SuppressWarnings\n" +
