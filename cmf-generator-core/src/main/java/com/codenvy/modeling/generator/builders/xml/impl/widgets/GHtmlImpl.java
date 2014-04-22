@@ -16,22 +16,22 @@
 
 package com.codenvy.modeling.generator.builders.xml.impl.widgets;
 
-import com.codenvy.modeling.generator.builders.xml.api.widgets.GButton;
+import com.codenvy.modeling.generator.builders.xml.api.widgets.GHtml;
 import com.google.inject.Inject;
 
 /**
- * The implementation of {@link GButton}.
+ * The implementation of {@link GHtml}.
  *
  * @author Andrey Plotnikov
  */
-public class GButtonImpl extends AbstractGWidget<GButton> implements GButton {
+public class GHtmlImpl extends AbstractGWidget<GHtml> implements GHtml {
 
-    private static final String BUTTON_FORMAT = "<%s:Button%s/>";
+    private static final String HTML_FORMAT = "<%s:HTML%s/>";
 
     @Inject
-    public GButtonImpl() {
+    public GHtmlImpl() {
         builder = this;
-        widgetFormat = BUTTON_FORMAT;
+        widgetFormat = HTML_FORMAT;
 
         clean();
     }

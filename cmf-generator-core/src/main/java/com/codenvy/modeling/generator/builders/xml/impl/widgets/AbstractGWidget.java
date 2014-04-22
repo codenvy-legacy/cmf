@@ -16,6 +16,12 @@
 
 package com.codenvy.modeling.generator.builders.xml.impl.widgets;
 
+import com.codenvy.modeling.generator.builders.xml.api.widgets.GWidget;
+import com.codenvy.modeling.generator.builders.xml.api.widgets.HasEnable;
+import com.codenvy.modeling.generator.builders.xml.api.widgets.HasFocus;
+import com.codenvy.modeling.generator.builders.xml.api.widgets.HasText;
+import com.codenvy.modeling.generator.builders.xml.api.widgets.HasVisible;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -28,45 +34,163 @@ import java.util.List;
  *
  * @author Andrey Plotnikov
  */
-public abstract class AbstractGWidget {
+public abstract class AbstractGWidget<T> implements GWidget<T>, HasEnable<T>, HasVisible<T>, HasText<T>, HasFocus<T> {
 
-    protected static final String PARAM_FORMAT = "%s=\"%s\"";
-    protected static final String STYLE_FORMAT = "{%s}";
+    private static final String PARAM_FORMAT = "%s=\"%s\"";
+    private static final String STYLE_FORMAT = "{%s}";
 
     @Nullable
-    protected String       title;
+    private String       title;
     @Nullable
-    protected String       prefix;
+    private String       prefix;
     @Nullable
-    protected String       name;
+    private String       name;
     @Nonnull
-    protected List<String> styles;
+    private List<String> styles;
     @Nonnull
-    protected List<String> addStyles;
+    private List<String> addStyles;
     @Nullable
-    protected String       height;
+    private String       height;
     @Nullable
-    protected String       width;
+    private String       width;
     @Nullable
-    protected String       debugId;
+    private String       debugId;
+    @Nullable
+    private String       text;
+    private boolean      enable;
+    private boolean      visible;
+    private boolean      focus;
+
+    protected T      builder;
+    protected String widgetFormat;
 
     /** Clean builder configuration */
     protected void clean() {
+        text = null;
         title = null;
         prefix = null;
+
+        enable = true;
+        visible = true;
+        focus = false;
+
         styles = new ArrayList<>();
         addStyles = new ArrayList<>();
     }
 
+    /** {@inheritDoc} */
+    @Nonnull
+    @Override
+    public T withText(@Nonnull String text) {
+        this.text = text;
+        return builder;
+    }
+
+    /** {@inheritDoc} */
+    @Nonnull
+    @Override
+    public T withTitle(@Nonnull String title) {
+        this.title = title;
+        return builder;
+    }
+
+    /** {@inheritDoc} */
+    @Nonnull
+    @Override
+    public T setDisable() {
+        enable = false;
+        return builder;
+    }
+
+    /** {@inheritDoc} */
+    @Nonnull
+    @Override
+    public T setInvisible() {
+        visible = false;
+        return builder;
+    }
+
+    /** {@inheritDoc} */
+    @Nonnull
+    @Override
+    public T setFocus() {
+        focus = true;
+        return builder;
+    }
+
+    /** {@inheritDoc} */
+    @Nonnull
+    @Override
+    public T withPrefix(@Nonnull String prefix) {
+        this.prefix = prefix;
+        return builder;
+    }
+
+    /** {@inheritDoc} */
+    @Nonnull
+    @Override
+    public T withName(@Nonnull String name) {
+        this.name = name;
+        return builder;
+    }
+
+    /** {@inheritDoc} */
+    @SuppressWarnings("unchecked")
+    @Nonnull
+    @Override
+    public T withStyle(@Nonnull String style) {
+        styles.add(style);
+        return builder;
+    }
+
+    /** {@inheritDoc} */
+    @SuppressWarnings("unchecked")
+    @Nonnull
+    @Override
+    public T withAddStyle(@Nonnull String style) {
+        addStyles.add(style);
+        return builder;
+    }
+
+    /** {@inheritDoc} */
+    @Nonnull
+    @Override
+    public T withHeight(@Nonnull String height) {
+        this.height = height;
+        return builder;
+    }
+
+    /** {@inheritDoc} */
+    @Nonnull
+    @Override
+    public T withWidth(@Nonnull String width) {
+        this.width = width;
+        return builder;
+    }
+
+    /** {@inheritDoc} */
+    @Nonnull
+    @Override
+    public T withDebugId(@Nonnull String debugId) {
+        this.debugId = debugId;
+        return builder;
+    }
+
+    /** {@inheritDoc} */
+    @Nonnull
+    @Override
+    public String build() throws IllegalStateException {
+        return String.format(widgetFormat, prefix, getWidget());
+    }
+
     /**
-     * Build a general part of widget. It's the same for all widget builders. In order to create own builder for some GWT widget one should
-     * use it.
+     * Build a widget. It provides an ability to work with any kind of GWT widget.
      *
-     * @return {@link StringBuilder} that contains general parameters
+     * @return {@link String} that contains general parameters
      */
-    protected StringBuilder generalBuild() {
+    protected String getWidget() {
         if (prefix == null) {
-            throw new IllegalStateException("The builder doesn't have any information about creating button prefix. " +
+            throw new IllegalStateException("The builder doesn't have any information about creating widget prefix. " +
                                             "You should execute withPrefix method and then this one.");
         }
 
@@ -79,8 +203,21 @@ public abstract class AbstractGWidget {
         addStringParam(result, "debugId", debugId);
         addListParam(result, "styleName", styles);
         addListParam(result, "addStyleNames", addStyles);
+        addStringParam(result, "text", text);
 
-        return result;
+        if (!enable) {
+            addStringParam(result, "enabled", "false");
+        }
+
+        if (!visible) {
+            addStringParam(result, "visible", "false");
+        }
+
+        if (focus) {
+            addStringParam(result, "focus", "true");
+        }
+
+        return result.toString();
     }
 
     /**
@@ -93,7 +230,7 @@ public abstract class AbstractGWidget {
      * @param value
      *         parameter value
      */
-    protected void addStringParam(@Nonnull StringBuilder str, @Nonnull String name, @Nullable String value) {
+    private void addStringParam(@Nonnull StringBuilder str, @Nonnull String name, @Nullable String value) {
         if (value != null) {
             str.append(' ').append(String.format(PARAM_FORMAT, name, value));
         }
@@ -109,7 +246,7 @@ public abstract class AbstractGWidget {
      * @param values
      *         parameter values
      */
-    protected void addListParam(@Nonnull StringBuilder str, @Nonnull String name, @Nonnull List<String> values) {
+    private void addListParam(@Nonnull StringBuilder str, @Nonnull String name, @Nonnull List<String> values) {
         if (!values.isEmpty()) {
             StringBuilder content = new StringBuilder();
 
