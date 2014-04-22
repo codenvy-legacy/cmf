@@ -33,7 +33,7 @@ public interface SourceCodeBuilder extends Builder {
     enum Access {
         PRIVATE("private "), PROTECTED("protected "), PUBLIC("public "), DEFAULT("");
 
-        private String prefix;
+        private final String prefix;
 
         Access(String prefix) {
             this.prefix = prefix;

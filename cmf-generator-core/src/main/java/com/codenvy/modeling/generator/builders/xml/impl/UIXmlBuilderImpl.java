@@ -36,8 +36,13 @@ import java.util.Map;
  */
 public class UIXmlBuilderImpl implements UIXmlBuilder {
 
-    private static final String HEADER       = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-    private static final String XMLNS_FORMAT = "\n             xmlns:%s='%s'";
+    private static final String UI_XML_FORMAT = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                                                "<!DOCTYPE ui:UiBinder SYSTEM \"http://dl.google.com/gwt/DTD/xhtml.ent\">\n" +
+                                                "<ui:UiBinder " +
+                                                "%s>\n" +
+                                                "%s" +
+                                                "</ui:UiBinder>";
+    private static final String XMLNS_FORMAT  = "\n             xmlns:%s='%s'";
 
     @Nonnull
     private List<GField>        fields;
@@ -99,31 +104,29 @@ public class UIXmlBuilderImpl implements UIXmlBuilder {
     @Nonnull
     @Override
     public String build() throws IllegalStateException {
-        StringBuilder xml = new StringBuilder(HEADER);
+        StringBuilder xmlns = new StringBuilder();
 
-        xml.append("<ui:UiBinder ");
-        for (Map.Entry<String, String> xmln : xmlns.entrySet()) {
-            xml.append(String.format(XMLNS_FORMAT, xmln.getKey(), xmln.getValue()));
+        for (Map.Entry<String, String> xmln : this.xmlns.entrySet()) {
+            xmlns.append(String.format(XMLNS_FORMAT, xmln.getKey(), xmln.getValue()));
         }
-        xml.append(">\n");
+
+        StringBuilder content = new StringBuilder();
 
         for (GField field : fields) {
-            xml.append(field.build()).append('\n');
+            content.append(field.build()).append('\n');
         }
 
         if (style != null) {
-            xml.append(style.build()).append('\n');
+            content.append(style.build()).append('\n');
         }
 
         if (widget != null) {
-            xml.append(widget.build()).append('\n');
+            content.append(widget.build()).append('\n');
         }
-
-        xml.append("</ui:UiBinder>");
 
         clean();
 
-        return xml.toString();
+        return String.format(UI_XML_FORMAT, xmlns, content);
     }
 
 }

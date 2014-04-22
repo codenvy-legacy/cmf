@@ -50,6 +50,7 @@ public class UIXmlBuilderImplTest {
         String actualXML = builder.build();
 
         String expectedXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                             "<!DOCTYPE ui:UiBinder SYSTEM \"http://dl.google.com/gwt/DTD/xhtml.ent\">\n" +
                              "<ui:UiBinder \n" +
                              "             xmlns:ui='urn:ui:com.google.gwt.uibinder'>\n" +
                              "</ui:UiBinder>";
@@ -64,6 +65,7 @@ public class UIXmlBuilderImplTest {
                                   .build();
 
         String expectedXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                             "<!DOCTYPE ui:UiBinder SYSTEM \"http://dl.google.com/gwt/DTD/xhtml.ent\">\n" +
                              "<ui:UiBinder \n" +
                              "             xmlns:ui='urn:ui:com.google.gwt.uibinder'\n" +
                              "             xmlns:p='urn:import:com.google.gwt.user.client.ui'\n" +
@@ -86,6 +88,7 @@ public class UIXmlBuilderImplTest {
                                   .build();
 
         String expectedXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                             "<!DOCTYPE ui:UiBinder SYSTEM \"http://dl.google.com/gwt/DTD/xhtml.ent\">\n" +
                              "<ui:UiBinder \n" +
                              "             xmlns:ui='urn:ui:com.google.gwt.uibinder'>\n" +
                              content1 + '\n' +
@@ -113,6 +116,7 @@ public class UIXmlBuilderImplTest {
         String actualXML = builder.setWidget(widget).build();
 
         String expectedXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                             "<!DOCTYPE ui:UiBinder SYSTEM \"http://dl.google.com/gwt/DTD/xhtml.ent\">\n" +
                              "<ui:UiBinder \n" +
                              "             xmlns:ui='urn:ui:com.google.gwt.uibinder'>\n" +
                              content + '\n' +
@@ -138,6 +142,7 @@ public class UIXmlBuilderImplTest {
         String actualXML = builder.withStyle(style).build();
 
         String expectedXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                             "<!DOCTYPE ui:UiBinder SYSTEM \"http://dl.google.com/gwt/DTD/xhtml.ent\">\n" +
                              "<ui:UiBinder \n" +
                              "             xmlns:ui='urn:ui:com.google.gwt.uibinder'>\n" +
                              content + '\n' +
@@ -171,6 +176,7 @@ public class UIXmlBuilderImplTest {
                                   .build();
 
         String expectedXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                             "<!DOCTYPE ui:UiBinder SYSTEM \"http://dl.google.com/gwt/DTD/xhtml.ent\">\n" +
                              "<ui:UiBinder \n" +
                              "             xmlns:ui='urn:ui:com.google.gwt.uibinder'>\n" +
                              fieldContent + '\n' +
