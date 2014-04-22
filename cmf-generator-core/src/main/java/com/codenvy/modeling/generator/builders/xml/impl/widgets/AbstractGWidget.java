@@ -21,7 +21,6 @@ import com.codenvy.modeling.generator.builders.xml.api.widgets.HasEnable;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.HasFocus;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.HasReadOnly;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.HasText;
-import com.codenvy.modeling.generator.builders.xml.api.widgets.HasVisible;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -35,7 +34,7 @@ import java.util.List;
  *
  * @author Andrey Plotnikov
  */
-public abstract class AbstractGWidget<T> implements GWidget<T>, HasEnable<T>, HasVisible<T>, HasText<T>, HasFocus<T>, HasReadOnly<T> {
+public abstract class AbstractGWidget<T> implements GWidget<T>, HasEnable<T>, HasText<T>, HasFocus<T>, HasReadOnly<T> {
 
     private static final String PARAM_FORMAT = "%s=\"%s\"";
     private static final String STYLE_FORMAT = "{%s}";

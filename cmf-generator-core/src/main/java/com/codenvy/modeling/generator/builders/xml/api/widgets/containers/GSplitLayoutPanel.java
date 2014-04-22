@@ -16,8 +16,6 @@
 
 package com.codenvy.modeling.generator.builders.xml.api.widgets.containers;
 
-import com.codenvy.modeling.generator.builders.xml.api.widgets.HasVisible;
-
 /**
  * The builder for SplitLayoutPanel GWT widget.
  * <p/>
@@ -37,6 +35,6 @@ import com.codenvy.modeling.generator.builders.xml.api.widgets.HasVisible;
  *
  * @author Andrey Plotnikov
  */
-public interface GSplitLayoutPanel extends GContainer<GSplitLayoutPanel>, HasVisible<GSplitLayoutPanel>, HasParts<GSplitLayoutPanel> {
+public interface GSplitLayoutPanel extends GContainer<GSplitLayoutPanel>, HasParts<GSplitLayoutPanel> {
 
 }

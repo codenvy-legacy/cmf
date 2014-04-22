@@ -16,8 +16,6 @@
 
 package com.codenvy.modeling.generator.builders.xml.api.widgets.containers;
 
-import com.codenvy.modeling.generator.builders.xml.api.widgets.HasVisible;
-
 /**
  * The builder for SimpleLayoutPanel GWT widget.
  * <p/>
@@ -33,6 +31,6 @@ import com.codenvy.modeling.generator.builders.xml.api.widgets.HasVisible;
  *
  * @author Andrey Plotnikov
  */
-public interface GSimpleLayoutPanel extends GContainer<GSimpleLayoutPanel>, HasVisible<GSimpleLayoutPanel> {
+public interface GSimpleLayoutPanel extends GContainer<GSimpleLayoutPanel> {
 
 }

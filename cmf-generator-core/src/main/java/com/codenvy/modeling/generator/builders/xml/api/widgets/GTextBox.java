@@ -31,7 +31,6 @@ package com.codenvy.modeling.generator.builders.xml.api.widgets;
  */
 public interface GTextBox extends GWidget<GTextBox>,
                                   HasEnable<GTextBox>,
-                                  HasVisible<GTextBox>,
                                   HasText<GTextBox>,
                                   HasReadOnly<GTextBox>,
                                   HasFocus<GTextBox> {

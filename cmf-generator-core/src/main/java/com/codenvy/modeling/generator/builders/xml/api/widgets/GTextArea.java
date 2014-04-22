@@ -31,7 +31,6 @@ package com.codenvy.modeling.generator.builders.xml.api.widgets;
  */
 public interface GTextArea extends GWidget<GTextArea>,
                                    HasEnable<GTextArea>,
-                                   HasVisible<GTextArea>,
                                    HasText<GTextArea>,
                                    HasReadOnly<GTextArea>,
                                    HasFocus<GTextArea> {

@@ -173,4 +173,12 @@ public interface GWidget<T> extends Builder {
     @Nonnull
     T withDebugId(@Nonnull String debugId);
 
+    /**
+     * Change visible property to false value. Default value of visible property is true.
+     *
+     * @return a instance of builder with given configuration.
+     */
+    @Nonnull
+    T setInvisible();
+
 }

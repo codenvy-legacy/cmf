@@ -28,6 +28,6 @@ package com.codenvy.modeling.generator.builders.xml.api.widgets;
  *
  * @author Andrey Plotnikov
  */
-public interface GLabel extends GWidget<GLabel>, HasVisible<GLabel>, HasText<GLabel> {
+public interface GLabel extends GWidget<GLabel>, HasText<GLabel> {
 
 }

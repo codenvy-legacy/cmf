@@ -16,8 +16,6 @@
 
 package com.codenvy.modeling.generator.builders.xml.api.widgets.containers;
 
-import com.codenvy.modeling.generator.builders.xml.api.widgets.HasVisible;
-
 /**
  * The builder for DockLayoutPanel GWT widget.
  * <p/>
@@ -38,6 +36,6 @@ import com.codenvy.modeling.generator.builders.xml.api.widgets.HasVisible;
  *
  * @author Andrey Plotnikov
  */
-public interface GDockLayoutPanel extends GContainer<GDockLayoutPanel>, HasVisible<GDockLayoutPanel>, HasParts<GDockLayoutPanel> {
+public interface GDockLayoutPanel extends GContainer<GDockLayoutPanel>, HasParts<GDockLayoutPanel> {
 
 }

@@ -29,6 +29,6 @@ package com.codenvy.modeling.generator.builders.xml.api.widgets;
  *
  * @author Andrey Plotnikov
  */
-public interface GButton extends GWidget<GButton>, HasEnable<GButton>, HasVisible<GButton>, HasText<GButton>, HasFocus<GButton> {
+public interface GButton extends GWidget<GButton>, HasEnable<GButton>, HasText<GButton>, HasFocus<GButton> {
 
 }

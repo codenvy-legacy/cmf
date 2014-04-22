@@ -16,8 +16,6 @@
 
 package com.codenvy.modeling.generator.builders.xml.api.widgets.containers;
 
-import com.codenvy.modeling.generator.builders.xml.api.widgets.HasVisible;
-
 import javax.annotation.Nonnull;
 
 /**
@@ -34,7 +32,7 @@ import javax.annotation.Nonnull;
  *
  * @author Andrey Plotnikov
  */
-public interface GScrollPanel extends GContainer<GScrollPanel>, HasVisible<GScrollPanel> {
+public interface GScrollPanel extends GContainer<GScrollPanel> {
 
     @Nonnull
     GScrollPanel alwaysShowScrollBars();
