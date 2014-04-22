@@ -21,8 +21,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>cmf</artifactId>
-        <groupId>com.codenvy</groupId>
+        <artifactId>cmf-parent</artifactId>
+        <groupId>com.codenvy.cmf</groupId>
         <version>1.0.0-M1-SNAPSHOT</version>
     </parent>
 
@@ -31,10 +31,8 @@
     <name>↳ Configuration Adapter</name>
 
     <properties>
-        <parser.location>
-            ${project.basedir}/src/main/java/com/codenvy/modeling/configuration/parser/metamodel/generated/
-        </parser.location>
-        <parser.package.name>${project.groupId}.modeling.configuration.parser.metamodel.generated</parser.package.name>
+        <parser.location>${project.basedir}/src/main/java/com/codenvy/modeling/configuration/parser/metamodel/generated/</parser.location>
+        <parser.package.name>com.codenvy.modeling.configuration.parser.metamodel.generated</parser.package.name>
     </properties>
 
     <dependencies>
