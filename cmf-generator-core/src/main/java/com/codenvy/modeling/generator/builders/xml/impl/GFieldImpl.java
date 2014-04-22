@@ -17,6 +17,7 @@
 package com.codenvy.modeling.generator.builders.xml.impl;
 
 import com.codenvy.modeling.generator.builders.xml.api.GField;
+import com.google.inject.Inject;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -34,6 +35,11 @@ public class GFieldImpl implements GField {
     private String name;
     @Nullable
     private Class  type;
+
+    @Inject
+    public GFieldImpl() {
+        // empty constructor
+    }
 
     /** {@inheritDoc} */
     @Nonnull
@@ -65,7 +71,13 @@ public class GFieldImpl implements GField {
                                             "You should execute withType method and then this one.");
         }
 
-        return String.format(FIELD_FORMAT, name, type.getName());
+        String content = String.format(FIELD_FORMAT, name, type.getName());
+
+        // Clean builder configuration
+        name = null;
+        type = null;
+
+        return content;
     }
 
 }
