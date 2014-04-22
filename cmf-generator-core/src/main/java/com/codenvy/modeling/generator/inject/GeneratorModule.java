@@ -20,7 +20,17 @@ import com.codenvy.modeling.adapter.AdapterFactory;
 import com.codenvy.modeling.generator.builders.java.SourceCodeBuilder;
 import com.codenvy.modeling.generator.builders.java.SourceCodeBuilderImpl;
 import com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder;
+import com.codenvy.modeling.generator.builders.xml.api.widgets.GButton;
+import com.codenvy.modeling.generator.builders.xml.api.widgets.GHtml;
+import com.codenvy.modeling.generator.builders.xml.api.widgets.GLabel;
+import com.codenvy.modeling.generator.builders.xml.api.widgets.GTextArea;
+import com.codenvy.modeling.generator.builders.xml.api.widgets.GTextBox;
 import com.codenvy.modeling.generator.builders.xml.impl.UIXmlBuilderImpl;
+import com.codenvy.modeling.generator.builders.xml.impl.widgets.GButtonImpl;
+import com.codenvy.modeling.generator.builders.xml.impl.widgets.GHtmlImpl;
+import com.codenvy.modeling.generator.builders.xml.impl.widgets.GLabelImpl;
+import com.codenvy.modeling.generator.builders.xml.impl.widgets.GTextAreaImpl;
+import com.codenvy.modeling.generator.builders.xml.impl.widgets.GTextBoxImpl;
 import com.google.inject.AbstractModule;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 
@@ -39,6 +49,12 @@ public class GeneratorModule extends AbstractModule {
         bind(SourceCodeBuilder.class).to(SourceCodeBuilderImpl.class);
 
         bind(UIXmlBuilder.class).to(UIXmlBuilderImpl.class);
+
+        bind(GButton.class).to(GButtonImpl.class);
+        bind(GHtml.class).to(GHtmlImpl.class);
+        bind(GLabel.class).to(GLabelImpl.class);
+        bind(GTextArea.class).to(GTextAreaImpl.class);
+        bind(GTextBox.class).to(GTextBoxImpl.class);
     }
 
 }

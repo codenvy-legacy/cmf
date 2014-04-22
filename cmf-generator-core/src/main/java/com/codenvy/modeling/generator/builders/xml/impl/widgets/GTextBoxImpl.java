@@ -17,96 +17,23 @@
 package com.codenvy.modeling.generator.builders.xml.impl.widgets;
 
 import com.codenvy.modeling.generator.builders.xml.api.widgets.GTextBox;
-
-import javax.annotation.Nonnull;
+import com.google.inject.Inject;
 
 /**
+ * The implementation of {@link GTextBox}.
+ *
  * @author Andrey Plotnikov
  */
-public class GTextBoxImpl implements GTextBox {
+public class GTextBoxImpl extends AbstractGWidget<GTextBox> implements GTextBox {
 
-    @Nonnull
-    @Override
-    public GTextBox withText(@Nonnull String text) {
-        return null;
-    }
+    private static final String TEXT_BOX_FORMAT = "<%s:TextBox%s/>";
 
-    @Nonnull
-    @Override
-    public GTextBox withTitle(@Nonnull String title) {
-        return null;
-    }
+    @Inject
+    public GTextBoxImpl() {
+        builder = this;
+        widgetFormat = TEXT_BOX_FORMAT;
 
-    @Nonnull
-    @Override
-    public GTextBox setReadOnly() {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GTextBox setInvisible() {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GTextBox setDisable() {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GTextBox withName(@Nonnull String name) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GTextBox withPrefix(@Nonnull String prefix) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GTextBox withStyle(@Nonnull String style) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GTextBox withAddStyle(@Nonnull String style) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GTextBox withHeight(@Nonnull String height) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GTextBox withWidth(@Nonnull String width) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GTextBox withDebugId(@Nonnull String debugId) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GTextBox setFocus() {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public String build() throws IllegalStateException {
-        return null;
+        clean();
     }
 
 }

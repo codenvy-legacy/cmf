@@ -22,11 +22,18 @@ import javax.annotation.Nonnull;
 import java.io.InputStream;
 
 /**
+ * The factory for creating configuration adapters.
+ *
  * @author Andrey Plotnikov
  */
 public interface AdapterFactory {
-
+    /**
+     * Create Meta model configuration adapter.
+     *
+     * @param inputStream
+     *         stream that contains configuration
+     * @return meta model configuration adapter
+     */
     @Nonnull
     MetaModelConfigurationAdapter getMetaModelConfAdapter(@Nonnull InputStream inputStream);
-
 }

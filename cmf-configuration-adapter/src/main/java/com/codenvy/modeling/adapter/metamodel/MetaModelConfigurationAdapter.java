@@ -21,6 +21,9 @@ import com.codenvy.modeling.configuration.metamodel.MetaModel;
 import com.codenvy.modeling.configuration.parser.metamodel.MetaModelConfigurationAdapterListener;
 import com.codenvy.modeling.configuration.parser.metamodel.generated.MetaModelLexer;
 import com.codenvy.modeling.configuration.parser.metamodel.generated.MetaModelParser;
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
+
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
@@ -35,7 +38,8 @@ public class MetaModelConfigurationAdapter implements Adapter<MetaModel> {
 
     private InputStream inputStream;
 
-    public MetaModelConfigurationAdapter(InputStream inputStream) {
+    @Inject
+    public MetaModelConfigurationAdapter(@Assisted InputStream inputStream) {
         this.inputStream = inputStream;
     }
 
