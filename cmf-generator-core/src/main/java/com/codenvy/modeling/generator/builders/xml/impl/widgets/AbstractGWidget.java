@@ -19,6 +19,7 @@ package com.codenvy.modeling.generator.builders.xml.impl.widgets;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.GWidget;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.HasEnable;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.HasFocus;
+import com.codenvy.modeling.generator.builders.xml.api.widgets.HasReadOnly;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.HasText;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.HasVisible;
 
@@ -34,7 +35,7 @@ import java.util.List;
  *
  * @author Andrey Plotnikov
  */
-public abstract class AbstractGWidget<T> implements GWidget<T>, HasEnable<T>, HasVisible<T>, HasText<T>, HasFocus<T> {
+public abstract class AbstractGWidget<T> implements GWidget<T>, HasEnable<T>, HasVisible<T>, HasText<T>, HasFocus<T>, HasReadOnly<T> {
 
     private static final String PARAM_FORMAT = "%s=\"%s\"";
     private static final String STYLE_FORMAT = "{%s}";
@@ -60,6 +61,7 @@ public abstract class AbstractGWidget<T> implements GWidget<T>, HasEnable<T>, Ha
     private boolean      enable;
     private boolean      visible;
     private boolean      focus;
+    private boolean      readOnly;
 
     protected T      builder;
     protected String widgetFormat;
@@ -73,6 +75,7 @@ public abstract class AbstractGWidget<T> implements GWidget<T>, HasEnable<T>, Ha
         enable = true;
         visible = true;
         focus = false;
+        readOnly = false;
 
         styles = new ArrayList<>();
         addStyles = new ArrayList<>();
@@ -179,6 +182,14 @@ public abstract class AbstractGWidget<T> implements GWidget<T>, HasEnable<T>, Ha
     /** {@inheritDoc} */
     @Nonnull
     @Override
+    public T setReadOnly() {
+        readOnly = true;
+        return builder;
+    }
+
+    /** {@inheritDoc} */
+    @Nonnull
+    @Override
     public String build() throws IllegalStateException {
         return String.format(widgetFormat, prefix, getWidget());
     }
@@ -215,6 +226,10 @@ public abstract class AbstractGWidget<T> implements GWidget<T>, HasEnable<T>, Ha
 
         if (focus) {
             addStringParam(result, "focus", "true");
+        }
+
+        if (readOnly) {
+            addStringParam(result, "readOnly", "true");
         }
 
         return result.toString();
