@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * The implementation of {@link UIXmlBuilder}.
+ *
  * @author Andrey Plotnikov
  */
 public class UIXmlBuilderImpl implements UIXmlBuilder {
