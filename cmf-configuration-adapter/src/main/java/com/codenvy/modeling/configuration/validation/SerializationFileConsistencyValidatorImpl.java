@@ -18,17 +18,19 @@ package com.codenvy.modeling.configuration.validation;
 
 import com.codenvy.modeling.configuration.validation.pre.SerializationFileConsistencyValidator;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author Dmitry Kuleshov
  */
 public class SerializationFileConsistencyValidatorImpl extends SerializationFileConsistencyValidator {
-
     private String path;
 
     public SerializationFileConsistencyValidatorImpl(String path) {
         this.path = path;
     }
 
+    @Nonnull
     @Override
     public Report getReport() {
         return null;

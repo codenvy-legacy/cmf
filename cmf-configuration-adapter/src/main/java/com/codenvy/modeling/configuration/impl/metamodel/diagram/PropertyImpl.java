@@ -18,6 +18,8 @@ package com.codenvy.modeling.configuration.impl.metamodel.diagram;
 
 import com.codenvy.modeling.configuration.metamodel.diagram.Property;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author Dmitry Kuleshov
  */
@@ -29,16 +31,19 @@ public class PropertyImpl implements Property {
 
     private Type type;
 
+    @Nonnull
     @Override
     public String getName() {
         return name;
     }
 
+    @Nonnull
     @Override
     public String getValue() {
         return value;
     }
 
+    @Nonnull
     @Override
     public Type getType() {
         return type;

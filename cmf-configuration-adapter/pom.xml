@@ -31,11 +31,45 @@
     <name>↳ Configuration Adapter</name>
 
     <properties>
-        <parser.editor.package.name>com.codenvy.modeling.configuration.parser.editor.generated</parser.editor.package.name>
-        <parser.generated.sources.location>${project.build.directory}/generated-sources/antlr4</parser.generated.sources.location>
-        <parser.metamodel.package.name>com.codenvy.modeling.configuration.parser.metamodel.generated</parser.metamodel.package.name>
-    </properties>
+        <!-- GENERATED SOURCES LOCATION -->
+        <parser.generated.sources.location>
+            ${project.build.directory}/generated-sources/antlr4
+        </parser.generated.sources.location>
 
+        <!-- GRAMMARS LOCATIONS -->
+        <parser.grammar.directory.diagram>
+            ${project.basedir}/src/main/antlr4/metamodel
+        </parser.grammar.directory.diagram>
+        <parser.grammar.directory.editor>
+            ${project.basedir}/src/main/antlr4
+        </parser.grammar.directory.editor>
+        <parser.grammar.directory.serialization>
+            ${project.basedir}/src/main/antlr4/metamodel
+        </parser.grammar.directory.serialization>
+
+        <!-- GENERATED PARSERS LOCATIONS -->
+        <parser.output.directory.diagram>
+            ${parser.generated.sources.location}/com/codenvy/modeling/configuration/parser/metamodel/diagram
+        </parser.output.directory.diagram>
+        <parser.output.directory.editor>
+            ${parser.generated.sources.location}/com/codenvy/modeling/configuration/parser/editor
+        </parser.output.directory.editor>
+        <parser.output.directory.serialization>
+            ${parser.generated.sources.location}/com/codenvy/modeling/configuration/parser/metamodel/serialization
+        </parser.output.directory.serialization>
+
+        <!-- GENERATED PARSERS PACKAGE NAMES -->
+        <parser.package.name.diagram>
+            com.codenvy.modeling.configuration.parser.metamodel.diagram
+        </parser.package.name.diagram>
+        <parser.package.name.editor>
+            com.codenvy.modeling.configuration.parser.editor
+        </parser.package.name.editor>
+        <parser.package.name.serialization>
+            com.codenvy.modeling.configuration.parser.metamodel.serialization
+        </parser.package.name.serialization>
+
+    </properties>
     <dependencies>
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -82,47 +116,76 @@
                 <artifactId>antlr4-maven-plugin</artifactId>
                 <version>${version.antlr4}</version>
                 <executions>
+
                     <execution>
-                        <id>metamodel</id>
+                        <id>metamodel-diagram</id>
                         <goals>
                             <goal>antlr4</goal>
                         </goals>
                         <configuration>
-                            <sourceDirectory>${project.basedir}/src/main/antlr4/metamodel</sourceDirectory>
+                            <sourceDirectory>${parser.grammar.directory.diagram}</sourceDirectory>
                             <listener>true</listener>
                             <visitor>false</visitor>
                             <includes>
                                 <include>Diagram.g4</include>
-                                <include>Serialization.g4</include>
                             </includes>
-                            <outputDirectory>${parser.generated.sources.location}/com/codenvy/modeling/configuration/parser/metamodel/generated</outputDirectory>
+                            <outputDirectory>
+                                ${parser.output.directory.diagram}
+                            </outputDirectory>
                             <arguments>
                                 <argument>-package</argument>
-                                <argument>${parser.metamodel.package.name}</argument>
+                                <argument>${parser.package.name.diagram}</argument>
                             </arguments>
                         </configuration>
                     </execution>
+
+                    <execution>
+                        <id>metamodel-serialization</id>
+                        <goals>
+                            <goal>antlr4</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>${parser.grammar.directory.serialization}</sourceDirectory>
+                            <listener>true</listener>
+                            <visitor>false</visitor>
+                            <includes>
+                                <include>Serialization.g4</include>
+                            </includes>
+                            <outputDirectory>
+                                ${parser.output.directory.serialization}
+                            </outputDirectory>
+                            <arguments>
+                                <argument>-package</argument>
+                                <argument>${parser.package.name.serialization}</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+
                     <execution>
                         <id>editor</id>
                         <goals>
                             <goal>antlr4</goal>
                         </goals>
                         <configuration>
-                            <sourceDirectory>${project.basedir}/src/main/antlr4/</sourceDirectory>
+                            <sourceDirectory>${parser.grammar.directory.editor}</sourceDirectory>
                             <listener>true</listener>
                             <visitor>false</visitor>
                             <includes>
                                 <include>Editor.g4</include>
                             </includes>
-                            <outputDirectory>${parser.generated.sources.location}/com/codenvy/modeling/configuration/parser/editor/generated</outputDirectory>
+                            <outputDirectory>
+                                ${parser.output.directory.editor}
+                            </outputDirectory>
                             <arguments>
                                 <argument>-package</argument>
-                                <argument>${parser.editor.package.name}</argument>
+                                <argument>${parser.package.name.editor}</argument>
                             </arguments>
                         </configuration>
                     </execution>
+
                 </executions>
             </plugin>
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>

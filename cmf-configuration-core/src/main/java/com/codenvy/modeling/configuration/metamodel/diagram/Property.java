@@ -23,7 +23,7 @@ import javax.annotation.Nonnull;
  */
 public interface Property {
     enum Type {
-        BOOLEAN, INTEGER, FLOAT, STRING;
+        BOOLEAN, INTEGER, FLOAT, STRING
     }
 
     @Nonnull

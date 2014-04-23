@@ -18,8 +18,6 @@ package com.codenvy.modeling.configuration.parser.editor;
 
 import com.codenvy.modeling.configuration.editor.*;
 import com.codenvy.modeling.configuration.impl.editor.*;
-import com.codenvy.modeling.configuration.parser.editor.generated.EditorBaseListener;
-import com.codenvy.modeling.configuration.parser.editor.generated.EditorParser;
 import org.antlr.v4.runtime.misc.NotNull;
 
 /**

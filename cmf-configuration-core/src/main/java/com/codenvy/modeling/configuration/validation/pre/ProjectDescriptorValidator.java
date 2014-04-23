@@ -19,11 +19,14 @@ package com.codenvy.modeling.configuration.validation.pre;
 import com.codenvy.modeling.configuration.validation.Report;
 import com.codenvy.modeling.configuration.validation.pre.AbstractPersistenceValidator;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author Dmitry Kuleshov
  */
 public class ProjectDescriptorValidator extends AbstractPersistenceValidator {
 
+    @Nonnull
     @Override
     public Report getReport() {
         return null;

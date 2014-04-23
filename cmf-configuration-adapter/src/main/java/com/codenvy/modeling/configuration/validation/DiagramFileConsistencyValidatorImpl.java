@@ -18,6 +18,8 @@ package com.codenvy.modeling.configuration.validation;
 
 import com.codenvy.modeling.configuration.validation.pre.DiagramFileConsistencyValidator;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author Dmitry Kuleshov
  */
@@ -28,6 +30,7 @@ public class DiagramFileConsistencyValidatorImpl extends DiagramFileConsistencyV
         this.path = path;
     }
 
+    @Nonnull
     @Override
     public Report getReport() {
         return null;

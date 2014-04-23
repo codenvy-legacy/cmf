@@ -21,6 +21,7 @@ import com.codenvy.modeling.configuration.metamodel.diagram.Connection;
 import com.codenvy.modeling.configuration.metamodel.diagram.Element;
 import com.codenvy.modeling.configuration.metamodel.diagram.Property;
 
+import javax.annotation.Nonnull;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -37,21 +38,25 @@ public class ElementImpl implements Element {
 
     private List<Component> components = new LinkedList<>();
 
+    @Nonnull
     @Override
     public String getName() {
         return null;
     }
 
+    @Nonnull
     @Override
     public List<Property> getElementProperties() {
         return properties;
     }
 
+    @Nonnull
     @Override
     public List<Connection> geElementConnections() {
         return connections;
     }
 
+    @Nonnull
     @Override
     public List<Component> getElementComponents() {
         return components;

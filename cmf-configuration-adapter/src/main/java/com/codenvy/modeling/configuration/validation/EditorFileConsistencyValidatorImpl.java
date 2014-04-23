@@ -14,18 +14,25 @@
  * limitations under the License.
  */
 
-package com.codenvy.modeling.configuration.editor;
+package com.codenvy.modeling.configuration.validation;
+
+import com.codenvy.modeling.configuration.validation.pre.EditorFileConsistencyValidator;
 
 import javax.annotation.Nonnull;
 
 /**
  * @author Dmitry Kuleshov
  */
-public interface Text {
-    public enum Alignment {
-        TOP, BOTTOM, LEFT, RIGHT, CENTER
+public class EditorFileConsistencyValidatorImpl extends EditorFileConsistencyValidator {
+    private String path;
+
+    public EditorFileConsistencyValidatorImpl(String path) {
+        this.path = path;
     }
 
     @Nonnull
-    Alignment getAlignment();
+    @Override
+    public Report getReport() {
+        return null;
+    }
 }

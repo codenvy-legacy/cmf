@@ -18,11 +18,14 @@ package com.codenvy.modeling.configuration.validation.pre;
 
 import com.codenvy.modeling.configuration.validation.Validator;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author Dmitry Kuleshov
  */
 public abstract class AbstractPersistenceValidator implements Validator {
 
+    @Nonnull
     public final Type getType() {
         return Type.PRE;
     }

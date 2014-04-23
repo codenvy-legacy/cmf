@@ -16,17 +16,20 @@
 
 package com.codenvy.modeling;
 
+import com.codenvy.modeling.adapter.editor.EditorConfigurationAdapter;
 import com.codenvy.modeling.adapter.metamodel.diagram.DiagramConfigurationAdapter;
 import com.codenvy.modeling.adapter.metamodel.serialization.SerializationConfigurationAdapter;
 import com.codenvy.modeling.configuration.ConfigurationFactory;
 import com.codenvy.modeling.configuration.ConfigurationKeeper;
 import com.codenvy.modeling.configuration.ConfigurationKeeperImpl;
 import com.codenvy.modeling.configuration.validation.DiagramFileConsistencyValidatorImpl;
+import com.codenvy.modeling.configuration.validation.EditorFileConsistencyValidatorImpl;
 import com.codenvy.modeling.configuration.validation.SerializationFileConsistencyValidatorImpl;
 import com.codenvy.modeling.configuration.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -42,32 +45,36 @@ public class ConfigurationFactoryImpl implements ConfigurationFactory {
 
     private static final Logger LOG = LoggerFactory.getLogger(ConfigurationKeeperImpl.class);
 
-    private Map<String, String> parameters = new HashMap<>();
+    private Map<PathParam, String> parameters = new HashMap<>();
 
-    public ConfigurationFactoryImpl(Map<String, String> parameters) {
+    public ConfigurationFactoryImpl(Map<PathParam, String> parameters) {
         this.parameters = parameters;
     }
 
+    @Nonnull
     @Override
     public ConfigurationKeeper getConfigurationKeeperInstance() {
         ConfigurationKeeperImpl configurationKeeperImpl = new ConfigurationKeeperImpl();
         try {
             setDiagramConfiguration(configurationKeeperImpl);
             setSerializationConfiguration(configurationKeeperImpl);
+            setEditorConfiguration(configurationKeeperImpl);
 
         } catch (IOException e) {
-            LOG.error("Trying to create configuration keeper occurred an error: ", e);
+            LOG.error("Trying to create configuration keeper caused an error: ", e);
         }
 
         return configurationKeeperImpl;
     }
 
+    @Nonnull
     @Override
     public List<Validator> getValidatorsListInstance() {
         List<Validator> validators = new LinkedList<>();
 
         validators.add(new DiagramFileConsistencyValidatorImpl(parameters.get(PathParam.DIAGRAM)));
         validators.add(new SerializationFileConsistencyValidatorImpl(parameters.get(PathParam.SERIALIZATION)));
+        validators.add(new EditorFileConsistencyValidatorImpl(parameters.get(PathParam.EDITOR)));
 
         return validators;
     }
@@ -90,6 +97,19 @@ public class ConfigurationFactoryImpl implements ConfigurationFactory {
                         new DiagramConfigurationAdapter(
                                 new FileInputStream(
                                         new File(parameters.get(PathParam.DIAGRAM))
+                                )
+                        )
+                ).getConfiguration()
+        );
+    }
+
+
+    private void setEditorConfiguration(ConfigurationKeeperImpl configurationKeeperImpl) throws IOException {
+        configurationKeeperImpl.setEditorConfiguration(
+                (
+                        new EditorConfigurationAdapter(
+                                new FileInputStream(
+                                        new File(parameters.get(PathParam.EDITOR))
                                 )
                         )
                 ).getConfiguration()

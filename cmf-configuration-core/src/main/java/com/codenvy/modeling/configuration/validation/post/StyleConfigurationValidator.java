@@ -30,6 +30,7 @@ public class StyleConfigurationValidator extends AbstractConfigurationValidator 
         super(configurationKeeper);
     }
 
+    @Nonnull
     @Override
     public Report getReport() {
         return null;

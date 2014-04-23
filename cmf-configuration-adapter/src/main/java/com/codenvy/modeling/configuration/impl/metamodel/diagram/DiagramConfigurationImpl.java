@@ -20,6 +20,7 @@ package com.codenvy.modeling.configuration.impl.metamodel.diagram;
 import com.codenvy.modeling.configuration.metamodel.diagram.DiagramConfiguration;
 import com.codenvy.modeling.configuration.metamodel.diagram.Element;
 
+import javax.annotation.Nonnull;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -30,6 +31,7 @@ public class DiagramConfigurationImpl implements DiagramConfiguration {
 
     private List<Element> elements = new LinkedList<>();
 
+    @Nonnull
     @Override
     public List<Element> getElements() {
         return null;

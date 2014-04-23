@@ -19,6 +19,7 @@ package com.codenvy.modeling.configuration.impl.metamodel.serialization;
 import com.codenvy.modeling.configuration.metamodel.serialization.Element;
 import com.codenvy.modeling.configuration.metamodel.serialization.SerializationConfiguration;
 
+import javax.annotation.Nonnull;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -29,6 +30,7 @@ public class SerializationConfigurationImpl implements SerializationConfiguratio
 
     private List<Element> elements = new LinkedList<>();
 
+    @Nonnull
     @Override
     public List<Element> getElements() {
         return null;

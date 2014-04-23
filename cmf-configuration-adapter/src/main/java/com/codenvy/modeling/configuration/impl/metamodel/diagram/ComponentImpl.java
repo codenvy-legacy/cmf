@@ -18,12 +18,15 @@ package com.codenvy.modeling.configuration.impl.metamodel.diagram;
 
 import com.codenvy.modeling.configuration.metamodel.diagram.Component;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author Dmitry Kuleshov
  */
 public class ComponentImpl implements Component {
     private String name;
 
+    @Nonnull
     @Override
     public String getName() {
         return null;

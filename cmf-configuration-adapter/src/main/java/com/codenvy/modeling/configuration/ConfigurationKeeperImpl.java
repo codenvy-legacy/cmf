@@ -21,6 +21,8 @@ import com.codenvy.modeling.configuration.metamodel.diagram.DiagramConfiguration
 import com.codenvy.modeling.configuration.metamodel.serialization.SerializationConfiguration;
 import com.codenvy.modeling.configuration.style.StyleConfiguration;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author Dmitry Kuleshov
  */
@@ -31,21 +33,25 @@ public class ConfigurationKeeperImpl implements ConfigurationKeeper {
     private EditorConfiguration editorConfiguration;
     private StyleConfiguration styleConfiguration;
 
+    @Nonnull
     @Override
     public DiagramConfiguration getDiagramConfiguration() {
         return diagramConfiguration;
     }
 
+    @Nonnull
     @Override
     public SerializationConfiguration getSerializationConfiguration() {
         return serializationConfiguration;
     }
 
+    @Nonnull
     @Override
     public EditorConfiguration getEditorConfiguration() {
         return editorConfiguration;
     }
 
+    @Nonnull
     @Override
     public StyleConfiguration getStyleConfiguration() {
         return styleConfiguration;

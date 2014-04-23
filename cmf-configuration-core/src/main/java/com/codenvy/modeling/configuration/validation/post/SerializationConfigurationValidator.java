@@ -30,6 +30,7 @@ public class SerializationConfigurationValidator extends AbstractConfigurationVa
         super(configurationKeeper);
     }
 
+    @Nonnull
     @Override
     public Report getReport() {
         return null;

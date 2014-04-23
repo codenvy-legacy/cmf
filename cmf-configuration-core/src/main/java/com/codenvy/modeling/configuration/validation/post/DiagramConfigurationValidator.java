@@ -30,6 +30,7 @@ public class DiagramConfigurationValidator extends AbstractConfigurationValidato
         super(configurationKeeper);
     }
 
+    @Nonnull
     @Override
     public Report getReport() {
         return null;

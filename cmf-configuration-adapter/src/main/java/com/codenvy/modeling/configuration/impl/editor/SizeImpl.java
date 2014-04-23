@@ -27,12 +27,12 @@ public class SizeImpl implements Size {
 
     @Override
     public int getCompact() {
-        return 0;
+        return compact;
     }
 
     @Override
     public int getFull() {
-        return 0;
+        return full;
     }
 
     public void setCompact(int compact) {

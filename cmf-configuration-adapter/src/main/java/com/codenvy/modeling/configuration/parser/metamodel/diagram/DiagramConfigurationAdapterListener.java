@@ -20,8 +20,6 @@ import com.codenvy.modeling.configuration.impl.metamodel.diagram.*;
 import com.codenvy.modeling.configuration.metamodel.diagram.Connection;
 import com.codenvy.modeling.configuration.metamodel.diagram.DiagramConfiguration;
 import com.codenvy.modeling.configuration.metamodel.diagram.Property;
-import com.codenvy.modeling.configuration.parser.metamodel.generated.DiagramBaseListener;
-import com.codenvy.modeling.configuration.parser.metamodel.generated.DiagramParser;
 import org.antlr.v4.runtime.misc.NotNull;
 
 import java.util.Stack;

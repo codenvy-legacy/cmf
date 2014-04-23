@@ -18,6 +18,8 @@ package com.codenvy.modeling.configuration.impl.metamodel.diagram;
 
 import com.codenvy.modeling.configuration.metamodel.diagram.Connection;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author Dmitry Kuleshov
  */
@@ -31,21 +33,25 @@ public class ConnectionImpl implements Connection {
 
     private Type type;
 
+    @Nonnull
     @Override
     public String getName() {
         return name;
     }
 
+    @Nonnull
     @Override
     public String getDestination() {
         return destination;
     }
 
+    @Nonnull
     @Override
     public Relation getRelation() {
         return relation;
     }
 
+    @Nonnull
     @Override
     public Type getType() {
         return type;

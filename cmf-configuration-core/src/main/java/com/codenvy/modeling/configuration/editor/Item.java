@@ -23,7 +23,7 @@ import javax.annotation.Nonnull;
  */
 public interface Item {
     public enum Alignment {
-        TOP, BOTTOM, LEFT, RIGHT, CENTER, NONE
+        TOP, BOTTOM, LEFT, RIGHT, CENTER
     }
 
     int getSize();

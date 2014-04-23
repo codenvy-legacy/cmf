@@ -23,8 +23,6 @@ import com.codenvy.modeling.configuration.impl.metamodel.serialization.Serializa
 import com.codenvy.modeling.configuration.metamodel.serialization.ConnectionDesignation;
 import com.codenvy.modeling.configuration.metamodel.serialization.ElementDesignation;
 import com.codenvy.modeling.configuration.metamodel.serialization.SerializationConfiguration;
-import com.codenvy.modeling.configuration.parser.metamodel.generated.SerializationBaseListener;
-import com.codenvy.modeling.configuration.parser.metamodel.generated.SerializationParser;
 import org.antlr.v4.runtime.misc.NotNull;
 
 import java.util.Stack;

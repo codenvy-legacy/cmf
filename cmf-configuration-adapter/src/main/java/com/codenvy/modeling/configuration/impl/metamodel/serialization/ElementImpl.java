@@ -20,6 +20,8 @@ import com.codenvy.modeling.configuration.metamodel.serialization.ConnectionDesi
 import com.codenvy.modeling.configuration.metamodel.serialization.Element;
 import com.codenvy.modeling.configuration.metamodel.serialization.ElementDesignation;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author Dmitry Kuleshov
  */
@@ -33,21 +35,25 @@ public class ElementImpl implements Element {
 
     private ConnectionDesignation connectionDesignation;
 
+    @Nonnull
     @Override
     public String getName() {
         return name;
     }
 
+    @Nonnull
     @Override
     public String getTemplate() {
         return template;
     }
 
+    @Nonnull
     @Override
     public ElementDesignation getElementDesignation() {
         return elementDesignation;
     }
 
+    @Nonnull
     @Override
     public ConnectionDesignation getConnectionDesignation() {
         return connectionDesignation;

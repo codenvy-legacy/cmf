@@ -17,11 +17,10 @@
 package com.codenvy.modeling.adapter.metamodel.serialization;
 
 import com.codenvy.modeling.adapter.Adapter;
-import com.codenvy.modeling.configuration.impl.metamodel.serialization.SerializationConfigurationImpl;
 import com.codenvy.modeling.configuration.metamodel.serialization.SerializationConfiguration;
-import com.codenvy.modeling.configuration.parser.metamodel.generated.SerializationLexer;
-import com.codenvy.modeling.configuration.parser.metamodel.generated.SerializationParser;
 import com.codenvy.modeling.configuration.parser.metamodel.serialization.SerializationConfigurationAdapterListener;
+import com.codenvy.modeling.configuration.parser.metamodel.serialization.SerializationLexer;
+import com.codenvy.modeling.configuration.parser.metamodel.serialization.SerializationParser;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;

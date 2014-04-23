@@ -18,6 +18,8 @@ package com.codenvy.modeling.configuration.impl.metamodel.serialization;
 
 import com.codenvy.modeling.configuration.metamodel.serialization.ConnectionDesignation;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author Dmitry Kuleshov
  */
@@ -29,16 +31,19 @@ public class ConnectionDesignationImpl implements ConnectionDesignation {
 
     private String connectionReferenceTemplate;
 
+    @Nonnull
     @Override
     public Type getType() {
         return type;
     }
 
+    @Nonnull
     @Override
     public String getConnectionReferencePropertyName() {
         return connectionReferencePropertyName;
     }
 
+    @Nonnull
     @Override
     public String getConnectionReferenceTemplate() {
         return connectionReferenceTemplate;

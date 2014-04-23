@@ -18,6 +18,8 @@ package com.codenvy.modeling.configuration.impl.metamodel.serialization;
 
 import com.codenvy.modeling.configuration.metamodel.serialization.ElementDesignation;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author Dmitry Kuleshov
  */
@@ -29,16 +31,19 @@ public class ElementDesignationImpl implements ElementDesignation{
 
     private String elementReferenceTemplate;
 
+    @Nonnull
     @Override
     public Type getType() {
         return type;
     }
 
+    @Nonnull
     @Override
     public String getElementReferencePropertyName() {
         return elementReferencePropertyName;
     }
 
+    @Nonnull
     @Override
     public String getElementReferenceTemplate() {
         return elementReferenceTemplate;

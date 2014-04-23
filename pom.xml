@@ -14,12 +14,8 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <artifactId>maven-parent-pom</artifactId>
         <groupId>com.codenvy</groupId>
@@ -30,7 +26,6 @@
     <version>1.0.0-M1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Codenvy Modeling Framework</name>
-
     <modules>
         <module>cmf-configuration-adapter</module>
         <module>cmf-configuration-core</module>
@@ -39,7 +34,6 @@
         <module>cmf-gwt-editor-template</module>
         <module>cmf-maven-plugin</module>
     </modules>
-
     <properties>
         <!-- Dependencies Versions -->
         <version.antlr4>4.2.2</version.antlr4>
@@ -54,8 +48,6 @@
         <version.junit>4.11</version.junit>
         <version.logback>1.1.1</version.logback>
         <version.mockito>1.9.5</version.mockito>
-
         <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
     </properties>
-
 </project>
