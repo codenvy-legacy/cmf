@@ -22,6 +22,7 @@ import com.codenvy.modeling.generator.builders.xml.impl.widgets.GLabelImpl;
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.codenvy.modeling.generator.builders.xml.impl.widgets.AbstractGWidget.OFFSET;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -131,6 +132,27 @@ public class GLabelImplTest {
         String expectedContent = "<g:Label debugId=\"debugId\"/>";
 
         assertEquals(expectedContent, actualContent);
+    }
+
+    @Test
+    public void simpleLabelWithOffsetShouldBeCreated() throws Exception {
+        for (int i = 0; i < 5; i++) {
+            String actualContent = builder.withPrefix("g").withOffset(i).build();
+
+            String expectedContent = getOffset(i) + "<g:Label/>";
+
+            assertEquals(expectedContent, actualContent);
+        }
+    }
+
+    private String getOffset(int offset) {
+        StringBuilder result = new StringBuilder();
+
+        for (int i = 0; i < offset; i++) {
+            result.append(OFFSET);
+        }
+
+        return result.toString();
     }
 
     @Test

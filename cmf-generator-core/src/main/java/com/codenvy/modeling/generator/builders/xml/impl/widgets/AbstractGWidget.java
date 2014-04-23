@@ -38,6 +38,7 @@ public abstract class AbstractGWidget<T> implements GWidget<T>, HasEnable<T>, Ha
 
     private static final String PARAM_FORMAT = "%s=\"%s\"";
     private static final String STYLE_FORMAT = "{%s}";
+    public static final  String OFFSET       = "    ";
 
     @Nullable
     private String       title;
@@ -61,6 +62,7 @@ public abstract class AbstractGWidget<T> implements GWidget<T>, HasEnable<T>, Ha
     private boolean      visible;
     private boolean      focus;
     private boolean      readOnly;
+    private int          offset;
 
     protected T      builder;
     protected String widgetFormat;
@@ -75,6 +77,7 @@ public abstract class AbstractGWidget<T> implements GWidget<T>, HasEnable<T>, Ha
         visible = true;
         focus = false;
         readOnly = false;
+        offset = 0;
 
         styles = new ArrayList<>();
         addStyles = new ArrayList<>();
@@ -189,8 +192,24 @@ public abstract class AbstractGWidget<T> implements GWidget<T>, HasEnable<T>, Ha
     /** {@inheritDoc} */
     @Nonnull
     @Override
+    public T withOffset(int offset) {
+        this.offset = offset;
+        return builder;
+    }
+
+    /** {@inheritDoc} */
+    @Nonnull
+    @Override
     public String build() throws IllegalStateException {
-        return String.format(widgetFormat, prefix, getWidget());
+        StringBuilder result = new StringBuilder();
+
+        for (int i = 0; i < offset; i++) {
+            result.append(OFFSET);
+        }
+
+        result.append(String.format(widgetFormat, prefix, getWidget()));
+
+        return result.toString();
     }
 
     /**

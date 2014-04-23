@@ -46,6 +46,12 @@ public class GSimpleLayoutPanelImpl implements GSimpleLayoutPanel {
 
     @Nonnull
     @Override
+    public GSimpleLayoutPanel withOffset(int offset) {
+        return null;
+    }
+
+    @Nonnull
+    @Override
     public GSimpleLayoutPanel withWidget(@Nonnull GWidget widget) {
         return null;
     }

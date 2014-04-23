@@ -45,13 +45,13 @@ public class UIXmlBuilderImpl implements UIXmlBuilder {
     private static final String XMLNS_FORMAT  = "\n             xmlns:%s='%s'";
 
     @Nonnull
-    private List<GField>        fields;
+    private List<GField>               fields;
     @Nonnull
-    private Map<String, String> xmlns;
+    private Map<String, String>        xmlns;
     @Nullable
-    private GStyle              style;
+    private GStyle                     style;
     @Nullable
-    private GWidget             widget;
+    private GWidget<? extends GWidget> widget;
 
     @Inject
     public UIXmlBuilderImpl() {
@@ -95,7 +95,7 @@ public class UIXmlBuilderImpl implements UIXmlBuilder {
     /** {@inheritDoc} */
     @Nonnull
     @Override
-    public UIXmlBuilder setWidget(@Nonnull GWidget widget) {
+    public UIXmlBuilder setWidget(@Nonnull GWidget<? extends GWidget> widget) {
         this.widget = widget;
         return this;
     }
@@ -121,7 +121,7 @@ public class UIXmlBuilderImpl implements UIXmlBuilder {
         }
 
         if (widget != null) {
-            content.append(widget.build()).append('\n');
+            content.append(widget.withOffset(1).build()).append('\n');
         }
 
         clean();

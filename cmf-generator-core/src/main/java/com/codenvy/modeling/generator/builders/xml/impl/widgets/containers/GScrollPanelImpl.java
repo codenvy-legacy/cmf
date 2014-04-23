@@ -52,6 +52,12 @@ public class GScrollPanelImpl implements GScrollPanel {
 
     @Nonnull
     @Override
+    public GScrollPanel withOffset(int offset) {
+        return null;
+    }
+
+    @Nonnull
+    @Override
     public GScrollPanel withWidget(@Nonnull GWidget widget) {
         return null;
     }

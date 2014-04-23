@@ -176,9 +176,19 @@ public interface GWidget<T> extends Builder {
     /**
      * Change visible property to false value. Default value of visible property is true.
      *
-     * @return a instance of builder with given configuration.
+     * @return a instance of builder with given configuration
      */
     @Nonnull
     T setInvisible();
+
+    /**
+     * Set offset of element into XML. It needs for more readable format.
+     *
+     * @param offset
+     *         offset of element
+     * @return a instance of builder with given configuration
+     */
+    @Nonnull
+    T withOffset(int offset);
 
 }

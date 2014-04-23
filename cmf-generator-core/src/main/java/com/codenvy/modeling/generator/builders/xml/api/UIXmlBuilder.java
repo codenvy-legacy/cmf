@@ -127,6 +127,6 @@ public interface UIXmlBuilder extends Builder {
      * @return a instance of builder with given configuration
      */
     @Nonnull
-    UIXmlBuilder setWidget(@Nonnull GWidget widget);
+    UIXmlBuilder setWidget(@Nonnull GWidget<? extends GWidget> widget);
 
 }

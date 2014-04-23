@@ -46,6 +46,12 @@ public class GFlowPanelImpl implements GFlowPanel {
 
     @Nonnull
     @Override
+    public GFlowPanel withOffset(int offset) {
+        return null;
+    }
+
+    @Nonnull
+    @Override
     public GFlowPanel withWidget(@Nonnull GWidget widget) {
         return null;
     }

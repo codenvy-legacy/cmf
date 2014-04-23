@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -111,7 +112,7 @@ public class UIXmlBuilderImplTest {
     @Test
     public void xmlWithWidgetShouldBeCreate() throws Exception {
         String content = "widget";
-        GWidget widget = createWidget(content);
+        GWidget<GWidget> widget = createWidget(content);
 
         String actualXML = builder.setWidget(widget).build();
 
@@ -127,8 +128,10 @@ public class UIXmlBuilderImplTest {
         verify(widget).build();
     }
 
-    private GWidget createWidget(String content) {
-        GWidget widget = mock(GWidget.class);
+    @SuppressWarnings("unchecked")
+    private GWidget<GWidget> createWidget(String content) {
+        GWidget<GWidget> widget = mock(GWidget.class);
+        when(widget.withOffset(anyInt())).thenReturn(widget);
         when(widget.build()).thenReturn(content);
 
         return widget;
@@ -168,7 +171,7 @@ public class UIXmlBuilderImplTest {
 
         GField field = createField(fieldContent);
         GStyle style = createStyle(styleContent);
-        GWidget widget = createWidget(widgetContent);
+        GWidget<GWidget> widget = createWidget(widgetContent);
 
         String actualXML = builder.withField(field)
                                   .withStyle(style)

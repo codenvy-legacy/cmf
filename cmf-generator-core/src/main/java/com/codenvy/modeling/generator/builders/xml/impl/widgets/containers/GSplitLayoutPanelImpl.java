@@ -112,6 +112,12 @@ public class GSplitLayoutPanelImpl implements GSplitLayoutPanel {
 
     @Nonnull
     @Override
+    public GSplitLayoutPanel withOffset(int offset) {
+        return null;
+    }
+
+    @Nonnull
+    @Override
     public String build() throws IllegalStateException {
         return null;
     }

@@ -112,6 +112,12 @@ public class GDockLayoutPanelImpl implements GDockLayoutPanel {
 
     @Nonnull
     @Override
+    public GDockLayoutPanel withOffset(int offset) {
+        return null;
+    }
+
+    @Nonnull
+    @Override
     public String build() throws IllegalStateException {
         return null;
     }
