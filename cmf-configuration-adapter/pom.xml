@@ -38,7 +38,7 @@
     <dependencies>
         <!-- Internal Dependencies -->
         <dependency>
-            <groupId>com.codenvy</groupId>
+            <groupId>com.codenvy.cmf</groupId>
             <artifactId>cmf-configuration-core</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
