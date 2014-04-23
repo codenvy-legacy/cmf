@@ -18,84 +18,56 @@ package com.codenvy.modeling.generator.builders.xml.impl.widgets.containers;
 
 import com.codenvy.modeling.generator.builders.xml.api.widgets.GWidget;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GSimpleLayoutPanel;
+import com.google.inject.Inject;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Andrey Plotnikov
  */
-public class GSimpleLayoutPanelImpl implements GSimpleLayoutPanel {
+public class GSimpleLayoutPanelImpl extends AbstractGContainer<GSimpleLayoutPanel> implements GSimpleLayoutPanel {
 
-    @Nonnull
-    @Override
-    public GSimpleLayoutPanel withTitle(@Nonnull String title) {
-        return null;
+    private static final String SIMPLE_LAYOUT_PANEL_OPEN_TAG_FORMAT  = "<%s:SimpleLayoutPanel%s>";
+    private static final String SIMPLE_LAYOUT_PANEL_CLOSE_TAG_FORMAT = "</%s:SimpleLayoutPanel>";
+
+    @Nullable
+    private GWidget<? extends GWidget> widget;
+
+    @Inject
+    public GSimpleLayoutPanelImpl() {
+        builder = this;
+
+        widgetFormat = SIMPLE_LAYOUT_PANEL_OPEN_TAG_FORMAT;
+        closeTagFormat = SIMPLE_LAYOUT_PANEL_CLOSE_TAG_FORMAT;
+
+        clean();
     }
 
-    @Nonnull
+    /** {@inheritDoc} */
     @Override
-    public GSimpleLayoutPanel withPrefix(@Nonnull String prefix) {
-        return null;
+    protected void clean() {
+        super.clean();
+        widget = null;
     }
 
+    /** {@inheritDoc} */
     @Nonnull
     @Override
-    public GSimpleLayoutPanel setInvisible() {
-        return null;
+    public GSimpleLayoutPanel withWidget(@Nonnull GWidget<? extends GWidget> widget) {
+        this.widget = widget;
+        return builder;
     }
 
-    @Nonnull
-    @Override
-    public GSimpleLayoutPanel withOffset(int offset) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GSimpleLayoutPanel withWidget(@Nonnull GWidget widget) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GSimpleLayoutPanel withName(@Nonnull String name) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GSimpleLayoutPanel withStyle(@Nonnull String style) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GSimpleLayoutPanel withAddStyle(@Nonnull String style) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GSimpleLayoutPanel withHeight(@Nonnull String height) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GSimpleLayoutPanel withWidth(@Nonnull String width) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GSimpleLayoutPanel withDebugId(@Nonnull String debugId) {
-        return null;
-    }
-
+    /** {@inheritDoc} */
     @Nonnull
     @Override
     public String build() throws IllegalStateException {
-        return null;
+        if (widget != null) {
+            super.withWidget(widget);
+        }
+
+        return super.build();
     }
 
 }
