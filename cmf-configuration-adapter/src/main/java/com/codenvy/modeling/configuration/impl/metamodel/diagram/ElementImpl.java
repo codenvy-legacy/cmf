@@ -41,7 +41,7 @@ public class ElementImpl implements Element {
     @Nonnull
     @Override
     public String getName() {
-        return null;
+        return name;
     }
 
     @Nonnull

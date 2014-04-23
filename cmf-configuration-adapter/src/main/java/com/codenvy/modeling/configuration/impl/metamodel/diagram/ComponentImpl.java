@@ -29,7 +29,7 @@ public class ComponentImpl implements Component {
     @Nonnull
     @Override
     public String getName() {
-        return null;
+        return name;
     }
 
     public void setName(String name) {

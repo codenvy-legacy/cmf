@@ -33,7 +33,7 @@ public class SerializationConfigurationImpl implements SerializationConfiguratio
     @Nonnull
     @Override
     public List<Element> getElements() {
-        return null;
+        return elements;
     }
 
     public void addElement(Element element){
