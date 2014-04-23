@@ -59,5 +59,5 @@ public interface GContainer<T> extends GWidget<T> {
      * @return a instance of builder with given configuration
      */
     @Nonnull
-    T withWidget(@Nonnull GWidget widget);
+    T withWidget(@Nonnull GWidget<? extends GWidget> widget);
 }

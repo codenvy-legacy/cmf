@@ -54,6 +54,9 @@ import javax.annotation.Nonnull;
  */
 public interface UIXmlBuilder extends Builder {
 
+    /** Default offset for UI XML */
+    String OFFSET = "    ";
+
     /**
      * Add a new xmlns into 'UiBinder' tag.
      * <p/>

@@ -37,6 +37,14 @@ import javax.annotation.Nonnull;
  */
 public interface GWidget<T> extends Builder {
 
+    /** Widget parameter names */
+    String TITLE_PARAM_NAME    = "title";
+    String VISIBLE_PARAM_NAME  = "visible";
+    String NAME_PARAM_NAME     = "ui:field";
+    String HEIGHT_PARAM_NAME   = "height";
+    String WIDTH_PARAM_NAME    = "width";
+    String DEBUG_ID_PARAM_NAME = "debugId";
+
     /**
      * Add name property for GWT widget.
      * <p/>

@@ -26,6 +26,9 @@ import javax.annotation.Nonnull;
  * @author Andrey Plotnikov
  */
 public interface HasFocus<T> {
+
+    String FOCUS_PARAM_NAME = "focus";
+
     /**
      * Change focus property to true value. Default value of enable property is false.
      *
@@ -33,4 +36,5 @@ public interface HasFocus<T> {
      */
     @Nonnull
     T setFocus();
+
 }

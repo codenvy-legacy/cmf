@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.codenvy.modeling.generator;
+package com.codenvy.modeling.generator.builders.xml;
 
 import com.codenvy.modeling.generator.builders.xml.api.GField;
 import com.codenvy.modeling.generator.builders.xml.api.GStyle;
@@ -24,20 +24,16 @@ import com.codenvy.modeling.generator.builders.xml.impl.UIXmlBuilderImpl;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * Here we're testing {@link UIXmlBuilderImpl}.
  *
  * @author Andrey Plotnikov
  */
-public class UIXmlBuilderImplTest {
+public class UIXmlBuilderImplTest extends AbstractXmlBuilderTest {
 
     private UIXmlBuilder builder;
 
@@ -102,13 +98,6 @@ public class UIXmlBuilderImplTest {
         verify(field2).build();
     }
 
-    private GField createField(String content) {
-        GField field = Mockito.mock(GField.class);
-        when(field.build()).thenReturn(content);
-
-        return field;
-    }
-
     @Test
     public void xmlWithWidgetShouldBeCreate() throws Exception {
         String content = "widget";
@@ -128,15 +117,6 @@ public class UIXmlBuilderImplTest {
         verify(widget).build();
     }
 
-    @SuppressWarnings("unchecked")
-    private GWidget<GWidget> createWidget(String content) {
-        GWidget<GWidget> widget = mock(GWidget.class);
-        when(widget.withOffset(anyInt())).thenReturn(widget);
-        when(widget.build()).thenReturn(content);
-
-        return widget;
-    }
-
     @Test
     public void xmlWithStyleShouldBeCreate() throws Exception {
         String content = "style";
@@ -154,13 +134,6 @@ public class UIXmlBuilderImplTest {
         assertEquals(expectedXML, actualXML);
 
         verify(style).build();
-    }
-
-    private GStyle createStyle(String content) {
-        GStyle style = mock(GStyle.class);
-        when(style.build()).thenReturn(content);
-
-        return style;
     }
 
     @Test

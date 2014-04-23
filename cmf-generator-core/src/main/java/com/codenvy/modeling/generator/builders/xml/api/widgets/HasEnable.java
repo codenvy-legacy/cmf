@@ -26,6 +26,9 @@ import javax.annotation.Nonnull;
  * @author Andrey Plotnikov
  */
 public interface HasEnable<T> {
+
+    String ENABLED_PARAM_NAME = "enabled";
+
     /**
      * Change enable property to false value. Default value of enable property is true.
      *
@@ -33,4 +36,5 @@ public interface HasEnable<T> {
      */
     @Nonnull
     T setDisable();
+
 }

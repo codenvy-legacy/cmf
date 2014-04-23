@@ -14,36 +14,36 @@
  * limitations under the License.
  */
 
-package com.codenvy.modeling.generator;
+package com.codenvy.modeling.generator.builders.xml.widgets;
 
-import com.codenvy.modeling.generator.builders.xml.api.widgets.GTextBox;
-import com.codenvy.modeling.generator.builders.xml.impl.widgets.GTextBoxImpl;
+import com.codenvy.modeling.generator.builders.xml.AbstractXmlBuilderTest;
+import com.codenvy.modeling.generator.builders.xml.api.widgets.GTextArea;
+import com.codenvy.modeling.generator.builders.xml.impl.widgets.GTextAreaImpl;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.codenvy.modeling.generator.builders.xml.impl.widgets.AbstractGWidget.OFFSET;
 import static org.junit.Assert.assertEquals;
 
 /**
- * Here we're testing {@link GTextBoxImpl}.
+ * Here we're testing {@link GTextAreaImpl}.
  *
  * @author Andrey Plotnikov
  */
-public class GTextBoxImplTest {
+public class GTextAreaImplTest extends AbstractXmlBuilderTest {
 
-    private GTextBox builder;
+    private GTextArea builder;
 
     @Before
     public void setUp() throws Exception {
-        builder = new GTextBoxImpl();
+        builder = new GTextAreaImpl();
     }
 
     @Test
-    public void simpleTextBoxShouldBeCreated() throws Exception {
+    public void simpleTextAreaShouldBeCreated() throws Exception {
         String actualContent = builder.withPrefix("g").build();
 
-        String expectedContent = "<g:TextBox/>";
+        String expectedContent = "<g:TextArea/>";
 
         assertEquals(expectedContent, actualContent);
     }
@@ -54,136 +54,126 @@ public class GTextBoxImplTest {
     }
 
     @Test
-    public void simpleTextBoxWithTextPramShouldBeCreated() throws Exception {
+    public void simpleTextAreaWithTextPramShouldBeCreated() throws Exception {
         String actualContent = builder.withPrefix("g").withText("text").build();
 
-        String expectedContent = "<g:TextBox text=\"text\"/>";
+        String expectedContent = "<g:TextArea text=\"text\"/>";
 
         assertEquals(expectedContent, actualContent);
     }
 
     @Test
-    public void simpleTextBoxWithTitleParamShouldBeCreated() throws Exception {
+    public void simpleTextAreaWithTitleParamShouldBeCreated() throws Exception {
         String actualContent = builder.withPrefix("g").withTitle("title").build();
 
-        String expectedContent = "<g:TextBox title=\"title\"/>";
+        String expectedContent = "<g:TextArea title=\"title\"/>";
 
         assertEquals(expectedContent, actualContent);
     }
 
     @Test
-    public void simpleTextBoxWithEnableParamShouldBeCreated() throws Exception {
+    public void simpleTextAreaWithEnableParamShouldBeCreated() throws Exception {
         String actualContent = builder.withPrefix("g").setDisable().build();
 
-        String expectedContent = "<g:TextBox enabled=\"false\"/>";
+        String expectedContent = "<g:TextArea enabled=\"false\"/>";
 
         assertEquals(expectedContent, actualContent);
     }
 
     @Test
-    public void simpleTextBoxWithVisibleParamShouldBeCreated() throws Exception {
+    public void simpleTextAreaWithVisibleParamShouldBeCreated() throws Exception {
         String actualContent = builder.withPrefix("g").setInvisible().build();
 
-        String expectedContent = "<g:TextBox visible=\"false\"/>";
+        String expectedContent = "<g:TextArea visible=\"false\"/>";
 
         assertEquals(expectedContent, actualContent);
     }
 
     @Test
-    public void simpleTextBoxWithFocusParamShouldBeCreated() throws Exception {
+    public void simpleTextAreaWithFocusParamShouldBeCreated() throws Exception {
         String actualContent = builder.withPrefix("g").setFocus().build();
 
-        String expectedContent = "<g:TextBox focus=\"true\"/>";
+        String expectedContent = "<g:TextArea focus=\"true\"/>";
 
         assertEquals(expectedContent, actualContent);
     }
 
     @Test
-    public void simpleTextBoxWithNameParamShouldBeCreated() throws Exception {
+    public void simpleTextAreaWithNameParamShouldBeCreated() throws Exception {
         String actualContent = builder.withPrefix("g").withName("name").build();
 
-        String expectedContent = "<g:TextBox ui:field=\"name\"/>";
+        String expectedContent = "<g:TextArea ui:field=\"name\"/>";
 
         assertEquals(expectedContent, actualContent);
     }
 
     @Test
-    public void simpleTextBoxWithStyleParamShouldBeCreated() throws Exception {
+    public void simpleTextAreaWithStyleParamShouldBeCreated() throws Exception {
         String actualContent = builder.withPrefix("g").withStyle("style1").withStyle("style2").build();
 
-        String expectedContent = "<g:TextBox styleName=\"{style1} {style2}\"/>";
+        String expectedContent = "<g:TextArea styleName=\"{style1} {style2}\"/>";
 
         assertEquals(expectedContent, actualContent);
     }
 
     @Test
-    public void simpleTextBoxWithAdditionalStyleParamShouldBeCreated() throws Exception {
+    public void simpleTextAreaWithAdditionalStyleParamShouldBeCreated() throws Exception {
         String actualContent = builder.withPrefix("g").withAddStyle("style1").withAddStyle("style2").build();
 
-        String expectedContent = "<g:TextBox addStyleNames=\"{style1} {style2}\"/>";
+        String expectedContent = "<g:TextArea addStyleNames=\"{style1} {style2}\"/>";
 
         assertEquals(expectedContent, actualContent);
     }
 
     @Test
-    public void simpleTextBoxWithHeightParamShouldBeCreated() throws Exception {
+    public void simpleTextAreaWithHeightParamShouldBeCreated() throws Exception {
         String actualContent = builder.withPrefix("g").withHeight("10px").build();
 
-        String expectedContent = "<g:TextBox height=\"10px\"/>";
+        String expectedContent = "<g:TextArea height=\"10px\"/>";
 
         assertEquals(expectedContent, actualContent);
     }
 
     @Test
-    public void simpleTextBoxWithWidthParamShouldBeCreated() throws Exception {
+    public void simpleTextAreaWithWidthParamShouldBeCreated() throws Exception {
         String actualContent = builder.withPrefix("g").withWidth("10px").build();
 
-        String expectedContent = "<g:TextBox width=\"10px\"/>";
+        String expectedContent = "<g:TextArea width=\"10px\"/>";
 
         assertEquals(expectedContent, actualContent);
     }
 
     @Test
-    public void simpleTextBoxWithDebugIdParamShouldBeCreated() throws Exception {
+    public void simpleTextAreaWithDebugIdParamShouldBeCreated() throws Exception {
         String actualContent = builder.withPrefix("g").withDebugId("debugId").build();
 
-        String expectedContent = "<g:TextBox debugId=\"debugId\"/>";
+        String expectedContent = "<g:TextArea debugId=\"debugId\"/>";
 
         assertEquals(expectedContent, actualContent);
     }
 
     @Test
-    public void simpleTextBoxWithReadOnlyParamShouldBeCreated() throws Exception {
+    public void simpleTextAreaWithReadOnlyParamShouldBeCreated() throws Exception {
         String actualContent = builder.withPrefix("g").setReadOnly().build();
 
-        String expectedContent = "<g:TextBox readOnly=\"true\"/>";
+        String expectedContent = "<g:TextArea readOnly=\"true\"/>";
 
         assertEquals(expectedContent, actualContent);
     }
 
     @Test
-    public void simpleTextBoxWithOffsetShouldBeCreated() throws Exception {
+    public void simpleTextAreaWithOffsetShouldBeCreated() throws Exception {
         for (int i = 0; i < 5; i++) {
             String actualContent = builder.withPrefix("g").withOffset(i).build();
 
-            String expectedContent = getOffset(i) + "<g:TextBox/>";
+            String expectedContent = getOffset(i) + "<g:TextArea/>";
 
             assertEquals(expectedContent, actualContent);
         }
     }
 
-    private String getOffset(int offset) {
-        StringBuilder result = new StringBuilder();
-
-        for (int i = 0; i < offset; i++) {
-            result.append(OFFSET);
-        }
-
-        return result.toString();
-    }
-
     @Test
-    public void complexTextBoxShouldBeCreated() throws Exception {
+    public void complexTextAreaShouldBeCreated() throws Exception {
         String actualContent = builder.withPrefix("g")
                                       .withText("text")
                                       .withTitle("title")
@@ -197,9 +187,9 @@ public class GTextBoxImplTest {
                                       .setReadOnly()
                                       .build();
 
-        String expectedContent = "<g:TextBox title=\"title\" ui:field=\"name\" height=\"10px\" width=\"10px\" debugId=\"debugId\" " +
-                                 "styleName=\"{style1} {style2}\" addStyleNames=\"{style1} {style2}\" text=\"text\" focus=\"true\" " +
-                                 "readOnly=\"true\"/>";
+        String expectedContent = "<g:TextArea text=\"text\" title=\"title\" focus=\"true\" ui:field=\"name\" height=\"10px\" " +
+                                 "width=\"10px\" debugId=\"debugId\" readOnly=\"true\" styleName=\"{style1} {style2}\" " +
+                                 "addStyleNames=\"{style1} {style2}\"/>";
 
         assertEquals(expectedContent, actualContent);
     }

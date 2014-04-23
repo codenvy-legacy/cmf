@@ -26,7 +26,13 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+
+import static com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder.OFFSET;
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
 
 /**
  * The abstract presentation of GWT widget builder. It contains general fields and method which need for all GWT widget builders.
@@ -38,47 +44,27 @@ public abstract class AbstractGWidget<T> implements GWidget<T>, HasEnable<T>, Ha
 
     private static final String PARAM_FORMAT = "%s=\"%s\"";
     private static final String STYLE_FORMAT = "{%s}";
-    public static final  String OFFSET       = "    ";
 
     @Nullable
-    private String       title;
-    @Nullable
-    private String       prefix;
-    @Nullable
-    private String       name;
+    protected String              prefix;
     @Nonnull
-    private List<String> styles;
+    private   List<String>        styles;
     @Nonnull
-    private List<String> addStyles;
-    @Nullable
-    private String       height;
-    @Nullable
-    private String       width;
-    @Nullable
-    private String       debugId;
-    @Nullable
-    private String       text;
-    private boolean      enable;
-    private boolean      visible;
-    private boolean      focus;
-    private boolean      readOnly;
-    private int          offset;
-
-    protected T      builder;
-    protected String widgetFormat;
+    private   List<String>        addStyles;
+    protected int                 offset;
+    @Nonnull
+    private   Map<String, String> params;
+    @Nonnull
+    protected T                   builder;
+    @Nonnull
+    protected String              widgetFormat;
 
     /** Clean builder configuration */
     protected void clean() {
-        text = null;
-        title = null;
         prefix = null;
-
-        enable = true;
-        visible = true;
-        focus = false;
-        readOnly = false;
         offset = 0;
 
+        params = new LinkedHashMap<>();
         styles = new ArrayList<>();
         addStyles = new ArrayList<>();
     }
@@ -87,7 +73,7 @@ public abstract class AbstractGWidget<T> implements GWidget<T>, HasEnable<T>, Ha
     @Nonnull
     @Override
     public T withText(@Nonnull String text) {
-        this.text = text;
+        addParam(TEXT_PARAM_NAME, text);
         return builder;
     }
 
@@ -95,7 +81,7 @@ public abstract class AbstractGWidget<T> implements GWidget<T>, HasEnable<T>, Ha
     @Nonnull
     @Override
     public T withTitle(@Nonnull String title) {
-        this.title = title;
+        addParam(TITLE_PARAM_NAME, title);
         return builder;
     }
 
@@ -103,7 +89,7 @@ public abstract class AbstractGWidget<T> implements GWidget<T>, HasEnable<T>, Ha
     @Nonnull
     @Override
     public T setDisable() {
-        enable = false;
+        addParam(ENABLED_PARAM_NAME, FALSE.toString());
         return builder;
     }
 
@@ -111,7 +97,7 @@ public abstract class AbstractGWidget<T> implements GWidget<T>, HasEnable<T>, Ha
     @Nonnull
     @Override
     public T setInvisible() {
-        visible = false;
+        addParam(VISIBLE_PARAM_NAME, FALSE.toString());
         return builder;
     }
 
@@ -119,7 +105,7 @@ public abstract class AbstractGWidget<T> implements GWidget<T>, HasEnable<T>, Ha
     @Nonnull
     @Override
     public T setFocus() {
-        focus = true;
+        addParam(FOCUS_PARAM_NAME, TRUE.toString());
         return builder;
     }
 
@@ -135,7 +121,7 @@ public abstract class AbstractGWidget<T> implements GWidget<T>, HasEnable<T>, Ha
     @Nonnull
     @Override
     public T withName(@Nonnull String name) {
-        this.name = name;
+        addParam(NAME_PARAM_NAME, name);
         return builder;
     }
 
@@ -161,7 +147,7 @@ public abstract class AbstractGWidget<T> implements GWidget<T>, HasEnable<T>, Ha
     @Nonnull
     @Override
     public T withHeight(@Nonnull String height) {
-        this.height = height;
+        addParam(HEIGHT_PARAM_NAME, height);
         return builder;
     }
 
@@ -169,7 +155,7 @@ public abstract class AbstractGWidget<T> implements GWidget<T>, HasEnable<T>, Ha
     @Nonnull
     @Override
     public T withWidth(@Nonnull String width) {
-        this.width = width;
+        addParam(WIDTH_PARAM_NAME, width);
         return builder;
     }
 
@@ -177,7 +163,7 @@ public abstract class AbstractGWidget<T> implements GWidget<T>, HasEnable<T>, Ha
     @Nonnull
     @Override
     public T withDebugId(@Nonnull String debugId) {
-        this.debugId = debugId;
+        addParam(DEBUG_ID_PARAM_NAME, debugId);
         return builder;
     }
 
@@ -185,8 +171,20 @@ public abstract class AbstractGWidget<T> implements GWidget<T>, HasEnable<T>, Ha
     @Nonnull
     @Override
     public T setReadOnly() {
-        readOnly = true;
+        addParam(READ_ONLY_PARAM_NAME, TRUE.toString());
         return builder;
+    }
+
+    /**
+     * Add parameter to widget configuration.
+     *
+     * @param name
+     *         parameter name
+     * @param value
+     *         parameter value
+     */
+    protected void addParam(@Nonnull String name, @Nonnull String value) {
+        params.put(name, value);
     }
 
     /** {@inheritDoc} */
@@ -201,13 +199,23 @@ public abstract class AbstractGWidget<T> implements GWidget<T>, HasEnable<T>, Ha
     @Nonnull
     @Override
     public String build() throws IllegalStateException {
+        return getOffset(offset) + String.format(widgetFormat, prefix, getWidget());
+    }
+
+    /**
+     * Return offset for current widget.
+     *
+     * @param offset
+     *         count of offset
+     * @return offset for current widget
+     */
+    @Nonnull
+    protected String getOffset(int offset) {
         StringBuilder result = new StringBuilder();
 
         for (int i = 0; i < offset; i++) {
             result.append(OFFSET);
         }
-
-        result.append(String.format(widgetFormat, prefix, getWidget()));
 
         return result.toString();
     }
@@ -225,48 +233,14 @@ public abstract class AbstractGWidget<T> implements GWidget<T>, HasEnable<T>, Ha
 
         StringBuilder result = new StringBuilder();
 
-        addStringParam(result, "title", title);
-        addStringParam(result, "ui:field", name);
-        addStringParam(result, "height", height);
-        addStringParam(result, "width", width);
-        addStringParam(result, "debugId", debugId);
+        for (Map.Entry<String, String> param : params.entrySet()) {
+            result.append(' ').append(String.format(PARAM_FORMAT, param.getKey(), param.getValue()));
+        }
+
         addListParam(result, "styleName", styles);
         addListParam(result, "addStyleNames", addStyles);
-        addStringParam(result, "text", text);
-
-        if (!enable) {
-            addStringParam(result, "enabled", "false");
-        }
-
-        if (!visible) {
-            addStringParam(result, "visible", "false");
-        }
-
-        if (focus) {
-            addStringParam(result, "focus", "true");
-        }
-
-        if (readOnly) {
-            addStringParam(result, "readOnly", "true");
-        }
 
         return result.toString();
-    }
-
-    /**
-     * Add string parameter to GWT widget XML representation.
-     *
-     * @param str
-     *         builder that will contain a given parameter
-     * @param name
-     *         parameter name
-     * @param value
-     *         parameter value
-     */
-    private void addStringParam(@Nonnull StringBuilder str, @Nonnull String name, @Nullable String value) {
-        if (value != null) {
-            str.append(' ').append(String.format(PARAM_FORMAT, name, value));
-        }
     }
 
     /**

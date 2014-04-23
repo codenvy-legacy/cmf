@@ -23,6 +23,7 @@ import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder.OFFSET;
 import static java.util.Map.Entry;
 
 /**
@@ -32,12 +33,12 @@ import static java.util.Map.Entry;
  */
 public class GStyleImpl implements GStyle {
 
-    private static final String STYLES_FORMAT = "    <ui:style>\n" +
+    private static final String STYLES_FORMAT = OFFSET + "<ui:style>\n" +
                                                 "%s" +
-                                                "    </ui:style>";
-    private static final String STYLE_FORMAT  = "        .%s{\n" +
+                                                OFFSET + "</ui:style>";
+    private static final String STYLE_FORMAT  = OFFSET + OFFSET + ".%s{\n" +
                                                 "%s" +
-                                                "        }\n";
+                                                OFFSET + OFFSET + "}\n";
 
     private Map<String, String> styles;
 
@@ -91,7 +92,7 @@ public class GStyleImpl implements GStyle {
         String[] styles = content.split(";");
         for (String style : styles) {
             String trimContent = style.trim();
-            result.append("            ").append(trimContent).append(';').append('\n');
+            result.append(OFFSET).append(OFFSET).append(OFFSET).append(trimContent).append(';').append('\n');
         }
 
         return result.toString();

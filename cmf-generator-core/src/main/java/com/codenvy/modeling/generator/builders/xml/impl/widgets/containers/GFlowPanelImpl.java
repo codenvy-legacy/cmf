@@ -16,86 +16,27 @@
 
 package com.codenvy.modeling.generator.builders.xml.impl.widgets.containers;
 
-import com.codenvy.modeling.generator.builders.xml.api.widgets.GWidget;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GFlowPanel;
-
-import javax.annotation.Nonnull;
+import com.google.inject.Inject;
 
 /**
+ * The implementation of {@link GFlowPanel}.
+ *
  * @author Andrey Plotnikov
  */
-public class GFlowPanelImpl implements GFlowPanel {
+public class GFlowPanelImpl extends AbstractGContainer<GFlowPanel> implements GFlowPanel {
 
-    @Nonnull
-    @Override
-    public GFlowPanel withTitle(@Nonnull String title) {
-        return null;
-    }
+    private static final String FLOW_PANEL_OPEN_TAG_FORMAT  = "<%s:FlowPanel%s>";
+    private static final String FLOW_PANEL_CLOSE_TAG_FORMAT = "</%s:FlowPanel>";
 
-    @Nonnull
-    @Override
-    public GFlowPanel withPrefix(@Nonnull String prefix) {
-        return null;
-    }
+    @Inject
+    public GFlowPanelImpl() {
+        builder = this;
 
-    @Nonnull
-    @Override
-    public GFlowPanel setInvisible() {
-        return null;
-    }
+        widgetFormat = FLOW_PANEL_OPEN_TAG_FORMAT;
+        closeTagFormat = FLOW_PANEL_CLOSE_TAG_FORMAT;
 
-    @Nonnull
-    @Override
-    public GFlowPanel withOffset(int offset) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GFlowPanel withWidget(@Nonnull GWidget widget) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GFlowPanel withName(@Nonnull String name) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GFlowPanel withStyle(@Nonnull String style) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GFlowPanel withAddStyle(@Nonnull String style) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GFlowPanel withHeight(@Nonnull String height) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GFlowPanel withWidth(@Nonnull String width) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GFlowPanel withDebugId(@Nonnull String debugId) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public String build() throws IllegalStateException {
-        return null;
+        clean();
     }
 
 }

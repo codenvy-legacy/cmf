@@ -26,6 +26,9 @@ import javax.annotation.Nonnull;
  * @author Andrey Plotnikov
  */
 public interface HasText<T> {
+
+    String TEXT_PARAM_NAME = "text";
+
     /**
      * Change content of text property.
      *
@@ -35,4 +38,5 @@ public interface HasText<T> {
      */
     @Nonnull
     T withText(@Nonnull String text);
+
 }

@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-package com.codenvy.modeling.generator;
+package com.codenvy.modeling.generator.builders.java;
 
-import com.codenvy.modeling.generator.builders.java.SourceCodeBuilder;
-import com.codenvy.modeling.generator.builders.java.SourceCodeBuilderImpl;
 import com.google.inject.Inject;
 
 import org.junit.Before;

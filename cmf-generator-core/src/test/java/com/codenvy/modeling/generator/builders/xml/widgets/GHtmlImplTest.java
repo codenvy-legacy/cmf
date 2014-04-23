@@ -14,36 +14,36 @@
  * limitations under the License.
  */
 
-package com.codenvy.modeling.generator;
+package com.codenvy.modeling.generator.builders.xml.widgets;
 
-import com.codenvy.modeling.generator.builders.xml.api.widgets.GLabel;
-import com.codenvy.modeling.generator.builders.xml.impl.widgets.GLabelImpl;
+import com.codenvy.modeling.generator.builders.xml.AbstractXmlBuilderTest;
+import com.codenvy.modeling.generator.builders.xml.api.widgets.GHtml;
+import com.codenvy.modeling.generator.builders.xml.impl.widgets.GHtmlImpl;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.codenvy.modeling.generator.builders.xml.impl.widgets.AbstractGWidget.OFFSET;
 import static org.junit.Assert.assertEquals;
 
 /**
- * Here we're testing {@link GLabelImpl}.
+ * Here we're testing {@link GHtmlImpl}.
  *
  * @author Andrey Plotnikov
  */
-public class GLabelImplTest {
+public class GHtmlImplTest extends AbstractXmlBuilderTest {
 
-    private GLabel builder;
+    private GHtml builder;
 
     @Before
     public void setUp() throws Exception {
-        builder = new GLabelImpl();
+        builder = new GHtmlImpl();
     }
 
     @Test
-    public void simpleLabelShouldBeCreated() throws Exception {
+    public void simpleHTMLShouldBeCreated() throws Exception {
         String actualContent = builder.withPrefix("g").build();
 
-        String expectedContent = "<g:Label/>";
+        String expectedContent = "<g:HTML/>";
 
         assertEquals(expectedContent, actualContent);
     }
@@ -54,109 +54,99 @@ public class GLabelImplTest {
     }
 
     @Test
-    public void simpleLabelWithTextPramShouldBeCreated() throws Exception {
+    public void simpleHTMLWithTextPramShouldBeCreated() throws Exception {
         String actualContent = builder.withPrefix("g").withText("text").build();
 
-        String expectedContent = "<g:Label text=\"text\"/>";
+        String expectedContent = "<g:HTML text=\"text\"/>";
 
         assertEquals(expectedContent, actualContent);
     }
 
     @Test
-    public void simpleLabelWithTitleParamShouldBeCreated() throws Exception {
+    public void simpleHTMLWithTitleParamShouldBeCreated() throws Exception {
         String actualContent = builder.withPrefix("g").withTitle("title").build();
 
-        String expectedContent = "<g:Label title=\"title\"/>";
+        String expectedContent = "<g:HTML title=\"title\"/>";
 
         assertEquals(expectedContent, actualContent);
     }
 
     @Test
-    public void simpleLabelWithVisibleParamShouldBeCreated() throws Exception {
+    public void simpleHTMLWithVisibleParamShouldBeCreated() throws Exception {
         String actualContent = builder.withPrefix("g").setInvisible().build();
 
-        String expectedContent = "<g:Label visible=\"false\"/>";
+        String expectedContent = "<g:HTML visible=\"false\"/>";
 
         assertEquals(expectedContent, actualContent);
     }
 
     @Test
-    public void simpleLabelWithNameParamShouldBeCreated() throws Exception {
+    public void simpleHTMLWithNameParamShouldBeCreated() throws Exception {
         String actualContent = builder.withPrefix("g").withName("name").build();
 
-        String expectedContent = "<g:Label ui:field=\"name\"/>";
+        String expectedContent = "<g:HTML ui:field=\"name\"/>";
 
         assertEquals(expectedContent, actualContent);
     }
 
     @Test
-    public void simpleLabelWithStyleParamShouldBeCreated() throws Exception {
+    public void simpleHTMLWithStyleParamShouldBeCreated() throws Exception {
         String actualContent = builder.withPrefix("g").withStyle("style1").withStyle("style2").build();
 
-        String expectedContent = "<g:Label styleName=\"{style1} {style2}\"/>";
+        String expectedContent = "<g:HTML styleName=\"{style1} {style2}\"/>";
 
         assertEquals(expectedContent, actualContent);
     }
 
     @Test
-    public void simpleLabelWithAdditionalStyleParamShouldBeCreated() throws Exception {
+    public void simpleHTMLWithAdditionalStyleParamShouldBeCreated() throws Exception {
         String actualContent = builder.withPrefix("g").withAddStyle("style1").withAddStyle("style2").build();
 
-        String expectedContent = "<g:Label addStyleNames=\"{style1} {style2}\"/>";
+        String expectedContent = "<g:HTML addStyleNames=\"{style1} {style2}\"/>";
 
         assertEquals(expectedContent, actualContent);
     }
 
     @Test
-    public void simpleLabelWithHeightParamShouldBeCreated() throws Exception {
+    public void simpleHTMLWithHeightParamShouldBeCreated() throws Exception {
         String actualContent = builder.withPrefix("g").withHeight("10px").build();
 
-        String expectedContent = "<g:Label height=\"10px\"/>";
+        String expectedContent = "<g:HTML height=\"10px\"/>";
 
         assertEquals(expectedContent, actualContent);
     }
 
     @Test
-    public void simpleLabelWithWidthParamShouldBeCreated() throws Exception {
+    public void simpleHTMLWithWidthParamShouldBeCreated() throws Exception {
         String actualContent = builder.withPrefix("g").withWidth("10px").build();
 
-        String expectedContent = "<g:Label width=\"10px\"/>";
+        String expectedContent = "<g:HTML width=\"10px\"/>";
 
         assertEquals(expectedContent, actualContent);
     }
 
     @Test
-    public void simpleLabelWithDebugIdParamShouldBeCreated() throws Exception {
+    public void simpleHTMLWithDebugIdParamShouldBeCreated() throws Exception {
         String actualContent = builder.withPrefix("g").withDebugId("debugId").build();
 
-        String expectedContent = "<g:Label debugId=\"debugId\"/>";
+        String expectedContent = "<g:HTML debugId=\"debugId\"/>";
 
         assertEquals(expectedContent, actualContent);
     }
 
     @Test
-    public void simpleLabelWithOffsetShouldBeCreated() throws Exception {
+    public void simpleHTMLWithOffsetShouldBeCreated() throws Exception {
         for (int i = 0; i < 5; i++) {
             String actualContent = builder.withPrefix("g").withOffset(i).build();
 
-            String expectedContent = getOffset(i) + "<g:Label/>";
+            String expectedContent = getOffset(i) + "<g:HTML/>";
 
             assertEquals(expectedContent, actualContent);
         }
     }
 
-    private String getOffset(int offset) {
-        StringBuilder result = new StringBuilder();
-
-        for (int i = 0; i < offset; i++) {
-            result.append(OFFSET);
-        }
-
-        return result.toString();
-    }
-
     @Test
-    public void complexLabelShouldBeCreated() throws Exception {
+    public void complexHTMLShouldBeCreated() throws Exception {
         String actualContent = builder.withPrefix("g")
                                       .withText("text")
                                       .withTitle("title")
@@ -168,8 +158,8 @@ public class GLabelImplTest {
                                       .withDebugId("debugId")
                                       .build();
 
-        String expectedContent = "<g:Label title=\"title\" ui:field=\"name\" height=\"10px\" width=\"10px\" debugId=\"debugId\" " +
-                                 "styleName=\"{style1} {style2}\" addStyleNames=\"{style1} {style2}\" text=\"text\"/>";
+        String expectedContent = "<g:HTML text=\"text\" title=\"title\" ui:field=\"name\" height=\"10px\" width=\"10px\" " +
+                                 "debugId=\"debugId\" styleName=\"{style1} {style2}\" addStyleNames=\"{style1} {style2}\"/>";
 
         assertEquals(expectedContent, actualContent);
     }

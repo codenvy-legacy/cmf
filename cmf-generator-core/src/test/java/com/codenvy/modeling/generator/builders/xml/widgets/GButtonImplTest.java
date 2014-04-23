@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package com.codenvy.modeling.generator;
+package com.codenvy.modeling.generator.builders.xml.widgets;
 
+import com.codenvy.modeling.generator.builders.xml.AbstractXmlBuilderTest;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.GButton;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.GButtonImpl;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.codenvy.modeling.generator.builders.xml.impl.widgets.AbstractGWidget.OFFSET;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -30,7 +30,7 @@ import static org.junit.Assert.assertEquals;
  *
  * @author Andrey Plotnikov
  */
-public class GButtonImplTest {
+public class GButtonImplTest extends AbstractXmlBuilderTest {
 
     private GButton builder;
 
@@ -163,16 +163,6 @@ public class GButtonImplTest {
         }
     }
 
-    private String getOffset(int offset) {
-        StringBuilder result = new StringBuilder();
-
-        for (int i = 0; i < offset; i++) {
-            result.append(OFFSET);
-        }
-
-        return result.toString();
-    }
-
     @Test
     public void complexButtonShouldBeCreated() throws Exception {
         String actualContent = builder.withPrefix("g")
@@ -187,8 +177,8 @@ public class GButtonImplTest {
                                       .withDebugId("debugId")
                                       .build();
 
-        String expectedContent = "<g:Button title=\"title\" ui:field=\"name\" height=\"10px\" width=\"10px\" debugId=\"debugId\" " +
-                                 "styleName=\"{style1} {style2}\" addStyleNames=\"{style1} {style2}\" text=\"text\" focus=\"true\"/>";
+        String expectedContent = "<g:Button text=\"text\" title=\"title\" focus=\"true\" ui:field=\"name\" height=\"10px\" " +
+                                 "width=\"10px\" debugId=\"debugId\" styleName=\"{style1} {style2}\" addStyleNames=\"{style1} {style2}\"/>";
 
         assertEquals(expectedContent, actualContent);
     }

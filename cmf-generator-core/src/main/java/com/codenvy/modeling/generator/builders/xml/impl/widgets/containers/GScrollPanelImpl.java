@@ -16,92 +16,39 @@
 
 package com.codenvy.modeling.generator.builders.xml.impl.widgets.containers;
 
-import com.codenvy.modeling.generator.builders.xml.api.widgets.GWidget;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GScrollPanel;
+import com.google.inject.Inject;
 
 import javax.annotation.Nonnull;
 
+import static java.lang.Boolean.TRUE;
+
 /**
+ * The implementation of {@link GScrollPanel}.
+ *
  * @author Andrey Plotnikov
  */
-public class GScrollPanelImpl implements GScrollPanel {
+public class GScrollPanelImpl extends AbstractGContainer<GScrollPanel> implements GScrollPanel {
 
-    @Nonnull
-    @Override
-    public GScrollPanel withTitle(@Nonnull String title) {
-        return null;
+    private static final String SCROLL_PANEL_OPEN_TAG_FORMAT  = "<%s:ScrollPanel%s>";
+    private static final String SCROLL_PANEL_CLOSE_TAG_FORMAT = "</%s:ScrollPanel>";
+
+    @Inject
+    public GScrollPanelImpl() {
+        builder = this;
+
+        widgetFormat = SCROLL_PANEL_OPEN_TAG_FORMAT;
+        closeTagFormat = SCROLL_PANEL_CLOSE_TAG_FORMAT;
+
+        clean();
     }
 
-    @Nonnull
-    @Override
-    public GScrollPanel withPrefix(@Nonnull String prefix) {
-        return null;
-    }
-
+    /** {@inheritDoc} */
     @Nonnull
     @Override
     public GScrollPanel alwaysShowScrollBars() {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GScrollPanel setInvisible() {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GScrollPanel withOffset(int offset) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GScrollPanel withWidget(@Nonnull GWidget widget) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GScrollPanel withName(@Nonnull String name) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GScrollPanel withStyle(@Nonnull String style) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GScrollPanel withAddStyle(@Nonnull String style) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GScrollPanel withHeight(@Nonnull String height) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GScrollPanel withWidth(@Nonnull String width) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GScrollPanel withDebugId(@Nonnull String debugId) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public String build() throws IllegalStateException {
-        return null;
+        addParam(ALWAYS_SHOW_SCROLL_BARS_PARAM_NAME, TRUE.toString());
+        return builder;
     }
 
 }

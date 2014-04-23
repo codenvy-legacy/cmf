@@ -26,6 +26,9 @@ import javax.annotation.Nonnull;
  * @author Andrey Plotnikov
  */
 public interface HasReadOnly<T> {
+
+    String READ_ONLY_PARAM_NAME = "readOnly";
+
     /**
      * Change read only property to true value. Default value of enable property is false.
      *
@@ -33,4 +36,5 @@ public interface HasReadOnly<T> {
      */
     @Nonnull
     T setReadOnly();
+
 }

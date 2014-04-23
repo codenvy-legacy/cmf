@@ -25,12 +25,16 @@ import com.codenvy.modeling.generator.builders.xml.api.widgets.GHtml;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.GLabel;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.GTextArea;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.GTextBox;
+import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GFlowPanel;
+import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GScrollPanel;
 import com.codenvy.modeling.generator.builders.xml.impl.UIXmlBuilderImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.GButtonImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.GHtmlImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.GLabelImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.GTextAreaImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.GTextBoxImpl;
+import com.codenvy.modeling.generator.builders.xml.impl.widgets.containers.GFlowPanelImpl;
+import com.codenvy.modeling.generator.builders.xml.impl.widgets.containers.GScrollPanelImpl;
 import com.google.inject.AbstractModule;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 
@@ -55,6 +59,9 @@ public class GeneratorModule extends AbstractModule {
         bind(GLabel.class).to(GLabelImpl.class);
         bind(GTextArea.class).to(GTextAreaImpl.class);
         bind(GTextBox.class).to(GTextBoxImpl.class);
+
+        bind(GScrollPanel.class).to(GScrollPanelImpl.class);
+        bind(GFlowPanel.class).to(GFlowPanelImpl.class);
     }
 
 }

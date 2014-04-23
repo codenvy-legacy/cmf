@@ -19,7 +19,7 @@ package com.codenvy.modeling.generator.builders.xml.api.widgets.containers;
 import javax.annotation.Nonnull;
 
 /**
- * The builder for TextBox GWT widget.
+ * The builder for ScrollPanel GWT widget.
  * <p/>
  * The returned result must look like the following content:
  * <pre>
@@ -34,6 +34,13 @@ import javax.annotation.Nonnull;
  */
 public interface GScrollPanel extends GContainer<GScrollPanel> {
 
+    String ALWAYS_SHOW_SCROLL_BARS_PARAM_NAME = "alwaysShowScrollBars";
+
+    /**
+     * Change alwaysShowScrollBars property to true value. Default value of alwaysShowScrollBars property is false.
+     *
+     * @return a instance of builder with given configuration
+     */
     @Nonnull
     GScrollPanel alwaysShowScrollBars();
 

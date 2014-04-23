@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.codenvy.modeling.generator;
+package com.codenvy.modeling.generator.builders.xml;
 
 import com.codenvy.modeling.generator.builders.xml.api.GStyle;
 import com.codenvy.modeling.generator.builders.xml.impl.GStyleImpl;
@@ -22,6 +22,7 @@ import com.codenvy.modeling.generator.builders.xml.impl.GStyleImpl;
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder.OFFSET;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -29,7 +30,7 @@ import static org.junit.Assert.assertEquals;
  *
  * @author Andrey Plotnikov
  */
-public class GStyleImplTest {
+public class GStyleImplTest extends AbstractXmlBuilderTest {
 
     private GStyle builder;
 
@@ -51,11 +52,11 @@ public class GStyleImplTest {
     public void simpleContentShouldBeGenerated() throws Exception {
         String actualContent = builder.withStyle("name", "float: right;").build();
 
-        String expectedContent = "    <ui:style>\n" +
-                                 "        .name{\n" +
-                                 "            float: right;\n" +
-                                 "        }\n" +
-                                 "    </ui:style>";
+        String expectedContent = OFFSET + "<ui:style>\n" +
+                                 OFFSET + OFFSET + ".name{\n" +
+                                 OFFSET + OFFSET + OFFSET + "float: right;\n" +
+                                 OFFSET + OFFSET + "}\n" +
+                                 OFFSET + "</ui:style>";
 
         assertEquals(expectedContent, actualContent);
     }
@@ -68,23 +69,23 @@ public class GStyleImplTest {
                 .withStyle("name3", "    float: right;\n    margin: 6px;       margin-right: 5px;")
                 .build();
 
-        String expectedContent = "    <ui:style>\n" +
-                                 "        .name3{\n" +
-                                 "            float: right;\n" +
-                                 "            margin: 6px;\n" +
-                                 "            margin-right: 5px;\n" +
-                                 "        }\n" +
-                                 "        .name{\n" +
-                                 "            float: right;\n" +
-                                 "            margin: 6px;\n" +
-                                 "            margin-right: 5px;\n" +
-                                 "        }\n" +
-                                 "        .name2{\n" +
-                                 "            float: right;\n" +
-                                 "            margin: 6px;\n" +
-                                 "            margin-right: 5px;\n" +
-                                 "        }\n" +
-                                 "    </ui:style>";
+        String expectedContent = OFFSET + "<ui:style>\n" +
+                                 OFFSET + OFFSET + ".name3{\n" +
+                                 OFFSET + OFFSET + OFFSET + "float: right;\n" +
+                                 OFFSET + OFFSET + OFFSET + "margin: 6px;\n" +
+                                 OFFSET + OFFSET + OFFSET + "margin-right: 5px;\n" +
+                                 OFFSET + OFFSET + "}\n" +
+                                 OFFSET + OFFSET + ".name{\n" +
+                                 OFFSET + OFFSET + OFFSET + "float: right;\n" +
+                                 OFFSET + OFFSET + OFFSET + "margin: 6px;\n" +
+                                 OFFSET + OFFSET + OFFSET + "margin-right: 5px;\n" +
+                                 OFFSET + OFFSET + "}\n" +
+                                 OFFSET + OFFSET + ".name2{\n" +
+                                 OFFSET + OFFSET + OFFSET + "float: right;\n" +
+                                 OFFSET + OFFSET + OFFSET + "margin: 6px;\n" +
+                                 OFFSET + OFFSET + OFFSET + "margin-right: 5px;\n" +
+                                 OFFSET + OFFSET + "}\n" +
+                                 OFFSET + "</ui:style>";
 
         assertEquals(expectedContent, actualContent);
     }

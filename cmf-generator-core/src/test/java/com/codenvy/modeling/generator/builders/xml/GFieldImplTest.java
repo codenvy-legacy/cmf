@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.codenvy.modeling.generator;
+package com.codenvy.modeling.generator.builders.xml;
 
 import com.codenvy.modeling.generator.builders.xml.api.GField;
 import com.codenvy.modeling.generator.builders.xml.impl.GFieldImpl;
@@ -22,6 +22,7 @@ import com.codenvy.modeling.generator.builders.xml.impl.GFieldImpl;
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder.OFFSET;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -29,7 +30,7 @@ import static org.junit.Assert.assertEquals;
  *
  * @author Andrey Plotnikov
  */
-public class GFieldImplTest {
+public class GFieldImplTest extends AbstractXmlBuilderTest {
 
     private GField builder;
 
@@ -57,7 +58,7 @@ public class GFieldImplTest {
     public void fieldShouldBeCreated() throws Exception {
         String actualContent = builder.withName("name").withType(String.class).build();
 
-        String expectedContent = "    <ui:with field='name' type='java.lang.String'/>";
+        String expectedContent = OFFSET + "<ui:with field='name' type='java.lang.String'/>";
 
         assertEquals(expectedContent, actualContent);
     }
