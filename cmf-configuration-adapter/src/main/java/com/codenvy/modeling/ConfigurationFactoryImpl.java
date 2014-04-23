@@ -47,7 +47,7 @@ public class ConfigurationFactoryImpl implements ConfigurationFactory {
 
     private Map<PathParam, String> parameters = new HashMap<>();
 
-    public ConfigurationFactoryImpl(Map<PathParam, String> parameters) {
+    public ConfigurationFactoryImpl(@Nonnull Map<PathParam, String> parameters) {
         this.parameters = parameters;
     }
 

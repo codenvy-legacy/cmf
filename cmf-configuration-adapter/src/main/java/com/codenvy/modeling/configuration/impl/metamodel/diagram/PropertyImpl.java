@@ -49,15 +49,15 @@ public class PropertyImpl implements Property {
         return type;
     }
 
-    public void setName(String name) {
+    public void setName(@Nonnull String name) {
         this.name = name;
     }
 
-    public void setValue(String value) {
+    public void setValue(@Nonnull String value) {
         this.value = value;
     }
 
-    public void setType(Type type) {
+    public void setType(@Nonnull Type type) {
         this.type = type;
     }
 

@@ -25,6 +25,7 @@ import com.codenvy.modeling.configuration.metamodel.serialization.ElementDesigna
 import com.codenvy.modeling.configuration.metamodel.serialization.SerializationConfiguration;
 import org.antlr.v4.runtime.misc.NotNull;
 
+import javax.annotation.Nonnull;
 import java.util.Stack;
 
 /**
@@ -40,6 +41,7 @@ public class SerializationConfigurationAdapterListener extends SerializationBase
 
     private SerializationConfigurationImpl serializationConfiguration = new SerializationConfigurationImpl();
 
+    @Nonnull
     public SerializationConfiguration getSerializationConfiguration() {
         return serializationConfiguration;
     }

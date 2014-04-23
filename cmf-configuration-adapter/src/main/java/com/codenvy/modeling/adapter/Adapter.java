@@ -16,11 +16,13 @@
 
 package com.codenvy.modeling.adapter;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 
 /**
  * @author Dmitry Kuleshov
  */
 public interface Adapter<T> {
+    @Nonnull
     T getConfiguration() throws IOException;
 }

@@ -57,19 +57,19 @@ public class ConfigurationKeeperImpl implements ConfigurationKeeper {
         return styleConfiguration;
     }
 
-    public void setDiagramConfiguration(DiagramConfiguration diagramConfiguration) {
+    public void setDiagramConfiguration(@Nonnull DiagramConfiguration diagramConfiguration) {
         this.diagramConfiguration = diagramConfiguration;
     }
 
-    public void setSerializationConfiguration(SerializationConfiguration serializationConfiguration) {
+    public void setSerializationConfiguration(@Nonnull SerializationConfiguration serializationConfiguration) {
         this.serializationConfiguration = serializationConfiguration;
     }
 
-    public void setEditorConfiguration(EditorConfiguration editorConfiguration) {
+    public void setEditorConfiguration(@Nonnull EditorConfiguration editorConfiguration) {
         this.editorConfiguration = editorConfiguration;
     }
 
-    public void setStyleConfiguration(StyleConfiguration styleConfiguration) {
+    public void setStyleConfiguration(@Nonnull StyleConfiguration styleConfiguration) {
         this.styleConfiguration = styleConfiguration;
     }
 }

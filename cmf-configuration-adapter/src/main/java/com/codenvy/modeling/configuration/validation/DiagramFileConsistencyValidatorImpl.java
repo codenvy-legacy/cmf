@@ -26,7 +26,7 @@ import javax.annotation.Nonnull;
 public class DiagramFileConsistencyValidatorImpl extends DiagramFileConsistencyValidator {
     private String path;
 
-    public DiagramFileConsistencyValidatorImpl(String path) {
+    public DiagramFileConsistencyValidatorImpl(@Nonnull String path) {
         this.path = path;
     }
 

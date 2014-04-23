@@ -16,6 +16,7 @@
 
 package com.codenvy.modeling.configuration.editor;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
 /**
@@ -29,5 +30,6 @@ public interface Panel {
     @Nonnull
     Alignment getAlignment();
 
+    @Nonnegative
     int getDefaultSize();
 }

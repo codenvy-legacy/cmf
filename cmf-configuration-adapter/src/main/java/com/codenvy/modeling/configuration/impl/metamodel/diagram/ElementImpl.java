@@ -62,19 +62,19 @@ public class ElementImpl implements Element {
         return components;
     }
 
-    public void setName(String name) {
+    public void setName(@Nonnull String name) {
         this.name = name;
     }
 
-    public void addProperty(Property property) {
+    public void addProperty(@Nonnull Property property) {
         properties.add(property);
     }
 
-    public void addConnection(Connection connection) {
+    public void addConnection(@Nonnull Connection connection) {
         connections.add(connection);
     }
 
-    public void addComponent(Component component) {
+    public void addComponent(@Nonnull Component component) {
         components.add(component);
     }
 

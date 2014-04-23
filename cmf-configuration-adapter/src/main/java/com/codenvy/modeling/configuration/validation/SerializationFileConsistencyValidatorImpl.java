@@ -26,7 +26,7 @@ import javax.annotation.Nonnull;
 public class SerializationFileConsistencyValidatorImpl extends SerializationFileConsistencyValidator {
     private String path;
 
-    public SerializationFileConsistencyValidatorImpl(String path) {
+    public SerializationFileConsistencyValidatorImpl(@Nonnull String path) {
         this.path = path;
     }
 

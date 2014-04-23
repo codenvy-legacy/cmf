@@ -57,19 +57,19 @@ public class ConnectionImpl implements Connection {
         return type;
     }
 
-    public void setName(String name) {
+    public void setName(@Nonnull String name) {
         this.name = name;
     }
 
-    public void setDestination(String destination) {
+    public void setDestination(@Nonnull String destination) {
         this.destination = destination;
     }
 
-    public void setRelation(Relation relation) {
+    public void setRelation(@Nonnull Relation relation) {
         this.relation = relation;
     }
 
-    public void setType(Type type) {
+    public void setType(@Nonnull Type type) {
         this.type = type;
     }
 

@@ -16,6 +16,7 @@
 
 package com.codenvy.modeling.configuration.editor;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
 /**
@@ -26,6 +27,7 @@ public interface Item {
         TOP, BOTTOM, LEFT, RIGHT, CENTER
     }
 
+    @Nonnegative
     int getSize();
 
     @Nonnull

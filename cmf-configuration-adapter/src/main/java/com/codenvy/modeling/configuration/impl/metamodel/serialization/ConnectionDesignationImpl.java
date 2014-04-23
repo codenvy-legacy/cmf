@@ -49,15 +49,15 @@ public class ConnectionDesignationImpl implements ConnectionDesignation {
         return connectionReferenceTemplate;
     }
 
-    public void setType(Type type) {
+    public void setType(@Nonnull Type type) {
         this.type = type;
     }
 
-    public void setConnectionReferencePropertyName(String connectionReferencePropertyName) {
+    public void setConnectionReferencePropertyName(@Nonnull String connectionReferencePropertyName) {
         this.connectionReferencePropertyName = connectionReferencePropertyName;
     }
 
-    public void setConnectionReferenceTemplate(String connectionReferenceTemplate) {
+    public void setConnectionReferenceTemplate(@Nonnull String connectionReferenceTemplate) {
         this.connectionReferenceTemplate = connectionReferenceTemplate;
     }
 

@@ -49,15 +49,15 @@ public class ElementDesignationImpl implements ElementDesignation{
         return elementReferenceTemplate;
     }
 
-    public void setType(Type type) {
+    public void setType(@Nonnull Type type) {
         this.type = type;
     }
 
-    public void setElementReferencePropertyName(String elementReferencePropertyName) {
+    public void setElementReferencePropertyName(@Nonnull String elementReferencePropertyName) {
         this.elementReferencePropertyName = elementReferencePropertyName;
     }
 
-    public void setElementReferenceTemplate(String elementReferenceTemplate) {
+    public void setElementReferenceTemplate(@Nonnull String elementReferenceTemplate) {
         this.elementReferenceTemplate = elementReferenceTemplate;
     }
 

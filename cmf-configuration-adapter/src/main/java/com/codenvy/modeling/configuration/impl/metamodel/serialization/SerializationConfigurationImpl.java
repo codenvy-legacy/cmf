@@ -36,7 +36,7 @@ public class SerializationConfigurationImpl implements SerializationConfiguratio
         return elements;
     }
 
-    public void addElement(Element element){
+    public void addElement(@Nonnull Element element) {
         elements.add(element);
     }
 

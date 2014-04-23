@@ -16,11 +16,15 @@
 
 package com.codenvy.modeling.configuration.editor;
 
+import javax.annotation.Nonnegative;
+
 /**
  * @author Dmitry Kuleshov
  */
 public interface Size {
+    @Nonnegative
     int getCompact();
 
+    @Nonnegative
     int getFull();
 }

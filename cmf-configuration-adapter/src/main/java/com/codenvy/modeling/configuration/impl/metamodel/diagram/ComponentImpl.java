@@ -32,7 +32,7 @@ public class ComponentImpl implements Component {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(@Nonnull String name) {
         this.name = name;
     }
 

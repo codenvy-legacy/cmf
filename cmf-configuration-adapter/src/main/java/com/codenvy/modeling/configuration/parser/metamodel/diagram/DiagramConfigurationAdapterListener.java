@@ -22,6 +22,7 @@ import com.codenvy.modeling.configuration.metamodel.diagram.DiagramConfiguration
 import com.codenvy.modeling.configuration.metamodel.diagram.Property;
 import org.antlr.v4.runtime.misc.NotNull;
 
+import javax.annotation.Nonnull;
 import java.util.Stack;
 
 /**
@@ -39,6 +40,7 @@ public class DiagramConfigurationAdapterListener extends DiagramBaseListener {
 
     private DiagramConfigurationImpl diagramConfiguration = new DiagramConfigurationImpl();
 
+    @Nonnull
     public DiagramConfiguration getDiagramConfiguration() {
         return diagramConfiguration;
     }

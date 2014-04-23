@@ -25,6 +25,7 @@ import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -35,10 +36,11 @@ public class DiagramConfigurationAdapter implements Adapter<DiagramConfiguration
 
     private InputStream inputStream;
 
-    public DiagramConfigurationAdapter(InputStream inputStream) {
+    public DiagramConfigurationAdapter(@Nonnull InputStream inputStream) {
         this.inputStream = inputStream;
     }
 
+    @Nonnull
     @Override
     public DiagramConfiguration getConfiguration() throws IOException {
 

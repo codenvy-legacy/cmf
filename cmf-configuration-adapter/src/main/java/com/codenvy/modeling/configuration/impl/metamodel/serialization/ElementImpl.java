@@ -59,19 +59,19 @@ public class ElementImpl implements Element {
         return connectionDesignation;
     }
 
-    public void setName(String name) {
+    public void setName(@Nonnull String name) {
         this.name = name;
     }
 
-    public void setTemplate(String template) {
+    public void setTemplate(@Nonnull String template) {
         this.template = template;
     }
 
-    public void setElementDesignation(ElementDesignation elementDesignation) {
+    public void setElementDesignation(@Nonnull ElementDesignation elementDesignation) {
         this.elementDesignation = elementDesignation;
     }
 
-    public void setConnectionDesignation(ConnectionDesignation connectionDesignation) {
+    public void setConnectionDesignation(@Nonnull ConnectionDesignation connectionDesignation) {
         this.connectionDesignation = connectionDesignation;
     }
 

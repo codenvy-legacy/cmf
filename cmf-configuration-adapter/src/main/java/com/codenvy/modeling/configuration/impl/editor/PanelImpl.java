@@ -18,6 +18,7 @@ package com.codenvy.modeling.configuration.impl.editor;
 
 import com.codenvy.modeling.configuration.editor.Panel;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
 /**
@@ -33,6 +34,7 @@ public class PanelImpl implements Panel {
         return alignment;
     }
 
+    @Nonnegative
     @Override
     public int getDefaultSize() {
         return defaultSize;
@@ -42,7 +44,7 @@ public class PanelImpl implements Panel {
         this.alignment = alignment;
     }
 
-    public void setDefaultSize(int defaultSize) {
+    public void setDefaultSize(@Nonnegative int defaultSize) {
         this.defaultSize = defaultSize;
     }
 

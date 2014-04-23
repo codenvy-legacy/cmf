@@ -20,6 +20,8 @@ import com.codenvy.modeling.configuration.editor.*;
 import com.codenvy.modeling.configuration.impl.editor.*;
 import org.antlr.v4.runtime.misc.NotNull;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author Dmitry Kuleshov
  */
@@ -33,6 +35,7 @@ public class EditorConfigurationAdapterListener extends EditorBaseListener {
     private TextImpl text;
     private ItemImpl item;
 
+    @Nonnull
     public EditorConfiguration getEditorConfiguration() {
         return editorConfiguration;
     }

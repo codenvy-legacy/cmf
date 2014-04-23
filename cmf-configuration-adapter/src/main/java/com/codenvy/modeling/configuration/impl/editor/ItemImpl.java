@@ -19,6 +19,7 @@ package com.codenvy.modeling.configuration.impl.editor;
 import com.codenvy.modeling.configuration.editor.Item;
 import com.codenvy.modeling.configuration.editor.Text;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
 /**
@@ -30,6 +31,7 @@ public class ItemImpl implements Item {
     private Text text;
     private Alignment alignment;
 
+    @Nonnegative
     @Override
     public int getSize() {
         return size;
@@ -53,7 +55,7 @@ public class ItemImpl implements Item {
         return alignment;
     }
 
-    public void setSize(int size) {
+    public void setSize(@Nonnegative int size) {
         this.size = size;
     }
 

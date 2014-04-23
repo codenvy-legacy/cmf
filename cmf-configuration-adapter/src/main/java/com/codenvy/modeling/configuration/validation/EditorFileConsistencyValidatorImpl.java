@@ -26,7 +26,7 @@ import javax.annotation.Nonnull;
 public class EditorFileConsistencyValidatorImpl extends EditorFileConsistencyValidator {
     private String path;
 
-    public EditorFileConsistencyValidatorImpl(String path) {
+    public EditorFileConsistencyValidatorImpl(@Nonnull String path) {
         this.path = path;
     }
 

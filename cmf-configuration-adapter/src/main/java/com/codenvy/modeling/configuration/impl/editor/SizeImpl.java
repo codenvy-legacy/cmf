@@ -18,6 +18,8 @@ package com.codenvy.modeling.configuration.impl.editor;
 
 import com.codenvy.modeling.configuration.editor.Size;
 
+import javax.annotation.Nonnegative;
+
 /**
  * @author Dmitry Kuleshov
  */
@@ -25,21 +27,23 @@ public class SizeImpl implements Size {
     private int compact;
     private int full;
 
+    @Nonnegative
     @Override
     public int getCompact() {
         return compact;
     }
 
+    @Nonnegative
     @Override
     public int getFull() {
         return full;
     }
 
-    public void setCompact(int compact) {
+    public void setCompact(@Nonnegative int compact) {
         this.compact = compact;
     }
 
-    public void setFull(int full) {
+    public void setFull(@Nonnegative int full) {
         this.full = full;
     }
 
