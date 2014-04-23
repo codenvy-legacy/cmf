@@ -14,25 +14,29 @@
  * limitations under the License.
  */
 
-package com.codenvy.modeling.adapter;
+package com.codenvy.modeling.configuration.impl.metamodel.diagram;
 
-import com.codenvy.modeling.adapter.metamodel.diagram.DiagramConfigurationAdapter;
-
-import javax.annotation.Nonnull;
-import java.io.InputStream;
+import com.codenvy.modeling.configuration.metamodel.diagram.Component;
 
 /**
- * The factory for creating configuration adapters.
- *
- * @author Andrey Plotnikov
+ * @author Dmitry Kuleshov
  */
-public interface AdapterFactory {
-    /**
-     * Create Meta model configuration adapter.
-     *
-     * @param inputStream stream that contains configuration
-     * @return meta model configuration adapter
-     */
-    @Nonnull
-    DiagramConfigurationAdapter getMetaModelConfAdapter(@Nonnull InputStream inputStream);
+public class ComponentImpl implements Component {
+    private String name;
+
+    @Override
+    public String getName() {
+        return null;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "\nComponentImpl{" +
+                "name='" + name + '\'' +
+                '}';
+    }
 }

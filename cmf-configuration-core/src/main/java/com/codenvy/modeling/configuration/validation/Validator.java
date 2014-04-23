@@ -14,25 +14,21 @@
  * limitations under the License.
  */
 
-package com.codenvy.modeling.adapter;
-
-import com.codenvy.modeling.adapter.metamodel.diagram.DiagramConfigurationAdapter;
+package com.codenvy.modeling.configuration.validation;
 
 import javax.annotation.Nonnull;
-import java.io.InputStream;
 
 /**
- * The factory for creating configuration adapters.
- *
- * @author Andrey Plotnikov
+ * @author Dmitry Kuleshov
  */
-public interface AdapterFactory {
-    /**
-     * Create Meta model configuration adapter.
-     *
-     * @param inputStream stream that contains configuration
-     * @return meta model configuration adapter
-     */
+public interface Validator {
+    public enum Type {
+        PRE, POST
+    }
+
     @Nonnull
-    DiagramConfigurationAdapter getMetaModelConfAdapter(@Nonnull InputStream inputStream);
+    Type getType();
+
+    @Nonnull
+    Report getReport();
 }

@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package com.codenvy.modeling.adapter;
+package com.codenvy.modeling.configuration.metamodel;
 
 import com.codenvy.modeling.adapter.metamodel.diagram.DiagramConfigurationAdapter;
+import org.junit.Test;
 
-import javax.annotation.Nonnull;
 import java.io.InputStream;
 
 /**
- * The factory for creating configuration adapters.
- *
- * @author Andrey Plotnikov
+ * @author Dmitry Kuleshov
  */
-public interface AdapterFactory {
-    /**
-     * Create Meta model configuration adapter.
-     *
-     * @param inputStream stream that contains configuration
-     * @return meta model configuration adapter
-     */
-    @Nonnull
-    DiagramConfigurationAdapter getMetaModelConfAdapter(@Nonnull InputStream inputStream);
+public class DiagramAdapterTest {
+
+    public static final String META_MODEL_GRAMMAR_TEST_I = "/DiagramGrammarTest_I";
+
+    @Test
+    public void testExampleField() throws Exception {
+        InputStream inputStream = getClass().getResourceAsStream(META_MODEL_GRAMMAR_TEST_I);
+        DiagramConfigurationAdapter diagramConfigurationAdapter = new DiagramConfigurationAdapter(inputStream);
+
+        System.out.println(diagramConfigurationAdapter.getConfiguration().toString());
+    }
 }
