@@ -1,0 +1,34 @@
+Toolbar :
+{
+    alignment : SOUTH
+    Group :
+    {
+        margin : testMarginValue
+    }
+    Size :
+    {
+        compact : 123
+        full : 512
+    }
+    Item :
+    {
+        size : 123
+        margin : textMarginValue
+        alignment : TOP
+        Text :
+        {
+            alignment : BOTTOM
+        }
+    }
+}
+
+Panel :
+{
+    alignment : NORTH
+    default size : 9
+}
+
+Workspace :
+{
+    scrollability : YES
+}

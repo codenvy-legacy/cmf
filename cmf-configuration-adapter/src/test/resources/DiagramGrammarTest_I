@@ -1,0 +1,27 @@
+Elements :
+{
+    name : testElementName
+},
+{
+    name : testElementNameTwo
+
+    Properties :
+    {
+        name : testPropertyName
+        type : integer
+        value : testPropertyValue
+    }
+
+    Components :
+    {
+        test1, test2, test3
+    }
+
+    Connections :
+    {
+        name : testConnectionName
+        destination : testConnectionDestination
+        type : DIRECTED
+        relation : SINGLE
+    }
+}

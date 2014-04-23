@@ -21,13 +21,20 @@ import javax.annotation.Nonnull;
 /**
  * @author Dmitry Kuleshov
  */
-public interface EditorConfiguration {
-    @Nonnull
-    Toolbar getToolbar();
+public interface Toolbar {
+    public enum Alignment {
+        NORTH, SOUTH, WEST, EAST
+    }
 
     @Nonnull
-    Panel getPanel();
+    Alignment getAlignment();
 
     @Nonnull
-    Workspace getWorkspace();
+    Size getSize();
+
+    @Nonnull
+    Group getGroup();
+
+    @Nonnull
+    Item getItem();
 }

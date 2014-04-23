@@ -16,7 +16,7 @@
 package com.codenvy.modeling.generator;
 
 import com.codenvy.modeling.adapter.AdapterFactory;
-import com.codenvy.modeling.adapter.metamodel.MetaModelConfigurationAdapter;
+import com.codenvy.modeling.adapter.metamodel.diagram.DiagramConfigurationAdapter;
 import com.google.inject.Inject;
 
 import org.slf4j.Logger;
@@ -72,7 +72,8 @@ public class Generator {
         }
 
         try {
-            MetaModelConfigurationAdapter metaModelConfigurationAdapter =
+            //TODO replace with ConfigurationFactoryImpl
+            DiagramConfigurationAdapter diagramConfigurationAdapter =
                     adapterFactory.getMetaModelConfAdapter(Files.newInputStream(sourcePath));
 
 

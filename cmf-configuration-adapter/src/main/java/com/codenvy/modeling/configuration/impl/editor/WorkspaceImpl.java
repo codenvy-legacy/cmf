@@ -14,25 +14,32 @@
  * limitations under the License.
  */
 
-package com.codenvy.modeling.adapter;
+package com.codenvy.modeling.configuration.impl.editor;
 
-import com.codenvy.modeling.adapter.metamodel.diagram.DiagramConfigurationAdapter;
+import com.codenvy.modeling.configuration.editor.Workspace;
 
 import javax.annotation.Nonnull;
-import java.io.InputStream;
 
 /**
- * The factory for creating configuration adapters.
- *
- * @author Andrey Plotnikov
+ * @author Dmitry Kuleshov
  */
-public interface AdapterFactory {
-    /**
-     * Create Meta model configuration adapter.
-     *
-     * @param inputStream stream that contains configuration
-     * @return meta model configuration adapter
-     */
+public class WorkspaceImpl implements Workspace {
+    private Scrollability scrollability;
+
     @Nonnull
-    DiagramConfigurationAdapter getMetaModelConfAdapter(@Nonnull InputStream inputStream);
+    @Override
+    public Scrollability getScrollability() {
+        return scrollability;
+    }
+
+    public void setScrollability(@Nonnull Scrollability scrollability) {
+        this.scrollability = scrollability;
+    }
+
+    @Override
+    public String toString() {
+        return "\nWorkspaceImpl{" +
+                "scrollability=" + scrollability +
+                '}';
+    }
 }

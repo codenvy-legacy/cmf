@@ -30,4 +30,17 @@
     <packaging>jar</packaging>
     <name>↳ Configuration Core</name>
 
+    <dependencies>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${version.logback}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>annotations</artifactId>
+            <version>${version.google.findbugs}</version>
+        </dependency>
+    </dependencies>
+
 </project>
