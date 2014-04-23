@@ -31,8 +31,9 @@
     <name>↳ Configuration Adapter</name>
 
     <properties>
+        <parser.editor.package.name>com.codenvy.modeling.configuration.parser.editor.generated</parser.editor.package.name>
         <parser.generated.sources.location>${project.build.directory}/generated-sources/antlr4</parser.generated.sources.location>
-        <parser.package.name>com.codenvy.modeling.configuration.parser.metamodel.generated</parser.package.name>
+        <parser.metamodel.package.name>com.codenvy.modeling.configuration.parser.metamodel.generated</parser.metamodel.package.name>
     </properties>
 
     <dependencies>
@@ -82,6 +83,7 @@
                 <version>${version.antlr4}</version>
                 <executions>
                     <execution>
+                        <id>metamodel</id>
                         <goals>
                             <goal>antlr4</goal>
                         </goals>
@@ -93,11 +95,29 @@
                                 <include>Diagram.g4</include>
                                 <include>Serialization.g4</include>
                             </includes>
-                            <outputDirectory>
-                                ${parser.generated.sources.location}/com/codenvy/modeling/configuration/parser/metamodel/generated</outputDirectory>
+                            <outputDirectory>${parser.generated.sources.location}/com/codenvy/modeling/configuration/parser/metamodel/generated</outputDirectory>
                             <arguments>
                                 <argument>-package</argument>
-                                <argument>${parser.package.name}</argument>
+                                <argument>${parser.metamodel.package.name}</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>editor</id>
+                        <goals>
+                            <goal>antlr4</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>${project.basedir}/src/main/antlr4/</sourceDirectory>
+                            <listener>true</listener>
+                            <visitor>false</visitor>
+                            <includes>
+                                <include>Editor.g4</include>
+                            </includes>
+                            <outputDirectory>${parser.generated.sources.location}/com/codenvy/modeling/configuration/parser/editor/generated</outputDirectory>
+                            <arguments>
+                                <argument>-package</argument>
+                                <argument>${parser.editor.package.name}</argument>
                             </arguments>
                         </configuration>
                     </execution>

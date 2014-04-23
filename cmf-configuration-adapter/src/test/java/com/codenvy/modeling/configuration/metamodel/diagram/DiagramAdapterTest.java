@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.codenvy.modeling.configuration.metamodel;
+package com.codenvy.modeling.configuration.metamodel.diagram;
 
 import com.codenvy.modeling.adapter.metamodel.diagram.DiagramConfigurationAdapter;
 import org.junit.Test;
@@ -26,13 +26,15 @@ import java.io.InputStream;
  */
 public class DiagramAdapterTest {
 
-    public static final String META_MODEL_GRAMMAR_TEST_I = "/DiagramGrammarTest_I";
+    public static final String DIAGRAM_GRAMMAR_TEST_I = "/DiagramGrammarTest_I";
 
     @Test
     public void testExampleField() throws Exception {
-        InputStream inputStream = getClass().getResourceAsStream(META_MODEL_GRAMMAR_TEST_I);
+        InputStream inputStream = getClass().getResourceAsStream(DIAGRAM_GRAMMAR_TEST_I);
         DiagramConfigurationAdapter diagramConfigurationAdapter = new DiagramConfigurationAdapter(inputStream);
 
+        System.out.println("===============================================================================" + "\n\n");
         System.out.println(diagramConfigurationAdapter.getConfiguration().toString());
+        System.out.println("\n\n" + "===============================================================================");
     }
 }

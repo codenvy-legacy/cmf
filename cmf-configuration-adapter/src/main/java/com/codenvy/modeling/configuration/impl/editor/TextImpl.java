@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,20 +14,32 @@
  * limitations under the License.
  */
 
-package com.codenvy.modeling.configuration.editor;
+package com.codenvy.modeling.configuration.impl.editor;
+
+import com.codenvy.modeling.configuration.editor.Text;
 
 import javax.annotation.Nonnull;
 
 /**
  * @author Dmitry Kuleshov
  */
-public interface EditorConfiguration {
-    @Nonnull
-    Toolbar getToolbar();
+public class TextImpl implements Text {
+    private Alignment alignment;
 
     @Nonnull
-    Panel getPanel();
+    @Override
+    public Alignment getAlignment() {
+        return alignment;
+    }
 
-    @Nonnull
-    Workspace getWorkspace();
+    public void setAlignment(@Nonnull Alignment alignment) {
+        this.alignment = alignment;
+    }
+
+    @Override
+    public String toString() {
+        return "\nTextImpl{" +
+                "alignment=" + alignment +
+                '}';
+    }
 }

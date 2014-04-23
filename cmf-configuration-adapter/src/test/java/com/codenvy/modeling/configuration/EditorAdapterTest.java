@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package com.codenvy.modeling.configuration.serialization
-        ;
+package com.codenvy.modeling.configuration;
 
-import com.codenvy.modeling.adapter.metamodel.serialization.SerializationConfigurationAdapter;
+import com.codenvy.modeling.adapter.editor.EditorConfigurationAdapter;
 import org.junit.Test;
 
 import java.io.InputStream;
@@ -25,15 +24,17 @@ import java.io.InputStream;
 /**
  * @author Dmitry Kuleshov
  */
-public class SerializationAdapterTest {
+public class EditorAdapterTest {
 
-    public static final String SERIALIZATION_GRAMMAR_TEST_I = "/SerializationGrammarTest_I";
+    public static final String EDITOR_GRAMMAR_TEST_I = "/EditorGrammarTest_I";
 
     @Test
     public void testExampleField() throws Exception {
-        InputStream inputStream = getClass().getResourceAsStream(SERIALIZATION_GRAMMAR_TEST_I);
-        SerializationConfigurationAdapter serializationConfigurationAdapter = new SerializationConfigurationAdapter(inputStream);
+        InputStream inputStream = getClass().getResourceAsStream(EDITOR_GRAMMAR_TEST_I);
+        EditorConfigurationAdapter editorConfigurationAdapter = new EditorConfigurationAdapter(inputStream);
 
-        System.out.println(serializationConfigurationAdapter.getConfiguration().toString());
+        System.out.println("===============================================================================" + "\n\n");
+        System.out.println(editorConfigurationAdapter.getConfiguration().toString());
+        System.out.println("\n\n" + "===============================================================================");
     }
 }

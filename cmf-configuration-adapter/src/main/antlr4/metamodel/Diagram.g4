@@ -99,8 +99,6 @@ connectionRelation      :
 
 TEXT                    :   ([A-Za-z_] | [0-9])+
                         ;
-//NL                      :   '\n'
-//                        ;
 COLON                   :   ':'
                         ;
 BEGIN                   :   '{'

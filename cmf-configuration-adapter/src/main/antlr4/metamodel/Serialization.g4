@@ -59,7 +59,7 @@ elemRefTemplate         :
                         ;
 
 conDesignation          :
-                            'connectioesignation' COLON(
+                            'connectionDesignation' COLON(
                                 'ORDERING' |
                                 (
                                     'REFERENCE' COLON
