@@ -18,7 +18,10 @@ package com.codenvy.modeling.generator.builders.xml.api.widgets.containers;
 
 import com.codenvy.modeling.generator.builders.xml.api.widgets.GWidget;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+
+import static com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder.OFFSET;
 
 /**
  * Implemented by class that have a few parts.
@@ -43,6 +46,22 @@ import javax.annotation.Nonnull;
  */
 public interface HasParts<T> {
 
+    String NORTH_PART_FORMAT  = OFFSET + "<g:north size=\"%.2f\">\n" +
+                                OFFSET + OFFSET + "%s\n" +
+                                OFFSET + "</g:north>\n";
+    String SOUTH_PART_FORMAT  = OFFSET + "<g:south size=\"%.2f\">\n" +
+                                OFFSET + OFFSET + "%s\n" +
+                                OFFSET + "</g:south>\n";
+    String EAST_PART_FORMAT   = OFFSET + "<g:east size=\"%.2f\">\n" +
+                                OFFSET + OFFSET + "%s\n" +
+                                OFFSET + "</g:east>\n";
+    String WEST_PART_FORMAT   = OFFSET + "<g:west size=\"%.2f\">\n" +
+                                OFFSET + OFFSET + "%s\n" +
+                                OFFSET + "</g:west>\n";
+    String CENTER_PART_FORMAT = OFFSET + "<g:center>\n" +
+                                OFFSET + OFFSET + "%s\n" +
+                                OFFSET + "</g:center>\n";
+
     /**
      * Add a widget in the north part.
      * <p/>
@@ -64,7 +83,7 @@ public interface HasParts<T> {
      * @return a instance of builder with given configuration
      */
     @Nonnull
-    T withNorth(double size, @Nonnull GWidget widget);
+    T withNorth(@Nonnegative double size, @Nonnull GWidget<? extends GWidget> widget);
 
     /**
      * Add a widget in the south part.
@@ -87,7 +106,7 @@ public interface HasParts<T> {
      * @return a instance of builder with given configuration
      */
     @Nonnull
-    T withSouth(double size, @Nonnull GWidget widget);
+    T withSouth(@Nonnegative double size, @Nonnull GWidget<? extends GWidget> widget);
 
     /**
      * Add a widget in the west part.
@@ -110,7 +129,7 @@ public interface HasParts<T> {
      * @return a instance of builder with given configuration
      */
     @Nonnull
-    T withWest(double size, @Nonnull GWidget widget);
+    T withWest(@Nonnegative double size, @Nonnull GWidget<? extends GWidget> widget);
 
     /**
      * Add a widget in the east part.
@@ -133,6 +152,6 @@ public interface HasParts<T> {
      * @return a instance of builder with given configuration
      */
     @Nonnull
-    T withEast(double size, @Nonnull GWidget widget);
+    T withEast(@Nonnegative double size, @Nonnull GWidget<? extends GWidget> widget);
 
 }

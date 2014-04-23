@@ -16,110 +16,27 @@
 
 package com.codenvy.modeling.generator.builders.xml.impl.widgets.containers;
 
-import com.codenvy.modeling.generator.builders.xml.api.widgets.GWidget;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GSplitLayoutPanel;
-
-import javax.annotation.Nonnull;
+import com.google.inject.Inject;
 
 /**
+ * The implementation of {@link GSplitLayoutPanel}.
+ *
  * @author Andrey Plotnikov
  */
-public class GSplitLayoutPanelImpl implements GSplitLayoutPanel {
+public class GSplitLayoutPanelImpl extends AbstractGPartContainer<GSplitLayoutPanel> implements GSplitLayoutPanel {
 
-    @Nonnull
-    @Override
-    public GSplitLayoutPanel withNorth(double size, @Nonnull GWidget widget) {
-        return null;
-    }
+    private static final String SPLIT_LAYOUT_PANEL_OPEN_TAG_FORMAT  = "<%s:SplitLayoutPanel%s>";
+    private static final String SPLIT_LAYOUT_PANEL_CLOSE_TAG_FORMAT = "</%s:SplitLayoutPanel>";
 
-    @Nonnull
-    @Override
-    public GSplitLayoutPanel withSouth(double size, @Nonnull GWidget widget) {
-        return null;
-    }
+    @Inject
+    public GSplitLayoutPanelImpl() {
+        builder = this;
 
-    @Nonnull
-    @Override
-    public GSplitLayoutPanel withWest(double size, @Nonnull GWidget widget) {
-        return null;
-    }
+        widgetFormat = SPLIT_LAYOUT_PANEL_OPEN_TAG_FORMAT;
+        closeTagFormat = SPLIT_LAYOUT_PANEL_CLOSE_TAG_FORMAT;
 
-    @Nonnull
-    @Override
-    public GSplitLayoutPanel withEast(double size, @Nonnull GWidget widget) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GSplitLayoutPanel withWidget(@Nonnull GWidget widget) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GSplitLayoutPanel withName(@Nonnull String name) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GSplitLayoutPanel withTitle(@Nonnull String title) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GSplitLayoutPanel withPrefix(@Nonnull String prefix) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GSplitLayoutPanel withStyle(@Nonnull String style) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GSplitLayoutPanel withAddStyle(@Nonnull String style) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GSplitLayoutPanel withHeight(@Nonnull String height) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GSplitLayoutPanel withWidth(@Nonnull String width) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GSplitLayoutPanel withDebugId(@Nonnull String debugId) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GSplitLayoutPanel setInvisible() {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GSplitLayoutPanel withOffset(int offset) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public String build() throws IllegalStateException {
-        return null;
+        clean();
     }
 
 }

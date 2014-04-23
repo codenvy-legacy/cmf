@@ -16,110 +16,27 @@
 
 package com.codenvy.modeling.generator.builders.xml.impl.widgets.containers;
 
-import com.codenvy.modeling.generator.builders.xml.api.widgets.GWidget;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GDockLayoutPanel;
-
-import javax.annotation.Nonnull;
+import com.google.inject.Inject;
 
 /**
+ * The implementation of {@link GDockLayoutPanel}.
+ *
  * @author Andrey Plotnikov
  */
-public class GDockLayoutPanelImpl implements GDockLayoutPanel {
+public class GDockLayoutPanelImpl extends AbstractGPartContainer<GDockLayoutPanel> implements GDockLayoutPanel {
 
-    @Nonnull
-    @Override
-    public GDockLayoutPanel withNorth(double size, @Nonnull GWidget widget) {
-        return null;
-    }
+    private static final String DOCK_LAYOUT_PANEL_OPEN_TAG_FORMAT  = "<%s:DockLayoutPanel%s>";
+    private static final String DOCK_LAYOUT_PANEL_CLOSE_TAG_FORMAT = "</%s:DockLayoutPanel>";
 
-    @Nonnull
-    @Override
-    public GDockLayoutPanel withSouth(double size, @Nonnull GWidget widget) {
-        return null;
-    }
+    @Inject
+    public GDockLayoutPanelImpl() {
+        builder = this;
 
-    @Nonnull
-    @Override
-    public GDockLayoutPanel withWest(double size, @Nonnull GWidget widget) {
-        return null;
-    }
+        widgetFormat = DOCK_LAYOUT_PANEL_OPEN_TAG_FORMAT;
+        closeTagFormat = DOCK_LAYOUT_PANEL_CLOSE_TAG_FORMAT;
 
-    @Nonnull
-    @Override
-    public GDockLayoutPanel withEast(double size, @Nonnull GWidget widget) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GDockLayoutPanel withWidget(@Nonnull GWidget widget) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GDockLayoutPanel withName(@Nonnull String name) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GDockLayoutPanel withTitle(@Nonnull String title) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GDockLayoutPanel withPrefix(@Nonnull String prefix) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GDockLayoutPanel withStyle(@Nonnull String style) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GDockLayoutPanel withAddStyle(@Nonnull String style) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GDockLayoutPanel withHeight(@Nonnull String height) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GDockLayoutPanel withWidth(@Nonnull String width) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GDockLayoutPanel withDebugId(@Nonnull String debugId) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GDockLayoutPanel setInvisible() {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public GDockLayoutPanel withOffset(int offset) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public String build() throws IllegalStateException {
-        return null;
+        clean();
     }
 
 }
