@@ -18,6 +18,7 @@ package com.codenvy.modeling.generator;
 
 import com.codenvy.modeling.adapter.AdapterFactory;
 import com.codenvy.modeling.adapter.metamodel.diagram.DiagramConfigurationAdapter;
+
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -31,7 +32,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.mockito.Matchers.anyObject;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Here we're testing {@link Generator}.
@@ -44,9 +47,9 @@ public class GeneratorTest {
     @Mock
     private DiagramConfigurationAdapter diagramConfigurationAdapter;
     @Mock
-    private AdapterFactory adapterFactory;
+    private AdapterFactory              adapterFactory;
     @InjectMocks
-    private Generator generator;
+    private Generator                   generator;
 
     private Map<Generator.Param, String> params;
 
@@ -54,14 +57,14 @@ public class GeneratorTest {
     public void setUp() throws Exception {
         params = new HashMap<>();
 
-        when(adapterFactory.getMetaModelConfAdapter((InputStream) anyObject())).thenReturn(diagramConfigurationAdapter);
+        when(adapterFactory.getMetaModelConfAdapter((InputStream)anyObject())).thenReturn(diagramConfigurationAdapter);
     }
 
     @Test
     public void shouldNotGenerateCodeWhenSourcePathIsAbsent() throws Exception {
         generator.generate(params);
 
-        verify(adapterFactory, never()).getMetaModelConfAdapter((InputStream) anyObject());
+        verify(adapterFactory, never()).getMetaModelConfAdapter((InputStream)anyObject());
     }
 
     @Test
@@ -71,7 +74,7 @@ public class GeneratorTest {
 
         generator.generate(params);
 
-        verify(adapterFactory).getMetaModelConfAdapter((InputStream) anyObject());
+        verify(adapterFactory).getMetaModelConfAdapter((InputStream)anyObject());
     }
 
 }

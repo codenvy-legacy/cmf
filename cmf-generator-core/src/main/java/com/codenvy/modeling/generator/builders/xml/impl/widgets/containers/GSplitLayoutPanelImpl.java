@@ -31,12 +31,9 @@ public class GSplitLayoutPanelImpl extends AbstractGPartContainer<GSplitLayoutPa
 
     @Inject
     public GSplitLayoutPanelImpl() {
+        super(SPLIT_LAYOUT_PANEL_OPEN_TAG_FORMAT, SPLIT_LAYOUT_PANEL_CLOSE_TAG_FORMAT);
+
         builder = this;
-
-        widgetFormat = SPLIT_LAYOUT_PANEL_OPEN_TAG_FORMAT;
-        closeTagFormat = SPLIT_LAYOUT_PANEL_CLOSE_TAG_FORMAT;
-
-        clean();
     }
 
 }

@@ -17,13 +17,19 @@
 package com.codenvy.modeling.generator.builders.xml.containers;
 
 import com.codenvy.modeling.generator.builders.xml.AbstractXmlBuilderTest;
+import com.codenvy.modeling.generator.builders.xml.api.widgets.GWidget;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GSimpleLayoutPanel;
+import com.codenvy.modeling.generator.builders.xml.impl.widgets.GLabelImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.containers.GSimpleLayoutPanelImpl;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder.OFFSET;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 /**
  * Here we're testing {@link GSimpleLayoutPanelImpl}.
@@ -149,21 +155,49 @@ public class GSimpleLayoutPanelImplTest extends AbstractXmlBuilderTest {
 
     @Test
     public void simpleSimpleLayoutPanelWithWidgetsShouldBeCreated() throws Exception {
+        GWidget<GWidget> widget1 = createWidget(OFFSET + "widget 1");
+        GWidget<GWidget> widget2 = createWidget(OFFSET + "widget 2");
+        GWidget<GWidget> widget3 = createWidget(OFFSET + "widget 3");
+
         String actualContent = builder.withPrefix("g")
-                                      .withWidget(createWidget("    widget 1"))
-                                      .withWidget(createWidget("    widget 2"))
-                                      .withWidget(createWidget("    widget 3"))
+                                      .withWidget(widget1)
+                                      .withWidget(widget2)
+                                      .withWidget(widget3)
                                       .build();
 
         String expectedContent = "<g:SimpleLayoutPanel>\n" +
-                                 "    widget 3\n" +
+                                 OFFSET + "widget 3\n" +
                                  "</g:SimpleLayoutPanel>";
 
         assertEquals(expectedContent, actualContent);
+        verify(widget1, never()).withOffset(eq(1));
+        verify(widget2, never()).withOffset(eq(1));
+        verify(widget3).withOffset(eq(1));
+    }
+
+    @Test
+    public void realSimpleLayoutPanelWithWidgetsShouldBeCreated() throws Exception {
+        for (int i = 0; i < 5; i++) {
+            String actualContent = new GSimpleLayoutPanelImpl()
+                    .withPrefix("g").withOffset(i)
+                    .withWidget(new GSimpleLayoutPanelImpl().withPrefix("g").withWidget(new GLabelImpl().withPrefix("g")))
+                    .build();
+
+            String expectedContent = getOffset(i) + "<g:SimpleLayoutPanel>\n" +
+                                     getOffset(i + 1) + "<g:SimpleLayoutPanel>\n" +
+                                     getOffset(i + 2) + "<g:Label/>\n" +
+                                     getOffset(i + 1) + "</g:SimpleLayoutPanel>\n" +
+                                     getOffset(i) + "</g:SimpleLayoutPanel>";
+
+            assertEquals(expectedContent, actualContent);
+        }
     }
 
     @Test
     public void complexSimpleLayoutPanelShouldBeCreated() throws Exception {
+        GWidget<GWidget> widget1 = createWidget(OFFSET + "widget 1");
+        GWidget<GWidget> widget2 = createWidget(OFFSET + "widget 2");
+
         String actualContent = builder.withPrefix("g")
                                       .withTitle("title")
                                       .withName("name")
@@ -173,17 +207,20 @@ public class GSimpleLayoutPanelImplTest extends AbstractXmlBuilderTest {
                                       .withWidth("10px")
                                       .withDebugId("debugId")
 
-                                      .withWidget(createWidget("    widget 1"))
-                                      .withWidget(createWidget("    widget 2"))
+                                      .withWidget(widget1)
+                                      .withWidget(widget2)
 
                                       .build();
 
         String expectedContent = "<g:SimpleLayoutPanel title=\"title\" ui:field=\"name\" height=\"10px\" width=\"10px\" " +
                                  "debugId=\"debugId\" styleName=\"{style1} {style2}\" addStyleNames=\"{style1} {style2}\">\n" +
-                                 "    widget 2\n" +
+                                 OFFSET + "widget 2\n" +
                                  "</g:SimpleLayoutPanel>";
 
         assertEquals(expectedContent, actualContent);
+
+        verify(widget1, never()).withOffset(eq(1));
+        verify(widget2).withOffset(eq(1));
     }
 
 }

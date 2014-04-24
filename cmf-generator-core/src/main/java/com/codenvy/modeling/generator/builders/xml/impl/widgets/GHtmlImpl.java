@@ -30,10 +30,9 @@ public class GHtmlImpl extends AbstractGWidget<GHtml> implements GHtml {
 
     @Inject
     public GHtmlImpl() {
-        builder = this;
-        widgetFormat = HTML_FORMAT;
+        super(HTML_FORMAT);
 
-        clean();
+        builder = this;
     }
 
 }

@@ -54,7 +54,7 @@ public class SourceCodeBuilderImpl implements SourceCodeBuilder {
      * Check status of generating class.
      *
      * @throws IllegalStateException
-     *         exception happens in case a generating class wasn't initialized
+     *         exception happens if class to be generated isn't initialized
      */
     private void checkClassStatus() throws IllegalStateException {
         if (generatingClass == null) {
@@ -69,7 +69,7 @@ public class SourceCodeBuilderImpl implements SourceCodeBuilder {
      * Convert our access level to access level of 'Joist'.
      *
      * @param access
-     *         our access level that need to be converted
+     *         our access level that needs to be converted
      * @return 'Joist' access level
      */
     @Nonnull
@@ -204,7 +204,7 @@ public class SourceCodeBuilderImpl implements SourceCodeBuilder {
      * Check status of generating field.
      *
      * @throws IllegalStateException
-     *         exception happens in case a generating field wasn't initialized
+     *         exception happens if field to be generated isn't initialized
      */
     private void checkFieldStatus() throws IllegalStateException {
         if (generatingField == null) {
@@ -277,7 +277,7 @@ public class SourceCodeBuilderImpl implements SourceCodeBuilder {
      * Check status of generating method.
      *
      * @throws IllegalStateException
-     *         exception happens in case a generating method wasn't initialized
+     *         exception happens if method to be generated isn't initialized
      */
     private void checkMethodStatus() throws IllegalStateException {
         if (generatingMethod == null) {
@@ -400,7 +400,7 @@ public class SourceCodeBuilderImpl implements SourceCodeBuilder {
      * Check status of generating constructor.
      *
      * @throws IllegalStateException
-     *         exception happens in case a generating constructor wasn't initialized
+     *         exception happens if constructor to be generated isn't initialized
      */
     private void checkConstructorStatus() throws IllegalStateException {
         if (generatingConstructor == null) {

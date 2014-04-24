@@ -24,6 +24,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
+ * The implementation of {@link GSimpleLayoutPanel}.
+ *
  * @author Andrey Plotnikov
  */
 public class GSimpleLayoutPanelImpl extends AbstractGContainer<GSimpleLayoutPanel> implements GSimpleLayoutPanel {
@@ -36,12 +38,9 @@ public class GSimpleLayoutPanelImpl extends AbstractGContainer<GSimpleLayoutPane
 
     @Inject
     public GSimpleLayoutPanelImpl() {
+        super(SIMPLE_LAYOUT_PANEL_OPEN_TAG_FORMAT, SIMPLE_LAYOUT_PANEL_CLOSE_TAG_FORMAT);
+
         builder = this;
-
-        widgetFormat = SIMPLE_LAYOUT_PANEL_OPEN_TAG_FORMAT;
-        closeTagFormat = SIMPLE_LAYOUT_PANEL_CLOSE_TAG_FORMAT;
-
-        clean();
     }
 
     /** {@inheritDoc} */

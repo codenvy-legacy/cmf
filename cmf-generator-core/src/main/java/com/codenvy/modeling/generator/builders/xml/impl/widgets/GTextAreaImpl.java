@@ -30,10 +30,9 @@ public class GTextAreaImpl extends AbstractGWidget<GTextArea> implements GTextAr
 
     @Inject
     public GTextAreaImpl() {
-        builder = this;
-        widgetFormat = TEXT_AREA_FORMAT;
+        super(TEXT_AREA_FORMAT);
 
-        clean();
+        builder = this;
     }
 
 }

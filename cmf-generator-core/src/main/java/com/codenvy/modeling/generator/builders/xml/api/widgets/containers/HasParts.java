@@ -21,8 +21,6 @@ import com.codenvy.modeling.generator.builders.xml.api.widgets.GWidget;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
-import static com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder.OFFSET;
-
 /**
  * Implemented by class that have a few parts.
  * * <p/>
@@ -46,21 +44,21 @@ import static com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder.OFFSE
  */
 public interface HasParts<T> {
 
-    String NORTH_PART_FORMAT  = OFFSET + "<g:north size=\"%.2f\">\n" +
-                                OFFSET + OFFSET + "%s\n" +
-                                OFFSET + "</g:north>\n";
-    String SOUTH_PART_FORMAT  = OFFSET + "<g:south size=\"%.2f\">\n" +
-                                OFFSET + OFFSET + "%s\n" +
-                                OFFSET + "</g:south>\n";
-    String EAST_PART_FORMAT   = OFFSET + "<g:east size=\"%.2f\">\n" +
-                                OFFSET + OFFSET + "%s\n" +
-                                OFFSET + "</g:east>\n";
-    String WEST_PART_FORMAT   = OFFSET + "<g:west size=\"%.2f\">\n" +
-                                OFFSET + OFFSET + "%s\n" +
-                                OFFSET + "</g:west>\n";
-    String CENTER_PART_FORMAT = OFFSET + "<g:center>\n" +
-                                OFFSET + OFFSET + "%s\n" +
-                                OFFSET + "</g:center>\n";
+    String NORTH_PART_FORMAT  = "%s<%s:north size=\"%.2f\">\n" +
+                                "%s\n" +
+                                "%s</%s:north>\n";
+    String SOUTH_PART_FORMAT  = "%s<%s:south size=\"%.2f\">\n" +
+                                "%s\n" +
+                                "%s</%s:south>\n";
+    String EAST_PART_FORMAT   = "%s<%s:east size=\"%.2f\">\n" +
+                                "%s\n" +
+                                "%s</%s:east>\n";
+    String WEST_PART_FORMAT   = "%s<%s:west size=\"%.2f\">\n" +
+                                "%s\n" +
+                                "%s</%s:west>\n";
+    String CENTER_PART_FORMAT = "%s<%s:center>\n" +
+                                "%s\n" +
+                                "%s</%s:center>\n";
 
     /**
      * Add a widget in the north part.

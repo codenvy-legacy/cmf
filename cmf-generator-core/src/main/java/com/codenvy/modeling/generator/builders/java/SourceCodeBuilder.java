@@ -22,8 +22,8 @@ import javax.annotation.Nonnull;
 import java.util.Map;
 
 /**
- * The builder of source code. It provides an ability to generate code. One can create java classes with different methods and different
- * logic. The result is the text format of source code.
+ * The builder of java source code. It provides an ability to generate code. One can create java classes with different methods and
+ * different logic. The result is the text format of source code.
  *
  * @author Andrey Plotnikov
  */

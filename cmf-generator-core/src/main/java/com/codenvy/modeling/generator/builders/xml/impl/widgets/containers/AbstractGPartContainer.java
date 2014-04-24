@@ -43,8 +43,8 @@ public abstract class AbstractGPartContainer<T> extends AbstractGWidget<T> imple
     /** Aggregate information about container's part */
     private class Part {
 
-        private double                     size;
-        private GWidget<? extends GWidget> widget;
+        private final double                     size;
+        private final GWidget<? extends GWidget> widget;
 
         private Part(@Nonnegative double size, @Nonnull GWidget<? extends GWidget> widget) {
             this.size = size;
@@ -63,10 +63,18 @@ public abstract class AbstractGPartContainer<T> extends AbstractGWidget<T> imple
 
     }
 
-    private Map<Parts, Part>           parts;
-    private GWidget<? extends GWidget> widget;
+    @Nonnull
+    private       Map<Parts, Part>           parts;
+    @Nullable
+    private       GWidget<? extends GWidget> widget;
+    @Nonnull
+    private final String                     closeTagFormat;
 
-    protected String closeTagFormat;
+    protected AbstractGPartContainer(@Nonnull String openTagFormat, @Nonnull String closeTagFormat) {
+        super(openTagFormat);
+
+        this.closeTagFormat = closeTagFormat;
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -145,7 +153,8 @@ public abstract class AbstractGPartContainer<T> extends AbstractGWidget<T> imple
         }
 
         if (widget != null) {
-            result.append(String.format(CENTER_PART_FORMAT, widget.withOffset(offset).build()));
+            String textOffset = getOffset(offset + 1);
+            result.append(String.format(CENTER_PART_FORMAT, textOffset, prefix, widget.withOffset(offset + 2).build(), textOffset, prefix));
         }
 
         result.append(getOffset(offset)).append(String.format(closeTagFormat, prefix));
@@ -192,7 +201,8 @@ public abstract class AbstractGPartContainer<T> extends AbstractGWidget<T> imple
                          @Nonnegative double size,
                          @Nullable GWidget<? extends GWidget> widget) {
         if (widget != null) {
-            str.append(String.format(format, size, widget.withOffset(offset).build()));
+            String textOffset = getOffset(offset + 1);
+            str.append(String.format(format, textOffset, prefix, size, widget.withOffset(offset + 2).build(), textOffset, prefix));
         }
     }
 

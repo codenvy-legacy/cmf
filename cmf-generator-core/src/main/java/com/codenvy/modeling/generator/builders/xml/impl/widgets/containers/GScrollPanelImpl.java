@@ -35,12 +35,9 @@ public class GScrollPanelImpl extends AbstractGContainer<GScrollPanel> implement
 
     @Inject
     public GScrollPanelImpl() {
+        super(SCROLL_PANEL_OPEN_TAG_FORMAT, SCROLL_PANEL_CLOSE_TAG_FORMAT);
+
         builder = this;
-
-        widgetFormat = SCROLL_PANEL_OPEN_TAG_FORMAT;
-        closeTagFormat = SCROLL_PANEL_CLOSE_TAG_FORMAT;
-
-        clean();
     }
 
     /** {@inheritDoc} */

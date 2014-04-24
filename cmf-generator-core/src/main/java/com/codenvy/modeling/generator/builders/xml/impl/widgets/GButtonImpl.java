@@ -30,10 +30,9 @@ public class GButtonImpl extends AbstractGWidget<GButton> implements GButton {
 
     @Inject
     public GButtonImpl() {
-        builder = this;
-        widgetFormat = BUTTON_FORMAT;
+        super(BUTTON_FORMAT);
 
-        clean();
+        builder = this;
     }
 
 }

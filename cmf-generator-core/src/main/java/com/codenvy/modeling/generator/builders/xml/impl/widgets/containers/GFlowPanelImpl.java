@@ -31,12 +31,9 @@ public class GFlowPanelImpl extends AbstractGContainer<GFlowPanel> implements GF
 
     @Inject
     public GFlowPanelImpl() {
+        super(FLOW_PANEL_OPEN_TAG_FORMAT, FLOW_PANEL_CLOSE_TAG_FORMAT);
+
         builder = this;
-
-        widgetFormat = FLOW_PANEL_OPEN_TAG_FORMAT;
-        closeTagFormat = FLOW_PANEL_CLOSE_TAG_FORMAT;
-
-        clean();
     }
 
 }

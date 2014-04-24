@@ -34,6 +34,8 @@ import static org.mockito.Mockito.when;
  */
 public abstract class AbstractXmlBuilderTest {
 
+    protected static final String TWO_OFFSETS = OFFSET + OFFSET;
+
     protected String getOffset(int offset) {
         StringBuilder result = new StringBuilder();
 

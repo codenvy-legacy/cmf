@@ -31,12 +31,9 @@ public class GDockLayoutPanelImpl extends AbstractGPartContainer<GDockLayoutPane
 
     @Inject
     public GDockLayoutPanelImpl() {
+        super(DOCK_LAYOUT_PANEL_OPEN_TAG_FORMAT, DOCK_LAYOUT_PANEL_CLOSE_TAG_FORMAT);
+
         builder = this;
-
-        widgetFormat = DOCK_LAYOUT_PANEL_OPEN_TAG_FORMAT;
-        closeTagFormat = DOCK_LAYOUT_PANEL_CLOSE_TAG_FORMAT;
-
-        clean();
     }
 
 }

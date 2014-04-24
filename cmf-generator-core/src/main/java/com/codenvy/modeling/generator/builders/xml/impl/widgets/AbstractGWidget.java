@@ -46,18 +46,24 @@ public abstract class AbstractGWidget<T> implements GWidget<T>, HasEnable<T>, Ha
     private static final String STYLE_FORMAT = "{%s}";
 
     @Nullable
-    protected String              prefix;
+    protected     String              prefix;
     @Nonnull
-    private   List<String>        styles;
+    private       List<String>        styles;
     @Nonnull
-    private   List<String>        addStyles;
-    protected int                 offset;
+    private       List<String>        addStyles;
+    protected     int                 offset;
     @Nonnull
-    private   Map<String, String> params;
+    private       Map<String, String> params;
     @Nonnull
-    protected T                   builder;
+    protected     T                   builder;
     @Nonnull
-    protected String              widgetFormat;
+    private final String              widgetFormat;
+
+    protected AbstractGWidget(@Nonnull String widgetFormat) {
+        this.widgetFormat = widgetFormat;
+
+        clean();
+    }
 
     /** Clean builder configuration */
     protected void clean() {
@@ -225,7 +231,7 @@ public abstract class AbstractGWidget<T> implements GWidget<T>, HasEnable<T>, Ha
      *
      * @return {@link String} that contains general parameters
      */
-    protected String getWidget() {
+    private String getWidget() {
         if (prefix == null) {
             throw new IllegalStateException("The builder doesn't have any information about creating widget prefix. " +
                                             "You should execute withPrefix method and then this one.");

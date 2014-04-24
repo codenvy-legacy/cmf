@@ -20,11 +20,18 @@ import com.codenvy.modeling.generator.builders.xml.api.GField;
 import com.codenvy.modeling.generator.builders.xml.api.GStyle;
 import com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.GWidget;
+import com.codenvy.modeling.generator.builders.xml.impl.GFieldImpl;
+import com.codenvy.modeling.generator.builders.xml.impl.GStyleImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.UIXmlBuilderImpl;
+import com.codenvy.modeling.generator.builders.xml.impl.widgets.GLabelImpl;
+import com.codenvy.modeling.generator.builders.xml.impl.widgets.GTextBoxImpl;
+import com.codenvy.modeling.generator.builders.xml.impl.widgets.containers.GDockLayoutPanelImpl;
+import com.codenvy.modeling.generator.builders.xml.impl.widgets.containers.GFlowPanelImpl;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder.OFFSET;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 
@@ -165,6 +172,76 @@ public class UIXmlBuilderImplTest extends AbstractXmlBuilderTest {
         verify(field).build();
         verify(style).build();
         verify(widget).build();
+    }
+
+    @Test
+    public void realXMLShouldBeCreated() throws Exception {
+        String threeOffsets = getOffset(3);
+        String fourOffsets = getOffset(4);
+
+        String actualXML = builder
+                .withField(new GFieldImpl().withName("name1").withType(String.class))
+                .withField(new GFieldImpl().withName("name2").withType(String.class))
+
+                .withStyle(
+                        new GStyleImpl().withStyle("name", "float: right;   \n   margin: 6px;    margin-right: 5px;")
+                                        .withStyle("name2", "  float: right;   \n   margin: 6px;    margin-right: 5px;")
+                                        .withStyle("name3", "  float: right;\n   margin: 6px;       margin-right: 5px;")
+                          )
+
+                .setWidget(
+                        new GDockLayoutPanelImpl().withPrefix("g")
+                                                  .withNorth(10, new GLabelImpl().withPrefix("g").withText("text"))
+                                                  .withSouth(10, new GTextBoxImpl().withPrefix("g").withText("text"))
+                                                  .withWidget(
+                                                          new GFlowPanelImpl().withPrefix("g")
+                                                                              .withWidget(
+                                                                                      new GLabelImpl().withPrefix("g")
+                                                                                                      .withText("text")
+                                                                                         )
+                                                             )
+                          )
+                .build();
+
+        String expectedXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                             "<!DOCTYPE ui:UiBinder SYSTEM \"http://dl.google.com/gwt/DTD/xhtml.ent\">\n" +
+                             "<ui:UiBinder \n" +
+                             "             xmlns:ui='urn:ui:com.google.gwt.uibinder'>\n" +
+                             OFFSET + "<ui:with field='name1' type='java.lang.String'/>\n" +
+                             OFFSET + "<ui:with field='name2' type='java.lang.String'/>\n" +
+                             OFFSET + "<ui:style>\n" +
+                             TWO_OFFSETS + ".name3{\n" +
+                             threeOffsets + "float: right;\n" +
+                             threeOffsets + "margin: 6px;\n" +
+                             threeOffsets + "margin-right: 5px;\n" +
+                             TWO_OFFSETS + "}\n" +
+                             TWO_OFFSETS + ".name{\n" +
+                             threeOffsets + "float: right;\n" +
+                             threeOffsets + "margin: 6px;\n" +
+                             threeOffsets + "margin-right: 5px;\n" +
+                             TWO_OFFSETS + "}\n" +
+                             TWO_OFFSETS + ".name2{\n" +
+                             threeOffsets + "float: right;\n" +
+                             threeOffsets + "margin: 6px;\n" +
+                             threeOffsets + "margin-right: 5px;\n" +
+                             TWO_OFFSETS + "}\n" +
+                             OFFSET + "</ui:style>\n" +
+                             OFFSET + "<g:DockLayoutPanel>\n" +
+                             TWO_OFFSETS + "<g:north size=\"10.00\">\n" +
+                             threeOffsets + "<g:Label text=\"text\"/>\n" +
+                             TWO_OFFSETS + "</g:north>\n" +
+                             TWO_OFFSETS + "<g:south size=\"10.00\">\n" +
+                             threeOffsets + "<g:TextBox text=\"text\"/>\n" +
+                             TWO_OFFSETS + "</g:south>\n" +
+                             TWO_OFFSETS + "<g:center>\n" +
+                             threeOffsets + "<g:FlowPanel>\n" +
+                             fourOffsets + "<g:Label text=\"text\"/>\n" +
+                             threeOffsets + "</g:FlowPanel>\n" +
+                             TWO_OFFSETS + "</g:center>\n" +
+                             OFFSET + "</g:DockLayoutPanel>\n" +
+                             "</ui:UiBinder>";
+
+        assertEquals(expectedXML, actualXML);
     }
 
 }

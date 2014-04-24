@@ -30,10 +30,9 @@ public class GTextBoxImpl extends AbstractGWidget<GTextBox> implements GTextBox 
 
     @Inject
     public GTextBoxImpl() {
-        builder = this;
-        widgetFormat = TEXT_BOX_FORMAT;
+        super(TEXT_BOX_FORMAT);
 
-        clean();
+        builder = this;
     }
 
 }

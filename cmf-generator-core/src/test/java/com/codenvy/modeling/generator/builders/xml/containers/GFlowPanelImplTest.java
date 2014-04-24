@@ -17,13 +17,19 @@
 package com.codenvy.modeling.generator.builders.xml.containers;
 
 import com.codenvy.modeling.generator.builders.xml.AbstractXmlBuilderTest;
+import com.codenvy.modeling.generator.builders.xml.api.widgets.GWidget;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GFlowPanel;
+import com.codenvy.modeling.generator.builders.xml.impl.widgets.GLabelImpl;
+import com.codenvy.modeling.generator.builders.xml.impl.widgets.GTextAreaImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.containers.GFlowPanelImpl;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder.OFFSET;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
 
 /**
  * Here we're testing {@link GFlowPanelImpl}.
@@ -149,23 +155,57 @@ public class GFlowPanelImplTest extends AbstractXmlBuilderTest {
 
     @Test
     public void simpleFlowPanelWithWidgetsShouldBeCreated() throws Exception {
+        GWidget<GWidget> widget1 = createWidget(OFFSET + "widget 1");
+        GWidget<GWidget> widget2 = createWidget(OFFSET + "widget 2");
+        GWidget<GWidget> widget3 = createWidget(OFFSET + "widget 3");
+
         String actualContent = builder.withPrefix("g")
-                                      .withWidget(createWidget("    widget 1"))
-                                      .withWidget(createWidget("    widget 2"))
-                                      .withWidget(createWidget("    widget 3"))
+                                      .withWidget(widget1)
+                                      .withWidget(widget2)
+                                      .withWidget(widget3)
                                       .build();
 
         String expectedContent = "<g:FlowPanel>\n" +
-                                 "    widget 1\n" +
-                                 "    widget 2\n" +
-                                 "    widget 3\n" +
+                                 OFFSET + "widget 1\n" +
+                                 OFFSET + "widget 2\n" +
+                                 OFFSET + "widget 3\n" +
                                  "</g:FlowPanel>";
 
         assertEquals(expectedContent, actualContent);
+
+        verify(widget1).withOffset(eq(1));
+        verify(widget2).withOffset(eq(1));
+        verify(widget3).withOffset(eq(1));
+    }
+
+    @Test
+    public void realFlowPanelWithWidgetsShouldBeCreated() throws Exception {
+        for (int i = 0; i < 5; i++) {
+            String actualContent = new GFlowPanelImpl().withPrefix("g").withOffset(i)
+                                                       .withWidget(new GLabelImpl().withPrefix("g").withText("text").withHeight("10px"))
+                                                       .withWidget(new GTextAreaImpl().withPrefix("g").withTitle("title").withName("name"))
+                                                       .withWidget(new GFlowPanelImpl().withPrefix("g")
+                                                                                       .withWidget(new GLabelImpl().withPrefix("g"))
+                                                                  )
+                                                       .build();
+
+            String expectedContent = getOffset(i) + "<g:FlowPanel>\n" +
+                                     getOffset(i + 1) + "<g:Label text=\"text\" height=\"10px\"/>\n" +
+                                     getOffset(i + 1) + "<g:TextArea title=\"title\" ui:field=\"name\"/>\n" +
+                                     getOffset(i + 1) + "<g:FlowPanel>\n" +
+                                     getOffset(i + 2) + "<g:Label/>\n" +
+                                     getOffset(i + 1) + "</g:FlowPanel>\n" +
+                                     getOffset(i) + "</g:FlowPanel>";
+
+            assertEquals(expectedContent, actualContent);
+        }
     }
 
     @Test
     public void complexFlowPanelShouldBeCreated() throws Exception {
+        GWidget<GWidget> widget1 = createWidget(OFFSET + "widget 1");
+        GWidget<GWidget> widget2 = createWidget(OFFSET + "widget 2");
+
         String actualContent = builder.withPrefix("g")
                                       .withTitle("title")
                                       .withName("name")
@@ -175,8 +215,8 @@ public class GFlowPanelImplTest extends AbstractXmlBuilderTest {
                                       .withWidth("10px")
                                       .withDebugId("debugId")
 
-                                      .withWidget(createWidget("    widget 1"))
-                                      .withWidget(createWidget("    widget 2"))
+                                      .withWidget(widget1)
+                                      .withWidget(widget2)
 
                                       .build();
 
@@ -187,6 +227,9 @@ public class GFlowPanelImplTest extends AbstractXmlBuilderTest {
                                  "</g:FlowPanel>";
 
         assertEquals(expectedContent, actualContent);
+
+        verify(widget1).withOffset(eq(1));
+        verify(widget2).withOffset(eq(1));
     }
 
 }

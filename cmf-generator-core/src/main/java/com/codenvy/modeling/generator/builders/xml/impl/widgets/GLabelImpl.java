@@ -30,10 +30,9 @@ public class GLabelImpl extends AbstractGWidget<GLabel> implements GLabel {
 
     @Inject
     public GLabelImpl() {
-        builder = this;
-        widgetFormat = LABEL_FORMAT;
+        super(LABEL_FORMAT);
 
-        clean();
+        builder = this;
     }
 
 }

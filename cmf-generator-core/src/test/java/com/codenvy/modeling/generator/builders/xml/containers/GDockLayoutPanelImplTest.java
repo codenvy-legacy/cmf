@@ -17,13 +17,18 @@
 package com.codenvy.modeling.generator.builders.xml.containers;
 
 import com.codenvy.modeling.generator.builders.xml.AbstractXmlBuilderTest;
+import com.codenvy.modeling.generator.builders.xml.api.widgets.GWidget;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GDockLayoutPanel;
+import com.codenvy.modeling.generator.builders.xml.impl.widgets.GLabelImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.containers.GDockLayoutPanelImpl;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder.OFFSET;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
 
 /**
  * Here we're testing {@link GDockLayoutPanelImpl}.
@@ -149,11 +154,11 @@ public class GDockLayoutPanelImplTest extends AbstractXmlBuilderTest {
 
     @Test
     public void simpleDockLayoutPanelWithCenterPartShouldBeCreated() throws Exception {
-        String actualContent = builder.withPrefix("g").withWidget(createWidget("widget1")).build();
+        String actualContent = builder.withPrefix("g").withWidget(createWidget(TWO_OFFSETS + "widget1")).build();
 
         String expectedContent = "<g:DockLayoutPanel>\n" +
                                  "    <g:center>\n" +
-                                 "        widget1\n" +
+                                 TWO_OFFSETS + "widget1\n" +
                                  "    </g:center>\n" +
                                  "</g:DockLayoutPanel>";
 
@@ -162,12 +167,12 @@ public class GDockLayoutPanelImplTest extends AbstractXmlBuilderTest {
 
     @Test
     public void simpleDockLayoutPanelWithNorthPartShouldBeCreated() throws Exception {
-        String actualContent = builder.withPrefix("g").withNorth(10.0, createWidget("widget 1")).build();
+        String actualContent = builder.withPrefix("g").withNorth(10.0, createWidget(TWO_OFFSETS + "widget 1")).build();
 
         String expectedContent = "<g:DockLayoutPanel>\n" +
-                                 "    <g:north size=\"10.00\">\n" +
-                                 "        widget 1\n" +
-                                 "    </g:north>\n" +
+                                 OFFSET + "<g:north size=\"10.00\">\n" +
+                                 TWO_OFFSETS + "widget 1\n" +
+                                 OFFSET + "</g:north>\n" +
                                  "</g:DockLayoutPanel>";
 
         assertEquals(expectedContent, actualContent);
@@ -175,12 +180,12 @@ public class GDockLayoutPanelImplTest extends AbstractXmlBuilderTest {
 
     @Test
     public void simpleDockLayoutPanelWithSouthPartShouldBeCreated() throws Exception {
-        String actualContent = builder.withPrefix("g").withSouth(10.0, createWidget("widget 1")).build();
+        String actualContent = builder.withPrefix("g").withSouth(10.0, createWidget(TWO_OFFSETS + "widget 1")).build();
 
         String expectedContent = "<g:DockLayoutPanel>\n" +
-                                 "    <g:south size=\"10.00\">\n" +
-                                 "        widget 1\n" +
-                                 "    </g:south>\n" +
+                                 OFFSET + "<g:south size=\"10.00\">\n" +
+                                 TWO_OFFSETS + "widget 1\n" +
+                                 OFFSET + "</g:south>\n" +
                                  "</g:DockLayoutPanel>";
 
         assertEquals(expectedContent, actualContent);
@@ -188,12 +193,12 @@ public class GDockLayoutPanelImplTest extends AbstractXmlBuilderTest {
 
     @Test
     public void simpleDockLayoutPanelWithEastPartShouldBeCreated() throws Exception {
-        String actualContent = builder.withPrefix("g").withEast(10.0, createWidget("widget 1")).build();
+        String actualContent = builder.withPrefix("g").withEast(10.0, createWidget(TWO_OFFSETS + "widget 1")).build();
 
         String expectedContent = "<g:DockLayoutPanel>\n" +
-                                 "    <g:east size=\"10.00\">\n" +
-                                 "        widget 1\n" +
-                                 "    </g:east>\n" +
+                                 OFFSET + "<g:east size=\"10.00\">\n" +
+                                 TWO_OFFSETS + "widget 1\n" +
+                                 OFFSET + "</g:east>\n" +
                                  "</g:DockLayoutPanel>";
 
         assertEquals(expectedContent, actualContent);
@@ -201,19 +206,83 @@ public class GDockLayoutPanelImplTest extends AbstractXmlBuilderTest {
 
     @Test
     public void simpleDockLayoutPanelWithWestPartShouldBeCreated() throws Exception {
-        String actualContent = builder.withPrefix("g").withWest(10.0, createWidget("widget 1")).build();
+        String actualContent = builder.withPrefix("g").withWest(10.0, createWidget(TWO_OFFSETS + "widget 1")).build();
 
         String expectedContent = "<g:DockLayoutPanel>\n" +
-                                 "    <g:west size=\"10.00\">\n" +
-                                 "        widget 1\n" +
-                                 "    </g:west>\n" +
+                                 OFFSET + "<g:west size=\"10.00\">\n" +
+                                 TWO_OFFSETS + "widget 1\n" +
+                                 OFFSET + "</g:west>\n" +
                                  "</g:DockLayoutPanel>";
 
         assertEquals(expectedContent, actualContent);
     }
 
     @Test
+    public void realDockLayoutPanelWithWidgetsShouldBeCreated() throws Exception {
+        for (int i = 0; i < 5; i++) {
+            String actualContent = new GDockLayoutPanelImpl()
+                    .withPrefix("g").withOffset(i)
+                    .withNorth(20, new GDockLayoutPanelImpl().withPrefix("g").withWidget(new GLabelImpl().withPrefix("g")))
+                    .withSouth(20, new GDockLayoutPanelImpl().withPrefix("g").withWidget(new GLabelImpl().withPrefix("g")))
+                    .withEast(20, new GDockLayoutPanelImpl().withPrefix("g").withWidget(new GLabelImpl().withPrefix("g")))
+                    .withWest(20, new GDockLayoutPanelImpl().withPrefix("g").withWidget(new GLabelImpl().withPrefix("g")))
+                    .withWidget(new GDockLayoutPanelImpl().withPrefix("g").withWidget(new GLabelImpl().withPrefix("g")))
+                    .build();
+
+            String expectedContent = getOffset(i) + "<g:DockLayoutPanel>\n" +
+
+                                     getOffset(i + 1) + "<g:north size=\"20.00\">\n" +
+                                     getOffset(i + 2) + "<g:DockLayoutPanel>\n" +
+                                     getOffset(i + 3) + "<g:center>\n" +
+                                     getOffset(i + 4) + "<g:Label/>\n" +
+                                     getOffset(i + 3) + "</g:center>\n" +
+                                     getOffset(i + 2) + "</g:DockLayoutPanel>\n" +
+                                     getOffset(i + 1) + "</g:north>\n" +
+
+                                     getOffset(i + 1) + "<g:south size=\"20.00\">\n" +
+                                     getOffset(i + 2) + "<g:DockLayoutPanel>\n" +
+                                     getOffset(i + 3) + "<g:center>\n" +
+                                     getOffset(i + 4) + "<g:Label/>\n" +
+                                     getOffset(i + 3) + "</g:center>\n" +
+                                     getOffset(i + 2) + "</g:DockLayoutPanel>\n" +
+                                     getOffset(i + 1) + "</g:south>\n" +
+
+                                     getOffset(i + 1) + "<g:east size=\"20.00\">\n" +
+                                     getOffset(i + 2) + "<g:DockLayoutPanel>\n" +
+                                     getOffset(i + 3) + "<g:center>\n" +
+                                     getOffset(i + 4) + "<g:Label/>\n" +
+                                     getOffset(i + 3) + "</g:center>\n" +
+                                     getOffset(i + 2) + "</g:DockLayoutPanel>\n" +
+                                     getOffset(i + 1) + "</g:east>\n" +
+
+                                     getOffset(i + 1) + "<g:west size=\"20.00\">\n" +
+                                     getOffset(i + 2) + "<g:DockLayoutPanel>\n" +
+                                     getOffset(i + 3) + "<g:center>\n" +
+                                     getOffset(i + 4) + "<g:Label/>\n" +
+                                     getOffset(i + 3) + "</g:center>\n" +
+                                     getOffset(i + 2) + "</g:DockLayoutPanel>\n" +
+                                     getOffset(i + 1) + "</g:west>\n" +
+
+                                     getOffset(i + 1) + "<g:center>\n" +
+                                     getOffset(i + 2) + "<g:DockLayoutPanel>\n" +
+                                     getOffset(i + 3) + "<g:center>\n" +
+                                     getOffset(i + 4) + "<g:Label/>\n" +
+                                     getOffset(i + 3) + "</g:center>\n" +
+                                     getOffset(i + 2) + "</g:DockLayoutPanel>\n" +
+                                     getOffset(i + 1) + "</g:center>\n" +
+
+                                     getOffset(i) + "</g:DockLayoutPanel>";
+
+            assertEquals(expectedContent, actualContent);
+        }
+    }
+
+    @Test
     public void complexDockLayoutPanelShouldBeCreated() throws Exception {
+        GWidget<GWidget> widget1 = createWidget(TWO_OFFSETS + "widget 1");
+        GWidget<GWidget> widget2 = createWidget(TWO_OFFSETS + "widget 2");
+        GWidget<GWidget> widget3 = createWidget(TWO_OFFSETS + "widget 3");
+
         String actualContent = builder.withPrefix("g")
                                       .withTitle("title")
                                       .withName("name")
@@ -223,26 +292,30 @@ public class GDockLayoutPanelImplTest extends AbstractXmlBuilderTest {
                                       .withWidth("10px")
                                       .withDebugId("debugId")
 
-                                      .withNorth(10.0, createWidget("widget 1"))
-                                      .withWest(10.0, createWidget("widget 2"))
-                                      .withWidget(createWidget("widget 3"))
+                                      .withNorth(10.0, widget1)
+                                      .withWest(10.0, widget2)
+                                      .withWidget(widget3)
 
                                       .build();
 
         String expectedContent = "<g:DockLayoutPanel title=\"title\" ui:field=\"name\" height=\"10px\" width=\"10px\" " +
                                  "debugId=\"debugId\" styleName=\"{style1} {style2}\" addStyleNames=\"{style1} {style2}\">\n" +
-                                 "    <g:north size=\"10.00\">\n" +
-                                 "        widget 1\n" +
-                                 "    </g:north>\n" +
-                                 "    <g:west size=\"10.00\">\n" +
-                                 "        widget 2\n" +
-                                 "    </g:west>\n" +
-                                 "    <g:center>\n" +
-                                 "        widget 3\n" +
-                                 "    </g:center>\n" +
+                                 OFFSET + "<g:north size=\"10.00\">\n" +
+                                 TWO_OFFSETS + "widget 1\n" +
+                                 OFFSET + "</g:north>\n" +
+                                 OFFSET + "<g:west size=\"10.00\">\n" +
+                                 TWO_OFFSETS + "widget 2\n" +
+                                 OFFSET + "</g:west>\n" +
+                                 OFFSET + "<g:center>\n" +
+                                 TWO_OFFSETS + "widget 3\n" +
+                                 OFFSET + "</g:center>\n" +
                                  "</g:DockLayoutPanel>";
 
         assertEquals(expectedContent, actualContent);
+
+        verify(widget1).withOffset(eq(2));
+        verify(widget2).withOffset(eq(2));
+        verify(widget3).withOffset(eq(2));
     }
 
 }

@@ -30,10 +30,18 @@ import java.util.List;
  *
  * @author Andrey Plotnikov
  */
-public class AbstractGContainer<T> extends AbstractGWidget<T> implements GContainer<T> {
+public abstract class AbstractGContainer<T> extends AbstractGWidget<T> implements GContainer<T> {
 
-    protected String                           closeTagFormat;
-    private   List<GWidget<? extends GWidget>> widgets;
+    @Nonnull
+    private final String                           closeTagFormat;
+    @Nonnull
+    private       List<GWidget<? extends GWidget>> widgets;
+
+    protected AbstractGContainer(@Nonnull String openTagFormat, @Nonnull String closeTagFormat) {
+        super(openTagFormat);
+
+        this.closeTagFormat = closeTagFormat;
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -63,6 +71,8 @@ public class AbstractGContainer<T> extends AbstractGWidget<T> implements GContai
         }
 
         result.append(getOffset(offset)).append(String.format(closeTagFormat, prefix));
+
+        clean();
 
         return result.toString();
     }
