@@ -31,7 +31,7 @@
     <dependencies>
         <dependency>
             <groupId>com.codenvy.cmf</groupId>
-            <artifactId>cmf-configuration-adapter</artifactId>
+            <artifactId>cmf-generator-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

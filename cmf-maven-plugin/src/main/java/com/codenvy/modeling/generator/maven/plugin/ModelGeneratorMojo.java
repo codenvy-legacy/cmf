@@ -1,7 +1,6 @@
 package com.codenvy.modeling.generator.maven.plugin;
 
-import com.codenvy.modeling.configuration.DescriptorConfig;
-import com.codenvy.modeling.configuration.InvalidDescriptorException;
+import com.codenvy.modeling.generator.Generator;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -10,7 +9,8 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
-import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
 * @author Vladyslav Zhukovskii
@@ -18,25 +18,41 @@ import java.io.File;
 @Mojo(name = "java", defaultPhase = LifecyclePhase.GENERATE_SOURCES)
 public class ModelGeneratorMojo extends AbstractMojo {
 
-    @Parameter(property = "confDescriptor", required = false)
-    private File configurationDescriptor;
+    @Parameter(property = "descriptor", required = false)
+    private String descriptor;
 
-    @Parameter(property = "genDir", required = false)
-    private File genDir;
+    @Parameter(property = "sourcePath", required = false)
+    private String sourcePath;
+
+    @Parameter(property = "targetPath", required = false)
+    private String targetPath;
+
+    @Parameter(property = "mainPackage", required = false)
+    private String mainPackage;
+
+    @Parameter(property = "editorName", required = false)
+    private String editorName;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-//        if (!(configurationDescriptor.exists() || configurationDescriptor.isFile())) {
-//            getLog().error("You should provide a valid path to configuration descriptor file.");
-//        }
-//        try {
-//            DescriptorConfig descriptor = new DescriptorConfig(configurationDescriptor);
-//            getLog().info(descriptor.getMetaModelConfigDir());
-//            getLog().info(descriptor.getSerializationConfigDir());
-//            getLog().info(descriptor.getEditorConfigDir());
-//            getLog().info(descriptor.getStyleConfigDir());
-//        } catch (InvalidDescriptorException e) {
-//            getLog().error(e.getMessage(), e);
-//        }
+        Map<Generator.Param, String> params = new HashMap<>();
+
+        if (sourcePath != null && !sourcePath.isEmpty()) {
+            params.put(Generator.Param.SOURCE_PATH, sourcePath);
+        }
+
+        if (targetPath != null && !targetPath.isEmpty()) {
+            params.put(Generator.Param.TARGET_PATH, targetPath);
+        }
+
+        if (mainPackage != null && !mainPackage.isEmpty()) {
+            params.put(Generator.Param.MAIN_PACKAGE, mainPackage);
+        }
+
+        if (editorName != null && !editorName.isEmpty()) {
+            params.put(Generator.Param.EDITOR_NAME, editorName);
+        }
+
+        getLog().info(params.toString());
     }
 }
