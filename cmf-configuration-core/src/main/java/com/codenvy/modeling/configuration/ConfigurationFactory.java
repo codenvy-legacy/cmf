@@ -27,7 +27,7 @@ import java.util.List;
  */
 public interface ConfigurationFactory {
 
-    public enum PathParameter {
+    enum PathParameter {
         DIAGRAM {
             @Override
             public boolean isMandatory() {

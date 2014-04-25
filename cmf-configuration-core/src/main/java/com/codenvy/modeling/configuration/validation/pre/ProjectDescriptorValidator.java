@@ -62,7 +62,7 @@ public class ProjectDescriptorValidator extends AbstractPersistenceValidator {
         validateParameters();
     }
 
-    private Properties loadDescriptor(String path) {
+    private Properties loadDescriptor(@Nonnull String path) {
         Properties descriptorProperties = new Properties();
 
         try (FileInputStream descriptorStream = new FileInputStream(path)) {
@@ -80,7 +80,7 @@ public class ProjectDescriptorValidator extends AbstractPersistenceValidator {
         }
     }
 
-    private void validate(ConfigurationFactory.PathParameter parameter) {
+    private void validate(@Nonnull ConfigurationFactory.PathParameter parameter) {
         String parameterValue = descriptorProperties.getProperty(parameter.name().toLowerCase());
         ErrorType errorType = specifyErrorType(parameterValue, parameter);
 
@@ -89,7 +89,8 @@ public class ProjectDescriptorValidator extends AbstractPersistenceValidator {
         }
     }
 
-    private ErrorType specifyErrorType(String parameterValue, ConfigurationFactory.PathParameter parameter) {
+    @Nonnull
+    private ErrorType specifyErrorType(@Nonnull String parameterValue, @Nonnull ConfigurationFactory.PathParameter parameter) {
         ErrorType errorType = ErrorType.NOT_AN_ERROR;
 
         if (parameterValue == null && parameter.isMandatory()) {

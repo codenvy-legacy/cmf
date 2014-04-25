@@ -31,30 +31,29 @@ public class Report {
             HIGH, LOW
         }
 
+        @Nonnull
         private String    message;
+        @Nullable
         private Exception exception;
+        @Nonnull
         private Severity  severity;
 
-        public Error(String message, Exception exception, Severity severity) {
+        public Error(@Nonnull String message, @Nullable Exception exception, @Nonnull Severity severity) {
             this.message = message;
             this.exception = exception;
             this.severity = severity;
         }
 
-        public Error(String message, Severity severity) {
-            this.message = message;
-            this.severity = severity;
+        public Error(@Nonnull String message, @Nonnull Severity severity) {
+            this(message, null, severity);
         }
 
-        public Error(String message) {
-            this.message = message;
-            this.severity = Severity.LOW;
+        public Error(@Nonnull String message) {
+            this(message, null, Severity.LOW);
         }
 
-        public Error(String message, Exception exception) {
-            this.message = message;
-            this.exception = exception;
-            this.severity = Severity.LOW;
+        public Error(@Nonnull String message, @Nullable Exception exception) {
+            this(message, exception, Severity.LOW);
         }
 
         @Nonnull

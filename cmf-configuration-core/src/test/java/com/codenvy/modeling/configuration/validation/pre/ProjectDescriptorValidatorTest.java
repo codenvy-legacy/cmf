@@ -5,115 +5,232 @@ import com.codenvy.modeling.configuration.validation.Report;
 
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExternalResource;
+import org.junit.rules.RuleChain;
 import org.junit.rules.TemporaryFolder;
+import org.junit.rules.TestRule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Properties;
 
+import static com.codenvy.modeling.configuration.ConfigurationFactory.PathParameter;
+import static com.codenvy.modeling.configuration.ConfigurationFactory.PathParameter.DIAGRAM;
+import static com.codenvy.modeling.configuration.ConfigurationFactory.PathParameter.EDITOR;
+import static com.codenvy.modeling.configuration.ConfigurationFactory.PathParameter.SERIALIZATION;
+import static com.codenvy.modeling.configuration.ConfigurationFactory.PathParameter.STYLE;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Vladyslav Zhukovskii
+ * @author Dmitry Kuleshov
  */
 public class ProjectDescriptorValidatorTest {
-    private static final String META_MODEL_DIR    = "metamodel_config";
-    private static final String SERIALIZATION_DIR = "serialization_config";
-    private static final String EDITOR_DIR        = "editor_config";
-    private static final String STYLE_DIR         = "style_config";
-    private static final String DESCRIPTOR_FILE   = "descriptor";
+
+    private static final Logger LOG = LoggerFactory.getLogger(ProjectDescriptorValidator.class);
+
+    private static final String          DESCRIPTOR_FILE     = "descriptor";
+    public static final  PathParameter[] ALL_PATH_PARAMETERS = new PathParameter[]{
+            DIAGRAM,
+            SERIALIZATION,
+            EDITOR,
+            STYLE
+    };
+
+    public TemporaryFolder     rootFolder        = new TemporaryFolder();
+    public TemporaryDescriptor descriptorFile    = new TemporaryDescriptor();
+    public PropertiesBuilder   propertiesBuilder = new PropertiesBuilder();
 
     @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
+    public TestRule chain = RuleChain
+            .outerRule(rootFolder)
+            .around(descriptorFile)
+            .around(propertiesBuilder);
+
 
     @Test
-    public void testGettingEmptyReport() throws Exception {
-        folder.create();
-
-        File metaModelDir = folder.newFolder(META_MODEL_DIR);
-        File serializationDir = folder.newFolder(SERIALIZATION_DIR);
-        File editorDir = folder.newFolder(EDITOR_DIR);
-        File styleDir = folder.newFolder(STYLE_DIR);
-
-        Properties props = new Properties();
-        props.put(ConfigurationFactory.PathParameter.DIAGRAM.name().toLowerCase(), metaModelDir.getPath());
-        props.put(ConfigurationFactory.PathParameter.SERIALIZATION.name().toLowerCase(), serializationDir.getPath());
-        props.put(ConfigurationFactory.PathParameter.EDITOR.name().toLowerCase(), editorDir.getPath());
-        props.put(ConfigurationFactory.PathParameter.STYLE.name().toLowerCase(), styleDir.getPath());
-
-        File descriptor = folder.newFile(DESCRIPTOR_FILE);
-
-        props.store(new FileOutputStream(descriptor), "");
-
-        Report report = new ProjectDescriptorValidator(descriptor.getPath()).getReport();
-
-        assertEquals(report.hasErrors(), false);
-
-        folder.delete();
+    public void shouldReturnEmptyReportAfterDiagramMandatoryPropertyIsSet() throws Exception {
+        checkAdditionOfArbitraryNumberOfCorrectProperties(DIAGRAM);
     }
 
     @Test
-    public void testShouldReturnAllErrorsInReport() throws Exception {
-        folder.create();
-
-        File descriptor = folder.newFile(DESCRIPTOR_FILE);
-
-        new Properties().store(new FileOutputStream(descriptor), "");
-
-        Report report = new ProjectDescriptorValidator(descriptor.getPath()).getReport();
-
-        assertEquals(report.hasErrors(), true);
-        assertEquals(report.getErrors().size(), 1);
-
-        folder.delete();
+    public void shouldReturnEmptyReportAfterAllPropertiesAreSetCorrectly() throws Exception {
+        checkAdditionOfArbitraryNumberOfCorrectProperties(ALL_PATH_PARAMETERS);
     }
 
     @Test
-    public void testShouldReturnErrorsWithValueEmptyMessage() throws Exception {
-        folder.create();
+    public void shouldReturnErrorReportAfterNotAllMandatoryPropertiesAreSet() throws Exception {
+        Properties properties = propertiesBuilder.build();
+        descriptorFile.storeProperties(properties);
 
-        Properties props = new Properties();
-        props.put(ConfigurationFactory.PathParameter.DIAGRAM.name().toLowerCase(), "");
-        props.put(ConfigurationFactory.PathParameter.SERIALIZATION.name().toLowerCase(), "");
-        props.put(ConfigurationFactory.PathParameter.EDITOR.name().toLowerCase(), "");
-        props.put(ConfigurationFactory.PathParameter.STYLE.name().toLowerCase(), "");
+        Report report = new ProjectDescriptorValidator(descriptorFile.getPath()).getReport();
 
-        File descriptor = folder.newFile(DESCRIPTOR_FILE);
-
-        props.store(new FileOutputStream(descriptor), "");
-
-        Report report = new ProjectDescriptorValidator(descriptor.getPath()).getReport();
-
-        assertEquals(report.hasErrors(), true);
-        assertEquals(report.getErrors().size(), 4);
-
-        folder.delete();
+        assertTrue(report.hasErrors());
+        assertEquals(1, report.getErrors().size());
     }
 
     @Test
-    public void testShouldReturnErrorsWithInvalidDirectoryMessage() throws Exception {
-        folder.create();
-
-        File metaModelDir = folder.newFile(META_MODEL_DIR);
-        File serializationDir = folder.newFile(SERIALIZATION_DIR);
-        File editorDir = folder.newFile(EDITOR_DIR);
-        File styleDir = folder.newFile(STYLE_DIR);
-
-        Properties props = new Properties();
-        props.put(ConfigurationFactory.PathParameter.DIAGRAM.name().toLowerCase(), metaModelDir.getPath());
-        props.put(ConfigurationFactory.PathParameter.SERIALIZATION.name().toLowerCase(), serializationDir.getPath());
-        props.put(ConfigurationFactory.PathParameter.EDITOR.name().toLowerCase(), editorDir.getPath());
-        props.put(ConfigurationFactory.PathParameter.STYLE.name().toLowerCase(), styleDir.getPath());
-
-        File descriptor = folder.newFile(DESCRIPTOR_FILE);
-
-        props.store(new FileOutputStream(descriptor), "");
-
-        Report report = new ProjectDescriptorValidator(descriptor.getPath()).getReport();
-
-        assertEquals(report.hasErrors(), true);
-        assertEquals(report.getErrors().size(), 4);
-
-        folder.delete();
+    public void shouldReturnErrorReportAfterEmptyDiagramPropertyValueIsSet() throws Exception {
+        checkAddingEmptyProperties(DIAGRAM);
     }
+
+    @Test
+    public void shouldReturnErrorReportAfterEmptySerializationPropertyValueIsSet() throws Exception {
+        checkAddingEmptyProperties(SERIALIZATION);
+    }
+
+    @Test
+    public void shouldReturnErrorReportAfterEmptyEditorPropertyValueIsSet() throws Exception {
+        checkAddingEmptyProperties(EDITOR);
+    }
+
+    @Test
+    public void shouldReturnErrorReportAfterEmptyStylePropertyValueIsSet() throws Exception {
+        checkAddingEmptyProperties(STYLE);
+    }
+
+    @Test
+    public void shouldReturnThreeErrorsAfterEmptyPropertyValuesAreSet() throws Exception {
+        checkAddingEmptyProperties(DIAGRAM, SERIALIZATION, EDITOR, STYLE);
+    }
+
+    private void checkAddingEmptyProperties(ConfigurationFactory.PathParameter... parameters) throws IOException {
+        checkAdditionOfArbitraryNumberOfIncorrectProperties("", parameters);
+    }
+
+    @Test
+    public void shouldReturnErrorReportAfterMalformedDiagramPropertyValueIsSet() throws Exception {
+        checkAddingMalformedProperties(DIAGRAM);
+    }
+
+    @Test
+    public void shouldReturnErrorReportAfterMalformedSerializationPropertyValueIsSet() throws Exception {
+        checkAddingMalformedProperties(SERIALIZATION);
+    }
+
+    @Test
+    public void shouldReturnErrorReportAfterMalformedEditorPropertyValueIsSet() throws Exception {
+        checkAddingMalformedProperties(EDITOR);
+    }
+
+    @Test
+    public void shouldReturnErrorReportAfterMalformedStylePropertyValueIsSet() throws Exception {
+        checkAddingMalformedProperties(STYLE);
+    }
+
+    @Test
+    public void shouldReturnThreeErrorsAfterMalformedPropertyValuesAreSet() throws Exception {
+        checkAddingMalformedProperties(DIAGRAM, SERIALIZATION, EDITOR, STYLE);
+    }
+
+    private void checkAddingMalformedProperties(ConfigurationFactory.PathParameter... parameters) throws IOException {
+        checkAdditionOfArbitraryNumberOfIncorrectProperties(String.valueOf(System.currentTimeMillis()), parameters);
+    }
+
+    private void checkAdditionOfArbitraryNumberOfIncorrectProperties(String value, ConfigurationFactory.PathParameter... parameters)
+            throws IOException {
+        // first let's add mandatory parameters
+        // TODO probably should be reorganized after more mandatory properties are introduced
+        addMandatoryProperties();
+
+        for (ConfigurationFactory.PathParameter parameter : parameters) {
+            propertiesBuilder.add(parameter, value);
+        }
+
+        descriptorFile.storeProperties(propertiesBuilder.build());
+        Report report = new ProjectDescriptorValidator(descriptorFile.getPath()).getReport();
+
+        assertTrue(report.hasErrors());
+        assertEquals(parameters.length, report.getErrors().size());
+    }
+
+
+    private void checkAdditionOfArbitraryNumberOfCorrectProperties(ConfigurationFactory.PathParameter... parameters) throws Exception {
+        // first let's add mandatory parameters
+        // TODO probably should be reorganized after more mandatory properties are introduced
+        addMandatoryProperties();
+
+        for (ConfigurationFactory.PathParameter parameter : parameters) {
+            propertiesBuilder.add(parameter, rootFolder.newFolder().getPath());
+        }
+
+        descriptorFile.storeProperties(propertiesBuilder.build());
+
+        Report report = new ProjectDescriptorValidator(descriptorFile.getPath()).getReport();
+
+        assertFalse(report.hasErrors());
+        assertTrue(report.getErrors().isEmpty());
+    }
+
+    private void addMandatoryProperties() throws IOException {
+        for (PathParameter parameter : PathParameter.values()) {
+            if (parameter.isMandatory()) {
+                propertiesBuilder.add(parameter, rootFolder.newFolder().getPath());
+            }
+        }
+    }
+
+    private class TemporaryDescriptor extends ExternalResource {
+
+        private FileWriter fileWriter;
+        private String     path;
+
+        @Override
+        protected void before() throws Throwable {
+            File file = rootFolder.newFile(DESCRIPTOR_FILE);
+
+            path = file.getPath();
+            fileWriter = new FileWriter(file);
+        }
+
+        @Override
+        protected void after() {
+            path = null;
+
+            try {
+                fileWriter.close();
+            } catch (IOException e) {
+                LOG.error("An error while trying to close project descriptor file writer.", e);
+            }
+        }
+
+        protected void storeProperties(Properties properties) throws IOException {
+            properties.store(fileWriter, "");
+        }
+
+        protected String getPath() {
+            return path;
+        }
+    }
+
+    private class PropertiesBuilder extends ExternalResource {
+        private Properties properties;
+
+        public PropertiesBuilder add(ConfigurationFactory.PathParameter pathParameter, String value) {
+            properties.setProperty(pathParameter.name().toLowerCase(), value);
+            return this;
+        }
+
+        public Properties build() {
+            return properties;
+        }
+
+        @Override
+        protected void before() throws Throwable {
+            if (properties == null) {
+                properties = new Properties();
+            }
+        }
+
+        @Override
+        protected void after() {
+            properties.clear();
+        }
+    }
+
 }
