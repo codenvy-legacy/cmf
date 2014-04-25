@@ -24,15 +24,36 @@ import java.util.List;
 
 /**
  * @author Dmitry Kuleshov
- * @author Andrey Plotnikov
  */
 public interface ConfigurationFactory {
 
-    enum PathParam {
-        DIAGRAM,
-        SERIALIZATION,
-        EDITOR,
-        STYLE
+    public enum PathParameter {
+        DIAGRAM {
+            @Override
+            public boolean isMandatory() {
+                return true;
+            }
+        },
+        SERIALIZATION {
+            @Override
+            public boolean isMandatory() {
+                return false;
+            }
+        },
+        EDITOR {
+            @Override
+            public boolean isMandatory() {
+                return false;
+            }
+        },
+        STYLE {
+            @Override
+            public boolean isMandatory() {
+                return false;
+            }
+        };
+
+        public abstract boolean isMandatory();
     }
 
     @Nonnull

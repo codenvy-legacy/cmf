@@ -16,85 +16,100 @@
 
 package com.codenvy.modeling.configuration.validation.pre;
 
+import com.codenvy.modeling.configuration.ConfigurationFactory;
 import com.codenvy.modeling.configuration.validation.Report;
 
 import javax.annotation.Nonnull;
-import java.io.File;
+import javax.annotation.Nullable;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Properties;
 
 /**
  * @author Dmitry Kuleshov
  */
 public class ProjectDescriptorValidator extends AbstractPersistenceValidator {
+    enum ErrorType {
+        PARAMETER_ABSENCE("Mandatory parameter '%s' is absent."),
+        EMPTY_VALUE("Parameter '%s' value is empty."),
+        MALFORMED_VALUE("Parameter '%s' value is malformed."),
+        NOT_AN_ERROR(null);
 
-    private String path;
-    private Report report;
+        @Nullable
+        private String pattern;
 
-    private static final String PROPERTY_NOT_EXIST      = "Property '%s' doesn't exist.";
-    private static final String DIRECTORY_NOT_EXIST     = "Directory '%s' doesn't exist.";
-    private static final String PROPERTY_VALUE_IS_EMPTY = "Property '%s' value is empty.";
+        ErrorType(@Nullable String pattern) {
+            this.pattern = pattern;
+        }
 
-    enum DescriptorProperty {
-        metamodel, serialization, editor, style
+        @Nullable
+        public String getPattern() {
+            return pattern;
+        }
     }
 
-    public ProjectDescriptorValidator(String path) {
-        this.path = path;
-        this.report = new Report();
+    @Nonnull
+    private Properties descriptorProperties;
+    @Nonnull
+    private Report     report;
+
+
+    public ProjectDescriptorValidator(@Nonnull String path) {
+        report = new Report();
+        descriptorProperties = loadDescriptor(path);
+        validateParameters();
+    }
+
+    private Properties loadDescriptor(String path) {
+        Properties descriptorProperties = new Properties();
+
+        try (FileInputStream descriptorStream = new FileInputStream(path)) {
+            descriptorProperties.load(descriptorStream);
+        } catch (IOException e) {
+            report.addError(e.getLocalizedMessage(), e, Report.Error.Severity.HIGH);
+        }
+
+        return descriptorProperties;
+    }
+
+    private void validateParameters() {
+        for (ConfigurationFactory.PathParameter parameter : ConfigurationFactory.PathParameter.values()) {
+            validate(parameter);
+        }
+    }
+
+    private void validate(ConfigurationFactory.PathParameter parameter) {
+        String parameterValue = descriptorProperties.getProperty(parameter.name().toLowerCase());
+        ErrorType errorType = specifyErrorType(parameterValue, parameter);
+
+        if (errorType != ErrorType.NOT_AN_ERROR && errorType.getPattern() != null) {
+            report.addError(String.format(errorType.getPattern(), parameter.name().toLowerCase()), Report.Error.Severity.HIGH);
+        }
+    }
+
+    private ErrorType specifyErrorType(String parameterValue, ConfigurationFactory.PathParameter parameter) {
+        ErrorType errorType = ErrorType.NOT_AN_ERROR;
+
+        if (parameterValue == null && parameter.isMandatory()) {
+            errorType = ErrorType.PARAMETER_ABSENCE;
+        }
+
+        if (parameterValue != null && parameterValue.isEmpty()) {
+            errorType = ErrorType.EMPTY_VALUE;
+        }
+
+        if (parameterValue != null && !Files.isDirectory(Paths.get(parameterValue))) {
+            errorType = ErrorType.MALFORMED_VALUE;
+        }
+
+        return errorType;
     }
 
     @Nonnull
     @Override
     public Report getReport() {
-        try (FileInputStream descriptorStream = new FileInputStream(path)) {
-            Properties descriptor = new Properties();
-            descriptor.load(descriptorStream);
-
-            validate(descriptor, DescriptorProperty.metamodel, true);
-            validate(descriptor, DescriptorProperty.serialization, false);
-            validate(descriptor, DescriptorProperty.editor, false);
-            validate(descriptor, DescriptorProperty.style, false);
-        } catch (IOException e) {
-            report.addValidationError(e.getLocalizedMessage());
-        }
-
         return report;
-    }
-
-    private void validate(Properties properties, DescriptorProperty property, boolean mandatory) {
-        if (isPropertyExists(properties, property.name(), mandatory) &&
-            !isPropertyValueEmpty(properties, property.name())) {
-            checkDirectoryExistence(properties, property.name());
-        }
-    }
-
-    private boolean isPropertyExists(Properties properties, String property, boolean mandatory) {
-        if (!properties.containsKey(property)) {
-            if (mandatory) {
-                report.addValidationError(String.format(PROPERTY_NOT_EXIST, property));
-            }
-            return false;
-        }
-
-        return true;
-    }
-
-    private boolean isPropertyValueEmpty(Properties properties, String property) {
-        if (properties.getProperty(property) == null || properties.getProperty(property).trim().isEmpty()) {
-            report.addValidationError(String.format(PROPERTY_VALUE_IS_EMPTY, property));
-            return true;
-        }
-
-        return false;
-    }
-
-    private void checkDirectoryExistence(Properties properties, String property) {
-        final String directoryPath = properties.getProperty(property);
-        final File ioFile = new File(directoryPath);
-        if (!ioFile.exists() || !ioFile.isDirectory()) {
-            report.addValidationError(String.format(DIRECTORY_NOT_EXIST, ioFile.getPath()));
-        }
     }
 }

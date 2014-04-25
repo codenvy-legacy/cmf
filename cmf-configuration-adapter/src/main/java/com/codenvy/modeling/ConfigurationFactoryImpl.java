@@ -31,10 +31,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import static com.codenvy.modeling.configuration.ConfigurationFactory.PathParam.DIAGRAM;
-import static com.codenvy.modeling.configuration.ConfigurationFactory.PathParam.EDITOR;
-import static com.codenvy.modeling.configuration.ConfigurationFactory.PathParam.SERIALIZATION;
-import static com.codenvy.modeling.configuration.ConfigurationFactory.PathParam.STYLE;
+import static com.codenvy.modeling.configuration.ConfigurationFactory.PathParameter.DIAGRAM;
+import static com.codenvy.modeling.configuration.ConfigurationFactory.PathParameter.EDITOR;
+import static com.codenvy.modeling.configuration.ConfigurationFactory.PathParameter.SERIALIZATION;
+import static com.codenvy.modeling.configuration.ConfigurationFactory.PathParameter.STYLE;
 
 /**
  * @author Dmitry Kuleshov
@@ -42,7 +42,7 @@ import static com.codenvy.modeling.configuration.ConfigurationFactory.PathParam.
  */
 public class ConfigurationFactoryImpl implements ConfigurationFactory {
 
-    private final Map<PathParam, String>     parameters;
+    private final Map<PathParameter, String> parameters;
     private final ConfigurationKeeperFactory factory;
     private final ValidatorFactory           validatorFactory;
 

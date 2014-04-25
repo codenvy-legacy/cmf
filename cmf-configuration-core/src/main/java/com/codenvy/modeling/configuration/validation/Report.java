@@ -17,6 +17,7 @@
 package com.codenvy.modeling.configuration.validation;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -25,43 +26,114 @@ import java.util.List;
  */
 public class Report {
 
+    public static class Error {
+        public enum Severity {
+            HIGH, LOW
+        }
+
+        private String    message;
+        private Exception exception;
+        private Severity  severity;
+
+        public Error(String message, Exception exception, Severity severity) {
+            this.message = message;
+            this.exception = exception;
+            this.severity = severity;
+        }
+
+        public Error(String message, Severity severity) {
+            this.message = message;
+            this.severity = severity;
+        }
+
+        public Error(String message) {
+            this.message = message;
+            this.severity = Severity.LOW;
+        }
+
+        public Error(String message, Exception exception) {
+            this.message = message;
+            this.exception = exception;
+            this.severity = Severity.LOW;
+        }
+
+        @Nonnull
+        public String getMessage() {
+            return message;
+        }
+
+
+        public void setMessage(@Nonnull String message) {
+            this.message = message;
+        }
+
+        @Nullable
+        public Exception getException() {
+            return exception;
+        }
+
+        public void setException(@Nullable Exception exception) {
+            this.exception = exception;
+        }
+
+        @Nonnull
+        public Severity getSeverity() {
+            return severity;
+        }
+
+        public void setSeverity(@Nonnull Severity severity) {
+            this.severity = severity;
+        }
+    }
+
     private String type;
 
-    private List<String> validationErrors = new LinkedList<>();
-
-    private List<String> validationWarnings = new LinkedList<>();
-
-    public String getType() {
-        return type;
-    }
-
-    @Nonnull
-    public List<String> getValidationErrors() {
-        return validationErrors;
-    }
-
-    @Nonnull
-    public List<String> getValidationWarnings() {
-        return validationWarnings;
-    }
+    private List<Error> errors = new LinkedList<>();
 
     public void setType(@Nonnull String type) {
         this.type = type;
     }
 
-    public void addValidationError(@Nonnull String validationError) {
-        validationErrors.add(validationError);
+    @Nonnull
+    public String getType() {
+        return type;
     }
 
-    public void addValidationWarning(@Nonnull String validationWarning) {
-        validationWarnings.add(validationWarning);
+    public void addError(@Nonnull Error validationError) {
+        errors.add(validationError);
+    }
+
+    public void addError(@Nonnull String message, @Nonnull Exception exception, @Nonnull Error.Severity severity) {
+        errors.add(new Error(message, exception, severity));
+    }
+
+    /**
+     * Will add error with null exception
+     */
+    public void addError(@Nonnull String message, @Nonnull Exception exception) {
+        errors.add(new Error(message, exception));
+    }
+
+    /**
+     * Will add error with default (LAW) severity
+     */
+    public void addError(@Nonnull String message, @Nonnull Error.Severity severity) {
+        errors.add(new Error(message, severity));
+    }
+
+    /**
+     * Will add error with null exception and default (LAW) severity
+     */
+    public void addError(@Nonnull String message) {
+        errors.add(new Error(message));
+    }
+
+    @Nonnull
+    public List<Error> getErrors() {
+        return errors;
     }
 
     public boolean hasErrors() {
-        return !validationErrors.isEmpty();
-    }
-
-    public boolean hasWarning() {
-        return !validationWarnings.isEmpty();
+        return !errors.isEmpty();
     }
 }

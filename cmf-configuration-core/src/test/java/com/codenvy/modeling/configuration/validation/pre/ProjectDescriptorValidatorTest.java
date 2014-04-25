@@ -1,5 +1,6 @@
 package com.codenvy.modeling.configuration.validation.pre;
 
+import com.codenvy.modeling.configuration.ConfigurationFactory;
 import com.codenvy.modeling.configuration.validation.Report;
 
 import org.junit.Rule;
@@ -11,7 +12,6 @@ import java.io.FileOutputStream;
 import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  * @author Vladyslav Zhukovskii
@@ -22,10 +22,6 @@ public class ProjectDescriptorValidatorTest {
     private static final String EDITOR_DIR        = "editor_config";
     private static final String STYLE_DIR         = "style_config";
     private static final String DESCRIPTOR_FILE   = "descriptor";
-
-    private static final String PROPERTY_NOT_EXIST      = "Property '%s' doesn't exist.";
-    private static final String DIRECTORY_NOT_EXIST     = "Directory '%s' doesn't exist.";
-    private static final String PROPERTY_VALUE_IS_EMPTY = "Property '%s' value is empty.";
 
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
@@ -40,10 +36,10 @@ public class ProjectDescriptorValidatorTest {
         File styleDir = folder.newFolder(STYLE_DIR);
 
         Properties props = new Properties();
-        props.put(ProjectDescriptorValidator.DescriptorProperty.metamodel.name(), metaModelDir.getPath());
-        props.put(ProjectDescriptorValidator.DescriptorProperty.serialization.name(), serializationDir.getPath());
-        props.put(ProjectDescriptorValidator.DescriptorProperty.editor.name(), editorDir.getPath());
-        props.put(ProjectDescriptorValidator.DescriptorProperty.style.name(), styleDir.getPath());
+        props.put(ConfigurationFactory.PathParameter.DIAGRAM.name().toLowerCase(), metaModelDir.getPath());
+        props.put(ConfigurationFactory.PathParameter.SERIALIZATION.name().toLowerCase(), serializationDir.getPath());
+        props.put(ConfigurationFactory.PathParameter.EDITOR.name().toLowerCase(), editorDir.getPath());
+        props.put(ConfigurationFactory.PathParameter.STYLE.name().toLowerCase(), styleDir.getPath());
 
         File descriptor = folder.newFile(DESCRIPTOR_FILE);
 
@@ -52,7 +48,6 @@ public class ProjectDescriptorValidatorTest {
         Report report = new ProjectDescriptorValidator(descriptor.getPath()).getReport();
 
         assertEquals(report.hasErrors(), false);
-        assertEquals(report.hasWarning(), false);
 
         folder.delete();
     }
@@ -68,10 +63,7 @@ public class ProjectDescriptorValidatorTest {
         Report report = new ProjectDescriptorValidator(descriptor.getPath()).getReport();
 
         assertEquals(report.hasErrors(), true);
-        assertEquals(report.hasWarning(), false);
-        assertEquals(report.getValidationErrors().size(), 1);
-        assertTrue(report.getValidationErrors()
-                         .contains(String.format(PROPERTY_NOT_EXIST, ProjectDescriptorValidator.DescriptorProperty.metamodel.name())));
+        assertEquals(report.getErrors().size(), 1);
 
         folder.delete();
     }
@@ -81,10 +73,10 @@ public class ProjectDescriptorValidatorTest {
         folder.create();
 
         Properties props = new Properties();
-        props.put(ProjectDescriptorValidator.DescriptorProperty.metamodel.name(), "");
-        props.put(ProjectDescriptorValidator.DescriptorProperty.serialization.name(), "");
-        props.put(ProjectDescriptorValidator.DescriptorProperty.editor.name(), "");
-        props.put(ProjectDescriptorValidator.DescriptorProperty.style.name(), "");
+        props.put(ConfigurationFactory.PathParameter.DIAGRAM.name().toLowerCase(), "");
+        props.put(ConfigurationFactory.PathParameter.SERIALIZATION.name().toLowerCase(), "");
+        props.put(ConfigurationFactory.PathParameter.EDITOR.name().toLowerCase(), "");
+        props.put(ConfigurationFactory.PathParameter.STYLE.name().toLowerCase(), "");
 
         File descriptor = folder.newFile(DESCRIPTOR_FILE);
 
@@ -93,18 +85,7 @@ public class ProjectDescriptorValidatorTest {
         Report report = new ProjectDescriptorValidator(descriptor.getPath()).getReport();
 
         assertEquals(report.hasErrors(), true);
-        assertEquals(report.hasWarning(), false);
-        assertEquals(report.getValidationErrors().size(), 4);
-        assertTrue(report.getValidationErrors()
-                         .remove(String.format(PROPERTY_VALUE_IS_EMPTY, ProjectDescriptorValidator.DescriptorProperty.metamodel.name())));
-        assertTrue(report.getValidationErrors()
-                         .remove(String.format(PROPERTY_VALUE_IS_EMPTY,
-                                               ProjectDescriptorValidator.DescriptorProperty.serialization.name())));
-        assertTrue(report.getValidationErrors()
-                         .remove(String.format(PROPERTY_VALUE_IS_EMPTY, ProjectDescriptorValidator.DescriptorProperty.editor.name())));
-        assertTrue(report.getValidationErrors()
-                         .remove(String.format(PROPERTY_VALUE_IS_EMPTY, ProjectDescriptorValidator.DescriptorProperty.style.name())));
-        assertEquals(report.hasErrors(), false);
+        assertEquals(report.getErrors().size(), 4);
 
         folder.delete();
     }
@@ -119,10 +100,10 @@ public class ProjectDescriptorValidatorTest {
         File styleDir = folder.newFile(STYLE_DIR);
 
         Properties props = new Properties();
-        props.put(ProjectDescriptorValidator.DescriptorProperty.metamodel.name(), metaModelDir.getPath());
-        props.put(ProjectDescriptorValidator.DescriptorProperty.serialization.name(), serializationDir.getPath());
-        props.put(ProjectDescriptorValidator.DescriptorProperty.editor.name(), editorDir.getPath());
-        props.put(ProjectDescriptorValidator.DescriptorProperty.style.name(), styleDir.getPath());
+        props.put(ConfigurationFactory.PathParameter.DIAGRAM.name().toLowerCase(), metaModelDir.getPath());
+        props.put(ConfigurationFactory.PathParameter.SERIALIZATION.name().toLowerCase(), serializationDir.getPath());
+        props.put(ConfigurationFactory.PathParameter.EDITOR.name().toLowerCase(), editorDir.getPath());
+        props.put(ConfigurationFactory.PathParameter.STYLE.name().toLowerCase(), styleDir.getPath());
 
         File descriptor = folder.newFile(DESCRIPTOR_FILE);
 
@@ -131,13 +112,7 @@ public class ProjectDescriptorValidatorTest {
         Report report = new ProjectDescriptorValidator(descriptor.getPath()).getReport();
 
         assertEquals(report.hasErrors(), true);
-        assertEquals(report.hasWarning(), false);
-        assertEquals(report.getValidationErrors().size(), 4);
-        assertTrue(report.getValidationErrors().remove(String.format(DIRECTORY_NOT_EXIST, metaModelDir.getPath())));
-        assertTrue(report.getValidationErrors().remove(String.format(DIRECTORY_NOT_EXIST, serializationDir.getPath())));
-        assertTrue(report.getValidationErrors().remove(String.format(DIRECTORY_NOT_EXIST, editorDir.getPath())));
-        assertTrue(report.getValidationErrors().remove(String.format(DIRECTORY_NOT_EXIST, styleDir.getPath())));
-        assertEquals(report.hasErrors(), false);
+        assertEquals(report.getErrors().size(), 4);
 
         folder.delete();
     }
