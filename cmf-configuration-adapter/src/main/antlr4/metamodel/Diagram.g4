@@ -60,7 +60,10 @@ propertyName            :
                             TEXT
                         ;
 propertyType            :
-                            TEXT
+                            'BOOLEAN'   |
+                            'INTEGER'   |
+                            'FLOAT'     |
+                            'STRING'
                         ;
 propertyValue           :
                             TEXT

@@ -67,7 +67,7 @@ public class DiagramConfigurationAdapterListener extends DiagramBaseListener {
 
     @Override
     public void exitPropertyType(@NotNull DiagramParser.PropertyTypeContext ctx) {
-        propertyStack.peek().setType(Property.Type.valueOf(ctx.TEXT().getText().toUpperCase()));
+        propertyStack.peek().setType(Property.Type.valueOf(ctx.getText().toUpperCase()));
     }
 
     @Override

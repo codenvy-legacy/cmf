@@ -8,7 +8,7 @@ Elements :
     Properties :
     {
         name : testPropertyName
-        type : integer
+        type : INTEGER
         value : testPropertyValue
     }
 

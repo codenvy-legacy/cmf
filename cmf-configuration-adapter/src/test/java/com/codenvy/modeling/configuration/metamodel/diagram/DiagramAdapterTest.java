@@ -48,11 +48,13 @@ public class DiagramAdapterTest {
     private String[]    configurationElements;
     private Set<String> connectionType;
     private Set<String> connectionRelation;
+    private Set<String> propertyType;
 
     @Before
     public void setUp() throws Exception {
         connectionType = new HashSet<>(Arrays.asList("DIRECTED", "NONDIRECTED", "POSITIONAL"));
         connectionRelation = new HashSet<>(Arrays.asList("SINGLE", "MULTIPLE"));
+        propertyType = new HashSet<>(Arrays.asList("BOOLEAN", "INTEGER", "FLOAT", "STRING"));
 
         String configurationFile = getClass().getResource(DIAGRAM_GRAMMAR_TEST_I).getFile();
         DiagramConfigurationAdapter diagramConfigurationAdapter = new DiagramConfigurationAdapter(configurationFile);
@@ -117,7 +119,7 @@ public class DiagramAdapterTest {
             assertTrue(value.length() > 0);
 
             assertTrue(indexOfType > -1);
-            assertTrue(type.length() > 0);
+            assertTrue(propertyType.contains(type));
         } else {
             int indexOfProperties = diagramConfiguration.indexOf(PROPERTIES);
             String propValue =
