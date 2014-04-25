@@ -22,16 +22,12 @@ import com.google.inject.Inject;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder.OFFSET;
-
 /**
  * The implementation of {@link GField}.
  *
  * @author Andrey Plotnikov
  */
 public class GFieldImpl implements GField {
-
-    private static final String FIELD_FORMAT = OFFSET + "<ui:with field='%s' type='%s'/>";
 
     @Nullable
     private String name;

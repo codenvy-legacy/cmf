@@ -30,4 +30,6 @@ package com.codenvy.modeling.generator.builders.xml.api.widgets;
  */
 public interface GLabel extends GWidget<GLabel>, HasText<GLabel> {
 
+    String LABEL_FORMAT = "<%s:Label%s/>";
+
 }

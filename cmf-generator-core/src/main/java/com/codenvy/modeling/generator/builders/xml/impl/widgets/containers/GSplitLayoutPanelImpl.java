@@ -26,9 +26,6 @@ import com.google.inject.Inject;
  */
 public class GSplitLayoutPanelImpl extends AbstractGPartContainer<GSplitLayoutPanel> implements GSplitLayoutPanel {
 
-    private static final String SPLIT_LAYOUT_PANEL_OPEN_TAG_FORMAT  = "<%s:SplitLayoutPanel%s>";
-    private static final String SPLIT_LAYOUT_PANEL_CLOSE_TAG_FORMAT = "</%s:SplitLayoutPanel>";
-
     @Inject
     public GSplitLayoutPanelImpl() {
         super(SPLIT_LAYOUT_PANEL_OPEN_TAG_FORMAT, SPLIT_LAYOUT_PANEL_CLOSE_TAG_FORMAT);

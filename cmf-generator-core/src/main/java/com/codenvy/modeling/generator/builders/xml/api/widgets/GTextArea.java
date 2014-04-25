@@ -35,4 +35,6 @@ public interface GTextArea extends GWidget<GTextArea>,
                                    HasReadOnly<GTextArea>,
                                    HasFocus<GTextArea> {
 
+    String TEXT_AREA_FORMAT = "<%s:TextArea%s/>";
+
 }

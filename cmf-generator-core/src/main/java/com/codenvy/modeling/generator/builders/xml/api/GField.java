@@ -20,6 +20,8 @@ import com.codenvy.modeling.generator.builders.Builder;
 
 import javax.annotation.Nonnull;
 
+import static com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder.OFFSET;
+
 /**
  * The builder for a field into GWT ui xml. It provides an ability to generate ui xml field from given configuration.
  * <p/>
@@ -33,6 +35,8 @@ import javax.annotation.Nonnull;
  * @author Andrey Plotnikov
  */
 public interface GField extends Builder {
+
+    String FIELD_FORMAT = OFFSET + "<ui:with field='%s' type='%s'/>";
 
     /**
      * Add name of field.

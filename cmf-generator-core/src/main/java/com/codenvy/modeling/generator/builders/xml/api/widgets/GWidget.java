@@ -37,6 +37,8 @@ import javax.annotation.Nonnull;
  */
 public interface GWidget<T> extends Builder {
 
+    String PARAM_FORMAT        = "%s=\"%s\"";
+    String STYLE_FORMAT        = "{%s}";
     /** Widget parameter names */
     String TITLE_PARAM_NAME    = "title";
     String VISIBLE_PARAM_NAME  = "visible";

@@ -54,8 +54,15 @@ import javax.annotation.Nonnull;
  */
 public interface UIXmlBuilder extends Builder {
 
+    String UI_XML_FORMAT = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>%n" +
+                           "<!DOCTYPE ui:UiBinder SYSTEM \"http://dl.google.com/gwt/DTD/xhtml.ent\">%n" +
+                           "<ui:UiBinder " +
+                           "%s>%n" +
+                           "%s" +
+                           "</ui:UiBinder>";
+    String XMLNS_FORMAT  = "%n             xmlns:%s='%s'";
     /** Default offset for UI XML */
-    String OFFSET = "    ";
+    String OFFSET        = "    ";
 
     /**
      * Add a new xmlns into 'UiBinder' tag.

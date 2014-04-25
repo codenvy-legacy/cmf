@@ -38,4 +38,7 @@ package com.codenvy.modeling.generator.builders.xml.api.widgets.containers;
  */
 public interface GDockLayoutPanel extends GContainer<GDockLayoutPanel>, HasParts<GDockLayoutPanel> {
 
+    String DOCK_LAYOUT_PANEL_OPEN_TAG_FORMAT  = "<%s:DockLayoutPanel%s>";
+    String DOCK_LAYOUT_PANEL_CLOSE_TAG_FORMAT = "</%s:DockLayoutPanel>";
+
 }

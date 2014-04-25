@@ -26,8 +26,6 @@ import com.google.inject.Inject;
  */
 public class GTextAreaImpl extends AbstractGWidget<GTextArea> implements GTextArea {
 
-    private static final String TEXT_AREA_FORMAT = "<%s:TextArea%s/>";
-
     @Inject
     public GTextAreaImpl() {
         super(TEXT_AREA_FORMAT);

@@ -26,9 +26,6 @@ import com.google.inject.Inject;
  */
 public class GFlowPanelImpl extends AbstractGContainer<GFlowPanel> implements GFlowPanel {
 
-    private static final String FLOW_PANEL_OPEN_TAG_FORMAT  = "<%s:FlowPanel%s>";
-    private static final String FLOW_PANEL_CLOSE_TAG_FORMAT = "</%s:FlowPanel>";
-
     @Inject
     public GFlowPanelImpl() {
         super(FLOW_PANEL_OPEN_TAG_FORMAT, FLOW_PANEL_CLOSE_TAG_FORMAT);

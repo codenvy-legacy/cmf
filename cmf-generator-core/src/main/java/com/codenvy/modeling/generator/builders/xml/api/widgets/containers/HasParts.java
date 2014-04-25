@@ -44,21 +44,21 @@ import javax.annotation.Nonnull;
  */
 public interface HasParts<T> {
 
-    String NORTH_PART_FORMAT  = "%s<%s:north size=\"%.2f\">\n" +
-                                "%s\n" +
-                                "%s</%s:north>\n";
-    String SOUTH_PART_FORMAT  = "%s<%s:south size=\"%.2f\">\n" +
-                                "%s\n" +
-                                "%s</%s:south>\n";
-    String EAST_PART_FORMAT   = "%s<%s:east size=\"%.2f\">\n" +
-                                "%s\n" +
-                                "%s</%s:east>\n";
-    String WEST_PART_FORMAT   = "%s<%s:west size=\"%.2f\">\n" +
-                                "%s\n" +
-                                "%s</%s:west>\n";
-    String CENTER_PART_FORMAT = "%s<%s:center>\n" +
-                                "%s\n" +
-                                "%s</%s:center>\n";
+    String NORTH_PART_FORMAT  = "%s<%s:north size=\"%.2f\">%n" +
+                                "%s%n" +
+                                "%s</%s:north>%n";
+    String SOUTH_PART_FORMAT  = "%s<%s:south size=\"%.2f\">%n" +
+                                "%s%n" +
+                                "%s</%s:south>%n";
+    String EAST_PART_FORMAT   = "%s<%s:east size=\"%.2f\">%n" +
+                                "%s%n" +
+                                "%s</%s:east>%n";
+    String WEST_PART_FORMAT   = "%s<%s:west size=\"%.2f\">%n" +
+                                "%s%n" +
+                                "%s</%s:west>%n";
+    String CENTER_PART_FORMAT = "%s<%s:center>%n" +
+                                "%s%n" +
+                                "%s</%s:center>%n";
 
     /**
      * Add a widget in the north part.

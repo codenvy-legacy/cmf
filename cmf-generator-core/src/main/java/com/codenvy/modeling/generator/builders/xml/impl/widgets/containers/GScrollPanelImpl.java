@@ -30,9 +30,6 @@ import static java.lang.Boolean.TRUE;
  */
 public class GScrollPanelImpl extends AbstractGContainer<GScrollPanel> implements GScrollPanel {
 
-    private static final String SCROLL_PANEL_OPEN_TAG_FORMAT  = "<%s:ScrollPanel%s>";
-    private static final String SCROLL_PANEL_CLOSE_TAG_FORMAT = "</%s:ScrollPanel>";
-
     @Inject
     public GScrollPanelImpl() {
         super(SCROLL_PANEL_OPEN_TAG_FORMAT, SCROLL_PANEL_CLOSE_TAG_FORMAT);

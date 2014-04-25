@@ -31,4 +31,6 @@ package com.codenvy.modeling.generator.builders.xml.api.widgets;
  */
 public interface GButton extends GWidget<GButton>, HasEnable<GButton>, HasText<GButton>, HasFocus<GButton> {
 
+    String BUTTON_FORMAT = "<%s:Button%s/>";
+
 }

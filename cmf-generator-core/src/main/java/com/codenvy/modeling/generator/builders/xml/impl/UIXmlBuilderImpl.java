@@ -37,14 +37,6 @@ import java.util.Map;
  */
 public class UIXmlBuilderImpl implements UIXmlBuilder {
 
-    private static final String UI_XML_FORMAT = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                                                "<!DOCTYPE ui:UiBinder SYSTEM \"http://dl.google.com/gwt/DTD/xhtml.ent\">\n" +
-                                                "<ui:UiBinder " +
-                                                "%s>\n" +
-                                                "%s" +
-                                                "</ui:UiBinder>";
-    private static final String XMLNS_FORMAT  = "\n             xmlns:%s='%s'";
-
     @Nonnull
     private List<GField>               fields;
     @Nonnull
@@ -56,8 +48,9 @@ public class UIXmlBuilderImpl implements UIXmlBuilder {
 
     @Inject
     public UIXmlBuilderImpl() {
-        /* Setting formatter locale to US just to have XML compliant format for floating point numbers.
-        E.g. som locales uses comma instead of dot to separate integer and fractional parts.
+        /*
+         * Setting formatter locale to US just to have XML compliant format for floating point numbers.
+         * E.g. some locales uses comma instead of dot to separate integer and fractional parts.
          */
         Locale.setDefault(Locale.US);
 

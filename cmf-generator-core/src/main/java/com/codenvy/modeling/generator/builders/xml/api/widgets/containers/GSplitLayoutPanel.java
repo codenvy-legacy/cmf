@@ -37,4 +37,7 @@ package com.codenvy.modeling.generator.builders.xml.api.widgets.containers;
  */
 public interface GSplitLayoutPanel extends GContainer<GSplitLayoutPanel>, HasParts<GSplitLayoutPanel> {
 
+    String SPLIT_LAYOUT_PANEL_OPEN_TAG_FORMAT  = "<%s:SplitLayoutPanel%s>";
+    String SPLIT_LAYOUT_PANEL_CLOSE_TAG_FORMAT = "</%s:SplitLayoutPanel>";
+
 }

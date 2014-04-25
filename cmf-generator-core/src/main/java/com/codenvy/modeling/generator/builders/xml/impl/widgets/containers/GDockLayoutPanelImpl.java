@@ -26,9 +26,6 @@ import com.google.inject.Inject;
  */
 public class GDockLayoutPanelImpl extends AbstractGPartContainer<GDockLayoutPanel> implements GDockLayoutPanel {
 
-    private static final String DOCK_LAYOUT_PANEL_OPEN_TAG_FORMAT  = "<%s:DockLayoutPanel%s>";
-    private static final String DOCK_LAYOUT_PANEL_CLOSE_TAG_FORMAT = "</%s:DockLayoutPanel>";
-
     @Inject
     public GDockLayoutPanelImpl() {
         super(DOCK_LAYOUT_PANEL_OPEN_TAG_FORMAT, DOCK_LAYOUT_PANEL_CLOSE_TAG_FORMAT);

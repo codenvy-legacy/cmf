@@ -42,9 +42,6 @@ import static java.lang.Boolean.TRUE;
  */
 public abstract class AbstractGWidget<T> implements GWidget<T>, HasEnable<T>, HasText<T>, HasFocus<T>, HasReadOnly<T> {
 
-    private static final String PARAM_FORMAT = "%s=\"%s\"";
-    private static final String STYLE_FORMAT = "{%s}";
-
     @Nullable
     protected     String              prefix;
     @Nonnull

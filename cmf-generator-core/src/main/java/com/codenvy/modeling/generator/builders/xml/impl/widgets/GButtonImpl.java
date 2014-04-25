@@ -26,8 +26,6 @@ import com.google.inject.Inject;
  */
 public class GButtonImpl extends AbstractGWidget<GButton> implements GButton {
 
-    private static final String BUTTON_FORMAT = "<%s:Button%s/>";
-
     @Inject
     public GButtonImpl() {
         super(BUTTON_FORMAT);

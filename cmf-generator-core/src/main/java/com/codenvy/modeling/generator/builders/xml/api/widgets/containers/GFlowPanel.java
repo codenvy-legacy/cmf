@@ -37,4 +37,7 @@ package com.codenvy.modeling.generator.builders.xml.api.widgets.containers;
  */
 public interface GFlowPanel extends GContainer<GFlowPanel> {
 
+    String FLOW_PANEL_OPEN_TAG_FORMAT  = "<%s:FlowPanel%s>";
+    String FLOW_PANEL_CLOSE_TAG_FORMAT = "</%s:FlowPanel>";
+
 }

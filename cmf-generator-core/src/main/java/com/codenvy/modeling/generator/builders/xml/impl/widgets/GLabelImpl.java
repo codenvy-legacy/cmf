@@ -26,8 +26,6 @@ import com.google.inject.Inject;
  */
 public class GLabelImpl extends AbstractGWidget<GLabel> implements GLabel {
 
-    private static final String LABEL_FORMAT = "<%s:Label%s/>";
-
     @Inject
     public GLabelImpl() {
         super(LABEL_FORMAT);

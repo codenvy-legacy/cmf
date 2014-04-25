@@ -30,9 +30,6 @@ import javax.annotation.Nullable;
  */
 public class GSimpleLayoutPanelImpl extends AbstractGContainer<GSimpleLayoutPanel> implements GSimpleLayoutPanel {
 
-    private static final String SIMPLE_LAYOUT_PANEL_OPEN_TAG_FORMAT  = "<%s:SimpleLayoutPanel%s>";
-    private static final String SIMPLE_LAYOUT_PANEL_CLOSE_TAG_FORMAT = "</%s:SimpleLayoutPanel>";
-
     @Nullable
     private GWidget<? extends GWidget> widget;
 

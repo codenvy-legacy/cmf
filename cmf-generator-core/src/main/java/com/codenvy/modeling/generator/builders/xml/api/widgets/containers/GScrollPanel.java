@@ -34,6 +34,9 @@ import javax.annotation.Nonnull;
  */
 public interface GScrollPanel extends GContainer<GScrollPanel> {
 
+    String SCROLL_PANEL_OPEN_TAG_FORMAT       = "<%s:ScrollPanel%s>";
+    String SCROLL_PANEL_CLOSE_TAG_FORMAT      = "</%s:ScrollPanel>";
+
     String ALWAYS_SHOW_SCROLL_BARS_PARAM_NAME = "alwaysShowScrollBars";
 
     /**

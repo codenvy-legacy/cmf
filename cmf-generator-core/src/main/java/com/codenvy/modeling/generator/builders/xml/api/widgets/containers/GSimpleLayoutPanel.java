@@ -33,4 +33,7 @@ package com.codenvy.modeling.generator.builders.xml.api.widgets.containers;
  */
 public interface GSimpleLayoutPanel extends GContainer<GSimpleLayoutPanel> {
 
+    String SIMPLE_LAYOUT_PANEL_OPEN_TAG_FORMAT  = "<%s:SimpleLayoutPanel%s>";
+    String SIMPLE_LAYOUT_PANEL_CLOSE_TAG_FORMAT = "</%s:SimpleLayoutPanel>";
+
 }

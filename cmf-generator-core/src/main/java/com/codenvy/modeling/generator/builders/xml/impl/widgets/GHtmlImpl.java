@@ -26,8 +26,6 @@ import com.google.inject.Inject;
  */
 public class GHtmlImpl extends AbstractGWidget<GHtml> implements GHtml {
 
-    private static final String HTML_FORMAT = "<%s:HTML%s/>";
-
     @Inject
     public GHtmlImpl() {
         super(HTML_FORMAT);

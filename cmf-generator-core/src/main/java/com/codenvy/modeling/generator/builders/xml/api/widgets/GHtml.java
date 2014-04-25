@@ -28,6 +28,8 @@ package com.codenvy.modeling.generator.builders.xml.api.widgets;
  *
  * @author Andrey Plotnikov
  */
-public interface GHtml extends GWidget<GHtml>,  HasText<GHtml> {
+public interface GHtml extends GWidget<GHtml>, HasText<GHtml> {
+
+    String HTML_FORMAT = "<%s:HTML%s/>";
 
 }

@@ -26,8 +26,6 @@ import com.google.inject.Inject;
  */
 public class GTextBoxImpl extends AbstractGWidget<GTextBox> implements GTextBox {
 
-    private static final String TEXT_BOX_FORMAT = "<%s:TextBox%s/>";
-
     @Inject
     public GTextBoxImpl() {
         super(TEXT_BOX_FORMAT);

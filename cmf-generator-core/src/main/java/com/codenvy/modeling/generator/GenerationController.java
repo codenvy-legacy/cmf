@@ -27,7 +27,7 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.Map;
 
-import static com.codenvy.modeling.generator.GenerationController.Param.DESCRIPTION_PATH;
+import static com.codenvy.modeling.generator.GenerationController.Param.SOURCE_PATH;
 
 /**
  * The main class of generating GWT editor. It provides an ability to check configuration and generate GWT java code.
@@ -38,7 +38,13 @@ public class GenerationController {
 
     /** The list of params for code generation. */
     public enum Param {
-        DESCRIPTION_PATH, SOURCE_PATH, TARGET_PATH, MAIN_PACKAGE, EDITOR_NAME
+        SOURCE_PATH,
+        TARGET_PATH,
+        MAIN_PACKAGE,
+        EDITOR_NAME,
+        MAVEN_ARTIFACT_ID,
+        MAVEN_GROUP_ID,
+        MAVEN_ARTIFACT_NAME
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(GenerationController.class);
@@ -59,7 +65,7 @@ public class GenerationController {
      *         parameters are given by user
      */
     public void generate(@Nonnull Map<Param, String> params) {
-        ConfigurationFactory configurationFactory = configurationFactoryCreator.create(params.get(DESCRIPTION_PATH));
+        ConfigurationFactory configurationFactory = configurationFactoryCreator.create(params.get(SOURCE_PATH));
 
         try {
             sourceCodeGenerator.generate(params, configurationFactory.getConfigurationKeeperInstance());

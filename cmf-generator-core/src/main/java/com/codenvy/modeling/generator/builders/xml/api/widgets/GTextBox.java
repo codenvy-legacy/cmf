@@ -35,4 +35,6 @@ public interface GTextBox extends GWidget<GTextBox>,
                                   HasReadOnly<GTextBox>,
                                   HasFocus<GTextBox> {
 
+    String TEXT_BOX_FORMAT = "<%s:TextBox%s/>";
+
 }
