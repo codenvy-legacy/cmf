@@ -17,16 +17,21 @@
 package com.codenvy.modeling.configuration.validation;
 
 import com.codenvy.modeling.configuration.validation.pre.EditorFileConsistencyValidator;
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
 
 import javax.annotation.Nonnull;
 
 /**
  * @author Dmitry Kuleshov
+ * @author Andrey Plotnikov
  */
 public class EditorFileConsistencyValidatorImpl extends EditorFileConsistencyValidator {
-    private String path;
 
-    public EditorFileConsistencyValidatorImpl(@Nonnull String path) {
+    private final String path;
+
+    @Inject
+    public EditorFileConsistencyValidatorImpl(@Assisted String path) {
         this.path = path;
     }
 

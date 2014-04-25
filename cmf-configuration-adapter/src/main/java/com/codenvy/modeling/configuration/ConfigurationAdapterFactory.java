@@ -16,28 +16,25 @@
 
 package com.codenvy.modeling.configuration;
 
-import com.codenvy.modeling.configuration.validation.Validator;
+import com.codenvy.modeling.adapter.editor.EditorConfigurationAdapter;
+import com.codenvy.modeling.adapter.metamodel.diagram.DiagramConfigurationAdapter;
+import com.codenvy.modeling.adapter.metamodel.serialization.SerializationConfigurationAdapter;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
-import java.util.List;
 
 /**
- * @author Dmitry Kuleshov
  * @author Andrey Plotnikov
  */
-public interface ConfigurationFactory {
-
-    enum PathParam {
-        DIAGRAM,
-        SERIALIZATION,
-        EDITOR,
-        STYLE
-    }
+public interface ConfigurationAdapterFactory {
 
     @Nonnull
-    ConfigurationKeeper getConfigurationKeeperInstance() throws IOException;
+    EditorConfigurationAdapter createEditorConfAdapter(@Nonnull String confPath) throws IOException;
 
     @Nonnull
-    List<Validator> getValidatorsListInstance();
+    DiagramConfigurationAdapter createDiagramConfAdapter(@Nonnull String confPath) throws IOException;
+
+    @Nonnull
+    SerializationConfigurationAdapter createSerializationConfAdapter(@Nonnull String confPath) throws IOException;
+
 }

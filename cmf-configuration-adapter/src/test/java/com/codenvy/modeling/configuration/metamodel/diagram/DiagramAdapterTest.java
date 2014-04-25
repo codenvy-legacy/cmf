@@ -17,9 +17,8 @@
 package com.codenvy.modeling.configuration.metamodel.diagram;
 
 import com.codenvy.modeling.adapter.metamodel.diagram.DiagramConfigurationAdapter;
-import org.junit.Test;
 
-import java.io.InputStream;
+import org.junit.Test;
 
 /**
  * @author Dmitry Kuleshov
@@ -30,8 +29,8 @@ public class DiagramAdapterTest {
 
     @Test
     public void testExampleField() throws Exception {
-        InputStream inputStream = getClass().getResourceAsStream(DIAGRAM_GRAMMAR_TEST_I);
-        DiagramConfigurationAdapter diagramConfigurationAdapter = new DiagramConfigurationAdapter(inputStream);
+        String configurationFile = getClass().getResource(DIAGRAM_GRAMMAR_TEST_I).getFile();
+        DiagramConfigurationAdapter diagramConfigurationAdapter = new DiagramConfigurationAdapter(configurationFile);
 
         System.out.println("===============================================================================" + "\n\n");
         System.out.println(diagramConfigurationAdapter.getConfiguration().toString());

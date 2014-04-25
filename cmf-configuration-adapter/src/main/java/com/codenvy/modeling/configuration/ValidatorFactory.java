@@ -16,28 +16,24 @@
 
 package com.codenvy.modeling.configuration;
 
-import com.codenvy.modeling.configuration.validation.Validator;
+import com.codenvy.modeling.configuration.validation.pre.DiagramFileConsistencyValidator;
+import com.codenvy.modeling.configuration.validation.pre.EditorFileConsistencyValidator;
+import com.codenvy.modeling.configuration.validation.pre.SerializationFileConsistencyValidator;
 
 import javax.annotation.Nonnull;
-import java.io.IOException;
-import java.util.List;
 
 /**
- * @author Dmitry Kuleshov
  * @author Andrey Plotnikov
  */
-public interface ConfigurationFactory {
-
-    enum PathParam {
-        DIAGRAM,
-        SERIALIZATION,
-        EDITOR,
-        STYLE
-    }
+public interface ValidatorFactory {
 
     @Nonnull
-    ConfigurationKeeper getConfigurationKeeperInstance() throws IOException;
+    DiagramFileConsistencyValidator createDiagramValidator(@Nonnull String confPath);
 
     @Nonnull
-    List<Validator> getValidatorsListInstance();
+    SerializationFileConsistencyValidator createSerializationValidator(@Nonnull String confPath);
+
+    @Nonnull
+    EditorFileConsistencyValidator createEditorValidator(@Nonnull String confPath);
+
 }

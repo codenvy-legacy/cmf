@@ -17,9 +17,8 @@
 package com.codenvy.modeling.configuration;
 
 import com.codenvy.modeling.adapter.editor.EditorConfigurationAdapter;
-import org.junit.Test;
 
-import java.io.InputStream;
+import org.junit.Test;
 
 /**
  * @author Dmitry Kuleshov
@@ -30,8 +29,8 @@ public class EditorAdapterTest {
 
     @Test
     public void testExampleField() throws Exception {
-        InputStream inputStream = getClass().getResourceAsStream(EDITOR_GRAMMAR_TEST_I);
-        EditorConfigurationAdapter editorConfigurationAdapter = new EditorConfigurationAdapter(inputStream);
+        String configurationFile = getClass().getResource(EDITOR_GRAMMAR_TEST_I).getFile();
+        EditorConfigurationAdapter editorConfigurationAdapter = new EditorConfigurationAdapter(configurationFile);
 
         System.out.println("===============================================================================" + "\n\n");
         System.out.println(editorConfigurationAdapter.getConfiguration().toString());

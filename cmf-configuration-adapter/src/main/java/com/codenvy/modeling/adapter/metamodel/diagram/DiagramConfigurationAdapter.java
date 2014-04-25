@@ -21,6 +21,9 @@ import com.codenvy.modeling.configuration.metamodel.diagram.DiagramConfiguration
 import com.codenvy.modeling.configuration.parser.metamodel.diagram.DiagramConfigurationAdapterListener;
 import com.codenvy.modeling.configuration.parser.metamodel.diagram.DiagramLexer;
 import com.codenvy.modeling.configuration.parser.metamodel.diagram.DiagramParser;
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
+
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
@@ -28,16 +31,20 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * @author Dmitry Kuleshov
+ * @author Andrey Plotnikov
  */
 public class DiagramConfigurationAdapter implements Adapter<DiagramConfiguration> {
 
-    private InputStream inputStream;
+    private final InputStream inputStream;
 
-    public DiagramConfigurationAdapter(@Nonnull InputStream inputStream) {
-        this.inputStream = inputStream;
+    @Inject
+    public DiagramConfigurationAdapter(@Assisted String configurationPath) throws IOException {
+        this.inputStream = Files.newInputStream(Paths.get(configurationPath));
     }
 
     @Nonnull

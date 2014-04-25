@@ -17,16 +17,21 @@
 package com.codenvy.modeling.configuration.validation;
 
 import com.codenvy.modeling.configuration.validation.pre.SerializationFileConsistencyValidator;
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
 
 import javax.annotation.Nonnull;
 
 /**
  * @author Dmitry Kuleshov
+ * @author Andrey Plotnikov
  */
 public class SerializationFileConsistencyValidatorImpl extends SerializationFileConsistencyValidator {
-    private String path;
 
-    public SerializationFileConsistencyValidatorImpl(@Nonnull String path) {
+    private final String path;
+
+    @Inject
+    public SerializationFileConsistencyValidatorImpl(@Assisted String path) {
         this.path = path;
     }
 

@@ -20,18 +20,34 @@ import com.codenvy.modeling.configuration.editor.EditorConfiguration;
 import com.codenvy.modeling.configuration.metamodel.diagram.DiagramConfiguration;
 import com.codenvy.modeling.configuration.metamodel.serialization.SerializationConfiguration;
 import com.codenvy.modeling.configuration.style.StyleConfiguration;
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
 
 import javax.annotation.Nonnull;
+import java.io.IOException;
 
 /**
  * @author Dmitry Kuleshov
+ * @author Andrey Plotnikov
  */
 public class ConfigurationKeeperImpl implements ConfigurationKeeper {
 
-    private DiagramConfiguration diagramConfiguration;
-    private SerializationConfiguration serializationConfiguration;
-    private EditorConfiguration editorConfiguration;
-    private StyleConfiguration styleConfiguration;
+    private final DiagramConfiguration       diagramConfiguration;
+    private final SerializationConfiguration serializationConfiguration;
+    private final EditorConfiguration        editorConfiguration;
+    private       StyleConfiguration         styleConfiguration;
+
+    @Inject
+    public ConfigurationKeeperImpl(ConfigurationAdapterFactory factory,
+                                   @Assisted String diagramConfPath,
+                                   @Assisted String editorConfPath,
+                                   @Assisted String serializationConfPath,
+                                   @Assisted String styleConfPath) throws IOException {
+        editorConfiguration = factory.createEditorConfAdapter(editorConfPath).getConfiguration();
+        diagramConfiguration = factory.createDiagramConfAdapter(diagramConfPath).getConfiguration();
+        serializationConfiguration = factory.createSerializationConfAdapter(serializationConfPath).getConfiguration();
+        // TODO add style configuration
+    }
 
     @Nonnull
     @Override
@@ -57,19 +73,4 @@ public class ConfigurationKeeperImpl implements ConfigurationKeeper {
         return styleConfiguration;
     }
 
-    public void setDiagramConfiguration(@Nonnull DiagramConfiguration diagramConfiguration) {
-        this.diagramConfiguration = diagramConfiguration;
-    }
-
-    public void setSerializationConfiguration(@Nonnull SerializationConfiguration serializationConfiguration) {
-        this.serializationConfiguration = serializationConfiguration;
-    }
-
-    public void setEditorConfiguration(@Nonnull EditorConfiguration editorConfiguration) {
-        this.editorConfiguration = editorConfiguration;
-    }
-
-    public void setStyleConfiguration(@Nonnull StyleConfiguration styleConfiguration) {
-        this.styleConfiguration = styleConfiguration;
-    }
 }

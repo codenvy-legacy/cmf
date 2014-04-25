@@ -21,6 +21,9 @@ import com.codenvy.modeling.configuration.editor.EditorConfiguration;
 import com.codenvy.modeling.configuration.parser.editor.EditorConfigurationAdapterListener;
 import com.codenvy.modeling.configuration.parser.editor.EditorLexer;
 import com.codenvy.modeling.configuration.parser.editor.EditorParser;
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
+
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
@@ -28,16 +31,20 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * @author Dmitry Kuleshov
+ * @author Andrey Plotnikov
  */
 public class EditorConfigurationAdapter implements Adapter<EditorConfiguration> {
 
-    private InputStream inputStream;
+    private final InputStream inputStream;
 
-    public EditorConfigurationAdapter(@Nonnull InputStream inputStream) {
-        this.inputStream = inputStream;
+    @Inject
+    public EditorConfigurationAdapter(@Assisted String configurationPath) throws IOException {
+        this.inputStream = Files.newInputStream(Paths.get(configurationPath));
     }
 
     @Nonnull

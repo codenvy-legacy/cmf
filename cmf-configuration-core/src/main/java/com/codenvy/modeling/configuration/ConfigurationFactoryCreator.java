@@ -16,28 +16,14 @@
 
 package com.codenvy.modeling.configuration;
 
-import com.codenvy.modeling.configuration.validation.Validator;
-
 import javax.annotation.Nonnull;
-import java.io.IOException;
-import java.util.List;
 
 /**
- * @author Dmitry Kuleshov
  * @author Andrey Plotnikov
  */
-public interface ConfigurationFactory {
-
-    enum PathParam {
-        DIAGRAM,
-        SERIALIZATION,
-        EDITOR,
-        STYLE
-    }
+public interface ConfigurationFactoryCreator {
 
     @Nonnull
-    ConfigurationKeeper getConfigurationKeeperInstance() throws IOException;
+    ConfigurationFactory create(@Nonnull String configurationPath);
 
-    @Nonnull
-    List<Validator> getValidatorsListInstance();
 }

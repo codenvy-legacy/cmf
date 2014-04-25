@@ -21,6 +21,9 @@ import com.codenvy.modeling.configuration.metamodel.serialization.SerializationC
 import com.codenvy.modeling.configuration.parser.metamodel.serialization.SerializationConfigurationAdapterListener;
 import com.codenvy.modeling.configuration.parser.metamodel.serialization.SerializationLexer;
 import com.codenvy.modeling.configuration.parser.metamodel.serialization.SerializationParser;
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
+
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
@@ -28,16 +31,20 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * @author Dmitry Kuleshov
+ * @author Andrey Plotnikov
  */
 public class SerializationConfigurationAdapter implements Adapter<SerializationConfiguration> {
 
-    private InputStream inputStream;
+    private final InputStream inputStream;
 
-    public SerializationConfigurationAdapter(@Nonnull InputStream inputStream) {
-        this.inputStream = inputStream;
+    @Inject
+    public SerializationConfigurationAdapter(@Assisted String configurationPath) throws IOException {
+        this.inputStream = Files.newInputStream(Paths.get(configurationPath));
     }
 
     @Nonnull

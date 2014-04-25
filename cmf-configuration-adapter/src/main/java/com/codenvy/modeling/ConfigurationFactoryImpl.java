@@ -16,55 +16,53 @@
 
 package com.codenvy.modeling;
 
-import com.codenvy.modeling.adapter.editor.EditorConfigurationAdapter;
-import com.codenvy.modeling.adapter.metamodel.diagram.DiagramConfigurationAdapter;
-import com.codenvy.modeling.adapter.metamodel.serialization.SerializationConfigurationAdapter;
 import com.codenvy.modeling.configuration.ConfigurationFactory;
 import com.codenvy.modeling.configuration.ConfigurationKeeper;
-import com.codenvy.modeling.configuration.ConfigurationKeeperImpl;
-import com.codenvy.modeling.configuration.validation.DiagramFileConsistencyValidatorImpl;
-import com.codenvy.modeling.configuration.validation.EditorFileConsistencyValidatorImpl;
-import com.codenvy.modeling.configuration.validation.SerializationFileConsistencyValidatorImpl;
+import com.codenvy.modeling.configuration.ConfigurationKeeperFactory;
+import com.codenvy.modeling.configuration.ValidatorFactory;
 import com.codenvy.modeling.configuration.validation.Validator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
 
 import javax.annotation.Nonnull;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import static com.codenvy.modeling.configuration.ConfigurationFactory.PathParam.DIAGRAM;
+import static com.codenvy.modeling.configuration.ConfigurationFactory.PathParam.EDITOR;
+import static com.codenvy.modeling.configuration.ConfigurationFactory.PathParam.SERIALIZATION;
+import static com.codenvy.modeling.configuration.ConfigurationFactory.PathParam.STYLE;
+
 /**
  * @author Dmitry Kuleshov
+ * @author Andrey Plotnikov
  */
 public class ConfigurationFactoryImpl implements ConfigurationFactory {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ConfigurationKeeperImpl.class);
+    private final Map<PathParam, String>     parameters;
+    private final ConfigurationKeeperFactory factory;
+    private final ValidatorFactory           validatorFactory;
 
-    private Map<PathParam, String> parameters = new HashMap<>();
-
-    public ConfigurationFactoryImpl(@Nonnull Map<PathParam, String> parameters) {
-        this.parameters = parameters;
+    @Inject
+    public ConfigurationFactoryImpl(@Assisted String configurationPath,
+                                    ConfigurationKeeperFactory keeperFactory,
+                                    ValidatorFactory validatorFactory) {
+        // TODO add an ability to get path parameters from main path
+        this.parameters = new HashMap<>();
+        this.factory = keeperFactory;
+        this.validatorFactory = validatorFactory;
     }
 
     @Nonnull
     @Override
-    public ConfigurationKeeper getConfigurationKeeperInstance() {
-        ConfigurationKeeperImpl configurationKeeperImpl = new ConfigurationKeeperImpl();
-        try {
-            setDiagramConfiguration(configurationKeeperImpl);
-            setSerializationConfiguration(configurationKeeperImpl);
-            setEditorConfiguration(configurationKeeperImpl);
-
-        } catch (IOException e) {
-            LOG.error("Trying to create configuration keeper caused an error: ", e);
-        }
-
-        return configurationKeeperImpl;
+    public ConfigurationKeeper getConfigurationKeeperInstance() throws IOException {
+        return factory.createConfKeeper(parameters.get(DIAGRAM),
+                                        parameters.get(EDITOR),
+                                        parameters.get(SERIALIZATION),
+                                        parameters.get(STYLE));
     }
 
     @Nonnull
@@ -72,49 +70,12 @@ public class ConfigurationFactoryImpl implements ConfigurationFactory {
     public List<Validator> getValidatorsListInstance() {
         List<Validator> validators = new LinkedList<>();
 
-        validators.add(new DiagramFileConsistencyValidatorImpl(parameters.get(PathParam.DIAGRAM)));
-        validators.add(new SerializationFileConsistencyValidatorImpl(parameters.get(PathParam.SERIALIZATION)));
-        validators.add(new EditorFileConsistencyValidatorImpl(parameters.get(PathParam.EDITOR)));
+        validators.add(validatorFactory.createDiagramValidator(parameters.get(DIAGRAM)));
+        validators.add(validatorFactory.createSerializationValidator(parameters.get(SERIALIZATION)));
+        validators.add(validatorFactory.createEditorValidator(parameters.get(EDITOR)));
+        // TODO add style validator
 
         return validators;
     }
-
-    private void setSerializationConfiguration(ConfigurationKeeperImpl configurationKeeperImpl) throws IOException {
-        configurationKeeperImpl.setSerializationConfiguration(
-                (
-                        new SerializationConfigurationAdapter(
-                                new FileInputStream(
-                                        new File(parameters.get(PathParam.SERIALIZATION))
-                                )
-                        )
-                ).getConfiguration()
-        );
-    }
-
-    private void setDiagramConfiguration(ConfigurationKeeperImpl configurationKeeperImpl) throws IOException {
-        configurationKeeperImpl.setDiagramConfiguration(
-                (
-                        new DiagramConfigurationAdapter(
-                                new FileInputStream(
-                                        new File(parameters.get(PathParam.DIAGRAM))
-                                )
-                        )
-                ).getConfiguration()
-        );
-    }
-
-
-    private void setEditorConfiguration(ConfigurationKeeperImpl configurationKeeperImpl) throws IOException {
-        configurationKeeperImpl.setEditorConfiguration(
-                (
-                        new EditorConfigurationAdapter(
-                                new FileInputStream(
-                                        new File(parameters.get(PathParam.EDITOR))
-                                )
-                        )
-                ).getConfiguration()
-        );
-    }
-
 
 }

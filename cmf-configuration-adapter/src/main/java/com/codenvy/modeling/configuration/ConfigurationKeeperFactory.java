@@ -14,25 +14,20 @@
  * limitations under the License.
  */
 
-package com.codenvy.modeling.adapter;
-
-import com.codenvy.modeling.adapter.metamodel.diagram.DiagramConfigurationAdapter;
+package com.codenvy.modeling.configuration;
 
 import javax.annotation.Nonnull;
-import java.io.InputStream;
+import java.io.IOException;
 
 /**
- * The factory for creating configuration adapters.
- *
  * @author Andrey Plotnikov
  */
-public interface AdapterFactory {
-    /**
-     * Create Meta model configuration adapter.
-     *
-     * @param inputStream stream that contains configuration
-     * @return meta model configuration adapter
-     */
+public interface ConfigurationKeeperFactory {
+
     @Nonnull
-    DiagramConfigurationAdapter getMetaModelConfAdapter(@Nonnull InputStream inputStream);
+    ConfigurationKeeper createConfKeeper(@Nonnull String diagramConfPath,
+                                         @Nonnull String editorConfPath,
+                                         @Nonnull String serializationConfPath,
+                                         @Nonnull String styleConfPath) throws IOException;
+
 }

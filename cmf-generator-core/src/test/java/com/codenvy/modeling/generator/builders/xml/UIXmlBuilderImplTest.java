@@ -20,6 +20,7 @@ import com.codenvy.modeling.generator.builders.xml.api.GField;
 import com.codenvy.modeling.generator.builders.xml.api.GStyle;
 import com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.GWidget;
+import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GDockLayoutPanel;
 import com.codenvy.modeling.generator.builders.xml.impl.GFieldImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.GStyleImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.UIXmlBuilderImpl;
@@ -179,29 +180,23 @@ public class UIXmlBuilderImplTest extends AbstractXmlBuilderTest {
         String threeOffsets = getOffset(3);
         String fourOffsets = getOffset(4);
 
-        String actualXML = builder
-                .withField(new GFieldImpl().withName("name1").withType(String.class))
-                .withField(new GFieldImpl().withName("name2").withType(String.class))
+        GStyle style = new GStyleImpl().withStyle("name", "float: right;   \n   margin: 6px;    margin-right: 5px;")
+                                       .withStyle("name2", "  float: right;   \n   margin: 6px;    margin-right: 5px;")
+                                       .withStyle("name3", "  float: right;\n   margin: 6px;       margin-right: 5px;");
 
-                .withStyle(
-                        new GStyleImpl().withStyle("name", "float: right;   \n   margin: 6px;    margin-right: 5px;")
-                                        .withStyle("name2", "  float: right;   \n   margin: 6px;    margin-right: 5px;")
-                                        .withStyle("name3", "  float: right;\n   margin: 6px;       margin-right: 5px;")
-                          )
+        GDockLayoutPanel widget = new GDockLayoutPanelImpl()
+                .withPrefix("g")
+                .withNorth(10, new GLabelImpl().withPrefix("g").withText("text"))
+                .withSouth(10, new GTextBoxImpl().withPrefix("g").withText("text"))
+                .withWidget(new GFlowPanelImpl().withPrefix("g")
+                                                .withWidget(new GLabelImpl().withPrefix("g").withText("text"))
+                           );
 
-                .setWidget(
-                        new GDockLayoutPanelImpl().withPrefix("g")
-                                                  .withNorth(10, new GLabelImpl().withPrefix("g").withText("text"))
-                                                  .withSouth(10, new GTextBoxImpl().withPrefix("g").withText("text"))
-                                                  .withWidget(
-                                                          new GFlowPanelImpl().withPrefix("g")
-                                                                              .withWidget(
-                                                                                      new GLabelImpl().withPrefix("g")
-                                                                                                      .withText("text")
-                                                                                         )
-                                                             )
-                          )
-                .build();
+        String actualXML = builder.withField(new GFieldImpl().withName("name1").withType(String.class))
+                                  .withField(new GFieldImpl().withName("name2").withType(String.class))
+                                  .withStyle(style)
+                                  .setWidget(widget)
+                                  .build();
 
         String expectedXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                              "<!DOCTYPE ui:UiBinder SYSTEM \"http://dl.google.com/gwt/DTD/xhtml.ent\">\n" +

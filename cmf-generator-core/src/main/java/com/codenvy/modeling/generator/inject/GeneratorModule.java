@@ -16,7 +16,20 @@
 
 package com.codenvy.modeling.generator.inject;
 
-import com.codenvy.modeling.adapter.AdapterFactory;
+import com.codenvy.modeling.ConfigurationFactoryImpl;
+import com.codenvy.modeling.configuration.ConfigurationAdapterFactory;
+import com.codenvy.modeling.configuration.ConfigurationFactory;
+import com.codenvy.modeling.configuration.ConfigurationFactoryCreator;
+import com.codenvy.modeling.configuration.ConfigurationKeeper;
+import com.codenvy.modeling.configuration.ConfigurationKeeperFactory;
+import com.codenvy.modeling.configuration.ConfigurationKeeperImpl;
+import com.codenvy.modeling.configuration.ValidatorFactory;
+import com.codenvy.modeling.configuration.validation.DiagramFileConsistencyValidatorImpl;
+import com.codenvy.modeling.configuration.validation.EditorFileConsistencyValidatorImpl;
+import com.codenvy.modeling.configuration.validation.SerializationFileConsistencyValidatorImpl;
+import com.codenvy.modeling.configuration.validation.pre.DiagramFileConsistencyValidator;
+import com.codenvy.modeling.configuration.validation.pre.EditorFileConsistencyValidator;
+import com.codenvy.modeling.configuration.validation.pre.SerializationFileConsistencyValidator;
 import com.codenvy.modeling.generator.builders.java.SourceCodeBuilder;
 import com.codenvy.modeling.generator.builders.java.SourceCodeBuilderImpl;
 import com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder;
@@ -54,10 +67,27 @@ public class GeneratorModule extends AbstractModule {
     /** {@inheritDoc} */
     @Override
     protected void configure() {
-        install(new FactoryModuleBuilder().build(AdapterFactory.class));
+        // Configuration of configuration factory
+        install(new FactoryModuleBuilder().build(ConfigurationFactoryCreator.class));
+        bind(ConfigurationFactory.class).to(ConfigurationFactoryImpl.class);
 
+        // Configuration of configuration keeper
+        install(new FactoryModuleBuilder().build(ConfigurationKeeperFactory.class));
+        bind(ConfigurationKeeper.class).to(ConfigurationKeeperImpl.class);
+        install(new FactoryModuleBuilder().build(ConfigurationAdapterFactory.class));
+
+        // Validator configuration
+        install(new FactoryModuleBuilder().build(ValidatorFactory.class));
+
+        bind(EditorFileConsistencyValidator.class).to(EditorFileConsistencyValidatorImpl.class);
+        bind(SerializationFileConsistencyValidator.class).to(SerializationFileConsistencyValidatorImpl.class);
+        bind(DiagramFileConsistencyValidator.class).to(DiagramFileConsistencyValidatorImpl.class);
+        // TODO add style validator
+
+        // Java code builder configuration
         bind(SourceCodeBuilder.class).to(SourceCodeBuilderImpl.class);
 
+        // UI XML builder configuration
         bind(UIXmlBuilder.class).to(UIXmlBuilderImpl.class);
 
         bind(GButton.class).to(GButtonImpl.class);

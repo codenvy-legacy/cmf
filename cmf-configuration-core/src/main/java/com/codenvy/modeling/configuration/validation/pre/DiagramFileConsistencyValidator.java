@@ -16,10 +16,9 @@
 
 package com.codenvy.modeling.configuration.validation.pre;
 
-import com.codenvy.modeling.configuration.validation.pre.AbstractPersistenceValidator;
-
 /**
  * @author Dmitry Kuleshov
+ * @author Andrey Plotnikov
  */
 public abstract class DiagramFileConsistencyValidator extends AbstractPersistenceValidator {
 }

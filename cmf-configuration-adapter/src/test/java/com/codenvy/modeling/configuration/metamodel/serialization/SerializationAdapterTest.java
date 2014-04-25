@@ -17,9 +17,8 @@
 package com.codenvy.modeling.configuration.metamodel.serialization;
 
 import com.codenvy.modeling.adapter.metamodel.serialization.SerializationConfigurationAdapter;
-import org.junit.Test;
 
-import java.io.InputStream;
+import org.junit.Test;
 
 /**
  * @author Dmitry Kuleshov
@@ -30,8 +29,8 @@ public class SerializationAdapterTest {
 
     @Test
     public void testExampleField() throws Exception {
-        InputStream inputStream = getClass().getResourceAsStream(SERIALIZATION_GRAMMAR_TEST_I);
-        SerializationConfigurationAdapter serializationConfigurationAdapter = new SerializationConfigurationAdapter(inputStream);
+        String configurationFile = getClass().getResource(SERIALIZATION_GRAMMAR_TEST_I).getFile();
+        SerializationConfigurationAdapter serializationConfigurationAdapter = new SerializationConfigurationAdapter(configurationFile);
 
         System.out.println("===============================================================================" + "\n\n");
         System.out.println(serializationConfigurationAdapter.getConfiguration().toString());
