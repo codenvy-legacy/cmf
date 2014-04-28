@@ -16,6 +16,8 @@
 
 grammar Serialization;
 
+import Common;
+
 serialization           :
                             'Elements'  COLON
                             (BEGIN element END ) (','  BEGIN element END )*
@@ -79,16 +81,5 @@ conRefTemplate          :
                             'template' COLON FILENAME
                         ;
 
-TEXT                    :   ([A-Za-z_] | [0-9])+
-                        ;
-
-FILENAME                :   TEXT'.'TEXT
-                        ;
-COLON                   :   ':'
-                        ;
-BEGIN                   :   '{'
-                        ;
-END                     :   '}'
-                        ;
-WS                      :   [ \t\r\n] -> skip
+FILENAME                :   CHAR+'.'CHAR*
                         ;

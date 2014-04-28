@@ -47,6 +47,10 @@
             ${project.basedir}/src/main/antlr4/metamodel
         </parser.grammar.directory.serialization>
 
+        <parser.grammar.imports.directory>
+            ${project.basedir}/src/main/antlr4/imports
+        </parser.grammar.imports.directory>
+
         <!-- GENERATED PARSERS LOCATIONS -->
         <parser.output.directory.diagram>
             ${parser.generated.sources.location}/com/codenvy/modeling/configuration/parser/metamodel/diagram
@@ -124,6 +128,7 @@
                         </goals>
                         <configuration>
                             <sourceDirectory>${parser.grammar.directory.diagram}</sourceDirectory>
+                            <libDirectory>${parser.grammar.imports.directory}</libDirectory>
                             <listener>true</listener>
                             <visitor>false</visitor>
                             <includes>
@@ -146,6 +151,7 @@
                         </goals>
                         <configuration>
                             <sourceDirectory>${parser.grammar.directory.serialization}</sourceDirectory>
+                            <libDirectory>${parser.grammar.imports.directory}</libDirectory>
                             <listener>true</listener>
                             <visitor>false</visitor>
                             <includes>
@@ -168,6 +174,7 @@
                         </goals>
                         <configuration>
                             <sourceDirectory>${parser.grammar.directory.editor}</sourceDirectory>
+                            <libDirectory>${parser.grammar.imports.directory}</libDirectory>
                             <listener>true</listener>
                             <visitor>false</visitor>
                             <includes>

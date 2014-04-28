@@ -16,6 +16,8 @@
 
 grammar Editor;
 
+import Common;
+
 editor                  :
                             'Toolbar' COLON
                             BEGIN
@@ -154,22 +156,3 @@ SCROLLABILITY           :
                             'YES'   |
                             'NO'
                         ;
-INTEGER                 :   DIGIT+
-                        ;
-DIGIT                   :   [0-9]
-                        ;
-TEXT                    :   (CHAR | DIGIT)+
-                        ;
-CHAR                    :   U_CHAR | L_CHAR
-                        ;
-U_CHAR                  :   [A-Z]
-                        ;
-L_CHAR                  :   [a-z]
-                        ;
-COLON                   :   ':'
-                        ;
-BEGIN                   :   '{'
-                        ;
-END                     :   '}'
-                        ;
-WS                      :   [ \t\r\n] -> skip;

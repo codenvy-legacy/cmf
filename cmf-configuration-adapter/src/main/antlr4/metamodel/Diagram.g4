@@ -16,6 +16,8 @@
 
 grammar Diagram;
 
+import Common;
+
 diagram                 :
                             'Elements'  COLON
                             (BEGIN element END) (','  BEGIN element END)*
@@ -99,13 +101,3 @@ connectionRelation      :
                             'SINGLE'    |
                             'MULTIPLE'
                         ;
-
-TEXT                    :   ([A-Za-z_] | [0-9])+
-                        ;
-COLON                   :   ':'
-                        ;
-BEGIN                   :   '{'
-                        ;
-END                     :   '}'
-                        ;
-WS                      :   [ \t\r\n] -> skip;
