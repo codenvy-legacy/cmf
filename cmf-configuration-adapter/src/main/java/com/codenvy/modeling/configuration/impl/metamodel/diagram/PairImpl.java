@@ -16,60 +16,38 @@
 
 package com.codenvy.modeling.configuration.impl.metamodel.diagram;
 
-import com.codenvy.modeling.configuration.metamodel.diagram.Connection;
 import com.codenvy.modeling.configuration.metamodel.diagram.Pair;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 
 /**
  * @author Dmitry Kuleshov
  */
-public class ConnectionImpl implements Connection {
+public class PairImpl implements Pair {
 
     @Nonnull
-    private String name;
+    private String start;
 
     @Nonnull
-    private String destination;
-
-    @Nonnull
-    private Type type;
-
-    @Nonnull
-    private List<Pair> pairs;
+    private String finish;
 
     @Nonnull
     @Override
-    public String getName() {
-        return name;
+    public String getStart() {
+        return start;
     }
 
     @Nonnull
     @Override
-    public Type getType() {
-        return type;
+    public String getFinish() {
+        return finish;
     }
 
-    @Nonnull
-    @Override
-    public List<Pair> getPairs() {
-        return pairs;
+    public void setStart(String start) {
+        this.start = start;
     }
 
-    public void setName(@Nonnull String name) {
-        this.name = name;
-    }
-
-    public void setDestination(@Nonnull String destination) {
-        this.destination = destination;
-    }
-
-    public void setType(@Nonnull Type type) {
-        this.type = type;
-    }
-
-    public void addPair(@Nonnull Pair pair) {
-        pairs.add(pair);
+    public void setFinish(String finish) {
+        this.finish = finish;
     }
 }

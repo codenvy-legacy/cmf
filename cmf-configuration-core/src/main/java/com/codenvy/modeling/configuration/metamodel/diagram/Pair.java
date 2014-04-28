@@ -17,25 +17,14 @@
 package com.codenvy.modeling.configuration.metamodel.diagram;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 
 /**
  * @author Dmitry Kuleshov
  */
-public interface Element {
-    enum Relation {
-        SINGLE, MULTIPLE
-    }
+public interface Pair {
+    @Nonnull
+    String getStart();
 
     @Nonnull
-    String getName();
-
-    @Nonnull
-    Relation getRelation();
-
-    @Nonnull
-    List<Property> getProperties();
-
-    @Nonnull
-    List<Component> getComponents();
+    String getFinish();
 }

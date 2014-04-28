@@ -16,10 +16,17 @@
 
 package com.codenvy.modeling.configuration.parser.metamodel.diagram;
 
-import com.codenvy.modeling.configuration.impl.metamodel.diagram.*;
+import com.codenvy.modeling.configuration.impl.metamodel.diagram.ComponentImpl;
+import com.codenvy.modeling.configuration.impl.metamodel.diagram.ConnectionImpl;
+import com.codenvy.modeling.configuration.impl.metamodel.diagram.DiagramConfigurationImpl;
+import com.codenvy.modeling.configuration.impl.metamodel.diagram.ElementImpl;
+import com.codenvy.modeling.configuration.impl.metamodel.diagram.PairImpl;
+import com.codenvy.modeling.configuration.impl.metamodel.diagram.PropertyImpl;
 import com.codenvy.modeling.configuration.metamodel.diagram.Connection;
 import com.codenvy.modeling.configuration.metamodel.diagram.DiagramConfiguration;
+import com.codenvy.modeling.configuration.metamodel.diagram.Element;
 import com.codenvy.modeling.configuration.metamodel.diagram.Property;
+
 import org.antlr.v4.runtime.misc.NotNull;
 
 import javax.annotation.Nonnull;
@@ -37,6 +44,8 @@ public class DiagramConfigurationAdapterListener extends DiagramBaseListener {
     private Stack<ComponentImpl> componentStack = new Stack<>();
 
     private Stack<ConnectionImpl> connectionStack = new Stack<>();
+
+    private Stack<PairImpl> pairStack = new Stack<>();
 
     private DiagramConfigurationImpl diagramConfiguration = new DiagramConfigurationImpl();
 
@@ -92,7 +101,17 @@ public class DiagramConfigurationAdapterListener extends DiagramBaseListener {
     }
 
     @Override
-    public void enterElementConnection(@NotNull DiagramParser.ElementConnectionContext ctx) {
+    public void exitElementRelation(@NotNull DiagramParser.ElementRelationContext ctx) {
+        elementStack.peek().setRelation(Element.Relation.valueOf(ctx.RELATION().getText().toUpperCase()));
+    }
+
+    @Override
+    public void exitElement(@NotNull DiagramParser.ElementContext ctx) {
+        diagramConfiguration.addElement(elementStack.pop());
+    }
+
+    @Override
+    public void enterConnection(@NotNull DiagramParser.ConnectionContext ctx) {
         connectionStack.push(new ConnectionImpl());
     }
 
@@ -102,27 +121,32 @@ public class DiagramConfigurationAdapterListener extends DiagramBaseListener {
     }
 
     @Override
-    public void exitConnectionDestination(@NotNull DiagramParser.ConnectionDestinationContext ctx) {
-        connectionStack.peek().setDestination(ctx.TEXT().getText());
-    }
-
-    @Override
     public void exitConnectionType(@NotNull DiagramParser.ConnectionTypeContext ctx) {
         connectionStack.peek().setType(Connection.Type.valueOf(ctx.getText().toUpperCase()));
     }
 
     @Override
-    public void exitConnectionRelation(@NotNull DiagramParser.ConnectionRelationContext ctx) {
-        connectionStack.peek().setRelation(Connection.Relation.valueOf(ctx.getText().toUpperCase()));
+    public void enterConnectionPair(@NotNull DiagramParser.ConnectionPairContext ctx) {
+        pairStack.push(new PairImpl());
     }
 
     @Override
-    public void exitElementConnection(@NotNull DiagramParser.ElementConnectionContext ctx) {
-        elementStack.peek().addConnection(connectionStack.pop());
+    public void exitConnectionStart(@NotNull DiagramParser.ConnectionStartContext ctx) {
+        pairStack.peek().setStart(ctx.TEXT().getText());
     }
 
     @Override
-    public void exitElement(@NotNull DiagramParser.ElementContext ctx) {
-        diagramConfiguration.addElement(elementStack.pop());
+    public void exitConnectionFinish(@NotNull DiagramParser.ConnectionFinishContext ctx) {
+        pairStack.peek().setFinish(ctx.TEXT().getText());
+    }
+
+    @Override
+    public void exitConnectionPair(@NotNull DiagramParser.ConnectionPairContext ctx) {
+        connectionStack.peek().addPair(pairStack.pop());
+    }
+
+    @Override
+    public void exitConnection(@NotNull DiagramParser.ConnectionContext ctx) {
+        diagramConfiguration.addConnection(connectionStack.pop());
     }
 }

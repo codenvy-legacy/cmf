@@ -23,6 +23,7 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -36,12 +37,16 @@ public class DiagramAdapterTest {
 
     private static List<Element> elements;
 
+    private static List<Connection> connections;
+
     @BeforeClass
     public static void setUp() throws Exception {
         String configurationFile = DiagramAdapterTest.class.getResource(DIAGRAM_GRAMMAR_TEST_I).getFile();
         DiagramConfigurationAdapter diagramConfigurationAdapter = new DiagramConfigurationAdapter(configurationFile);
         DiagramConfiguration configuration = diagramConfigurationAdapter.getConfiguration();
+
         elements = configuration.getElements();
+        connections = configuration.getConnections();
     }
 
     @Test
@@ -54,8 +59,8 @@ public class DiagramAdapterTest {
     @Test
     public void propertiesShouldBeContainedNotEmptyParameters() {
         for (Element e : elements) {
-            if (e.getElementProperties().size() > 0) {
-                for (Property prop : e.getElementProperties()) {
+            if (e.getProperties().size() > 0) {
+                for (Property prop : e.getProperties()) {
                     assertTrue(prop.getName().length() > 0);
 
                     assertTrue(prop.getValue().length() > 0);
@@ -68,32 +73,35 @@ public class DiagramAdapterTest {
     }
 
     @Test
-    public void connectionsShouldBeContainedNotEmptyParameters() {
+    public void componentsShouldBeContainedNotEmptyParameters() {
         for (Element e : elements) {
-            if (e.geElementConnections().size() > 0) {
-                for (Connection connection : e.geElementConnections()) {
-                    assertTrue(connection.getName().length() > 0);
-
-                    assertTrue(connection.getDestination().length() > 0);
-
-                    assertTrue(connection.getType().name().length() > 0);
-                    assertNotNull(Connection.Type.valueOf(connection.getType().name()));
-
-                    assertTrue(connection.getRelation().name().length() > 0);
-                    assertNotNull(Connection.Type.valueOf(connection.getType().name()));
+            if (e.getComponents().size() > 0) {
+                for (Component component : e.getComponents()) {
+                    assertTrue(component.getName().length() > 0);
                 }
             }
         }
     }
 
     @Test
-    public void componentsShouldBeContainedNotEmptyParameters() {
-        for (Element e : elements) {
-            if (e.getElementComponents().size() > 0) {
-                for (Component component : e.getElementComponents()) {
-                    assertTrue(component.getName().length() > 0);
-                }
-            }
+    public void allConnectionsMustHaveNames() {
+        for (Connection connection: connections){
+            assertFalse(connection.getName().isEmpty());
         }
     }
+
+    @Test
+    public void allConnectionsMustHaveType() {
+        for (Connection connection: connections){
+            assertNotNull(connection.getType());
+        }
+    }
+
+    @Test
+    public void allConnectionsMustHavePairs() {
+        for (Connection connection: connections){
+            assertFalse(connection.getPairs().isEmpty());
+        }
+    }
+
 }

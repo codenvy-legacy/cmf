@@ -25,10 +25,13 @@ import javax.annotation.Nonnull;
  */
 public class PropertyImpl implements Property {
 
+    @Nonnull
     private String name;
 
+    @Nonnull
     private String value;
 
+    @Nonnull
     private Type type;
 
     @Nonnull
@@ -59,14 +62,5 @@ public class PropertyImpl implements Property {
 
     public void setType(@Nonnull Type type) {
         this.type = type;
-    }
-
-    @Override
-    public String toString() {
-        return "\nPropertyImpl{" +
-                "name='" + name + '\'' +
-                ", value='" + value + '\'' +
-                ", type=" + type +
-                '}';
     }
 }

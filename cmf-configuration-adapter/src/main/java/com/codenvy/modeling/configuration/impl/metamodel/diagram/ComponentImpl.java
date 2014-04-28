@@ -24,6 +24,8 @@ import javax.annotation.Nonnull;
  * @author Dmitry Kuleshov
  */
 public class ComponentImpl implements Component {
+
+    @Nonnull
     private String name;
 
     @Nonnull
@@ -34,12 +36,5 @@ public class ComponentImpl implements Component {
 
     public void setName(@Nonnull String name) {
         this.name = name;
-    }
-
-    @Override
-    public String toString() {
-        return "\nComponentImpl{" +
-                "name='" + name + '\'' +
-                '}';
     }
 }

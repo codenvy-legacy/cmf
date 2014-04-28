@@ -20,7 +20,52 @@ import Common;
 
 diagram                 :
                             'Elements'  COLON
-                            (BEGIN element END) (','  BEGIN element END)*
+                            BEGIN
+                                element (',' element)*
+                            END
+                            (
+                                'Connections'  COLON
+                                BEGIN
+                                    connection (',' connection )*
+                                END
+                            )*
+                        ;
+
+connection              :
+                            'name' COLON connectionName
+                            'type' COLON connectionType
+                            BEGIN
+                                BEGIN
+                                    connectionPair
+                                END
+                                (
+                                    ',' BEGIN
+                                        connectionPair
+                                    END
+                                )*
+                            END
+                        ;
+
+connectionName          :
+                            TEXT
+                        ;
+
+connectionType          :
+                            'DIRECTED'      |
+                            'NONDIRECTED'   |
+                            'POSITIONAL'
+                        ;
+
+connectionPair          :
+                            connectionStart ',' connectionFinish
+                        ;
+
+connectionStart         :
+                            TEXT
+                        ;
+
+connectionFinish        :
+                            TEXT
                         ;
 
 element                 :
@@ -28,7 +73,7 @@ element                 :
 
                             elementProperties?
                             elementComponents?
-                            elementConnections?
+                            elementRelation?
                         ;
 
 
@@ -49,7 +94,7 @@ elementName             :
 
 elementProperties       :
                             'Properties' COLON
-                            (BEGIN elementProperty END ) (',' BEGIN elementProperty END )*
+                            BEGIN elementProperty (',' elementProperty )* END
                         ;
 
 elementProperty         :
@@ -61,43 +106,25 @@ elementProperty         :
 propertyName            :
                             TEXT
                         ;
-propertyType            :
+
+propertyType           :
                             'BOOLEAN'   |
                             'INTEGER'   |
                             'FLOAT'     |
                             'STRING'
                         ;
+
 propertyValue           :
                             TEXT
                         ;
 
-elementConnections      :
-                            'Connections' COLON
-                            ( BEGIN elementConnection END) (COLON BEGIN elementConnection END)*
+elementRelation        :
+                            'relation'  COLON RELATION
                         ;
 
-elementConnection       :
-                            'name'          COLON connectionName
-                            'destination'   COLON connectionDestination
-                            'type'          COLON connectionType
-                            'relation'      COLON connectionRelation
-                        ;
-
-connectionName          :
-                            TEXT
-                        ;
-
-connectionDestination   :
-                            TEXT
-                        ;
-
-connectionType          :
-                            'DIRECTED'      |
-                            'NONDIRECTED'   |
-                            'POSITIONAL'
-                        ;
-
-connectionRelation      :
+RELATION                :
                             'SINGLE'    |
                             'MULTIPLE'
                         ;
+
+

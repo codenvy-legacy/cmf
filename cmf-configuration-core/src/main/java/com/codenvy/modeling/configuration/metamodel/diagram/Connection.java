@@ -17,16 +17,13 @@
 package com.codenvy.modeling.configuration.metamodel.diagram;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 /**
  * @author Dmitry Kuleshov
  */
 public interface Connection {
-    public enum Relation {
-        SINGLE, MULTIPLE
-    }
-
-    public enum Type {
+    enum Type {
         DIRECTED, NONDIRECTED, POSITIONAL
     }
 
@@ -34,11 +31,8 @@ public interface Connection {
     String getName();
 
     @Nonnull
-    String getDestination();
-
-    @Nonnull
-    Relation getRelation();
-
-    @Nonnull
     Type getType();
+
+    @Nonnull
+    List<Pair> getPairs();
 }

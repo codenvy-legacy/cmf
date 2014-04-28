@@ -25,4 +25,7 @@ import java.util.List;
 public interface DiagramConfiguration {
     @Nonnull
     List<Element> getElements();
+
+    @Nonnull
+    List<Connection> getConnections();
 }

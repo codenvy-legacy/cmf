@@ -4,6 +4,7 @@ Elements :
 },
 {
     name : testElementNameTwo
+    relation : SINGLE
 
     Properties :
     {
@@ -16,12 +17,21 @@ Elements :
     {
         test1, test2, test3
     }
+}
 
-    Connections :
+Connections :
+{
+    name : testConnectionName
+    type : DIRECTED
     {
-        name : testConnectionName
-        destination : testConnectionDestination
-        type : DIRECTED
-        relation : SINGLE
+        {start, finish}
+    }
+},
+{
+    name : testConnectionName
+    type : DIRECTED
+    {
+        {start1, finish1},
+        {start2, finish2}
     }
 }

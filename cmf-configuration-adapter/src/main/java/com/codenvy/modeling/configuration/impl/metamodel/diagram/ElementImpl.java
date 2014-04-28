@@ -17,7 +17,6 @@
 package com.codenvy.modeling.configuration.impl.metamodel.diagram;
 
 import com.codenvy.modeling.configuration.metamodel.diagram.Component;
-import com.codenvy.modeling.configuration.metamodel.diagram.Connection;
 import com.codenvy.modeling.configuration.metamodel.diagram.Element;
 import com.codenvy.modeling.configuration.metamodel.diagram.Property;
 
@@ -30,12 +29,16 @@ import java.util.List;
  */
 public class ElementImpl implements Element {
 
+    @Nonnull
     private String name;
 
+    @Nonnull
+    private Relation relation;
+
+    @Nonnull
     private List<Property> properties = new LinkedList<>();
 
-    private List<Connection> connections = new LinkedList<>();
-
+    @Nonnull
     private List<Component> components = new LinkedList<>();
 
     @Nonnull
@@ -46,19 +49,19 @@ public class ElementImpl implements Element {
 
     @Nonnull
     @Override
-    public List<Property> getElementProperties() {
+    public Relation getRelation() {
+        return relation;
+    }
+
+    @Nonnull
+    @Override
+    public List<Property> getProperties() {
         return properties;
     }
 
     @Nonnull
     @Override
-    public List<Connection> geElementConnections() {
-        return connections;
-    }
-
-    @Nonnull
-    @Override
-    public List<Component> getElementComponents() {
+    public List<Component> getComponents() {
         return components;
     }
 
@@ -66,25 +69,15 @@ public class ElementImpl implements Element {
         this.name = name;
     }
 
+    public void setRelation(@Nonnull Relation relation) {
+        this.relation = relation;
+    }
+
     public void addProperty(@Nonnull Property property) {
         properties.add(property);
     }
 
-    public void addConnection(@Nonnull Connection connection) {
-        connections.add(connection);
-    }
-
     public void addComponent(@Nonnull Component component) {
         components.add(component);
-    }
-
-    @Override
-    public String toString() {
-        return "\nElementImpl{" +
-                "name='" + name + '\'' +
-                ", properties=" + properties +
-                ", connections=" + connections +
-                ", components=" + components +
-                '}';
     }
 }

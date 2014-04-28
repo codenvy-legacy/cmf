@@ -17,6 +17,7 @@
 package com.codenvy.modeling.configuration.impl.metamodel.diagram;
 
 
+import com.codenvy.modeling.configuration.metamodel.diagram.Connection;
 import com.codenvy.modeling.configuration.metamodel.diagram.DiagramConfiguration;
 import com.codenvy.modeling.configuration.metamodel.diagram.Element;
 
@@ -29,7 +30,11 @@ import java.util.List;
  */
 public class DiagramConfigurationImpl implements DiagramConfiguration {
 
+    @Nonnull
     private List<Element> elements = new LinkedList<>();
+
+    @Nonnull
+    private List<Connection> connections = new LinkedList<>();
 
     @Nonnull
     @Override
@@ -37,14 +42,17 @@ public class DiagramConfigurationImpl implements DiagramConfiguration {
         return elements;
     }
 
-    public void addElement(@Nonnull Element element){
+    @Nonnull
+    @Override
+    public List<Connection> getConnections() {
+        return connections;
+    }
+
+    public void addElement(@Nonnull Element element) {
         elements.add(element);
     }
 
-    @Override
-    public String toString() {
-        return "\nDiagramConfigurationImpl{" +
-                "elements=" + elements +
-                '}';
+    public void addConnection(@Nonnull Connection connection) {
+        connections.add(connection);
     }
 }
