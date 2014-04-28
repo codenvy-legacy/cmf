@@ -18,14 +18,12 @@ package com.codenvy.modeling.configuration.metamodel.diagram;
 
 import com.codenvy.modeling.adapter.metamodel.diagram.DiagramConfigurationAdapter;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -34,183 +32,68 @@ import static org.junit.Assert.assertTrue;
  */
 public class DiagramAdapterTest {
 
-    private static final String DIAGRAM_CONFIGURATION  = "DiagramConfigurationImpl";
-    private static final String ELEMENT                = "ElementImpl";
-    private static final String PROPERTY               = "PropertyImpl";
-    private static final String COMPONENT              = "ComponentImpl";
-    private static final String CONNECTION             = "ConnectionImpl";
     private static final String DIAGRAM_GRAMMAR_TEST_I = "/DiagramGrammarTest_I";
-    private static final String CONNECTIONS            = "connections";
-    private static final String COMPONENTS             = "components";
-    private static final String PROPERTIES             = "properties";
 
-    private String      diagramConfiguration;
-    private String[]    configurationElements;
-    private Set<String> connectionType;
-    private Set<String> connectionRelation;
-    private Set<String> propertyType;
+    private static List<Element> elements;
 
-    @Before
-    public void setUp() throws Exception {
-        connectionType = new HashSet<>(Arrays.asList("DIRECTED", "NONDIRECTED", "POSITIONAL"));
-        connectionRelation = new HashSet<>(Arrays.asList("SINGLE", "MULTIPLE"));
-        propertyType = new HashSet<>(Arrays.asList("BOOLEAN", "INTEGER", "FLOAT", "STRING"));
-
-        String configurationFile = getClass().getResource(DIAGRAM_GRAMMAR_TEST_I).getFile();
+    @BeforeClass
+    public static void setUp() throws Exception {
+        String configurationFile = DiagramAdapterTest.class.getResource(DIAGRAM_GRAMMAR_TEST_I).getFile();
         DiagramConfigurationAdapter diagramConfigurationAdapter = new DiagramConfigurationAdapter(configurationFile);
-        diagramConfiguration = diagramConfigurationAdapter.getConfiguration().toString();
-        configurationElements = diagramConfiguration.split("\n");
-    }
-
-
-    @Test
-    public void diagramConfigurationShouldBeContainedDiagramConfigurationString() {
-        assertTrue(diagramConfiguration.contains(DIAGRAM_CONFIGURATION));
+        DiagramConfiguration configuration = diagramConfigurationAdapter.getConfiguration();
+        elements = configuration.getElements();
     }
 
     @Test
-    public void diagramConfigurationShouldBeContainedElementString() {
-        assertTrue(diagramConfiguration.contains(ELEMENT));
-        assertTrue(diagramConfiguration.contains("elements"));
-    }
-
-    @Test
-    public void elementShouldBeHadName() {
-        String element = getDescriptionOfConfigurationElement(ELEMENT);
-
-        int indexOfName = element.indexOf("name");
-        String nameValue = element.substring(indexOfName);
-        nameValue = nameValue.substring(nameValue.indexOf("=") + 2);
-        nameValue = nameValue.substring(0, nameValue.indexOf('\''));
-
-        assertTrue(indexOfName > -1);
-        assertTrue(nameValue.length() > 0);
-    }
-
-    @Test
-    public void diagramConfigurationShouldBeContainedPropertyString() {
-        assertTrue(diagramConfiguration.contains(PROPERTIES));
-    }
-
-    @Test
-    public void propertyShouldBeContainedThreeParameters() {
-        String propertyImpl = getDescriptionOfConfigurationElement(PROPERTY);
-
-        if (propertyImpl.length() > 0) {
-            int indexOfName = propertyImpl.indexOf("name");
-            String name = propertyImpl.substring(indexOfName);
-            name = name.substring(name.indexOf("=") + 2);
-            name = name.substring(0, name.indexOf('\''));
-
-            int indexOfValue = propertyImpl.indexOf("value");
-            String value = propertyImpl.substring(indexOfValue);
-            value = value.substring(value.indexOf("=") + 2);
-            value = value.substring(0, value.indexOf('\''));
-
-            int indexOfType = propertyImpl.indexOf("type");
-            String type = propertyImpl.substring(indexOfType);
-            type = type.substring(type.indexOf("=") + 1);
-            type = type.substring(0, type.indexOf('}'));
-
-            assertTrue(indexOfName > -1);
-            assertTrue(name.length() > 0);
-
-            assertTrue(indexOfValue > -1);
-            assertTrue(value.length() > 0);
-
-            assertTrue(indexOfType > -1);
-            assertTrue(propertyType.contains(type));
-        } else {
-            int indexOfProperties = diagramConfiguration.indexOf(PROPERTIES);
-            String propValue =
-                    diagramConfiguration.substring(indexOfProperties + PROPERTIES.length(), indexOfProperties + PROPERTIES.length() + 3);
-
-            assertEquals("=[]", propValue);
+    public void elementsShouldBeHadName() {
+        for (Element e : elements) {
+            assertTrue(e.getName().length() > 0);
         }
     }
 
     @Test
-    public void diagramConfigurationShouldBeContainedConnectionString() {
-        assertTrue(diagramConfiguration.contains(CONNECTIONS));
-    }
+    public void propertiesShouldBeContainedNotEmptyParameters() {
+        for (Element e : elements) {
+            if (e.getElementProperties().size() > 0) {
+                for (Property prop : e.getElementProperties()) {
+                    assertTrue(prop.getName().length() > 0);
 
-    @Test
-    public void connectionShouldBeContainedForParameters() {
-        String connectionImpl = getDescriptionOfConfigurationElement(CONNECTION);
+                    assertTrue(prop.getValue().length() > 0);
 
-        if (connectionImpl.length() > 0) {
-            int indexOfName = connectionImpl.indexOf("name");
-            String name = connectionImpl.substring(indexOfName);
-            name = name.substring(name.indexOf("=") + 2);
-            name = name.substring(0, name.indexOf('\''));
-
-            int indexOfDestination = connectionImpl.indexOf("destination");
-            String destination = connectionImpl.substring(indexOfDestination);
-            destination = destination.substring(destination.indexOf("=") + 2);
-            destination = destination.substring(0, destination.indexOf('\''));
-
-            int indexOfType = connectionImpl.indexOf("type");
-            String type = connectionImpl.substring(indexOfType);
-            type = type.substring(type.indexOf("=") + 1);
-            type = type.substring(0, type.indexOf('}'));
-
-            int indexOfRelation = connectionImpl.indexOf("relation");
-            String relation = connectionImpl.substring(indexOfRelation);
-            relation = relation.substring(relation.indexOf("=") + 1);
-            relation = relation.substring(0, relation.indexOf(','));
-
-            assertTrue(indexOfName > -1);
-            assertTrue(name.length() > 0);
-
-            assertTrue(indexOfDestination > -1);
-            assertTrue(destination.length() > 0);
-
-            assertTrue(indexOfType > -1);
-            assertTrue(connectionType.contains(type));
-
-            assertTrue(indexOfRelation > -1);
-            assertTrue(connectionRelation.contains(relation));
-        } else {
-            int indexOfProperties = diagramConfiguration.indexOf(CONNECTIONS);
-            String propValue =
-                    diagramConfiguration.substring(indexOfProperties + CONNECTIONS.length(), indexOfProperties + CONNECTIONS.length() + 3);
-
-            assertEquals("=[]", propValue);
-        }
-    }
-
-    @Test
-    public void diagramConfigurationShouldBeContainedComponentString() {
-        assertTrue(diagramConfiguration.contains(COMPONENTS));
-    }
-
-    @Test
-    public void componentShouldBeContainedOneParameters() {
-        String componentImpl = getDescriptionOfConfigurationElement(COMPONENT);
-
-        if (componentImpl.length() > 0) {
-            int indexOfName = componentImpl.indexOf("name");
-            String name = componentImpl.substring(indexOfName);
-            name = name.substring(name.indexOf("=") + 2);
-            name = name.substring(0, name.indexOf('\''));
-
-            assertTrue(indexOfName > -1);
-            assertTrue(name.length() > 0);
-        } else {
-            int indexOfProperties = diagramConfiguration.indexOf(COMPONENTS);
-            String propValue =
-                    diagramConfiguration.substring(indexOfProperties + COMPONENTS.length(), indexOfProperties + COMPONENTS.length() + 3);
-
-            assertEquals("=[]", propValue);
-        }
-    }
-
-    private String getDescriptionOfConfigurationElement(String element) {
-        for (String configurationElement : configurationElements) {
-            if (configurationElement.startsWith(element)) {
-                return configurationElement;
+                    assertTrue(prop.getType().name().length() > 0);
+                    assertNotNull(Property.Type.valueOf(prop.getType().name()));
+                }
             }
         }
-        return "";
+    }
+
+    @Test
+    public void connectionsShouldBeContainedNotEmptyParameters() {
+        for (Element e : elements) {
+            if (e.geElementConnections().size() > 0) {
+                for (Connection connection : e.geElementConnections()) {
+                    assertTrue(connection.getName().length() > 0);
+
+                    assertTrue(connection.getDestination().length() > 0);
+
+                    assertTrue(connection.getType().name().length() > 0);
+                    assertNotNull(Connection.Type.valueOf(connection.getType().name()));
+
+                    assertTrue(connection.getRelation().name().length() > 0);
+                    assertNotNull(Connection.Type.valueOf(connection.getType().name()));
+                }
+            }
+        }
+    }
+
+    @Test
+    public void componentsShouldBeContainedNotEmptyParameters() {
+        for (Element e : elements) {
+            if (e.getElementComponents().size() > 0) {
+                for (Component component : e.getElementComponents()) {
+                    assertTrue(component.getName().length() > 0);
+                }
+            }
+        }
     }
 }
