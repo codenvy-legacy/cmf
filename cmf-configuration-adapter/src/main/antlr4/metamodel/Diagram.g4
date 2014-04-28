@@ -19,15 +19,9 @@ grammar Diagram;
 import Common;
 
 diagram                 :
-                            'Elements'  COLON
-                            BEGIN
-                                element (',' element)*
-                            END
+                            'Elements' COLON (BEGIN element END) (',' BEGIN element END)*
                             (
-                                'Connections'  COLON
-                                BEGIN
-                                    connection (',' connection )*
-                                END
+                                'Connections' COLON (BEGIN connection END) (',' BEGIN connection END)*
                             )*
                         ;
 
@@ -70,17 +64,17 @@ connectionFinish        :
 
 element                 :
                             elementName
-
+                            elementRelation?
                             elementProperties?
                             elementComponents?
-                            elementRelation?
+
                         ;
 
 
 elementComponents       :
                             'Components' COLON
                             BEGIN
-                                elementComponent (',' elementComponent)*
+                                elementComponent  (',' elementComponent )*
                             END
                         ;
 
@@ -94,7 +88,7 @@ elementName             :
 
 elementProperties       :
                             'Properties' COLON
-                            BEGIN elementProperty (',' elementProperty )* END
+                            (BEGIN elementProperty END) (',' BEGIN elementProperty END)*
                         ;
 
 elementProperty         :
@@ -107,7 +101,7 @@ propertyName            :
                             TEXT
                         ;
 
-propertyType           :
+propertyType            :
                             'BOOLEAN'   |
                             'INTEGER'   |
                             'FLOAT'     |
@@ -118,7 +112,7 @@ propertyValue           :
                             TEXT
                         ;
 
-elementRelation        :
+elementRelation         :
                             'relation'  COLON RELATION
                         ;
 
@@ -126,5 +120,3 @@ RELATION                :
                             'SINGLE'    |
                             'MULTIPLE'
                         ;
-
-

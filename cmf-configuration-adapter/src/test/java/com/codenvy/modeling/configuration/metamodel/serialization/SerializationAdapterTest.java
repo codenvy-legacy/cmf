@@ -23,6 +23,7 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -43,42 +44,98 @@ public class SerializationAdapterTest {
     }
 
     @Test
-    public void elementsShouldBeHadNameAndTemplate() {
+    public void allElementsMustHaveNames() {
         for (Element e : elements) {
-            assertTrue(e.getName().length() > 0);
-
-            assertTrue(e.getTemplate().length() > 0);
-            assertTrue(e.getTemplate().contains("."));
+            assertFalse(e.getName().isEmpty());
         }
     }
 
     @Test
-    public void elementsShouldBeHadElementDesignation() {
+    public void allElementsMustHaveTemplate() {
+        for (Element e : elements) {
+            assertFalse(e.getTemplate().isEmpty());
+        }
+    }
+
+    @Test
+    public void allTemplatesNamesMustHaveDot() {
+        for (Element e : elements) {
+            assertTrue(e.getTemplate().contains("."));
+            assertTrue(e.getTemplate().indexOf(".") > 0);
+        }
+    }
+
+    @Test
+    public void allElementsMustHaveDesignation() {
         for (Element e : elements) {
             ElementDesignation designation = e.getElementDesignation();
 
-            assertTrue(designation.getType().name().length() > 0);
+            assertFalse(designation.getType().name().isEmpty());
             assertNotNull(ElementDesignation.Type.valueOf(designation.getType().name()));
 
             if (ElementDesignation.Type.REFERENCE.name().equals(designation.getType().name())) {
-                assertTrue(designation.getElementReferencePropertyName().length() > 0);
-                assertTrue(designation.getElementReferenceTemplate().length() > 0);
+                assertFalse(designation.getElementReferencePropertyName().isEmpty());
+                assertFalse(designation.getElementReferenceTemplate().isEmpty());
             }
         }
     }
 
     @Test
-    public void elementsShouldBeHadElementConDesignation() {
+    public void allReferenceDesignationsMustHaveName() {
+        for (Element e : elements) {
+            ElementDesignation designation = e.getElementDesignation();
+            if (ElementDesignation.Type.REFERENCE.name().equals(designation.getType().name())) {
+                assertFalse(designation.getElementReferencePropertyName().isEmpty());
+            }
+        }
+    }
+
+    @Test
+    public void allReferenceDesignationsMustHaveTemplate() {
+        for (Element e : elements) {
+            ElementDesignation designation = e.getElementDesignation();
+            if (ElementDesignation.Type.REFERENCE.name().equals(designation.getType().name())) {
+                assertFalse(designation.getElementReferenceTemplate().isEmpty());
+            }
+        }
+    }
+
+    @Test
+    public void allElementsMustHaveConDesignation() {
         for (Element e : elements) {
             ConnectionDesignation designation = e.getConnectionDesignation();
 
-            assertTrue(designation.getType().name().length() > 0);
+            assertFalse(designation.getType().name().isEmpty());
             assertNotNull(ConnectionDesignation.Type.valueOf(designation.getType().name()));
 
             if (ConnectionDesignation.Type.REFERENCE.name().equals(designation.getType().name())) {
-                assertTrue(designation.getConnectionReferencePropertyName().length() > 0);
+                assertFalse(designation.getConnectionReferencePropertyName().isEmpty());
 
-                assertTrue(designation.getConnectionReferenceTemplate().length() > 0);
+                assertFalse(designation.getConnectionReferenceTemplate().isEmpty());
+                assertTrue(designation.getConnectionReferenceTemplate().contains("."));
+                assertTrue(designation.getConnectionReferenceTemplate().indexOf(".") > 0);
+            }
+        }
+    }
+
+    @Test
+    public void allReferenceConnectionDesignationMustHaveNames() {
+        for (Element e : elements) {
+            ConnectionDesignation designation = e.getConnectionDesignation();
+
+            if (ConnectionDesignation.Type.REFERENCE.name().equals(designation.getType().name())) {
+                assertFalse(designation.getConnectionReferencePropertyName().isEmpty());
+            }
+        }
+    }
+
+    @Test
+    public void allReferenceConnectionDesignationMustHaveTemplate() {
+        for (Element e : elements) {
+            ConnectionDesignation designation = e.getConnectionDesignation();
+
+            if (ConnectionDesignation.Type.REFERENCE.name().equals(designation.getType().name())) {
+                assertFalse(designation.getConnectionReferenceTemplate().isEmpty());
                 assertTrue(designation.getConnectionReferenceTemplate().contains("."));
                 assertTrue(designation.getConnectionReferenceTemplate().indexOf(".") > 0);
             }

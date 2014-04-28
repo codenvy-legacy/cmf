@@ -25,7 +25,6 @@ import java.util.List;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * @author Dmitry Kuleshov
@@ -50,22 +49,40 @@ public class DiagramAdapterTest {
     }
 
     @Test
-    public void elementsShouldBeHadName() {
+    public void allElementsMustHaveNames() {
         for (Element e : elements) {
-            assertTrue(e.getName().length() > 0);
+            assertFalse(e.getName().isEmpty());
         }
     }
 
     @Test
-    public void propertiesShouldBeContainedNotEmptyParameters() {
+    public void allPropertiesMustHaveNames() {
         for (Element e : elements) {
             if (e.getProperties().size() > 0) {
                 for (Property prop : e.getProperties()) {
-                    assertTrue(prop.getName().length() > 0);
+                    assertFalse(prop.getName().isEmpty());
+                }
+            }
+        }
+    }
 
-                    assertTrue(prop.getValue().length() > 0);
+    @Test
+    public void allPropertiesMustHaveValue() {
+        for (Element e : elements) {
+            if (e.getProperties().size() > 0) {
+                for (Property prop : e.getProperties()) {
+                    assertFalse(prop.getValue().isEmpty());
+                }
+            }
+        }
+    }
 
-                    assertTrue(prop.getType().name().length() > 0);
+    @Test
+    public void allPropertiesMustHaveType() {
+        for (Element e : elements) {
+            if (e.getProperties().size() > 0) {
+                for (Property prop : e.getProperties()) {
+                    assertFalse(prop.getType().name().isEmpty());
                     assertNotNull(Property.Type.valueOf(prop.getType().name()));
                 }
             }
@@ -73,13 +90,20 @@ public class DiagramAdapterTest {
     }
 
     @Test
-    public void componentsShouldBeContainedNotEmptyParameters() {
+    public void allComponentsMustHaveNames() {
         for (Element e : elements) {
             if (e.getComponents().size() > 0) {
                 for (Component component : e.getComponents()) {
-                    assertTrue(component.getName().length() > 0);
+                    assertFalse(component.getName().isEmpty());
                 }
             }
+        }
+    }
+
+    @Test
+    public void allRelationsMustHaveValue() {
+        for (Element e : elements) {
+            assertNotNull(Element.Relation.valueOf(e.getRelation().name()));
         }
     }
 
@@ -101,6 +125,16 @@ public class DiagramAdapterTest {
     public void allConnectionsMustHavePairs() {
         for (Connection connection: connections){
             assertFalse(connection.getPairs().isEmpty());
+        }
+    }
+
+    @Test
+    public void allConnectionPairsMustHaveConnectionStartAndConnectionFinish() {
+        for (Connection connection: connections){
+            for (Pair pair : connection.getPairs()) {
+                assertFalse(pair.getFinish().isEmpty());
+                assertFalse(pair.getStart().isEmpty());
+            }
         }
     }
 

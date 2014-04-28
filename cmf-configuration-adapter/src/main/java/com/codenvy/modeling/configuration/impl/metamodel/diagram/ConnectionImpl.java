@@ -20,11 +20,10 @@ import com.codenvy.modeling.configuration.metamodel.diagram.Connection;
 import com.codenvy.modeling.configuration.metamodel.diagram.Pair;
 
 import javax.annotation.Nonnull;
+import java.util.LinkedList;
 import java.util.List;
 
-/**
- * @author Dmitry Kuleshov
- */
+/** @author Dmitry Kuleshov */
 public class ConnectionImpl implements Connection {
 
     @Nonnull
@@ -37,7 +36,7 @@ public class ConnectionImpl implements Connection {
     private Type type;
 
     @Nonnull
-    private List<Pair> pairs;
+    private List<Pair> pairs = new LinkedList<>();
 
     @Nonnull
     @Override

@@ -29,6 +29,7 @@ import com.codenvy.modeling.configuration.editor.Workspace;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -43,6 +44,7 @@ public class EditorAdapterTest {
     private static Toolbar   toolbar;
     private static Panel     panel;
     private static Workspace workspace;
+    private static Item      item;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -53,11 +55,12 @@ public class EditorAdapterTest {
         panel = configuration.getPanel();
         workspace = configuration.getWorkspace();
         toolbar = configuration.getToolbar();
+        item = toolbar.getItem();
     }
 
     @Test
     public void valueOfAlignmentShouldBeDefined() {
-        assertTrue(toolbar.getAlignment().name().length() > 0);
+        assertFalse(toolbar.getAlignment().name().isEmpty());
         assertNotNull(Toolbar.Alignment.valueOf(toolbar.getAlignment().name()));
     }
 
@@ -73,23 +76,33 @@ public class EditorAdapterTest {
     public void groupShouldBeContainedMargin() {
         Group group = toolbar.getGroup();
 
-        assertTrue(group.getMargin().length() > 0);
+        assertFalse(group.getMargin().isEmpty());
     }
 
     @Test
-    public void itemShouldBeContainedForParameters() {
-        Item item = toolbar.getItem();
+    public void itemMustHaveNames() {
+        assertFalse(item.getAlignment().name().isEmpty());
+    }
 
-        assertTrue(item.getMargin().length() > 0);
+    @Test
+    public void itemMustHaveMargin() {
+        assertFalse(item.getMargin().isEmpty());
+    }
 
+    @Test
+    public void itemMustHaveAlignment() {
         assertTrue(item.getAlignment().name().length() > 0);
         assertNotNull(Item.Alignment.valueOf(item.getAlignment().name()));
+    }
 
+    @Test
+    public void itemMustHavePositiveValueOfSize() {
         assertTrue(item.getSize() > 0);
     }
 
+
     @Test
-    public void itemShouldBeContainedTextWithAlignmentParameter() {
+    public void itemMustHaveTextWithAlignmentParameter() {
         Item item = toolbar.getItem();
         Text text = item.getText();
 
@@ -97,14 +110,17 @@ public class EditorAdapterTest {
     }
 
     @Test
-    public void panelShouldBeContainedAlignmentAndDefaultSizeParam() {
+    public void panelMustHaveAlignment() {
         assertNotNull(Panel.Alignment.valueOf(panel.getAlignment().name()));
+    }
 
+    @Test
+    public void panelMustHaveDefaultSizeParam() {
         assertTrue(panel.getDefaultSize() > 0);
     }
 
     @Test
-    public void workspaceShouldBeContainedScrollabilityParameter() {
+    public void workspaceMustHaveScrollabilityParameter() {
         assertNotNull(Workspace.Scrollability.valueOf(workspace.getScrollability().name()));
     }
 }
