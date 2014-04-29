@@ -6,12 +6,12 @@ Elements:
         REFERENCE   :
         {
             property    :   propertyName
-            template    :   file.name
+            template    :   template.name
         }
     connectionDesignation   :
         REFERENCE   :
         {
             property    :   propertyName
-            template    :   file.name
+            template    :   template.name
         }
 }

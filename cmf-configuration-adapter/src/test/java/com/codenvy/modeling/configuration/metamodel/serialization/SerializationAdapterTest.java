@@ -120,7 +120,7 @@ public class SerializationAdapterTest {
             if (ElementDesignation.Type.REFERENCE.name().equals(designation.getType().name())) {
                 assertFalse(designation.getElementReferenceTemplate().isEmpty());
 
-                assertEquals("file.name", designation.getElementReferenceTemplate());
+                assertEquals("template.name", designation.getElementReferenceTemplate());
             }
         }
     }
@@ -158,7 +158,7 @@ public class SerializationAdapterTest {
                 assertTrue(designation.getConnectionReferenceTemplate().contains("."));
                 assertTrue(designation.getConnectionReferenceTemplate().indexOf(".") > 0);
 
-                assertEquals("file.name", designation.getConnectionReferenceTemplate());
+                assertEquals("template.name", designation.getConnectionReferenceTemplate());
             }
         }
     }

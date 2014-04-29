@@ -24,11 +24,11 @@ Toolbar :
 
 Panel :
 {
-    alignment : NORTH
-    default size : 9
+    alignment : WEST
+    default size : 12
 }
 
 Workspace :
 {
-    scrollability : YES
+    scrollability : NO
 }

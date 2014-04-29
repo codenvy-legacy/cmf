@@ -1,9 +1,17 @@
 Elements :
 {
     name : testElementName
+    relation : SINGLE
+
+    Properties :
+    {
+        name : testPropertyName
+        type : INTEGER
+        value : testPropertyValue
+    }
 },
 {
-    name : testElementNameTwo
+    name : testElementName
     relation : SINGLE
 
     Properties :

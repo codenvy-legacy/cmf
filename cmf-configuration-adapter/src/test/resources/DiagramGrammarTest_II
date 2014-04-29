@@ -1,0 +1,16 @@
+Elements :
+{
+    name : testElementName
+},
+{
+    name : testElementName
+}
+
+Connections :
+{
+    name : testConnectionName
+    type : DIRECTED
+    {
+        {start, finish}
+    }
+}

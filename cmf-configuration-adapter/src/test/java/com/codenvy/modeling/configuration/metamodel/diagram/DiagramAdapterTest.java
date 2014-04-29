@@ -18,34 +18,49 @@ package com.codenvy.modeling.configuration.metamodel.diagram;
 
 import com.codenvy.modeling.adapter.metamodel.diagram.DiagramConfigurationAdapter;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
+import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Dmitry Kuleshov
  * @author Valeriy Svydenko
  */
+@RunWith(Parameterized.class)
 public class DiagramAdapterTest {
 
-    private static final String DIAGRAM_GRAMMAR_TEST_I = "/DiagramGrammarTest_I";
+    private static final String DIAGRAM_GRAMMAR_TEST_I  = "/DiagramGrammarTest_I";
+    private static final String DIAGRAM_GRAMMAR_TEST_II = "/DiagramGrammarTest_II";
 
-    private static List<Element> elements;
-
+    private static List<Element>    elements;
     private static List<Connection> connections;
 
-    @BeforeClass
-    public static void setUp() throws Exception {
-        String configurationFile = DiagramAdapterTest.class.getResource(DIAGRAM_GRAMMAR_TEST_I).getFile();
+    private int numberOfGrammar;
+
+    public DiagramAdapterTest(String grammar, int number) throws Exception {
+        numberOfGrammar = number;
+
+        String configurationFile = DiagramAdapterTest.class.getResource(grammar).getFile();
         DiagramConfigurationAdapter diagramConfigurationAdapter = new DiagramConfigurationAdapter(configurationFile);
         DiagramConfiguration configuration = diagramConfigurationAdapter.getConfiguration();
 
         elements = configuration.getElements();
         connections = configuration.getConnections();
+    }
+
+    @Parameters()
+    public static Iterable<Object[]> dataOfConfigurations() {
+        return Arrays.asList(new Object[][]{{DIAGRAM_GRAMMAR_TEST_I, 1}, {DIAGRAM_GRAMMAR_TEST_II, 2}});
     }
 
     @Test
@@ -56,9 +71,25 @@ public class DiagramAdapterTest {
     }
 
     @Test
-    public void allPropertiesMustHaveNames() {
+    public void elementsNamesShouldBeDefined() {
         for (Element e : elements) {
-            if (e.getProperties().size() > 0) {
+            assertEquals("testElementName", e.getName());
+        }
+    }
+
+    @Test
+    public void propertiesDoesNotExist() {
+        if (numberOfGrammar == 2) {
+            for (Element e : elements) {
+                assertTrue(e.getProperties().isEmpty());
+            }
+        }
+    }
+
+    @Test
+    public void allPropertiesMustHaveNames() {
+        if (numberOfGrammar == 1) {
+            for (Element e : elements) {
                 for (Property prop : e.getProperties()) {
                     assertFalse(prop.getName().isEmpty());
                 }
@@ -67,9 +98,20 @@ public class DiagramAdapterTest {
     }
 
     @Test
+    public void propertiesNamesShouldBeDefined() {
+        for (Element e : elements) {
+            if (!e.getProperties().isEmpty()) {
+                for (Property prop : e.getProperties()) {
+                    assertEquals("testPropertyName", prop.getName());
+                }
+            }
+        }
+    }
+
+    @Test
     public void allPropertiesMustHaveValue() {
         for (Element e : elements) {
-            if (e.getProperties().size() > 0) {
+            if (!e.getProperties().isEmpty()) {
                 for (Property prop : e.getProperties()) {
                     assertFalse(prop.getValue().isEmpty());
                 }
@@ -78,9 +120,20 @@ public class DiagramAdapterTest {
     }
 
     @Test
+    public void propertiesValueShouldBeDefined() {
+        for (Element e : elements) {
+            if (!e.getProperties().isEmpty()) {
+                for (Property prop : e.getProperties()) {
+                    assertEquals("testPropertyValue", prop.getValue());
+                }
+            }
+        }
+    }
+
+    @Test
     public void allPropertiesMustHaveType() {
         for (Element e : elements) {
-            if (e.getProperties().size() > 0) {
+            if (!e.getProperties().isEmpty()) {
                 for (Property prop : e.getProperties()) {
                     assertFalse(prop.getType().name().isEmpty());
                     assertNotNull(Property.Type.valueOf(prop.getType().name()));
@@ -90,9 +143,29 @@ public class DiagramAdapterTest {
     }
 
     @Test
-    public void allComponentsMustHaveNames() {
+    public void propertiesTypeShouldBeDefined() {
         for (Element e : elements) {
-            if (e.getComponents().size() > 0) {
+            if (!e.getProperties().isEmpty()) {
+                for (Property prop : e.getProperties()) {
+                    assertEquals("INTEGER", prop.getType().name());
+                }
+            }
+        }
+    }
+
+    @Test
+    public void componentsDoesNotExist() {
+        if (numberOfGrammar == 2) {
+            for (Element e : elements) {
+                assertTrue(e.getComponents().isEmpty());
+            }
+        }
+    }
+
+    @Test
+    public void allComponentsMustHaveNames() {
+        if (numberOfGrammar == 1) {
+            for (Element e : elements) {
                 for (Component component : e.getComponents()) {
                     assertFalse(component.getName().isEmpty());
                 }
@@ -101,10 +174,39 @@ public class DiagramAdapterTest {
     }
 
     @Test
+    public void componentsNamesShouldBeDefined() {
+        for (Element e : elements) {
+            if (!e.getComponents().isEmpty() & numberOfGrammar == 2) {
+                for (Component component : e.getComponents()) {
+                    assertEquals("test", component.getName());
+                }
+            }
+        }
+    }
+
+    @Test
     public void allRelationsMustHaveValue() {
         for (Element e : elements) {
-            if (e.getRelation() != null) {
+            if (numberOfGrammar == 1) {
                 assertNotNull(Element.Relation.valueOf(e.getRelation().name()));
+            }
+        }
+    }
+
+    @Test
+    public void relationsValuesShouldBeDefined() {
+        for (Element e : elements) {
+            if (numberOfGrammar == 1) {
+                assertEquals("SINGLE", e.getRelation().name());
+            }
+        }
+    }
+
+    @Test
+    public void relationDoesNotExist() {
+        if (numberOfGrammar == 2) {
+            for (Element e : elements) {
+                assertNull(e.getRelation());
             }
         }
     }
@@ -117,6 +219,13 @@ public class DiagramAdapterTest {
     }
 
     @Test
+    public void connectionsNamesShouldBeDefined() {
+        for (Connection connection : connections) {
+            assertEquals("testConnectionName", connection.getName());
+        }
+    }
+
+    @Test
     public void allConnectionsMustHaveType() {
         for (Connection connection : connections) {
             assertNotNull(connection.getType());
@@ -124,9 +233,28 @@ public class DiagramAdapterTest {
     }
 
     @Test
+    public void connectionsTypesShouldBeDefined() {
+        for (Connection connection : connections) {
+            assertEquals("DIRECTED", connection.getType().name());
+        }
+    }
+
+    @Test
     public void allConnectionsMustHavePairs() {
         for (Connection connection : connections) {
             assertFalse(connection.getPairs().isEmpty());
+        }
+    }
+
+    @Test
+    public void connectionsPairsShouldBeDefined() {
+        if (numberOfGrammar == 2) {
+            for (Connection connection : connections) {
+                for (Pair pair : connection.getPairs()) {
+                    assertEquals("finish", pair.getFinish());
+                    assertEquals("start", pair.getStart());
+                }
+            }
         }
     }
 
