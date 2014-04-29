@@ -57,7 +57,7 @@ elemRefProperty         :
                         ;
 
 elemRefTemplate         :
-                            'template' COLON BEGIN FILENAME END
+                            'template' COLON FILENAME
                         ;
 
 conDesignation          :

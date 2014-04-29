@@ -103,39 +103,40 @@ public class DiagramAdapterTest {
     @Test
     public void allRelationsMustHaveValue() {
         for (Element e : elements) {
-            assertNotNull(Element.Relation.valueOf(e.getRelation().name()));
+            if (e.getRelation() != null) {
+                assertNotNull(Element.Relation.valueOf(e.getRelation().name()));
+            }
         }
     }
 
     @Test
     public void allConnectionsMustHaveNames() {
-        for (Connection connection: connections){
+        for (Connection connection : connections) {
             assertFalse(connection.getName().isEmpty());
         }
     }
 
     @Test
     public void allConnectionsMustHaveType() {
-        for (Connection connection: connections){
+        for (Connection connection : connections) {
             assertNotNull(connection.getType());
         }
     }
 
     @Test
     public void allConnectionsMustHavePairs() {
-        for (Connection connection: connections){
+        for (Connection connection : connections) {
             assertFalse(connection.getPairs().isEmpty());
         }
     }
 
     @Test
     public void allConnectionPairsMustHaveConnectionStartAndConnectionFinish() {
-        for (Connection connection: connections){
+        for (Connection connection : connections) {
             for (Pair pair : connection.getPairs()) {
                 assertFalse(pair.getFinish().isEmpty());
                 assertFalse(pair.getStart().isEmpty());
             }
         }
     }
-
 }

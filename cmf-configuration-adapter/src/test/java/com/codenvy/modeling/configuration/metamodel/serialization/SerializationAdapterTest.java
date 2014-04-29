@@ -18,25 +18,43 @@ package com.codenvy.modeling.configuration.metamodel.serialization;
 
 import com.codenvy.modeling.adapter.metamodel.serialization.SerializationConfigurationAdapter;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-/** @author Dmitry Kuleshov */
+/**
+ * @author Dmitry Kuleshov
+ * @author Valeriy Svydenko
+ */
+@RunWith(Parameterized.class)
 public class SerializationAdapterTest {
 
-    private static final String SERIALIZATION_GRAMMAR_TEST_I = "/SerializationGrammarTest_I";
+    private static final String SERIALIZATION_GRAMMAR_TEST_I  = "/SerializationGrammarTest_I";
+    private static final String SERIALIZATION_GRAMMAR_TEST_II = "/SerializationGrammarTest_II";
 
     private static List<Element> elements;
 
-    @BeforeClass
-    public static void setUp() throws Exception {
-        String configurationFile = SerializationAdapterTest.class.getResource(SERIALIZATION_GRAMMAR_TEST_I).getFile();
+    private int numberOfGrammar;
+
+    @Parameters()
+    public static Iterable<Object[]> dataOfConfigurations() {
+        return Arrays.asList(new Object[][]{{SERIALIZATION_GRAMMAR_TEST_I, 1}, {SERIALIZATION_GRAMMAR_TEST_II, 2}});
+    }
+
+    public SerializationAdapterTest(String grammar, int number) throws IOException {
+        numberOfGrammar = number;
+
+        String configurationFile = SerializationAdapterTest.class.getResource(grammar).getFile();
         SerializationConfigurationAdapter serializationConfigurationAdapter = new SerializationConfigurationAdapter(configurationFile);
         SerializationConfiguration configuration = serializationConfigurationAdapter.getConfiguration();
 
@@ -47,6 +65,10 @@ public class SerializationAdapterTest {
     public void allElementsMustHaveNames() {
         for (Element e : elements) {
             assertFalse(e.getName().isEmpty());
+
+            if (numberOfGrammar == 2) {
+                assertEquals("testName", e.getName());
+            }
         }
     }
 
@@ -54,6 +76,10 @@ public class SerializationAdapterTest {
     public void allElementsMustHaveTemplate() {
         for (Element e : elements) {
             assertFalse(e.getTemplate().isEmpty());
+
+            if (numberOfGrammar == 2) {
+                assertEquals("template.name", e.getTemplate());
+            }
         }
     }
 
@@ -72,11 +98,6 @@ public class SerializationAdapterTest {
 
             assertFalse(designation.getType().name().isEmpty());
             assertNotNull(ElementDesignation.Type.valueOf(designation.getType().name()));
-
-            if (ElementDesignation.Type.REFERENCE.name().equals(designation.getType().name())) {
-                assertFalse(designation.getElementReferencePropertyName().isEmpty());
-                assertFalse(designation.getElementReferenceTemplate().isEmpty());
-            }
         }
     }
 
@@ -86,6 +107,8 @@ public class SerializationAdapterTest {
             ElementDesignation designation = e.getElementDesignation();
             if (ElementDesignation.Type.REFERENCE.name().equals(designation.getType().name())) {
                 assertFalse(designation.getElementReferencePropertyName().isEmpty());
+
+                assertEquals("propertyName", designation.getElementReferencePropertyName());
             }
         }
     }
@@ -96,6 +119,8 @@ public class SerializationAdapterTest {
             ElementDesignation designation = e.getElementDesignation();
             if (ElementDesignation.Type.REFERENCE.name().equals(designation.getType().name())) {
                 assertFalse(designation.getElementReferenceTemplate().isEmpty());
+
+                assertEquals("file.name", designation.getElementReferenceTemplate());
             }
         }
     }
@@ -107,14 +132,6 @@ public class SerializationAdapterTest {
 
             assertFalse(designation.getType().name().isEmpty());
             assertNotNull(ConnectionDesignation.Type.valueOf(designation.getType().name()));
-
-            if (ConnectionDesignation.Type.REFERENCE.name().equals(designation.getType().name())) {
-                assertFalse(designation.getConnectionReferencePropertyName().isEmpty());
-
-                assertFalse(designation.getConnectionReferenceTemplate().isEmpty());
-                assertTrue(designation.getConnectionReferenceTemplate().contains("."));
-                assertTrue(designation.getConnectionReferenceTemplate().indexOf(".") > 0);
-            }
         }
     }
 
@@ -125,6 +142,8 @@ public class SerializationAdapterTest {
 
             if (ConnectionDesignation.Type.REFERENCE.name().equals(designation.getType().name())) {
                 assertFalse(designation.getConnectionReferencePropertyName().isEmpty());
+
+                assertEquals("propertyName", designation.getConnectionReferencePropertyName());
             }
         }
     }
@@ -138,6 +157,8 @@ public class SerializationAdapterTest {
                 assertFalse(designation.getConnectionReferenceTemplate().isEmpty());
                 assertTrue(designation.getConnectionReferenceTemplate().contains("."));
                 assertTrue(designation.getConnectionReferenceTemplate().indexOf(".") > 0);
+
+                assertEquals("file.name", designation.getConnectionReferenceTemplate());
             }
         }
     }

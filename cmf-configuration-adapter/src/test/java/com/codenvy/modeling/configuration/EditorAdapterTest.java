@@ -91,7 +91,7 @@ public class EditorAdapterTest {
 
     @Test
     public void itemMustHaveAlignment() {
-        assertTrue(item.getAlignment().name().length() > 0);
+        assertFalse(item.getAlignment().name().isEmpty());
         assertNotNull(Item.Alignment.valueOf(item.getAlignment().name()));
     }
 

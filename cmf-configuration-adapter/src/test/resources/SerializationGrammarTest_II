@@ -1,0 +1,17 @@
+Elements:
+{
+    name                    : testName
+    template                : template.name
+    elementDesignation      :
+        REFERENCE   :
+        {
+            property    :   propertyName
+            template    :   file.name
+        }
+    connectionDesignation   :
+        REFERENCE   :
+        {
+            property    :   propertyName
+            template    :   file.name
+        }
+}
