@@ -16,22 +16,45 @@
 
 package com.codenvy.modeling.configuration.metamodel.diagram;
 
-import javax.annotation.Nonnull;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * @author Dmitry Kuleshov
  */
-public interface Property {
-    enum Type {
-        BOOLEAN, INTEGER, FLOAT, STRING
+public class Property {
+    @Size(min = 1)
+    private String name;
+    @Size(min = 1)
+    private String value;
+    @NotNull
+    private Type   type;
+
+    public String getName() {
+        return name;
     }
 
-    @Nonnull
-    String getName();
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    @Nonnull
-    String getValue();
+    public String getValue() {
+        return value;
+    }
 
-    @Nonnull
-    Type getType();
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
+    public enum Type {
+        BOOLEAN, INTEGER, FLOAT, STRING
+    }
 }

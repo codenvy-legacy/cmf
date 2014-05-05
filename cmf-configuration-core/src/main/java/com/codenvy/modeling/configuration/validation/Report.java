@@ -26,34 +26,55 @@ import java.util.List;
  */
 public class Report {
 
-    public static class Error {
-        public enum Severity {
-            HIGH, LOW
-        }
+    private List<Error> errors = new LinkedList<>();
 
+    private Report() {
+    }
+
+    public static Report getEmptyReport() {
+        return new Report();
+    }
+
+    public void addError(@Nonnull Error validationError) {
+        errors.add(validationError);
+    }
+
+    /**
+     * Will add error with null exception
+     */
+    public void addError(@Nonnull String message, @Nonnull Exception exception) {
+        errors.add(new Error(message, exception));
+    }
+
+    /**
+     * Will add error with null exception
+     */
+    public void addError(@Nonnull String message) {
+        errors.add(new Error(message));
+    }
+
+    @Nonnull
+    public List<Error> getErrors() {
+        return errors;
+    }
+
+    public boolean hasErrors() {
+        return !errors.isEmpty();
+    }
+
+    public static class Error {
         @Nonnull
         private String    message;
         @Nullable
         private Exception exception;
-        @Nonnull
-        private Severity  severity;
 
-        public Error(@Nonnull String message, @Nullable Exception exception, @Nonnull Severity severity) {
+        public Error(@Nonnull String message, @Nullable Exception exception) {
             this.message = message;
             this.exception = exception;
-            this.severity = severity;
-        }
-
-        public Error(@Nonnull String message, @Nonnull Severity severity) {
-            this(message, null, severity);
         }
 
         public Error(@Nonnull String message) {
-            this(message, null, Severity.LOW);
-        }
-
-        public Error(@Nonnull String message, @Nullable Exception exception) {
-            this(message, exception, Severity.LOW);
+            this(message, null);
         }
 
         @Nonnull
@@ -74,65 +95,5 @@ public class Report {
         public void setException(@Nullable Exception exception) {
             this.exception = exception;
         }
-
-        @Nonnull
-        public Severity getSeverity() {
-            return severity;
-        }
-
-        public void setSeverity(@Nonnull Severity severity) {
-            this.severity = severity;
-        }
-    }
-
-    private String type;
-
-    private List<Error> errors = new LinkedList<>();
-
-    public void setType(@Nonnull String type) {
-        this.type = type;
-    }
-
-    @Nonnull
-    public String getType() {
-        return type;
-    }
-
-    public void addError(@Nonnull Error validationError) {
-        errors.add(validationError);
-    }
-
-    public void addError(@Nonnull String message, @Nonnull Exception exception, @Nonnull Error.Severity severity) {
-        errors.add(new Error(message, exception, severity));
-    }
-
-    /**
-     * Will add error with null exception
-     */
-    public void addError(@Nonnull String message, @Nonnull Exception exception) {
-        errors.add(new Error(message, exception));
-    }
-
-    /**
-     * Will add error with default (LAW) severity
-     */
-    public void addError(@Nonnull String message, @Nonnull Error.Severity severity) {
-        errors.add(new Error(message, severity));
-    }
-
-    /**
-     * Will add error with null exception and default (LAW) severity
-     */
-    public void addError(@Nonnull String message) {
-        errors.add(new Error(message));
-    }
-
-    @Nonnull
-    public List<Error> getErrors() {
-        return errors;
-    }
-
-    public boolean hasErrors() {
-        return !errors.isEmpty();
     }
 }

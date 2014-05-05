@@ -16,22 +16,46 @@
 
 package com.codenvy.modeling.configuration.metamodel.serialization;
 
-import javax.annotation.Nonnull;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * @author Dmitry Kuleshov
  */
-public interface ElementDesignation {
+public class ElementDesignation {
+    @NotNull
+    private Type   type;
+    @Size(min = 1)
+    private String referencePropertyName;
+    @Size(min = 1)
+    private String referenceTemplate;
+
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
+    public String getReferencePropertyName() {
+        return referencePropertyName;
+    }
+
+    public void setReferencePropertyName(String referencePropertyName) {
+        this.referencePropertyName = referencePropertyName;
+    }
+
+    public String getReferenceTemplate() {
+        return referenceTemplate;
+    }
+
+    public void setReferenceTemplate(String referenceTemplate) {
+        this.referenceTemplate = referenceTemplate;
+    }
+
     public enum Type {
         INSERTION, REFERENCE
     }
-
-    @Nonnull
-    Type getType();
-
-    @Nonnull
-    String getElementReferencePropertyName();
-
-    @Nonnull
-    String getElementReferenceTemplate();
 }

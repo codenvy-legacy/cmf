@@ -16,13 +16,11 @@
 
 package com.codenvy.modeling.configuration.parser.metamodel.serialization;
 
-import com.codenvy.modeling.configuration.impl.metamodel.serialization.ConnectionDesignationImpl;
-import com.codenvy.modeling.configuration.impl.metamodel.serialization.ElementDesignationImpl;
-import com.codenvy.modeling.configuration.impl.metamodel.serialization.ElementImpl;
-import com.codenvy.modeling.configuration.impl.metamodel.serialization.SerializationConfigurationImpl;
 import com.codenvy.modeling.configuration.metamodel.serialization.ConnectionDesignation;
+import com.codenvy.modeling.configuration.metamodel.serialization.Element;
 import com.codenvy.modeling.configuration.metamodel.serialization.ElementDesignation;
 import com.codenvy.modeling.configuration.metamodel.serialization.SerializationConfiguration;
+
 import org.antlr.v4.runtime.misc.NotNull;
 
 import javax.annotation.Nonnull;
@@ -33,13 +31,13 @@ import java.util.Stack;
  */
 public class SerializationConfigurationAdapterListener extends SerializationBaseListener {
 
-    private Stack<ElementImpl> elementStack = new Stack<>();
+    private Stack<Element> elementStack = new Stack<>();
 
-    private Stack<ElementDesignationImpl> elementDesignations = new Stack<>();
+    private Stack<ElementDesignation> elementDesignations = new Stack<>();
 
-    private Stack<ConnectionDesignationImpl> connectionDesignations = new Stack<>();
+    private Stack<ConnectionDesignation> connectionDesignations = new Stack<>();
 
-    private SerializationConfigurationImpl serializationConfiguration = new SerializationConfigurationImpl();
+    private SerializationConfiguration serializationConfiguration = new SerializationConfiguration();
 
     @Nonnull
     public SerializationConfiguration getSerializationConfiguration() {
@@ -48,7 +46,7 @@ public class SerializationConfigurationAdapterListener extends SerializationBase
 
     @Override
     public void enterElement(@NotNull SerializationParser.ElementContext ctx) {
-        elementStack.push(new ElementImpl());
+        elementStack.push(new Element());
     }
 
     @Override
@@ -63,24 +61,24 @@ public class SerializationConfigurationAdapterListener extends SerializationBase
 
     @Override
     public void enterElemDesignation(@NotNull SerializationParser.ElemDesignationContext ctx) {
-        elementDesignations.push(new ElementDesignationImpl());
+        elementDesignations.push(new ElementDesignation());
     }
 
     @Override
     public void exitElemRefProperty(@NotNull SerializationParser.ElemRefPropertyContext ctx) {
-        elementDesignations.peek().setElementReferencePropertyName(ctx.TEXT().getText());
+        elementDesignations.peek().setReferencePropertyName(ctx.TEXT().getText());
     }
 
     @Override
     public void exitElemRefTemplate(@NotNull SerializationParser.ElemRefTemplateContext ctx) {
-        elementDesignations.peek().setElementReferenceTemplate(ctx.FILENAME().getText());
+        elementDesignations.peek().setReferenceTemplate(ctx.FILENAME().getText());
     }
 
     @Override
     public void exitElemDesignation(@NotNull SerializationParser.ElemDesignationContext ctx) {
-        ElementDesignationImpl elementDesignation = elementDesignations.pop();
-        if (elementDesignation.getElementReferencePropertyName() == null ||
-                elementDesignation.getElementReferenceTemplate() == null) {
+        ElementDesignation elementDesignation = elementDesignations.pop();
+        if (elementDesignation.getReferencePropertyName() == null ||
+            elementDesignation.getReferenceTemplate() == null) {
             elementDesignation.setType(ElementDesignation.Type.INSERTION);
         } else {
             elementDesignation.setType(ElementDesignation.Type.REFERENCE);
@@ -90,24 +88,24 @@ public class SerializationConfigurationAdapterListener extends SerializationBase
 
     @Override
     public void enterConDesignation(@NotNull SerializationParser.ConDesignationContext ctx) {
-        connectionDesignations.push(new ConnectionDesignationImpl());
+        connectionDesignations.push(new ConnectionDesignation());
     }
 
     @Override
     public void exitConRefProperty(@NotNull SerializationParser.ConRefPropertyContext ctx) {
-        connectionDesignations.peek().setConnectionReferencePropertyName(ctx.TEXT().getText());
+        connectionDesignations.peek().setReferencePropertyName(ctx.TEXT().getText());
     }
 
     @Override
     public void exitConRefTemplate(@NotNull SerializationParser.ConRefTemplateContext ctx) {
-        connectionDesignations.peek().setConnectionReferencePropertyName(ctx.FILENAME().getText());
+        connectionDesignations.peek().setReferencePropertyName(ctx.FILENAME().getText());
     }
 
     @Override
     public void exitConDesignation(@NotNull SerializationParser.ConDesignationContext ctx) {
-        ConnectionDesignationImpl connectionDesignation = connectionDesignations.pop();
-        if (connectionDesignation.getConnectionReferencePropertyName() == null ||
-                connectionDesignation.getConnectionReferenceTemplate() == null) {
+        ConnectionDesignation connectionDesignation = connectionDesignations.pop();
+        if (connectionDesignation.getReferencePropertyName() == null ||
+            connectionDesignation.getReferenceTemplate() == null) {
             connectionDesignation.setType(ConnectionDesignation.Type.ORDERING);
         } else {
             connectionDesignation.setType(ConnectionDesignation.Type.REFERENCE);

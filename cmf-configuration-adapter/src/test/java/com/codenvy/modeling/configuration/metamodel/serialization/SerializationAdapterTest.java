@@ -106,9 +106,9 @@ public class SerializationAdapterTest {
         for (Element e : elements) {
             ElementDesignation designation = e.getElementDesignation();
             if (ElementDesignation.Type.REFERENCE.name().equals(designation.getType().name())) {
-                assertFalse(designation.getElementReferencePropertyName().isEmpty());
+                assertFalse(designation.getReferencePropertyName().isEmpty());
 
-                assertEquals("propertyName", designation.getElementReferencePropertyName());
+                assertEquals("propertyName", designation.getReferencePropertyName());
             }
         }
     }
@@ -118,9 +118,9 @@ public class SerializationAdapterTest {
         for (Element e : elements) {
             ElementDesignation designation = e.getElementDesignation();
             if (ElementDesignation.Type.REFERENCE.name().equals(designation.getType().name())) {
-                assertFalse(designation.getElementReferenceTemplate().isEmpty());
+                assertFalse(designation.getReferenceTemplate().isEmpty());
 
-                assertEquals("template.name", designation.getElementReferenceTemplate());
+                assertEquals("template.name", designation.getReferenceTemplate());
             }
         }
     }
@@ -141,9 +141,9 @@ public class SerializationAdapterTest {
             ConnectionDesignation designation = e.getConnectionDesignation();
 
             if (ConnectionDesignation.Type.REFERENCE.name().equals(designation.getType().name())) {
-                assertFalse(designation.getConnectionReferencePropertyName().isEmpty());
+                assertFalse(designation.getReferencePropertyName().isEmpty());
 
-                assertEquals("propertyName", designation.getConnectionReferencePropertyName());
+                assertEquals("propertyName", designation.getReferencePropertyName());
             }
         }
     }
@@ -154,11 +154,11 @@ public class SerializationAdapterTest {
             ConnectionDesignation designation = e.getConnectionDesignation();
 
             if (ConnectionDesignation.Type.REFERENCE.name().equals(designation.getType().name())) {
-                assertFalse(designation.getConnectionReferenceTemplate().isEmpty());
-                assertTrue(designation.getConnectionReferenceTemplate().contains("."));
-                assertTrue(designation.getConnectionReferenceTemplate().indexOf(".") > 0);
+                assertFalse(designation.getReferenceTemplate().isEmpty());
+                assertTrue(designation.getReferenceTemplate().contains("."));
+                assertTrue(designation.getReferenceTemplate().indexOf(".") > 0);
 
-                assertEquals("template.name", designation.getConnectionReferenceTemplate());
+                assertEquals("template.name", designation.getReferenceTemplate());
             }
         }
     }

@@ -1,7 +1,6 @@
-package com.codenvy.modeling.configuration.validation.pre;
+package com.codenvy.modeling.configuration.validation;
 
 import com.codenvy.modeling.configuration.ConfigurationFactory;
-import com.codenvy.modeling.configuration.validation.Report;
 
 import org.junit.Rule;
 import org.junit.Test;

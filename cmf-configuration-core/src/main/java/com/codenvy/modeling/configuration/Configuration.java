@@ -20,57 +20,56 @@ import com.codenvy.modeling.configuration.editor.EditorConfiguration;
 import com.codenvy.modeling.configuration.metamodel.diagram.DiagramConfiguration;
 import com.codenvy.modeling.configuration.metamodel.serialization.SerializationConfiguration;
 import com.codenvy.modeling.configuration.style.StyleConfiguration;
-import com.google.inject.Inject;
-import com.google.inject.assistedinject.Assisted;
 
-import javax.annotation.Nonnull;
-import java.io.IOException;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author Dmitry Kuleshov
- * @author Andrey Plotnikov
  */
-public class ConfigurationKeeperImpl implements ConfigurationKeeper {
+public class Configuration {
+    @NotNull
+    @Valid
+    private DiagramConfiguration       diagramConfiguration;
+    @NotNull
+    @Valid
+    private SerializationConfiguration serializationConfiguration;
+    @NotNull
+    @Valid
+    private EditorConfiguration        editorConfiguration;
+    @NotNull
+    @Valid
+    private StyleConfiguration         styleConfiguration;
 
-    private final DiagramConfiguration       diagramConfiguration;
-    private final SerializationConfiguration serializationConfiguration;
-    private final EditorConfiguration        editorConfiguration;
-    private       StyleConfiguration         styleConfiguration;
-
-    @Inject
-    public ConfigurationKeeperImpl(ConfigurationAdapterFactory factory,
-                                   @Assisted String diagramConfPath,
-                                   @Assisted String editorConfPath,
-                                   @Assisted String serializationConfPath,
-                                   @Assisted String styleConfPath) throws IOException {
-        editorConfiguration = factory.createEditorConfAdapter(editorConfPath).getConfiguration();
-        diagramConfiguration = factory.createDiagramConfAdapter(diagramConfPath).getConfiguration();
-        serializationConfiguration = factory.createSerializationConfAdapter(serializationConfPath).getConfiguration();
-        // TODO add style configuration
-    }
-
-    @Nonnull
-    @Override
     public DiagramConfiguration getDiagramConfiguration() {
         return diagramConfiguration;
     }
 
-    @Nonnull
-    @Override
+    public void setDiagramConfiguration(DiagramConfiguration diagramConfiguration) {
+        this.diagramConfiguration = diagramConfiguration;
+    }
+
     public SerializationConfiguration getSerializationConfiguration() {
         return serializationConfiguration;
     }
 
-    @Nonnull
-    @Override
+    public void setSerializationConfiguration(SerializationConfiguration serializationConfiguration) {
+        this.serializationConfiguration = serializationConfiguration;
+    }
+
     public EditorConfiguration getEditorConfiguration() {
         return editorConfiguration;
     }
 
-    @Nonnull
-    @Override
+    public void setEditorConfiguration(EditorConfiguration editorConfiguration) {
+        this.editorConfiguration = editorConfiguration;
+    }
+
     public StyleConfiguration getStyleConfiguration() {
         return styleConfiguration;
     }
 
+    public void setStyleConfiguration(StyleConfiguration styleConfiguration) {
+        this.styleConfiguration = styleConfiguration;
+    }
 }

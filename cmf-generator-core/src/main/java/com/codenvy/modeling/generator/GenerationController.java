@@ -16,7 +16,6 @@
 
 package com.codenvy.modeling.generator;
 
-import com.codenvy.modeling.configuration.ConfigurationFactory;
 import com.codenvy.modeling.configuration.ConfigurationFactoryCreator;
 import com.google.inject.Inject;
 
@@ -24,10 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
-import java.io.IOException;
 import java.util.Map;
-
-import static com.codenvy.modeling.generator.GenerationController.Param.SOURCE_PATH;
 
 /**
  * The main class of generating GWT editor. It provides an ability to check configuration and generate GWT java code.
@@ -65,13 +61,14 @@ public class GenerationController {
      *         parameters are given by user
      */
     public void generate(@Nonnull Map<Param, String> params) {
-        ConfigurationFactory configurationFactory = configurationFactoryCreator.create(params.get(SOURCE_PATH));
+        // TODO provide a new way to get Configuration
+//        ConfigurationFactoryImpl configurationFactoryImpl = configurationFactoryCreator.create(params.get(SOURCE_PATH));
 
-        try {
-            sourceCodeGenerator.generate(params, configurationFactory.getConfigurationKeeperInstance());
-        } catch (IOException e) {
-            LOG.error("Some problem happened during code generating.", e);
-        }
+//        try {
+//            sourceCodeGenerator.generate(params, configurationFactoryImpl.getInstance());
+//        } catch (IOException e) {
+//            LOG.error("Some problem happened during code generating.", e);
+//        }
     }
 
 }

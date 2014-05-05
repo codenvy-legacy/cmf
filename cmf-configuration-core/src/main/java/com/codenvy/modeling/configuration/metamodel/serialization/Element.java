@@ -16,21 +16,54 @@
 
 package com.codenvy.modeling.configuration.metamodel.serialization;
 
-import javax.annotation.Nonnull;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * @author Dmitry Kuleshov
  */
-public interface Element {
-    @Nonnull
-    String getName();
+public class Element {
+    @Size(min = 1)
+    private String                name;
+    @Size(min = 1)
+    private String                template;
+    @NotNull
+    @Valid
+    private ElementDesignation    elementDesignation;
+    @NotNull
+    @Valid
+    private ConnectionDesignation connectionDesignation;
 
-    @Nonnull
-    String getTemplate();
+    public String getName() {
+        return name;
+    }
 
-    @Nonnull
-    ElementDesignation getElementDesignation();
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    @Nonnull
-    ConnectionDesignation getConnectionDesignation();
+    public String getTemplate() {
+        return template;
+    }
+
+    public void setTemplate(String template) {
+        this.template = template;
+    }
+
+    public ElementDesignation getElementDesignation() {
+        return elementDesignation;
+    }
+
+    public void setElementDesignation(ElementDesignation elementDesignation) {
+        this.elementDesignation = elementDesignation;
+    }
+
+    public ConnectionDesignation getConnectionDesignation() {
+        return connectionDesignation;
+    }
+
+    public void setConnectionDesignation(ConnectionDesignation connectionDesignation) {
+        this.connectionDesignation = connectionDesignation;
+    }
 }

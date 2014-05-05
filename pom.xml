@@ -51,6 +51,8 @@
         <version.gwt.dnd>3.2.3</version.gwt.dnd>
         <version.gwt.incubator>2.0.1</version.gwt.incubator>
         <version.gwt.links>1.4.2</version.gwt.links>
+        <version.hibernate.validator>5.1.0.Final</version.hibernate.validator>
+        <version.javax.el>2.2.4</version.javax.el>
         <version.joist>1.7.0</version.joist>
         <version.junit>4.11</version.junit>
         <version.logback>1.1.1</version.logback>

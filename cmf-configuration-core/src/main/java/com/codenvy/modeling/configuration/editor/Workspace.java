@@ -16,16 +16,17 @@
 
 package com.codenvy.modeling.configuration.editor;
 
-import javax.annotation.Nonnull;
-
 /**
  * @author Dmitry Kuleshov
  */
-public interface Workspace {
-    public enum Scrollability {
-        YES, NO
+public class Workspace {
+    private boolean scrollable;
+
+    public boolean isScrollable() {
+        return scrollable;
     }
 
-    @Nonnull
-    Scrollability getScrollability();
+    public void setScrollable(boolean scrollable) {
+        this.scrollable = scrollable;
+    }
 }

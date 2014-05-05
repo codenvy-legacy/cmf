@@ -16,26 +16,69 @@
 
 package com.codenvy.modeling.configuration.metamodel.diagram;
 
-import javax.annotation.Nonnull;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
  * @author Dmitry Kuleshov
  */
-public interface Element {
-    enum Relation {
+public class Element {
+    @Size(min = 1)
+    private String   name;
+    @NotNull
+    private Relation relation;
+    @Size(min = 1)
+    @Valid
+    private List<Property>  properties = new LinkedList<>();
+    @Size(min = 1)
+    @Valid
+    private List<Component> components = new LinkedList<>();
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Relation getRelation() {
+        return relation;
+    }
+
+    public void setRelation(Relation relation) {
+        this.relation = relation;
+    }
+
+    public List<Property> getProperties() {
+        return properties;
+    }
+
+    public void setProperties(List<Property> properties) {
+        this.properties = properties;
+    }
+
+    public List<Component> getComponents() {
+        return components;
+    }
+
+    public void setComponents(List<Component> components) {
+        this.components = components;
+    }
+
+    public void addProperty(Property property) {
+        properties.add(property);
+    }
+
+    public void addComponent(Component component) {
+        components.add(component);
+    }
+
+    public enum Relation {
         SINGLE, MULTIPLE
     }
 
-    @Nonnull
-    String getName();
-
-    @Nonnull
-    Relation getRelation();
-
-    @Nonnull
-    List<Property> getProperties();
-
-    @Nonnull
-    List<Component> getComponents();
 }

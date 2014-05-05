@@ -30,5 +30,5 @@ Panel :
 
 Workspace :
 {
-    scrollability : NO
+    scrollable : FALSE
 }

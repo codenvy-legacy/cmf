@@ -132,11 +132,11 @@ ppDefaultSize           :
                         ;
 
 workspace               :
-                            'scrollability' COLON scrollability
+                            'scrollable' COLON scrollable
                         ;
 
-scrollability           :
-                            SCROLLABILITY
+scrollable              :
+                            SCROLLABLE
                         ;
 
 SIDE                    :
@@ -152,7 +152,7 @@ ALIGNMENT               :
                             'RIGHT' |
                             'CENTER'
                         ;
-SCROLLABILITY           :
-                            'YES'   |
-                            'NO'
+SCROLLABLE              :
+                            'TRUE'   |
+                            'FALSE'
                         ;

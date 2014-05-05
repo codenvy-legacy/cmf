@@ -16,15 +16,11 @@
 
 package com.codenvy.modeling.configuration.parser.metamodel.diagram;
 
-import com.codenvy.modeling.configuration.impl.metamodel.diagram.ComponentImpl;
-import com.codenvy.modeling.configuration.impl.metamodel.diagram.ConnectionImpl;
-import com.codenvy.modeling.configuration.impl.metamodel.diagram.DiagramConfigurationImpl;
-import com.codenvy.modeling.configuration.impl.metamodel.diagram.ElementImpl;
-import com.codenvy.modeling.configuration.impl.metamodel.diagram.PairImpl;
-import com.codenvy.modeling.configuration.impl.metamodel.diagram.PropertyImpl;
+import com.codenvy.modeling.configuration.metamodel.diagram.Component;
 import com.codenvy.modeling.configuration.metamodel.diagram.Connection;
 import com.codenvy.modeling.configuration.metamodel.diagram.DiagramConfiguration;
 import com.codenvy.modeling.configuration.metamodel.diagram.Element;
+import com.codenvy.modeling.configuration.metamodel.diagram.Pair;
 import com.codenvy.modeling.configuration.metamodel.diagram.Property;
 
 import org.antlr.v4.runtime.misc.NotNull;
@@ -37,17 +33,17 @@ import java.util.Stack;
  */
 public class DiagramConfigurationAdapterListener extends DiagramBaseListener {
 
-    private Stack<ElementImpl> elementStack = new Stack<>();
+    private Stack<Element> elementStack = new Stack<>();
 
-    private Stack<PropertyImpl> propertyStack = new Stack<>();
+    private Stack<Property> propertyStack = new Stack<>();
 
-    private Stack<ComponentImpl> componentStack = new Stack<>();
+    private Stack<Component> componentStack = new Stack<>();
 
-    private Stack<ConnectionImpl> connectionStack = new Stack<>();
+    private Stack<Connection> connectionStack = new Stack<>();
 
-    private Stack<PairImpl> pairStack = new Stack<>();
+    private Stack<Pair> pairStack = new Stack<>();
 
-    private DiagramConfigurationImpl diagramConfiguration = new DiagramConfigurationImpl();
+    private DiagramConfiguration diagramConfiguration = new DiagramConfiguration();
 
     @Nonnull
     public DiagramConfiguration getDiagramConfiguration() {
@@ -56,7 +52,7 @@ public class DiagramConfigurationAdapterListener extends DiagramBaseListener {
 
     @Override
     public void enterElement(@NotNull DiagramParser.ElementContext ctx) {
-        elementStack.push(new ElementImpl());
+        elementStack.push(new Element());
     }
 
     @Override
@@ -66,7 +62,7 @@ public class DiagramConfigurationAdapterListener extends DiagramBaseListener {
 
     @Override
     public void enterElementProperty(@NotNull DiagramParser.ElementPropertyContext ctx) {
-        propertyStack.push(new PropertyImpl());
+        propertyStack.push(new Property());
     }
 
     @Override
@@ -91,7 +87,7 @@ public class DiagramConfigurationAdapterListener extends DiagramBaseListener {
 
     @Override
     public void enterElementComponent(@NotNull DiagramParser.ElementComponentContext ctx) {
-        componentStack.push(new ComponentImpl());
+        componentStack.push(new Component());
     }
 
     @Override
@@ -112,7 +108,7 @@ public class DiagramConfigurationAdapterListener extends DiagramBaseListener {
 
     @Override
     public void enterConnection(@NotNull DiagramParser.ConnectionContext ctx) {
-        connectionStack.push(new ConnectionImpl());
+        connectionStack.push(new Connection());
     }
 
     @Override
@@ -127,7 +123,7 @@ public class DiagramConfigurationAdapterListener extends DiagramBaseListener {
 
     @Override
     public void enterConnectionPair(@NotNull DiagramParser.ConnectionPairContext ctx) {
-        pairStack.push(new PairImpl());
+        pairStack.push(new Pair());
     }
 
     @Override

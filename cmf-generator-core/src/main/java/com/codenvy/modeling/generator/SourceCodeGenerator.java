@@ -15,7 +15,7 @@
  */
 package com.codenvy.modeling.generator;
 
-import com.codenvy.modeling.configuration.ConfigurationKeeper;
+import com.codenvy.modeling.configuration.Configuration;
 import com.google.inject.Inject;
 
 import javax.annotation.Nonnull;
@@ -40,10 +40,10 @@ public class SourceCodeGenerator {
      *
      * @param params
      *         params which are needed for code generation
-     * @param configurationKeeper
-     *         configuration keeper that contains full information about GWT editor
+     * @param configuration
+     *         configuration that contains full information about GWT editor
      */
-    public void generate(@Nonnull Map<Param, String> params, ConfigurationKeeper configurationKeeper) {
+    public void generate(@Nonnull Map<Param, String> params, Configuration configuration) {
 
     }
 

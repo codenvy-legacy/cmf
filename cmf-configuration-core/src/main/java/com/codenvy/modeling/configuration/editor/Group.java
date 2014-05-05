@@ -16,12 +16,20 @@
 
 package com.codenvy.modeling.configuration.editor;
 
-import javax.annotation.Nonnull;
+import javax.validation.constraints.Size;
 
 /**
  * @author Dmitry Kuleshov
  */
-public interface Group {
-    @Nonnull
-    String getMargin();
+public class Group {
+    @Size(min = 1)
+    private String margin;
+
+    public String getMargin() {
+        return margin;
+    }
+
+    public void setMargin(String margin) {
+        this.margin = margin;
+    }
 }

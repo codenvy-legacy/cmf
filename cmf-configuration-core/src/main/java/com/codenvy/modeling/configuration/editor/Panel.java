@@ -16,20 +16,35 @@
 
 package com.codenvy.modeling.configuration.editor;
 
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author Dmitry Kuleshov
  */
-public interface Panel {
+public class Panel {
+    @NotNull
+    private Alignment alignment;
+    @Min(0)
+    private int       defaultSize;
+
+    public Alignment getAlignment() {
+        return alignment;
+    }
+
+    public void setAlignment(Alignment alignment) {
+        this.alignment = alignment;
+    }
+
+    public int getDefaultSize() {
+        return defaultSize;
+    }
+
+    public void setDefaultSize(int defaultSize) {
+        this.defaultSize = defaultSize;
+    }
+
     public enum Alignment {
         NORTH, SOUTH, WEST, EAST
     }
-
-    @Nonnull
-    Alignment getAlignment();
-
-    @Nonnegative
-    int getDefaultSize();
 }

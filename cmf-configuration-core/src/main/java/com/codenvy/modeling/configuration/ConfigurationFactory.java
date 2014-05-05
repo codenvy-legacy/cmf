@@ -16,11 +16,8 @@
 
 package com.codenvy.modeling.configuration;
 
-import com.codenvy.modeling.configuration.validation.Validator;
-
 import javax.annotation.Nonnull;
 import java.io.IOException;
-import java.util.List;
 
 /**
  * @author Dmitry Kuleshov
@@ -57,8 +54,5 @@ public interface ConfigurationFactory {
     }
 
     @Nonnull
-    ConfigurationKeeper getConfigurationKeeperInstance() throws IOException;
-
-    @Nonnull
-    List<Validator> getValidatorsListInstance();
+    Configuration getInstance() throws IOException;
 }

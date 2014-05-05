@@ -16,16 +16,24 @@
 
 package com.codenvy.modeling.configuration.editor;
 
-import javax.annotation.Nonnull;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author Dmitry Kuleshov
  */
-public interface Text {
+public class Text {
+    @NotNull
+    private Alignment alignment;
+
+    public Alignment getAlignment() {
+        return alignment;
+    }
+
+    public void setAlignment(Alignment alignment) {
+        this.alignment = alignment;
+    }
+
     public enum Alignment {
         TOP, BOTTOM, LEFT, RIGHT, CENTER
     }
-
-    @Nonnull
-    Alignment getAlignment();
 }

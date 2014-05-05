@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package com.codenvy.modeling.configuration.validation.pre;
+package com.codenvy.modeling.configuration.validation;
 
 import com.codenvy.modeling.configuration.ConfigurationFactory;
-import com.codenvy.modeling.configuration.validation.Report;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -30,7 +29,7 @@ import java.util.Properties;
 /**
  * @author Dmitry Kuleshov
  */
-public class ProjectDescriptorValidator extends AbstractPersistenceValidator {
+public class ProjectDescriptorValidator {
     enum ErrorType {
         PARAMETER_ABSENCE("Mandatory parameter '%s' is absent."),
         EMPTY_VALUE("Parameter '%s' value is empty."),
@@ -57,7 +56,7 @@ public class ProjectDescriptorValidator extends AbstractPersistenceValidator {
 
 
     public ProjectDescriptorValidator(@Nonnull String path) {
-        report = new Report();
+        report = Report.getEmptyReport();
         descriptorProperties = loadDescriptor(path);
         validateParameters();
     }
@@ -68,7 +67,7 @@ public class ProjectDescriptorValidator extends AbstractPersistenceValidator {
         try (FileInputStream descriptorStream = new FileInputStream(path)) {
             descriptorProperties.load(descriptorStream);
         } catch (IOException e) {
-            report.addError(e.getLocalizedMessage(), e, Report.Error.Severity.HIGH);
+            report.addError(e.getLocalizedMessage());
         }
 
         return descriptorProperties;
@@ -85,7 +84,7 @@ public class ProjectDescriptorValidator extends AbstractPersistenceValidator {
         ErrorType errorType = specifyErrorType(parameterValue, parameter);
 
         if (errorType != ErrorType.NOT_AN_ERROR && errorType.getPattern() != null) {
-            report.addError(String.format(errorType.getPattern(), parameter.name().toLowerCase()), Report.Error.Severity.HIGH);
+            report.addError(String.format(errorType.getPattern(), parameter.name().toLowerCase()));
         }
     }
 
@@ -109,7 +108,6 @@ public class ProjectDescriptorValidator extends AbstractPersistenceValidator {
     }
 
     @Nonnull
-    @Override
     public Report getReport() {
         return report;
     }

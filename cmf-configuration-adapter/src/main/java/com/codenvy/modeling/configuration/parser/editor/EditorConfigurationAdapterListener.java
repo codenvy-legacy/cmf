@@ -16,8 +16,15 @@
 
 package com.codenvy.modeling.configuration.parser.editor;
 
-import com.codenvy.modeling.configuration.editor.*;
-import com.codenvy.modeling.configuration.impl.editor.*;
+import com.codenvy.modeling.configuration.editor.EditorConfiguration;
+import com.codenvy.modeling.configuration.editor.Group;
+import com.codenvy.modeling.configuration.editor.Item;
+import com.codenvy.modeling.configuration.editor.Panel;
+import com.codenvy.modeling.configuration.editor.Size;
+import com.codenvy.modeling.configuration.editor.Text;
+import com.codenvy.modeling.configuration.editor.Toolbar;
+import com.codenvy.modeling.configuration.editor.Workspace;
+
 import org.antlr.v4.runtime.misc.NotNull;
 
 import javax.annotation.Nonnull;
@@ -26,14 +33,14 @@ import javax.annotation.Nonnull;
  * @author Dmitry Kuleshov
  */
 public class EditorConfigurationAdapterListener extends EditorBaseListener {
-    private EditorConfigurationImpl editorConfiguration;
-    private WorkspaceImpl workspace;
-    private ToolbarImpl toolbar;
-    private PanelImpl panel;
-    private GroupImpl group;
-    private SizeImpl size;
-    private TextImpl text;
-    private ItemImpl item;
+    private EditorConfiguration editorConfiguration;
+    private Workspace           workspace;
+    private Toolbar             toolbar;
+    private Panel               panel;
+    private Group               group;
+    private Size                size;
+    private Text                text;
+    private Item                item;
 
     @Nonnull
     public EditorConfiguration getEditorConfiguration() {
@@ -42,12 +49,12 @@ public class EditorConfigurationAdapterListener extends EditorBaseListener {
 
     @Override
     public void enterEditor(@NotNull EditorParser.EditorContext ctx) {
-        editorConfiguration = new EditorConfigurationImpl();
+        editorConfiguration = new EditorConfiguration();
     }
 
     @Override
     public void enterToolbar(@NotNull EditorParser.ToolbarContext ctx) {
-        toolbar = new ToolbarImpl();
+        toolbar = new Toolbar();
     }
 
     @Override
@@ -57,7 +64,7 @@ public class EditorConfigurationAdapterListener extends EditorBaseListener {
 
     @Override
     public void enterTbGroup(@NotNull EditorParser.TbGroupContext ctx) {
-        group = new GroupImpl();
+        group = new Group();
     }
 
     @Override
@@ -72,7 +79,7 @@ public class EditorConfigurationAdapterListener extends EditorBaseListener {
 
     @Override
     public void enterTbSize(@NotNull EditorParser.TbSizeContext ctx) {
-        size = new SizeImpl();
+        size = new Size();
     }
 
     @Override
@@ -92,7 +99,7 @@ public class EditorConfigurationAdapterListener extends EditorBaseListener {
 
     @Override
     public void enterTbItem(@NotNull EditorParser.TbItemContext ctx) {
-        item = new ItemImpl();
+        item = new Item();
     }
 
     @Override
@@ -112,7 +119,7 @@ public class EditorConfigurationAdapterListener extends EditorBaseListener {
 
     @Override
     public void enterIText(@NotNull EditorParser.ITextContext ctx) {
-        text = new TextImpl();
+        text = new Text();
     }
 
     @Override
@@ -137,7 +144,7 @@ public class EditorConfigurationAdapterListener extends EditorBaseListener {
 
     @Override
     public void enterPPanel(@NotNull EditorParser.PPanelContext ctx) {
-        panel = new PanelImpl();
+        panel = new Panel();
     }
 
     @Override
@@ -157,12 +164,12 @@ public class EditorConfigurationAdapterListener extends EditorBaseListener {
 
     @Override
     public void enterWorkspace(@NotNull EditorParser.WorkspaceContext ctx) {
-        workspace = new WorkspaceImpl();
+        workspace = new Workspace();
     }
 
     @Override
-    public void exitScrollability(@NotNull EditorParser.ScrollabilityContext ctx) {
-        workspace.setScrollability(Workspace.Scrollability.valueOf(ctx.SCROLLABILITY().getText()));
+    public void exitScrollable(@NotNull EditorParser.ScrollableContext ctx) {
+        workspace.setScrollable(Boolean.valueOf(ctx.SCROLLABLE().getText().toLowerCase()));
     }
 
     @Override

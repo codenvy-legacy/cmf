@@ -16,13 +16,28 @@
 
 package com.codenvy.modeling.configuration.metamodel.serialization;
 
-import javax.annotation.Nonnull;
+import javax.validation.Valid;
+import javax.validation.constraints.Size;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
  * @author Dmitry Kuleshov
  */
-public interface SerializationConfiguration {
-    @Nonnull
-    List<Element> getElements();
+public class SerializationConfiguration {
+    @Size(min = 1)
+    @Valid
+    private List<Element> elements = new LinkedList<>();
+
+    public List<Element> getElements() {
+        return elements;
+    }
+
+    public void setElements(List<Element> elements) {
+        this.elements = elements;
+    }
+
+    public void addElement(Element element) {
+        elements.add(element);
+    }
 }

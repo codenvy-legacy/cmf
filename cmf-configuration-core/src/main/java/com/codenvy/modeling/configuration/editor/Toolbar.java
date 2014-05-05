@@ -16,25 +16,58 @@
 
 package com.codenvy.modeling.configuration.editor;
 
-import javax.annotation.Nonnull;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author Dmitry Kuleshov
  */
-public interface Toolbar {
+public class Toolbar {
+    @NotNull
+    private Alignment alignment;
+    @NotNull
+    @Valid
+    private Size      size;
+    @NotNull
+    @Valid
+    private Group     group;
+    @NotNull
+    @Valid
+    private Item      item;
+
+    public Alignment getAlignment() {
+        return alignment;
+    }
+
+    public void setAlignment(Alignment alignment) {
+        this.alignment = alignment;
+    }
+
+    public Size getSize() {
+        return size;
+    }
+
+    public void setSize(Size size) {
+        this.size = size;
+    }
+
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
+    }
+
+    public Item getItem() {
+        return item;
+    }
+
+    public void setItem(Item item) {
+        this.item = item;
+    }
+
     public enum Alignment {
         NORTH, SOUTH, WEST, EAST
     }
-
-    @Nonnull
-    Alignment getAlignment();
-
-    @Nonnull
-    Size getSize();
-
-    @Nonnull
-    Group getGroup();
-
-    @Nonnull
-    Item getItem();
 }

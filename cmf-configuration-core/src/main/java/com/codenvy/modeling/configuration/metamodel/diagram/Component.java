@@ -16,12 +16,20 @@
 
 package com.codenvy.modeling.configuration.metamodel.diagram;
 
-import javax.annotation.Nonnull;
+import javax.validation.constraints.Size;
 
 /**
  * @author Dmitry Kuleshov
  */
-public interface Component {
-    @Nonnull
-    String getName();
+public class Component {
+    @Size(min = 1)
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

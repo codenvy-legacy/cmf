@@ -16,18 +16,44 @@
 
 package com.codenvy.modeling.configuration.editor;
 
-import javax.annotation.Nonnull;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author Dmitry Kuleshov
  */
-public interface EditorConfiguration {
-    @Nonnull
-    Toolbar getToolbar();
+public class EditorConfiguration {
+    @NotNull
+    @Valid
+    private Toolbar   toolbar;
+    @NotNull
+    @Valid
+    private Panel     panel;
+    @NotNull
+    @Valid
+    private Workspace workspace;
 
-    @Nonnull
-    Panel getPanel();
+    public Toolbar getToolbar() {
+        return toolbar;
+    }
 
-    @Nonnull
-    Workspace getWorkspace();
+    public void setToolbar(Toolbar toolbar) {
+        this.toolbar = toolbar;
+    }
+
+    public Panel getPanel() {
+        return panel;
+    }
+
+    public void setPanel(Panel panel) {
+        this.panel = panel;
+    }
+
+    public Workspace getWorkspace() {
+        return workspace;
+    }
+
+    public void setWorkspace(Workspace workspace) {
+        this.workspace = workspace;
+    }
 }

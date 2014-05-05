@@ -16,26 +16,58 @@
 
 package com.codenvy.modeling.configuration.editor;
 
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * @author Dmitry Kuleshov
  */
-public interface Item {
+public class Item {
+    @Min(0)
+    private int       size;
+    @Size(min = 1)
+    private String    margin;
+    @NotNull
+    @Valid
+    private Text      text;
+    @NotNull
+    private Alignment alignment;
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
+
+    public String getMargin() {
+        return margin;
+    }
+
+    public void setMargin(String margin) {
+        this.margin = margin;
+    }
+
+    public Text getText() {
+        return text;
+    }
+
+    public void setText(Text text) {
+        this.text = text;
+    }
+
+    public Alignment getAlignment() {
+        return alignment;
+    }
+
+    public void setAlignment(Alignment alignment) {
+        this.alignment = alignment;
+    }
+
     public enum Alignment {
         TOP, BOTTOM, LEFT, RIGHT, CENTER
     }
-
-    @Nonnegative
-    int getSize();
-
-    @Nonnull
-    String getMargin();
-
-    @Nonnull
-    Text getText();
-
-    @Nonnull
-    Alignment getAlignment();
 }

@@ -16,16 +16,43 @@
 
 package com.codenvy.modeling.configuration.metamodel.diagram;
 
-import javax.annotation.Nonnull;
+import javax.validation.Valid;
+import javax.validation.constraints.Size;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
  * @author Dmitry Kuleshov
  */
-public interface DiagramConfiguration {
-    @Nonnull
-    List<Element> getElements();
+public class DiagramConfiguration {
+    @Size(min = 1)
+    @Valid
+    private List<Element>    elements    = new LinkedList<>();
+    @Size(min = 1)
+    @Valid
+    private List<Connection> connections = new LinkedList<>();
 
-    @Nonnull
-    List<Connection> getConnections();
+    public List<Element> getElements() {
+        return elements;
+    }
+
+    public void setElements(List<Element> elements) {
+        this.elements = elements;
+    }
+
+    public List<Connection> getConnections() {
+        return connections;
+    }
+
+    public void setConnections(List<Connection> connections) {
+        this.connections = connections;
+    }
+
+    public void addConnection(Connection connection) {
+        connections.add(connection);
+    }
+
+    public void addElement(Element element) {
+        elements.add(element);
+    }
 }

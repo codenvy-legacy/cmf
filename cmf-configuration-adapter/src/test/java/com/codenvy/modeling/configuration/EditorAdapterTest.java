@@ -174,11 +174,13 @@ public class EditorAdapterTest {
     }
 
     @Test
-    public void workspaceMustHaveScrollabilityParameter() {
-        assertNotNull(Workspace.Scrollability.valueOf(workspace.getScrollability().name()));
+    public void workspaceMustHaveScrollableParameter() {
+        if (numberOfGrammar == 1) {
+            assertTrue(workspace.isScrollable());
+        }
 
         if (numberOfGrammar == 2) {
-            assertEquals("NO", workspace.getScrollability().name());
+            assertFalse(workspace.isScrollable());
         }
     }
 }

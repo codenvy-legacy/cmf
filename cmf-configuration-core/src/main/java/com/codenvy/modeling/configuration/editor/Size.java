@@ -16,15 +16,30 @@
 
 package com.codenvy.modeling.configuration.editor;
 
-import javax.annotation.Nonnegative;
+import javax.validation.constraints.Min;
 
 /**
  * @author Dmitry Kuleshov
  */
-public interface Size {
-    @Nonnegative
-    int getCompact();
+public class Size {
+    @Min(0)
+    private int compact;
+    @Min(0)
+    private int full;
 
-    @Nonnegative
-    int getFull();
+    public int getCompact() {
+        return compact;
+    }
+
+    public void setCompact(int compact) {
+        this.compact = compact;
+    }
+
+    public int getFull() {
+        return full;
+    }
+
+    public void setFull(int full) {
+        this.full = full;
+    }
 }

@@ -16,23 +16,54 @@
 
 package com.codenvy.modeling.configuration.metamodel.diagram;
 
-import javax.annotation.Nonnull;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
  * @author Dmitry Kuleshov
  */
-public interface Connection {
-    enum Type {
-        DIRECTED, NONDIRECTED, POSITIONAL
+public class Connection {
+    @Size(min = 1)
+    private String name;
+    @NotNull
+    @Valid
+    private Type   type;
+    @Size(min = 1)
+    @Valid
+    private List<Pair> pairs = new LinkedList<>();
+
+    public String getName() {
+        return name;
     }
 
-    @Nonnull
-    String getName();
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    @Nonnull
-    Type getType();
+    public Type getType() {
+        return type;
+    }
 
-    @Nonnull
-    List<Pair> getPairs();
+    public void setType(Type type) {
+        this.type = type;
+    }
+
+    public List<Pair> getPairs() {
+        return pairs;
+    }
+
+    public void setPairs(List<Pair> pairs) {
+        this.pairs = pairs;
+    }
+
+    public void addPair(Pair pair) {
+        pairs.add(pair);
+    }
+
+    public enum Type {
+        DIRECTED, NONDIRECTED, POSITIONAL
+    }
 }
