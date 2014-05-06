@@ -16,13 +16,16 @@
 
 package com.codenvy.modeling.configuration.metamodel.diagram;
 
-import javax.validation.constraints.Size;
+import com.codenvy.modeling.configuration.validation.ConfigurationConstraintsValidator;
+
+import javax.validation.constraints.Pattern;
 
 /**
  * @author Dmitry Kuleshov
+ * @author Valeriy Svydenko
  */
 public class Component {
-    @Size(min = 1)
+    @Pattern(regexp = ConfigurationConstraintsValidator.SIMPLE_TEXT)
     private String name;
 
     public String getName() {

@@ -23,8 +23,10 @@ import javax.validation.Validator;
 /**
  * @author Dmitry Kuleshov
  * @author Andrey Plotnikov
+ * @author Valeriy Svydenko
  */
 public class ConfigurationConstraintsValidator {
+    public static final String SIMPLE_TEXT = "^[a-zA-Z0-9_]+$";
 
     public static Report validate(Object object) {
         Report report = Report.getEmptyReport();

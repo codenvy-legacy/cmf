@@ -16,18 +16,21 @@
 
 package com.codenvy.modeling.configuration.metamodel.serialization;
 
+import com.codenvy.modeling.configuration.validation.ConfigurationConstraintsValidator;
+
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.Pattern;
 
 /**
  * @author Dmitry Kuleshov
+ * @author Valeriy Svydenko
  */
 public class ConnectionDesignation {
     @NotNull
     private Type   type;
-    @Size(min = 1)
+    @Pattern(regexp = ConfigurationConstraintsValidator.SIMPLE_TEXT)
     private String referencePropertyName;
-    @Size(min = 1)
+    @Pattern(regexp = ConfigurationConstraintsValidator.SIMPLE_TEXT)
     private String referenceTemplate;
 
     public Type getType() {

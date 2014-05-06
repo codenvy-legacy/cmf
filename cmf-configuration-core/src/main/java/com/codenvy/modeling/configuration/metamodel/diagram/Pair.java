@@ -16,15 +16,18 @@
 
 package com.codenvy.modeling.configuration.metamodel.diagram;
 
-import javax.validation.constraints.Size;
+import com.codenvy.modeling.configuration.validation.ConfigurationConstraintsValidator;
+
+import javax.validation.constraints.Pattern;
 
 /**
  * @author Dmitry Kuleshov
+ * @author Valeriy Svydenko
  */
 public class Pair {
-    @Size(min = 1)
+    @Pattern(regexp = ConfigurationConstraintsValidator.SIMPLE_TEXT)
     private String start;
-    @Size(min = 1)
+    @Pattern(regexp = ConfigurationConstraintsValidator.SIMPLE_TEXT)
     private String finish;
 
     public String getStart() {

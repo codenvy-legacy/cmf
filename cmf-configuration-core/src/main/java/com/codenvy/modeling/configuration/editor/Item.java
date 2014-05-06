@@ -16,18 +16,21 @@
 
 package com.codenvy.modeling.configuration.editor;
 
+import com.codenvy.modeling.configuration.validation.ConfigurationConstraintsValidator;
+
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.Pattern;
 
 /**
  * @author Dmitry Kuleshov
+ * @author Valeriy Svydenko
  */
 public class Item {
     @Min(0)
     private int       size;
-    @Size(min = 1)
+    @Pattern(regexp = ConfigurationConstraintsValidator.SIMPLE_TEXT)
     private String    margin;
     @NotNull
     @Valid

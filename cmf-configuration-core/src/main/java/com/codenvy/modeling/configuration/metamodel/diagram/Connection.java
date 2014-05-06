@@ -16,17 +16,21 @@
 
 package com.codenvy.modeling.configuration.metamodel.diagram;
 
+import com.codenvy.modeling.configuration.validation.ConfigurationConstraintsValidator;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
  * @author Dmitry Kuleshov
+ * @author Valeriy Svydenko
  */
 public class Connection {
-    @Size(min = 1)
+    @Pattern(regexp = ConfigurationConstraintsValidator.SIMPLE_TEXT)
     private String name;
     @NotNull
     @Valid

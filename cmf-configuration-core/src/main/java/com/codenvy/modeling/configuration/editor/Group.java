@@ -16,13 +16,16 @@
 
 package com.codenvy.modeling.configuration.editor;
 
-import javax.validation.constraints.Size;
+import com.codenvy.modeling.configuration.validation.ConfigurationConstraintsValidator;
+
+import javax.validation.constraints.Pattern;
 
 /**
  * @author Dmitry Kuleshov
+ * @author Valeriy Svydenko
  */
 public class Group {
-    @Size(min = 1)
+    @Pattern(regexp = ConfigurationConstraintsValidator.SIMPLE_TEXT)
     private String margin;
 
     public String getMargin() {

@@ -16,17 +16,20 @@
 
 package com.codenvy.modeling.configuration.metamodel.serialization;
 
+import com.codenvy.modeling.configuration.validation.ConfigurationConstraintsValidator;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.Pattern;
 
 /**
  * @author Dmitry Kuleshov
+ * @author Valeriy SWvydenko
  */
 public class Element {
-    @Size(min = 1)
+    @Pattern(regexp = ConfigurationConstraintsValidator.SIMPLE_TEXT)
     private String                name;
-    @Size(min = 1)
+    @Pattern(regexp = ConfigurationConstraintsValidator.SIMPLE_TEXT)
     private String                template;
     @NotNull
     @Valid
