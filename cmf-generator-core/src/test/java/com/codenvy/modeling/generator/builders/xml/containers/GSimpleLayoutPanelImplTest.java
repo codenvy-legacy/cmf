@@ -19,7 +19,6 @@ package com.codenvy.modeling.generator.builders.xml.containers;
 import com.codenvy.modeling.generator.builders.xml.AbstractXmlBuilderTest;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.GWidget;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GSimpleLayoutPanel;
-import com.codenvy.modeling.generator.builders.xml.impl.widgets.GLabelImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.containers.GSimpleLayoutPanelImpl;
 
 import org.junit.Before;
@@ -141,19 +140,6 @@ public class GSimpleLayoutPanelImplTest extends AbstractXmlBuilderTest {
     }
 
     @Test
-    public void simpleSimpleLayoutPanelWithOffsetShouldBeCreated() throws Exception {
-        for (int i = 0; i < 5; i++) {
-            String actualContent = builder.withPrefix("g").withOffset(i).build();
-
-            String offset = getOffset(i);
-            String expectedContent = offset + "<g:SimpleLayoutPanel>\n" +
-                                     offset + "</g:SimpleLayoutPanel>";
-
-            assertEquals(expectedContent, actualContent);
-        }
-    }
-
-    @Test
     public void simpleSimpleLayoutPanelWithWidgetsShouldBeCreated() throws Exception {
         GWidget<GWidget> widget1 = createWidget(OFFSET + "widget 1");
         GWidget<GWidget> widget2 = createWidget(OFFSET + "widget 2");
@@ -173,24 +159,6 @@ public class GSimpleLayoutPanelImplTest extends AbstractXmlBuilderTest {
         verify(widget1, never()).withOffset(eq(1));
         verify(widget2, never()).withOffset(eq(1));
         verify(widget3).withOffset(eq(1));
-    }
-
-    @Test
-    public void realSimpleLayoutPanelWithWidgetsShouldBeCreated() throws Exception {
-        for (int i = 0; i < 5; i++) {
-            String actualContent = new GSimpleLayoutPanelImpl()
-                    .withPrefix("g").withOffset(i)
-                    .withWidget(new GSimpleLayoutPanelImpl().withPrefix("g").withWidget(new GLabelImpl().withPrefix("g")))
-                    .build();
-
-            String expectedContent = getOffset(i) + "<g:SimpleLayoutPanel>\n" +
-                                     getOffset(i + 1) + "<g:SimpleLayoutPanel>\n" +
-                                     getOffset(i + 2) + "<g:Label/>\n" +
-                                     getOffset(i + 1) + "</g:SimpleLayoutPanel>\n" +
-                                     getOffset(i) + "</g:SimpleLayoutPanel>";
-
-            assertEquals(expectedContent, actualContent);
-        }
     }
 
     @Test

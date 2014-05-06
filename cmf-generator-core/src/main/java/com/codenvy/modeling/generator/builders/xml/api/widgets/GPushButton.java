@@ -14,20 +14,23 @@
  * limitations under the License.
  */
 
-package com.codenvy.modeling.configuration;
-
-import javax.annotation.Nonnull;
-import java.io.IOException;
+package com.codenvy.modeling.generator.builders.xml.api.widgets;
 
 /**
+ * The builder for PushButton GWT widget.
+ * <p/>
+ * The returned result must look like the following content:
+ * <pre>
+ * {@code
+ * <g:PushButton ui:field="btnDiffWithPrevCommit" addStyleNames="{style.alignRight} {style.space} {style.withoutPadding}"
+ *           width="18px" height="16px" debugId="git-showHistory-diffWithPrevCommit"/>
+ * }
+ * </pre>
+ *
  * @author Andrey Plotnikov
  */
-public interface ConfigurationFactoryImpl {
+public interface GPushButton extends GWidget<GPushButton>, HasEnable<GPushButton>, HasText<GPushButton>, HasFocus<GPushButton> {
 
-    @Nonnull
-    Configuration createConfKeeper(@Nonnull String diagramConfPath,
-                                   @Nonnull String editorConfPath,
-                                   @Nonnull String serializationConfPath,
-                                   @Nonnull String styleConfPath) throws IOException;
+    String PUSH_BUTTON_FORMAT = "<%s:PushButton%s/>";
 
 }

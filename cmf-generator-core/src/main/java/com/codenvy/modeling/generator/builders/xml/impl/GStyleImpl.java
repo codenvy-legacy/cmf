@@ -20,7 +20,7 @@ import com.codenvy.modeling.generator.builders.xml.api.GStyle;
 import com.google.inject.Inject;
 
 import javax.annotation.Nonnull;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder.OFFSET;
@@ -42,7 +42,7 @@ public class GStyleImpl implements GStyle {
 
     /** Clean builder configuration */
     private void clean() {
-        styles = new HashMap<>();
+        styles = new LinkedHashMap<>();
     }
 
     /** {@inheritDoc} */
@@ -61,14 +61,15 @@ public class GStyleImpl implements GStyle {
             return "";
         }
 
-        StringBuilder styles = new StringBuilder();
+        StringBuilder styles = new StringBuilder(OFFSET + STYLE_OPEN_TAG + '\n');
         for (Entry<String, String> style : this.styles.entrySet()) {
             styles.append(String.format(STYLE_FORMAT, style.getKey(), format(style.getValue())));
         }
+        styles.append(OFFSET + STYLE_CLOSE_TAG);
 
         clean();
 
-        return String.format(String.format(STYLES_FORMAT, styles));
+        return styles.toString();
     }
 
     /**
@@ -85,7 +86,7 @@ public class GStyleImpl implements GStyle {
         String[] styles = content.split(";");
         for (String style : styles) {
             String trimContent = style.trim();
-            result.append(OFFSET).append(OFFSET).append(OFFSET).append(trimContent).append(';').append("%n");
+            result.append(OFFSET).append(OFFSET).append(OFFSET).append(trimContent).append(';').append("\n");
         }
 
         return result.toString();

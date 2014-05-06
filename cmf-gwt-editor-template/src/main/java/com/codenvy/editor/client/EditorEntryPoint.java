@@ -25,6 +25,7 @@ import com.orange.links.client.utils.LinksClientBundle;
 
 public class EditorEntryPoint implements EntryPoint {
 
+    @Override
     public void onModuleLoad() {
         LinksClientBundle.INSTANCE.css().ensureInjected();
 

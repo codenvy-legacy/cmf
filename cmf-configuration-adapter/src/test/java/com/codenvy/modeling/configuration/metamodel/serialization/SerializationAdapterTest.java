@@ -16,7 +16,9 @@
 
 package com.codenvy.modeling.configuration.metamodel.serialization;
 
-import com.codenvy.modeling.adapter.metamodel.serialization.SerializationConfigurationAdapter;
+import com.codenvy.modeling.adapter.metamodel.serialization.SerializationConfigurationAdapterImpl;
+import com.codenvy.modeling.configuration.parser.metamodel.serialization.SerializationConfigurationAdapterListener;
+import com.google.inject.Provider;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,10 +33,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Dmitry Kuleshov
  * @author Valeriy Svydenko
+ * @author Andrey Plotnikov
  */
 @RunWith(Parameterized.class)
 public class SerializationAdapterTest {
@@ -46,16 +51,22 @@ public class SerializationAdapterTest {
 
     private int numberOfGrammar;
 
-    @Parameters()
+    @Parameters
     public static Iterable<Object[]> dataOfConfigurations() {
         return Arrays.asList(new Object[][]{{SERIALIZATION_GRAMMAR_TEST_I, 1}, {SERIALIZATION_GRAMMAR_TEST_II, 2}});
     }
 
+    @SuppressWarnings("unchecked")
     public SerializationAdapterTest(String grammar, int number) throws IOException {
         numberOfGrammar = number;
 
+        Provider<SerializationConfigurationAdapterListener> serializationConfigurationAdapterListenerProvider = mock(Provider.class);
+        when(serializationConfigurationAdapterListenerProvider.get())
+                .thenReturn(new SerializationConfigurationAdapterListener(new SerializationConfiguration()));
+
         String configurationFile = SerializationAdapterTest.class.getResource(grammar).getFile();
-        SerializationConfigurationAdapter serializationConfigurationAdapter = new SerializationConfigurationAdapter(configurationFile);
+        SerializationConfigurationAdapterImpl serializationConfigurationAdapter =
+                new SerializationConfigurationAdapterImpl(serializationConfigurationAdapterListenerProvider, configurationFile);
         SerializationConfiguration configuration = serializationConfigurationAdapter.getConfiguration();
 
         elements = configuration.getElements();

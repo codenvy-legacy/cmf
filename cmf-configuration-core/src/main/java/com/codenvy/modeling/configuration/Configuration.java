@@ -20,14 +20,19 @@ import com.codenvy.modeling.configuration.editor.EditorConfiguration;
 import com.codenvy.modeling.configuration.metamodel.diagram.DiagramConfiguration;
 import com.codenvy.modeling.configuration.metamodel.serialization.SerializationConfiguration;
 import com.codenvy.modeling.configuration.style.StyleConfiguration;
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.io.IOException;
 
 /**
  * @author Dmitry Kuleshov
+ * @author Andrey Plotnikov
  */
 public class Configuration {
+
     @NotNull
     @Valid
     private DiagramConfiguration       diagramConfiguration;
@@ -41,35 +46,37 @@ public class Configuration {
     @Valid
     private StyleConfiguration         styleConfiguration;
 
-    public DiagramConfiguration getDiagramConfiguration() {
-        return diagramConfiguration;
+    public Configuration() {
+
     }
 
-    public void setDiagramConfiguration(DiagramConfiguration diagramConfiguration) {
-        this.diagramConfiguration = diagramConfiguration;
+    @Inject
+    public Configuration(ConfigurationAdapterFactory configurationAdapterFactory,
+                         @Assisted String diagramConfigurationPath,
+                         @Assisted String editorConfigurationPath,
+                         @Assisted String serializationConfigurationPath,
+                         @Assisted String styleConfigurationPath) throws IOException {
+        this.diagramConfiguration = configurationAdapterFactory.createDiagramConfAdapter(diagramConfigurationPath).getConfiguration();
+        this.serializationConfiguration =
+                configurationAdapterFactory.createSerializationConfAdapter(serializationConfigurationPath).getConfiguration();
+        this.editorConfiguration = configurationAdapterFactory.createEditorConfAdapter(editorConfigurationPath).getConfiguration();
+        this.styleConfiguration = configurationAdapterFactory.createStyleConfAdapter(styleConfigurationPath).getConfiguration();
+    }
+
+    public DiagramConfiguration getDiagramConfiguration() {
+        return diagramConfiguration;
     }
 
     public SerializationConfiguration getSerializationConfiguration() {
         return serializationConfiguration;
     }
 
-    public void setSerializationConfiguration(SerializationConfiguration serializationConfiguration) {
-        this.serializationConfiguration = serializationConfiguration;
-    }
-
     public EditorConfiguration getEditorConfiguration() {
         return editorConfiguration;
-    }
-
-    public void setEditorConfiguration(EditorConfiguration editorConfiguration) {
-        this.editorConfiguration = editorConfiguration;
     }
 
     public StyleConfiguration getStyleConfiguration() {
         return styleConfiguration;
     }
 
-    public void setStyleConfiguration(StyleConfiguration styleConfiguration) {
-        this.styleConfiguration = styleConfiguration;
-    }
 }

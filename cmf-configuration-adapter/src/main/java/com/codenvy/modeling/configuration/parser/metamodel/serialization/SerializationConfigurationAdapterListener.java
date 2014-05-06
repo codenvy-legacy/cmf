@@ -20,6 +20,7 @@ import com.codenvy.modeling.configuration.metamodel.serialization.ConnectionDesi
 import com.codenvy.modeling.configuration.metamodel.serialization.Element;
 import com.codenvy.modeling.configuration.metamodel.serialization.ElementDesignation;
 import com.codenvy.modeling.configuration.metamodel.serialization.SerializationConfiguration;
+import com.google.inject.Inject;
 
 import org.antlr.v4.runtime.misc.NotNull;
 
@@ -28,16 +29,23 @@ import java.util.Stack;
 
 /**
  * @author Dmitry Kuleshov
+ * @author Andrey Plotnikov
  */
 public class SerializationConfigurationAdapterListener extends SerializationBaseListener {
 
-    private Stack<Element> elementStack = new Stack<>();
+    private final Stack<Element>               elementStack;
+    private final Stack<ElementDesignation>    elementDesignations;
+    private final Stack<ConnectionDesignation> connectionDesignations;
+    private final SerializationConfiguration   serializationConfiguration;
 
-    private Stack<ElementDesignation> elementDesignations = new Stack<>();
+    @Inject
+    public SerializationConfigurationAdapterListener(SerializationConfiguration serializationConfiguration) {
+        this.serializationConfiguration = serializationConfiguration;
 
-    private Stack<ConnectionDesignation> connectionDesignations = new Stack<>();
-
-    private SerializationConfiguration serializationConfiguration = new SerializationConfiguration();
+        elementStack = new Stack<>();
+        elementDesignations = new Stack<>();
+        connectionDesignations = new Stack<>();
+    }
 
     @Nonnull
     public SerializationConfiguration getSerializationConfiguration() {

@@ -30,6 +30,8 @@ import javax.annotation.Nonnull;
  */
 public abstract class AbstractPropertiesPanel<T extends Element> extends AbstractPresenter {
 
+    protected T element;
+
     protected AbstractPropertiesPanel(@Nonnull AbstractView view) {
         super(view);
     }
@@ -41,7 +43,7 @@ public abstract class AbstractPropertiesPanel<T extends Element> extends Abstrac
      *         element which properties need to be shown
      */
     public void setElement(@Nonnull T element) {
-        // do nothing
+        this.element = element;
     }
 
 }

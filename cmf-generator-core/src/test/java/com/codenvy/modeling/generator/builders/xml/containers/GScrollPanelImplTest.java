@@ -19,8 +19,6 @@ package com.codenvy.modeling.generator.builders.xml.containers;
 import com.codenvy.modeling.generator.builders.xml.AbstractXmlBuilderTest;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.GWidget;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GScrollPanel;
-import com.codenvy.modeling.generator.builders.xml.impl.widgets.GLabelImpl;
-import com.codenvy.modeling.generator.builders.xml.impl.widgets.GTextAreaImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.containers.GScrollPanelImpl;
 
 import org.junit.Before;
@@ -141,19 +139,6 @@ public class GScrollPanelImplTest extends AbstractXmlBuilderTest {
     }
 
     @Test
-    public void simpleScrollPanelWithOffsetShouldBeCreated() throws Exception {
-        for (int i = 0; i < 5; i++) {
-            String actualContent = builder.withPrefix("g").withOffset(i).build();
-
-            String offset = getOffset(i);
-            String expectedContent = offset + "<g:ScrollPanel>\n" +
-                                     offset + "</g:ScrollPanel>";
-
-            assertEquals(expectedContent, actualContent);
-        }
-    }
-
-    @Test
     public void simpleScrollPanelWithWidgetsShouldBeCreated() throws Exception {
         GWidget<GWidget> widget1 = createWidget(OFFSET + "widget 1");
         GWidget<GWidget> widget2 = createWidget(OFFSET + "widget 2");
@@ -176,30 +161,6 @@ public class GScrollPanelImplTest extends AbstractXmlBuilderTest {
         verify(widget1).withOffset(eq(1));
         verify(widget2).withOffset(eq(1));
         verify(widget3).withOffset(eq(1));
-    }
-
-    @Test
-    public void realScrollPanelWithWidgetsShouldBeCreated() throws Exception {
-        for (int i = 0; i < 5; i++) {
-            String actualContent = new GScrollPanelImpl()
-                    .withPrefix("g").withOffset(i)
-                    .withWidget(new GLabelImpl().withPrefix("g").withText("text").withHeight("10px"))
-                    .withWidget(new GTextAreaImpl().withPrefix("g").withTitle("title").withName("name"))
-                    .withWidget(new GScrollPanelImpl().withPrefix("g")
-                                                      .withWidget(new GLabelImpl().withPrefix("g"))
-                               )
-                    .build();
-
-            String expectedContent = getOffset(i) + "<g:ScrollPanel>\n" +
-                                     getOffset(i + 1) + "<g:Label text=\"text\" height=\"10px\"/>\n" +
-                                     getOffset(i + 1) + "<g:TextArea title=\"title\" ui:field=\"name\"/>\n" +
-                                     getOffset(i + 1) + "<g:ScrollPanel>\n" +
-                                     getOffset(i + 2) + "<g:Label/>\n" +
-                                     getOffset(i + 1) + "</g:ScrollPanel>\n" +
-                                     getOffset(i) + "</g:ScrollPanel>";
-
-            assertEquals(expectedContent, actualContent);
-        }
     }
 
     @Test

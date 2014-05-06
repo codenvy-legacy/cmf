@@ -205,17 +205,17 @@ public class UIXmlBuilderImplTest extends AbstractXmlBuilderTest {
                              OFFSET + "<ui:with field='name1' type='java.lang.String'/>\n" +
                              OFFSET + "<ui:with field='name2' type='java.lang.String'/>\n" +
                              OFFSET + "<ui:style>\n" +
-                             TWO_OFFSETS + ".name3{\n" +
-                             threeOffsets + "float: right;\n" +
-                             threeOffsets + "margin: 6px;\n" +
-                             threeOffsets + "margin-right: 5px;\n" +
-                             TWO_OFFSETS + "}\n" +
                              TWO_OFFSETS + ".name{\n" +
                              threeOffsets + "float: right;\n" +
                              threeOffsets + "margin: 6px;\n" +
                              threeOffsets + "margin-right: 5px;\n" +
                              TWO_OFFSETS + "}\n" +
                              TWO_OFFSETS + ".name2{\n" +
+                             threeOffsets + "float: right;\n" +
+                             threeOffsets + "margin: 6px;\n" +
+                             threeOffsets + "margin-right: 5px;\n" +
+                             TWO_OFFSETS + "}\n" +
+                             TWO_OFFSETS + ".name3{\n" +
                              threeOffsets + "float: right;\n" +
                              threeOffsets + "margin: 6px;\n" +
                              threeOffsets + "margin-right: 5px;\n" +

@@ -16,25 +16,25 @@
 
 package com.codenvy.modeling.configuration.validation;
 
-import com.codenvy.modeling.configuration.Configuration;
-
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
 /**
  * @author Dmitry Kuleshov
+ * @author Andrey Plotnikov
  */
 public class ConfigurationConstraintsValidator {
 
-    public static Report validate(Object object){
+    public static Report validate(Object object) {
         Report report = Report.getEmptyReport();
         Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
-        for (ConstraintViolation<?> violation : validator.validate(object)){
+        for (ConstraintViolation<?> violation : validator.validate(object)) {
             report.addError(violation.getMessage());
         }
 
         return report;
     }
+
 }

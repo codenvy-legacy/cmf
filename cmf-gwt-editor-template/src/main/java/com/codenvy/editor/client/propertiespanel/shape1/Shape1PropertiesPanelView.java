@@ -18,6 +18,8 @@ package com.codenvy.editor.client.propertiespanel.shape1;
 import com.codenvy.editor.api.mvp.AbstractView;
 import com.google.inject.ImplementedBy;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author Andrey Plotnikov
  */
@@ -25,6 +27,12 @@ import com.google.inject.ImplementedBy;
 public abstract class Shape1PropertiesPanelView extends AbstractView<Shape1PropertiesPanelView.ActionDelegate> {
 
     public interface ActionDelegate extends AbstractView.ActionDelegate {
+        void onProperty1Changed();
     }
+
+    @Nonnull
+    public abstract String getProperty1();
+
+    public abstract void setProperty1(@Nonnull String property1);
 
 }

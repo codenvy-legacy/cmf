@@ -162,17 +162,6 @@ public class GTextAreaImplTest extends AbstractXmlBuilderTest {
     }
 
     @Test
-    public void simpleTextAreaWithOffsetShouldBeCreated() throws Exception {
-        for (int i = 0; i < 5; i++) {
-            String actualContent = builder.withPrefix("g").withOffset(i).build();
-
-            String expectedContent = getOffset(i) + "<g:TextArea/>";
-
-            assertEquals(expectedContent, actualContent);
-        }
-    }
-
-    @Test
     public void complexTextAreaShouldBeCreated() throws Exception {
         String actualContent = builder.withPrefix("g")
                                       .withText("text")

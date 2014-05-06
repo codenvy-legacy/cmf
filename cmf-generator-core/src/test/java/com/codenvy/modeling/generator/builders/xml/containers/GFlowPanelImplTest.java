@@ -19,8 +19,6 @@ package com.codenvy.modeling.generator.builders.xml.containers;
 import com.codenvy.modeling.generator.builders.xml.AbstractXmlBuilderTest;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.GWidget;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GFlowPanel;
-import com.codenvy.modeling.generator.builders.xml.impl.widgets.GLabelImpl;
-import com.codenvy.modeling.generator.builders.xml.impl.widgets.GTextAreaImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.containers.GFlowPanelImpl;
 
 import org.junit.Before;
@@ -141,19 +139,6 @@ public class GFlowPanelImplTest extends AbstractXmlBuilderTest {
     }
 
     @Test
-    public void simpleFlowPanelWithOffsetShouldBeCreated() throws Exception {
-        for (int i = 0; i < 5; i++) {
-            String actualContent = builder.withPrefix("g").withOffset(i).build();
-
-            String offset = getOffset(i);
-            String expectedContent = offset + "<g:FlowPanel>\n" +
-                                     offset + "</g:FlowPanel>";
-
-            assertEquals(expectedContent, actualContent);
-        }
-    }
-
-    @Test
     public void simpleFlowPanelWithWidgetsShouldBeCreated() throws Exception {
         GWidget<GWidget> widget1 = createWidget(OFFSET + "widget 1");
         GWidget<GWidget> widget2 = createWidget(OFFSET + "widget 2");
@@ -176,29 +161,6 @@ public class GFlowPanelImplTest extends AbstractXmlBuilderTest {
         verify(widget1).withOffset(eq(1));
         verify(widget2).withOffset(eq(1));
         verify(widget3).withOffset(eq(1));
-    }
-
-    @Test
-    public void realFlowPanelWithWidgetsShouldBeCreated() throws Exception {
-        for (int i = 0; i < 5; i++) {
-            String actualContent = new GFlowPanelImpl().withPrefix("g").withOffset(i)
-                                                       .withWidget(new GLabelImpl().withPrefix("g").withText("text").withHeight("10px"))
-                                                       .withWidget(new GTextAreaImpl().withPrefix("g").withTitle("title").withName("name"))
-                                                       .withWidget(new GFlowPanelImpl().withPrefix("g")
-                                                                                       .withWidget(new GLabelImpl().withPrefix("g"))
-                                                                  )
-                                                       .build();
-
-            String expectedContent = getOffset(i) + "<g:FlowPanel>\n" +
-                                     getOffset(i + 1) + "<g:Label text=\"text\" height=\"10px\"/>\n" +
-                                     getOffset(i + 1) + "<g:TextArea title=\"title\" ui:field=\"name\"/>\n" +
-                                     getOffset(i + 1) + "<g:FlowPanel>\n" +
-                                     getOffset(i + 2) + "<g:Label/>\n" +
-                                     getOffset(i + 1) + "</g:FlowPanel>\n" +
-                                     getOffset(i) + "</g:FlowPanel>";
-
-            assertEquals(expectedContent, actualContent);
-        }
     }
 
     @Test

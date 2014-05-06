@@ -22,4 +22,14 @@ import com.codenvy.editor.api.editor.elements.AbstractShape;
  */
 public class Shape1 extends AbstractShape {
 
+    private String property1;
+
+    public String getProperty1() {
+        return property1;
+    }
+
+    public void setProperty1(String property1) {
+        this.property1 = property1;
+    }
+
 }

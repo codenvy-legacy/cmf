@@ -43,12 +43,11 @@ import static com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder.OFFSE
  */
 public interface GStyle extends Builder {
 
-    String STYLES_FORMAT = OFFSET + "<ui:style>%n" +
-                           "%s" +
-                           OFFSET + "</ui:style>";
-    String STYLE_FORMAT  = OFFSET + OFFSET + ".%s{%n" +
-                           "%s" +
-                           OFFSET + OFFSET + "}%n";
+    String STYLE_OPEN_TAG  = "<ui:style>";
+    String STYLE_CLOSE_TAG = "</ui:style>";
+    String STYLE_FORMAT    = OFFSET + OFFSET + ".%s{%n" +
+                             "%s" +
+                             OFFSET + OFFSET + "}%n";
 
     /**
      * Add a new style.

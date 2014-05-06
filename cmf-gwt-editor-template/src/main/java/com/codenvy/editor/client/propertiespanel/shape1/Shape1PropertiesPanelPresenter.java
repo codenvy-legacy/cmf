@@ -17,7 +17,10 @@ package com.codenvy.editor.client.propertiespanel.shape1;
 
 import com.codenvy.editor.api.editor.propertiespanel.AbstractPropertiesPanel;
 import com.codenvy.editor.client.elements.shape1.Shape1;
+import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Andrey Plotnikov
@@ -27,6 +30,20 @@ public class Shape1PropertiesPanelPresenter extends AbstractPropertiesPanel<Shap
     @Inject
     public Shape1PropertiesPanelPresenter(Shape1PropertiesPanelView view) {
         super(view);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void go(@Nonnull AcceptsOneWidget container) {
+        super.go(container);
+
+        ((Shape1PropertiesPanelView)view).setProperty1(element.getProperty1());
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onProperty1Changed() {
+        element.setProperty1(((Shape1PropertiesPanelView)view).getProperty1());
     }
 
 }

@@ -19,7 +19,6 @@ package com.codenvy.modeling.generator.builders.java;
 import com.codenvy.modeling.generator.builders.Builder;
 
 import javax.annotation.Nonnull;
-import java.util.Map;
 
 /**
  * The builder of java source code. It provides an ability to generate code. One can create java classes with different methods and
@@ -41,6 +40,33 @@ public interface SourceCodeBuilder extends Builder {
 
         public String getPrefix() {
             return prefix;
+        }
+
+    }
+
+    class Argument {
+
+        private final String type;
+        private final String name;
+
+        public Argument(@Nonnull String type, @Nonnull String name) {
+            this.type = type;
+            this.name = name;
+        }
+
+        @Nonnull
+        public String getType() {
+            return type;
+        }
+
+        @Nonnull
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public String toString() {
+            return type + ' ' + name;
         }
 
     }
@@ -123,6 +149,18 @@ public interface SourceCodeBuilder extends Builder {
     SourceCodeBuilder implementInterface(@Nonnull Class implementedInterface) throws IllegalStateException;
 
     /**
+     * Add an interface which a generating java class must implement.
+     *
+     * @param implementedInterface
+     *         the interface that a generating java class must implement
+     * @return an instance of source code builder with a given configuration
+     * @throws IllegalStateException
+     *         exception happens in case a new java resource had been not initialized before this method was executed
+     */
+    @Nonnull
+    SourceCodeBuilder implementInterface(@Nonnull String implementedInterface) throws IllegalStateException;
+
+    /**
      * Add a base class which a generating java class must extend.
      *
      * @param baseClass
@@ -135,7 +173,31 @@ public interface SourceCodeBuilder extends Builder {
     SourceCodeBuilder baseClass(@Nonnull Class baseClass) throws IllegalStateException;
 
     /**
-     * Add a import of a given class to a generating class.
+     * Add a base class which a generating java class must extend.
+     *
+     * @param baseClass
+     *         the class that the generating java class must extend
+     * @return an instance of source code builder with a given configuration
+     * @throws IllegalStateException
+     *         exception happens in case a new java resource had been not initialized before this method was executed
+     */
+    @Nonnull
+    SourceCodeBuilder baseClass(@Nonnull String baseClass) throws IllegalStateException;
+
+    /**
+     * Add an enum value to a generating class.
+     *
+     * @param enumValue
+     *         value that needs to be added
+     * @return an instance of source code builder with a given configuration
+     * @throws IllegalStateException
+     *         exception happens in case a new java resource had been not initialized before this method was executed
+     */
+    @Nonnull
+    SourceCodeBuilder withEnumValue(String enumValue) throws IllegalStateException;
+
+    /**
+     * Add an import of a given class to a generating class.
      *
      * @param importedClass
      *         class that need be imported
@@ -145,6 +207,18 @@ public interface SourceCodeBuilder extends Builder {
      */
     @Nonnull
     SourceCodeBuilder addImport(@Nonnull Class importedClass) throws IllegalStateException;
+
+    /**
+     * Add an import to a generating class.
+     *
+     * @param importedClass
+     *         fqn of class that need be imported
+     * @return an instance of source code builder with a given configuration
+     * @throws IllegalStateException
+     *         exception happens in case a new java resource had been not initialized before this method was executed
+     */
+    @Nonnull
+    SourceCodeBuilder addImport(@Nonnull String importedClass) throws IllegalStateException;
 
     /**
      * Add a field to a generating java class with given parameters: name, type. This field will have a private access level.
@@ -272,7 +346,7 @@ public interface SourceCodeBuilder extends Builder {
      *         also in case a new java resource had been not initialized before this method was executed
      */
     @Nonnull
-    SourceCodeBuilder withMethodArguments(@Nonnull Map<String, String> arguments) throws IllegalStateException;
+    SourceCodeBuilder withMethodArguments(@Nonnull Argument... arguments) throws IllegalStateException;
 
     /**
      * Add a method body to a generating method.
@@ -344,7 +418,7 @@ public interface SourceCodeBuilder extends Builder {
      *         exception happens in case a new java resource had been not initialized before this method was executed
      */
     @Nonnull
-    SourceCodeBuilder addConstructor(String... typeAndNames) throws IllegalStateException;
+    SourceCodeBuilder addConstructor(@Nonnull Argument... arguments) throws IllegalStateException;
 
     /**
      * Add a constructor body to a generating constructor.

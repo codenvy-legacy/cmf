@@ -22,6 +22,7 @@ import com.codenvy.modeling.configuration.metamodel.diagram.DiagramConfiguration
 import com.codenvy.modeling.configuration.metamodel.diagram.Element;
 import com.codenvy.modeling.configuration.metamodel.diagram.Pair;
 import com.codenvy.modeling.configuration.metamodel.diagram.Property;
+import com.google.inject.Inject;
 
 import org.antlr.v4.runtime.misc.NotNull;
 
@@ -30,20 +31,27 @@ import java.util.Stack;
 
 /**
  * @author Dmitry Kuleshov
+ * @author Andrey Plotnikov
  */
 public class DiagramConfigurationAdapterListener extends DiagramBaseListener {
 
-    private Stack<Element> elementStack = new Stack<>();
+    private final Stack<Element>       elementStack;
+    private final Stack<Property>      propertyStack;
+    private final Stack<Component>     componentStack;
+    private final Stack<Connection>    connectionStack;
+    private final Stack<Pair>          pairStack;
+    private final DiagramConfiguration diagramConfiguration;
 
-    private Stack<Property> propertyStack = new Stack<>();
+    @Inject
+    public DiagramConfigurationAdapterListener(DiagramConfiguration diagramConfiguration) {
+        this.diagramConfiguration = diagramConfiguration;
 
-    private Stack<Component> componentStack = new Stack<>();
-
-    private Stack<Connection> connectionStack = new Stack<>();
-
-    private Stack<Pair> pairStack = new Stack<>();
-
-    private DiagramConfiguration diagramConfiguration = new DiagramConfiguration();
+        elementStack = new Stack<>();
+        propertyStack = new Stack<>();
+        componentStack = new Stack<>();
+        connectionStack = new Stack<>();
+        pairStack = new Stack<>();
+    }
 
     @Nonnull
     public DiagramConfiguration getDiagramConfiguration() {

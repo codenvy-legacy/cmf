@@ -24,8 +24,8 @@ import com.codenvy.modeling.generator.builders.xml.impl.widgets.AbstractGWidget;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The abstract presentation of GWT dock container builder. It contains general fields and method which need for all GWT dock container
@@ -43,11 +43,16 @@ public abstract class AbstractGPartContainer<T> extends AbstractGWidget<T> imple
     /** Aggregate information about container's part */
     private class Part {
 
+        @Nonnegative
         private final double                     size;
+        @Nonnull
+        private final Parts                      part;
+        @Nonnull
         private final GWidget<? extends GWidget> widget;
 
-        private Part(@Nonnegative double size, @Nonnull GWidget<? extends GWidget> widget) {
+        private Part(@Nonnegative double size, @Nonnull Parts part, @Nonnull GWidget<? extends GWidget> widget) {
             this.size = size;
+            this.part = part;
             this.widget = widget;
         }
 
@@ -61,10 +66,15 @@ public abstract class AbstractGPartContainer<T> extends AbstractGWidget<T> imple
             return widget;
         }
 
+        @Nonnull
+        public Parts getPart() {
+            return part;
+        }
+
     }
 
     @Nonnull
-    private       Map<Parts, Part>           parts;
+    private       List<Part>                 parts;
     @Nullable
     private       GWidget<? extends GWidget> widget;
     @Nonnull
@@ -81,7 +91,7 @@ public abstract class AbstractGPartContainer<T> extends AbstractGWidget<T> imple
     protected void clean() {
         super.clean();
 
-        parts = new LinkedHashMap<>();
+        parts = new ArrayList<>();
         widget = null;
     }
 
@@ -128,7 +138,7 @@ public abstract class AbstractGPartContainer<T> extends AbstractGWidget<T> imple
      *         widget that need to be added into part
      */
     private void addPart(@Nonnull Parts part, @Nonnegative double size, @Nonnull GWidget<? extends GWidget> widget) {
-        parts.put(part, new Part(size, widget));
+        parts.add(new Part(size, part, widget));
     }
 
     @Nonnull
@@ -146,10 +156,8 @@ public abstract class AbstractGPartContainer<T> extends AbstractGWidget<T> imple
 
         result.append(super.build()).append('\n');
 
-        for (Map.Entry<Parts, Part> part : parts.entrySet()) {
-            Part partDescription = part.getValue();
-
-            addPart(result, getFormat(part.getKey()), partDescription.getSize(), partDescription.getWidget());
+        for (Part part : parts) {
+            addPart(result, getFormat(part.getPart()), part.getSize(), part.getWidget());
         }
 
         if (widget != null) {

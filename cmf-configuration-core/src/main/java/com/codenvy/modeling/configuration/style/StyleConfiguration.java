@@ -16,8 +16,16 @@
 
 package com.codenvy.modeling.configuration.style;
 
+import com.google.inject.Inject;
+
 /**
  * @author Dmitry Kuleshov
+ * @author Andrey Plotnikov
  */
-public interface StyleConfiguration {
+public class StyleConfiguration {
+
+    @Inject
+    public StyleConfiguration() {
+    }
+
 }

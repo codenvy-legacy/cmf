@@ -19,7 +19,6 @@ package com.codenvy.modeling.generator.builders.xml.containers;
 import com.codenvy.modeling.generator.builders.xml.AbstractXmlBuilderTest;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.GWidget;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GSplitLayoutPanel;
-import com.codenvy.modeling.generator.builders.xml.impl.widgets.GLabelImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.containers.GSplitLayoutPanelImpl;
 
 import org.junit.Before;
@@ -218,70 +217,11 @@ public class GSplitLayoutPanelImplTest extends AbstractXmlBuilderTest {
     }
 
     @Test
-    public void realSplitLayoutPanelWithWidgetsShouldBeCreated() throws Exception {
-        for (int i = 0; i < 5; i++) {
-            String actualContent = new GSplitLayoutPanelImpl()
-                    .withPrefix("g").withOffset(i)
-                    .withNorth(20, new GSplitLayoutPanelImpl().withPrefix("g").withWidget(new GLabelImpl().withPrefix("g")))
-                    .withSouth(20, new GSplitLayoutPanelImpl().withPrefix("g").withWidget(new GLabelImpl().withPrefix("g")))
-                    .withEast(20, new GSplitLayoutPanelImpl().withPrefix("g").withWidget(new GLabelImpl().withPrefix("g")))
-                    .withWest(20, new GSplitLayoutPanelImpl().withPrefix("g").withWidget(new GLabelImpl().withPrefix("g")))
-                    .withWidget(new GSplitLayoutPanelImpl().withPrefix("g").withWidget(new GLabelImpl().withPrefix("g")))
-                    .build();
-
-            String expectedContent = getOffset(i) + "<g:SplitLayoutPanel>\n" +
-
-                                     getOffset(i + 1) + "<g:north size=\"20.00\">\n" +
-                                     getOffset(i + 2) + "<g:SplitLayoutPanel>\n" +
-                                     getOffset(i + 3) + "<g:center>\n" +
-                                     getOffset(i + 4) + "<g:Label/>\n" +
-                                     getOffset(i + 3) + "</g:center>\n" +
-                                     getOffset(i + 2) + "</g:SplitLayoutPanel>\n" +
-                                     getOffset(i + 1) + "</g:north>\n" +
-
-                                     getOffset(i + 1) + "<g:south size=\"20.00\">\n" +
-                                     getOffset(i + 2) + "<g:SplitLayoutPanel>\n" +
-                                     getOffset(i + 3) + "<g:center>\n" +
-                                     getOffset(i + 4) + "<g:Label/>\n" +
-                                     getOffset(i + 3) + "</g:center>\n" +
-                                     getOffset(i + 2) + "</g:SplitLayoutPanel>\n" +
-                                     getOffset(i + 1) + "</g:south>\n" +
-
-                                     getOffset(i + 1) + "<g:east size=\"20.00\">\n" +
-                                     getOffset(i + 2) + "<g:SplitLayoutPanel>\n" +
-                                     getOffset(i + 3) + "<g:center>\n" +
-                                     getOffset(i + 4) + "<g:Label/>\n" +
-                                     getOffset(i + 3) + "</g:center>\n" +
-                                     getOffset(i + 2) + "</g:SplitLayoutPanel>\n" +
-                                     getOffset(i + 1) + "</g:east>\n" +
-
-                                     getOffset(i + 1) + "<g:west size=\"20.00\">\n" +
-                                     getOffset(i + 2) + "<g:SplitLayoutPanel>\n" +
-                                     getOffset(i + 3) + "<g:center>\n" +
-                                     getOffset(i + 4) + "<g:Label/>\n" +
-                                     getOffset(i + 3) + "</g:center>\n" +
-                                     getOffset(i + 2) + "</g:SplitLayoutPanel>\n" +
-                                     getOffset(i + 1) + "</g:west>\n" +
-
-                                     getOffset(i + 1) + "<g:center>\n" +
-                                     getOffset(i + 2) + "<g:SplitLayoutPanel>\n" +
-                                     getOffset(i + 3) + "<g:center>\n" +
-                                     getOffset(i + 4) + "<g:Label/>\n" +
-                                     getOffset(i + 3) + "</g:center>\n" +
-                                     getOffset(i + 2) + "</g:SplitLayoutPanel>\n" +
-                                     getOffset(i + 1) + "</g:center>\n" +
-
-                                     getOffset(i) + "</g:SplitLayoutPanel>";
-
-            assertEquals(expectedContent, actualContent);
-        }
-    }
-
-    @Test
     public void complexSplitLayoutPanelShouldBeCreated() throws Exception {
         GWidget<GWidget> widget1 = createWidget(TWO_OFFSETS + "widget 1");
         GWidget<GWidget> widget2 = createWidget(TWO_OFFSETS + "widget 2");
         GWidget<GWidget> widget3 = createWidget(TWO_OFFSETS + "widget 3");
+        GWidget<GWidget> widget4 = createWidget(TWO_OFFSETS + "widget 4");
 
         String actualContent = builder.withPrefix("g")
                                       .withTitle("title")
@@ -294,6 +234,7 @@ public class GSplitLayoutPanelImplTest extends AbstractXmlBuilderTest {
 
                                       .withNorth(10.0, widget1)
                                       .withWest(10.0, widget2)
+                                      .withWest(10.0, widget4)
                                       .withWidget(widget3)
 
                                       .build();
@@ -305,6 +246,9 @@ public class GSplitLayoutPanelImplTest extends AbstractXmlBuilderTest {
                                  OFFSET + "</g:north>\n" +
                                  OFFSET + "<g:west size=\"10.00\">\n" +
                                  TWO_OFFSETS + "widget 2\n" +
+                                 OFFSET + "</g:west>\n" +
+                                 OFFSET + "<g:west size=\"10.00\">\n" +
+                                 TWO_OFFSETS + "widget 4\n" +
                                  OFFSET + "</g:west>\n" +
                                  OFFSET + "<g:center>\n" +
                                  TWO_OFFSETS + "widget 3\n" +

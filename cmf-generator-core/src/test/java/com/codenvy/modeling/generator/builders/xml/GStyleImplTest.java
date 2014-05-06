@@ -67,14 +67,10 @@ public class GStyleImplTest extends AbstractXmlBuilderTest {
                 .withStyle("name", "float: right;    \n   margin: 6px;    margin-right: 5px;")
                 .withStyle("name2", "  float: right;    \n   margin: 6px;    margin-right: 5px;")
                 .withStyle("name3", "    float: right;\n    margin: 6px;       margin-right: 5px;")
+                .withStyle("name4", "   width: 100%; height: 100%;")
                 .build();
 
         String expectedContent = OFFSET + "<ui:style>\n" +
-                                 OFFSET + OFFSET + ".name3{\n" +
-                                 OFFSET + OFFSET + OFFSET + "float: right;\n" +
-                                 OFFSET + OFFSET + OFFSET + "margin: 6px;\n" +
-                                 OFFSET + OFFSET + OFFSET + "margin-right: 5px;\n" +
-                                 OFFSET + OFFSET + "}\n" +
                                  OFFSET + OFFSET + ".name{\n" +
                                  OFFSET + OFFSET + OFFSET + "float: right;\n" +
                                  OFFSET + OFFSET + OFFSET + "margin: 6px;\n" +
@@ -84,6 +80,15 @@ public class GStyleImplTest extends AbstractXmlBuilderTest {
                                  OFFSET + OFFSET + OFFSET + "float: right;\n" +
                                  OFFSET + OFFSET + OFFSET + "margin: 6px;\n" +
                                  OFFSET + OFFSET + OFFSET + "margin-right: 5px;\n" +
+                                 OFFSET + OFFSET + "}\n" +
+                                 OFFSET + OFFSET + ".name3{\n" +
+                                 OFFSET + OFFSET + OFFSET + "float: right;\n" +
+                                 OFFSET + OFFSET + OFFSET + "margin: 6px;\n" +
+                                 OFFSET + OFFSET + OFFSET + "margin-right: 5px;\n" +
+                                 OFFSET + OFFSET + "}\n" +
+                                 OFFSET + OFFSET + ".name4{\n" +
+                                 OFFSET + OFFSET + OFFSET + "width: 100%;\n" +
+                                 OFFSET + OFFSET + OFFSET + "height: 100%;\n" +
                                  OFFSET + OFFSET + "}\n" +
                                  OFFSET + "</ui:style>";
 

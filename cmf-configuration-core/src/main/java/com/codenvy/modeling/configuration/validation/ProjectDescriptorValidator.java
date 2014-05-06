@@ -89,7 +89,7 @@ public class ProjectDescriptorValidator {
     }
 
     @Nonnull
-    private ErrorType specifyErrorType(@Nonnull String parameterValue, @Nonnull ConfigurationFactory.PathParameter parameter) {
+    private ErrorType specifyErrorType(@Nullable String parameterValue, @Nonnull ConfigurationFactory.PathParameter parameter) {
         ErrorType errorType = ErrorType.NOT_AN_ERROR;
 
         if (parameterValue == null && parameter.isMandatory()) {

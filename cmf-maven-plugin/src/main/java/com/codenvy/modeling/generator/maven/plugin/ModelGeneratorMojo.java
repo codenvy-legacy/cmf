@@ -1,5 +1,10 @@
 package com.codenvy.modeling.generator.maven.plugin;
 
+import com.codenvy.modeling.generator.GenerationController;
+import com.codenvy.modeling.generator.inject.GeneratorModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -55,5 +60,10 @@ public class ModelGeneratorMojo extends AbstractMojo {
         }
 
         getLog().info(params.toString());
+
+        Injector injector = Guice.createInjector(new GeneratorModule());
+        GenerationController generationController = injector.getInstance(GenerationController.class);
+        generationController.generate(params);
     }
+
 }

@@ -135,17 +135,6 @@ public class GHtmlImplTest extends AbstractXmlBuilderTest {
     }
 
     @Test
-    public void simpleHTMLWithOffsetShouldBeCreated() throws Exception {
-        for (int i = 0; i < 5; i++) {
-            String actualContent = builder.withPrefix("g").withOffset(i).build();
-
-            String expectedContent = getOffset(i) + "<g:HTML/>";
-
-            assertEquals(expectedContent, actualContent);
-        }
-    }
-
-    @Test
     public void complexHTMLShouldBeCreated() throws Exception {
         String actualContent = builder.withPrefix("g")
                                       .withText("text")

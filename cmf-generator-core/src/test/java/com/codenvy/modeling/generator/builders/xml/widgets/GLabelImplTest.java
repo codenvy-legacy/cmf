@@ -135,17 +135,6 @@ public class GLabelImplTest extends AbstractXmlBuilderTest {
     }
 
     @Test
-    public void simpleLabelWithOffsetShouldBeCreated() throws Exception {
-        for (int i = 0; i < 5; i++) {
-            String actualContent = builder.withPrefix("g").withOffset(i).build();
-
-            String expectedContent = getOffset(i) + "<g:Label/>";
-
-            assertEquals(expectedContent, actualContent);
-        }
-    }
-
-    @Test
     public void complexLabelShouldBeCreated() throws Exception {
         String actualContent = builder.withPrefix("g")
                                       .withText("text")

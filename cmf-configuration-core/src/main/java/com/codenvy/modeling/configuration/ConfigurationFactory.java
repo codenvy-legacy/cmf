@@ -21,6 +21,7 @@ import java.io.IOException;
 
 /**
  * @author Dmitry Kuleshov
+ * @author Andrey Plotnikov
  */
 public interface ConfigurationFactory {
 
@@ -54,5 +55,9 @@ public interface ConfigurationFactory {
     }
 
     @Nonnull
-    Configuration getInstance() throws IOException;
+    Configuration getInstance(@Nonnull String diagramConfigurationPath,
+                              @Nonnull String editorConfigurationPath,
+                              @Nonnull String serializationConfigurationPath,
+                              @Nonnull String styleConfigurationPath) throws IOException;
+
 }

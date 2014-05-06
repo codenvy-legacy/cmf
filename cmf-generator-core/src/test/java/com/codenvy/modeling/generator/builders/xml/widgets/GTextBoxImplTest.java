@@ -162,17 +162,6 @@ public class GTextBoxImplTest extends AbstractXmlBuilderTest {
     }
 
     @Test
-    public void simpleTextBoxWithOffsetShouldBeCreated() throws Exception {
-        for (int i = 0; i < 5; i++) {
-            String actualContent = builder.withPrefix("g").withOffset(i).build();
-
-            String expectedContent = getOffset(i) + "<g:TextBox/>";
-
-            assertEquals(expectedContent, actualContent);
-        }
-    }
-
-    @Test
     public void complexTextBoxShouldBeCreated() throws Exception {
         String actualContent = builder.withPrefix("g")
                                       .withText("text")

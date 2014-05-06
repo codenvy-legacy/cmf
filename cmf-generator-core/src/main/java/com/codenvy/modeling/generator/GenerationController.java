@@ -16,13 +16,14 @@
 
 package com.codenvy.modeling.generator;
 
-import com.codenvy.modeling.configuration.ConfigurationFactoryCreator;
+import com.codenvy.modeling.configuration.ConfigurationFactory;
 import com.google.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -31,6 +32,34 @@ import java.util.Map;
  * @author Andrey Plotnikov
  */
 public class GenerationController {
+    private static final Logger LOG = LoggerFactory.getLogger(GenerationController.class);
+
+    private final SourceCodeGenerator  sourceCodeGenerator;
+    private final ConfigurationFactory configurationFactory;
+
+    @Inject
+    public GenerationController(ConfigurationFactory configurationFactory, SourceCodeGenerator sourceCodeGenerator) {
+        this.configurationFactory = configurationFactory;
+        this.sourceCodeGenerator = sourceCodeGenerator;
+    }
+
+    /**
+     * Provides checking a given configuration and generates java code of GWT editor.
+     *
+     * @param params
+     *         parameters are given by user
+     */
+    public void generate(@Nonnull Map<Param, String> params) {
+        try {
+            // TODO need to add configuration paths and insert it into configuration factory
+            sourceCodeGenerator.generate(params, configurationFactory.getInstance("diagramConfigurationPath",
+                                                                                  "editorConfigurationPath",
+                                                                                  "serializationConfigurationPath",
+                                                                                  "styleConfigurationPath"));
+        } catch (IOException e) {
+            LOG.error("Some problem happened during code generating.", e);
+        }
+    }
 
     /** The list of params for code generation. */
     public enum Param {
@@ -42,33 +71,4 @@ public class GenerationController {
         MAVEN_GROUP_ID,
         MAVEN_ARTIFACT_NAME
     }
-
-    private static final Logger LOG = LoggerFactory.getLogger(GenerationController.class);
-
-    private final ConfigurationFactoryCreator configurationFactoryCreator;
-    private final SourceCodeGenerator         sourceCodeGenerator;
-
-    @Inject
-    public GenerationController(ConfigurationFactoryCreator configurationFactoryCreator, SourceCodeGenerator sourceCodeGenerator) {
-        this.configurationFactoryCreator = configurationFactoryCreator;
-        this.sourceCodeGenerator = sourceCodeGenerator;
-    }
-
-    /**
-     * Provides checking a given configuration and generates java code of GWT editor.
-     *
-     * @param params
-     *         parameters are given by user
-     */
-    public void generate(@Nonnull Map<Param, String> params) {
-        // TODO provide a new way to get Configuration
-//        ConfigurationFactoryImpl configurationFactoryImpl = configurationFactoryCreator.create(params.get(SOURCE_PATH));
-
-//        try {
-//            sourceCodeGenerator.generate(params, configurationFactoryImpl.getInstance());
-//        } catch (IOException e) {
-//            LOG.error("Some problem happened during code generating.", e);
-//        }
-    }
-
 }

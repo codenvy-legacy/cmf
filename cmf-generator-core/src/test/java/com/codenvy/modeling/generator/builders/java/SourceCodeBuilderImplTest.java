@@ -21,15 +21,11 @@ import com.google.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
-import static com.codenvy.modeling.generator.builders.java.SourceCodeBuilder.Access;
 import static com.codenvy.modeling.generator.builders.java.SourceCodeBuilder.Access.DEFAULT;
 import static com.codenvy.modeling.generator.builders.java.SourceCodeBuilder.Access.PRIVATE;
 import static com.codenvy.modeling.generator.builders.java.SourceCodeBuilder.Access.PROTECTED;
 import static com.codenvy.modeling.generator.builders.java.SourceCodeBuilder.Access.PUBLIC;
+import static com.codenvy.modeling.generator.builders.java.SourceCodeBuilder.Argument;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -148,21 +144,6 @@ public class SourceCodeBuilderImplTest {
         builder.withClassAnnotation("@SuppressWarnings");
     }
 
-    @Test
-    public void simpleJavaClassWithAccessLevelShouldBeCreated() throws Exception {
-        for (Access level : Access.values()) {
-            String actualCode = builder.newClass("com.codenvy.generator.A").withClassAccessLevel(level).build();
-
-            String expectedCode = "package com.codenvy.generator;\n" +
-                                  "\n" +
-                                  level.getPrefix() + "class A {\n" +
-                                  "\n" +
-                                  "}\n";
-
-            assertEquals(expectedCode, actualCode);
-        }
-    }
-
     @Test(expected = IllegalStateException.class)
     public void exceptionShouldBeThrownWhenClassWasNotInitializedAndOneTriesToAddAccessLevelToClass() throws Exception {
         builder.withClassAccessLevel(DEFAULT);
@@ -189,6 +170,26 @@ public class SourceCodeBuilderImplTest {
     }
 
     @Test
+    public void simpleJavaClassWithImplementedInterfaceShouldBeCreated2() throws Exception {
+        String actualCode = builder.newClass("com.codenvy.generator.A").implementInterface(SourceCodeBuilder.class.getName()).build();
+
+        String expectedCode = "package com.codenvy.generator;\n" +
+                              "\n" +
+                              "import com.codenvy.modeling.generator.builders.java.SourceCodeBuilder;\n" +
+                              "\n" +
+                              "public class A implements SourceCodeBuilder {\n" +
+                              "\n" +
+                              "}\n";
+
+        assertEquals(expectedCode, actualCode);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void exceptionShouldBeThrownWhenClassWasNotInitializedAndOneTriesToImplementInterface2() throws Exception {
+        builder.implementInterface(SourceCodeBuilder.class.getName());
+    }
+
+    @Test
     public void simpleJavaClassWithExtendedClassShouldBeCreated() throws Exception {
         String actualCode = builder.newClass("com.codenvy.generator.A").baseClass(SourceCodeBuilderImpl.class).build();
 
@@ -209,6 +210,24 @@ public class SourceCodeBuilderImplTest {
     }
 
     @Test
+    public void simpleJavaClassWithExtendedClassShouldBeCreated2() throws Exception {
+        String actualCode = builder.newClass("com.codenvy.generator.A").baseClass(SourceCodeBuilderImpl.class.getSimpleName()).build();
+
+        String expectedCode = "package com.codenvy.generator;\n" +
+                              "\n" +
+                              "public class A extends SourceCodeBuilderImpl {\n" +
+                              "\n" +
+                              "}\n";
+
+        assertEquals(expectedCode, actualCode);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void exceptionShouldBeThrownWhenClassWasNotInitializedAndOneTriesToAddBaseClass2() throws Exception {
+        builder.baseClass(SourceCodeBuilderImpl.class.getSimpleName());
+    }
+
+    @Test
     public void simpleJavaClassWithImportedClassShouldBeCreated() throws Exception {
         String actualCode = builder.newClass("com.codenvy.generator.A").addImport(SourceCodeBuilderImpl.class).build();
 
@@ -226,6 +245,59 @@ public class SourceCodeBuilderImplTest {
     @Test(expected = IllegalStateException.class)
     public void exceptionShouldBeThrownWhenClassWasNotInitializedAndOneTriesToAddImportedClass() throws Exception {
         builder.addImport(String.class);
+    }
+
+    @Test
+    public void simpleJavaClassWithImportedClassShouldBeCreated2() throws Exception {
+        String actualCode = builder.newClass("com.codenvy.generator.A").addImport(SourceCodeBuilderImpl.class.getName()).build();
+
+        String expectedCode = "package com.codenvy.generator;\n" +
+                              "\n" +
+                              "import com.codenvy.modeling.generator.builders.java.SourceCodeBuilderImpl;\n" +
+                              "\n" +
+                              "public class A {\n" +
+                              "\n" +
+                              "}\n";
+
+        assertEquals(expectedCode, actualCode);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void exceptionShouldBeThrownWhenClassWasNotInitializedAndOneTriesToAddImportedClass2() throws Exception {
+        builder.addImport("com.codenvy.generator.B");
+    }
+
+    @Test
+    public void simpleJavaClassWithEnumValuesShouldBeCreated() throws Exception {
+        String actualCode = builder.newClass("com.codenvy.generator.A").makeEnum().withEnumValue("ENUM_VALUE").build();
+
+        String expectedCode = "package com.codenvy.generator;\n" +
+                              "\n" +
+                              "public enum A {\n" +
+                              "\n" +
+                              "    ENUM_VALUE\n" +
+                              "\n" +
+                              "}\n";
+
+        assertEquals(expectedCode, actualCode);
+    }
+
+    @Test
+    public void simpleJavaClassWithoutEnumValuesShouldBeCreated() throws Exception {
+        String actualCode = builder.newClass("com.codenvy.generator.A").withEnumValue("ENUM_VALUE").build();
+
+        String expectedCode = "package com.codenvy.generator;\n" +
+                              "\n" +
+                              "public class A {\n" +
+                              "\n" +
+                              "}\n";
+
+        assertEquals(expectedCode, actualCode);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void exceptionShouldBeThrownWhenClassWasNotInitializedAndOneTriesToAddEnumValue() throws Exception {
+        builder.withEnumValue("ENUM_VALUE");
     }
 
     @Test
@@ -266,25 +338,6 @@ public class SourceCodeBuilderImplTest {
     @Test(expected = IllegalStateException.class)
     public void exceptionShouldBeThrownWhenClassWasNotInitializedAndOneTriesToAddField2() throws Exception {
         builder.addField("field1", "int");
-    }
-
-    @Test
-    public void simpleJavaClassWithSimpleFieldWithAccessLevelShouldBeCreated() throws Exception {
-        for (Access level : Access.values()) {
-            String actualCode = builder.newClass("com.codenvy.generator.A")
-                                       .addField("field1", Integer.class).withFieldAccessLevel(level)
-                                       .build();
-
-            String expectedCode = "package com.codenvy.generator;\n" +
-                                  "\n" +
-                                  "public class A {\n" +
-                                  "\n" +
-                                  "    " + level.getPrefix() + "Integer field1;\n" +
-                                  "\n" +
-                                  "}\n";
-
-            assertEquals(expectedCode, actualCode);
-        }
     }
 
     @Test(expected = IllegalStateException.class)
@@ -475,24 +528,6 @@ public class SourceCodeBuilderImplTest {
         builder.newClass("com.codenvy.generator.A").withMethodBody("doSomething();");
     }
 
-    @Test
-    public void simpleJavaClassWithSimpleMethodWithAccessLevelShouldBeCreated() throws Exception {
-        for (Access level : Access.values()) {
-            String actualCode = builder.newClass("com.codenvy.generator.A").addMethod("getA").withMethodAccessLevel(level).build();
-
-            String expectedCode = "package com.codenvy.generator;\n" +
-                                  "\n" +
-                                  "public class A {\n" +
-                                  "\n" +
-                                  "    " + level.getPrefix() + "void getA() {\n" +
-                                  "    }\n" +
-                                  "\n" +
-                                  "}\n";
-
-            assertEquals(expectedCode, actualCode);
-        }
-    }
-
     @Test(expected = IllegalStateException.class)
     public void exceptionShouldBeThrownWhenClassWasNotInitializedAndOneTriesToAddAccessLevel() throws Exception {
         builder.withMethodAccessLevel(DEFAULT);
@@ -531,17 +566,15 @@ public class SourceCodeBuilderImplTest {
 
     @Test
     public void simpleJavaClassWithSimpleMethodWithArgumentsShouldBeCreated() throws Exception {
-        HashMap<String, String> arguments = new HashMap<>();
-        arguments.put("Integer", "arg1");
-        arguments.put("String", "arg2");
-
-        String actualCode = builder.newClass("com.codenvy.generator.A").addMethod("getA").withMethodArguments(arguments).build();
+        String actualCode = builder.newClass("com.codenvy.generator.A")
+                                   .addMethod("getA").withMethodArguments(new Argument("Integer", "arg1"), new Argument("String", "arg2"))
+                                   .build();
 
         String expectedCode = "package com.codenvy.generator;\n" +
                               "\n" +
                               "public class A {\n" +
                               "\n" +
-                              "    public void getA(String arg2, Integer arg1) {\n" +
+                              "    public void getA(Integer arg1, String arg2) {\n" +
                               "    }\n" +
                               "\n" +
                               "}\n";
@@ -551,12 +584,12 @@ public class SourceCodeBuilderImplTest {
 
     @Test(expected = IllegalStateException.class)
     public void exceptionShouldBeThrownWhenClassWasNotInitializedAndOneTriesToAddArguments() throws Exception {
-        builder.withMethodArguments(Collections.<String, String>emptyMap());
+        builder.withMethodArguments();
     }
 
     @Test(expected = IllegalStateException.class)
     public void exceptionShouldBeThrownWhenClassWasInitializedButMethodWasNotInitializedAndOneTriesToAddArguments() throws Exception {
-        builder.newClass("com.codenvy.generator.A").withMethodArguments(Collections.<String, String>emptyMap());
+        builder.newClass("com.codenvy.generator.A").withMethodArguments();
     }
 
     @Test
@@ -660,24 +693,6 @@ public class SourceCodeBuilderImplTest {
         builder.newClass("com.codenvy.generator.A").withConstructorBody("doSomething();");
     }
 
-    @Test
-    public void simpleJavaClassWithSimpleConstructorWithAccessLevelShouldBeCreated() throws Exception {
-        for (Access level : Access.values()) {
-            String actualCode = builder.newClass("com.codenvy.generator.A").addConstructor().withConstructorAccessLevel(level).build();
-
-            String expectedCode = "package com.codenvy.generator;\n" +
-                                  "\n" +
-                                  "public class A {\n" +
-                                  "\n" +
-                                  "    " + level.getPrefix() + "A() {\n" +
-                                  "    }\n" +
-                                  "\n" +
-                                  "}\n";
-
-            assertEquals(expectedCode, actualCode);
-        }
-    }
-
     @Test(expected = IllegalStateException.class)
     public void exceptionShouldBeThrownWhenClassWasNotInitializedAndOneTriesToAddConstructorAccessLevel() throws Exception {
         builder.withConstructorAccessLevel(DEFAULT);
@@ -719,9 +734,6 @@ public class SourceCodeBuilderImplTest {
 
     @Test
     public void complexJavaClassShouldBeCreated() throws Exception {
-        Map<String, String> arguments = new HashMap<>();
-        arguments.put("field1", "String");
-
         String actualCode =
                 builder.newClass("com.codenvy.generator.A").baseClass(SourceCodeBuilderImpl.class)
                        .withClassAnnotation("@SuppressWarnings")
@@ -734,10 +746,10 @@ public class SourceCodeBuilderImplTest {
                        .addField("field4", Integer.class).withFieldAccessLevel(PRIVATE).withFieldAnnotation("@Inject")
 
                        .addConstructor().withConstructorAnnotation("@Inject")
-                       .addConstructor("String field1").withConstructorAccessLevel(PRIVATE)
+                       .addConstructor(new Argument("String", "field1")).withConstructorAccessLevel(PRIVATE)
 
                        .addMethod("getField1").withReturnType(String.class).withMethodBody("return field1;").withStaticMethodPrefix()
-                       .addMethod("setField2").withMethodArguments(arguments)
+                       .addMethod("setField2").withMethodArguments(new Argument("String", "field1"))
                        .withMethodBody("this.field2 = field2;")
                        .addMethod("getField4").withMethodAccessLevel(PRIVATE).withReturnType("int")
                        .withMethodBody("return field4;").withMethodAnnotation("@Inject")
@@ -769,7 +781,7 @@ public class SourceCodeBuilderImplTest {
                               "        return field1;\n" +
                               "    }\n" +
                               "\n" +
-                              "    public void setField2(field1 String) {\n" +
+                              "    public void setField2(String field1) {\n" +
                               "        this.field2 = field2;\n" +
                               "    }\n" +
                               "\n" +
@@ -785,9 +797,6 @@ public class SourceCodeBuilderImplTest {
 
     @Test
     public void complexJavaAbstractClassShouldBeCreated() throws Exception {
-        Map<String, String> argumentsForMethod2 = new HashMap<>();
-        argumentsForMethod2.put("field2", "String");
-
         String actualCode = builder.newClass("com.codenvy.generator.A").withAbstractClassPrefix()
 
                                    .addField("field1", String.class).withFieldAccessLevel(PROTECTED)
@@ -796,7 +805,7 @@ public class SourceCodeBuilderImplTest {
 
                                    .addMethod("method1").withReturnType(String.class).withAbstractMethodPrefix()
                                    .withMethodAccessLevel(PUBLIC)
-                                   .addMethod("method2").withMethodArguments(argumentsForMethod2).withAbstractMethodPrefix()
+                                   .addMethod("method2").withMethodArguments(new Argument("String", "field2")).withAbstractMethodPrefix()
                                    .withMethodAccessLevel(PROTECTED)
                                    .addMethod("method3").withReturnType(String.class).withAbstractMethodPrefix()
                                    .withMethodAccessLevel(DEFAULT)
@@ -816,7 +825,7 @@ public class SourceCodeBuilderImplTest {
                               "\n" +
                               "    public abstract String method1();\n" +
                               "\n" +
-                              "    protected abstract void method2(field2 String);\n" +
+                              "    protected abstract void method2(String field2);\n" +
                               "\n" +
                               "    abstract String method3();\n" +
                               "\n" +

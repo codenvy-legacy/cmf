@@ -16,11 +16,14 @@
 
 package com.codenvy.modeling.configuration.editor;
 
+import com.google.inject.Inject;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 /**
  * @author Dmitry Kuleshov
+ * @author Andrey Plotnikov
  */
 public class EditorConfiguration {
     @NotNull
@@ -32,6 +35,10 @@ public class EditorConfiguration {
     @NotNull
     @Valid
     private Workspace workspace;
+
+    @Inject
+    public EditorConfiguration() {
+    }
 
     public Toolbar getToolbar() {
         return toolbar;

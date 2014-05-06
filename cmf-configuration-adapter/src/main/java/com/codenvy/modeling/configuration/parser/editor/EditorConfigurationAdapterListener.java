@@ -24,6 +24,8 @@ import com.codenvy.modeling.configuration.editor.Size;
 import com.codenvy.modeling.configuration.editor.Text;
 import com.codenvy.modeling.configuration.editor.Toolbar;
 import com.codenvy.modeling.configuration.editor.Workspace;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 import org.antlr.v4.runtime.misc.NotNull;
 
@@ -31,16 +33,24 @@ import javax.annotation.Nonnull;
 
 /**
  * @author Dmitry Kuleshov
+ * @author Andrey Plotnikov
  */
 public class EditorConfigurationAdapterListener extends EditorBaseListener {
-    private EditorConfiguration editorConfiguration;
-    private Workspace           workspace;
-    private Toolbar             toolbar;
-    private Panel               panel;
-    private Group               group;
-    private Size                size;
-    private Text                text;
-    private Item                item;
+
+    private final Provider<EditorConfiguration> editorConfigurationProvider;
+    private       EditorConfiguration           editorConfiguration;
+    private       Workspace                     workspace;
+    private       Toolbar                       toolbar;
+    private       Panel                         panel;
+    private       Group                         group;
+    private       Size                          size;
+    private       Text                          text;
+    private       Item                          item;
+
+    @Inject
+    public EditorConfigurationAdapterListener(Provider<EditorConfiguration> editorConfigurationProvider) {
+        this.editorConfigurationProvider = editorConfigurationProvider;
+    }
 
     @Nonnull
     public EditorConfiguration getEditorConfiguration() {
@@ -49,7 +59,7 @@ public class EditorConfigurationAdapterListener extends EditorBaseListener {
 
     @Override
     public void enterEditor(@NotNull EditorParser.EditorContext ctx) {
-        editorConfiguration = new EditorConfiguration();
+        editorConfiguration = editorConfigurationProvider.get();
     }
 
     @Override
@@ -84,12 +94,12 @@ public class EditorConfigurationAdapterListener extends EditorBaseListener {
 
     @Override
     public void exitCompact(@NotNull EditorParser.CompactContext ctx) {
-        size.setCompact(Integer.valueOf(ctx.INTEGER().getText()));
+        size.setCompact(Integer.parseInt(ctx.INTEGER().getText()));
     }
 
     @Override
     public void exitFull(@NotNull EditorParser.FullContext ctx) {
-        size.setFull(Integer.valueOf(ctx.INTEGER().getText()));
+        size.setFull(Integer.parseInt(ctx.INTEGER().getText()));
     }
 
     @Override
@@ -104,7 +114,7 @@ public class EditorConfigurationAdapterListener extends EditorBaseListener {
 
     @Override
     public void exitISize(@NotNull EditorParser.ISizeContext ctx) {
-        item.setSize(Integer.valueOf(ctx.INTEGER().getText()));
+        item.setSize(Integer.parseInt(ctx.INTEGER().getText()));
     }
 
     @Override
@@ -154,7 +164,7 @@ public class EditorConfigurationAdapterListener extends EditorBaseListener {
 
     @Override
     public void exitPpDefaultSize(@NotNull EditorParser.PpDefaultSizeContext ctx) {
-        panel.setDefaultSize(Integer.valueOf(ctx.INTEGER().getText()));
+        panel.setDefaultSize(Integer.parseInt(ctx.INTEGER().getText()));
     }
 
     @Override

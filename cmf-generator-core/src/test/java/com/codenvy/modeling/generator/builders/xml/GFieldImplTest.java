@@ -50,6 +50,11 @@ public class GFieldImplTest extends AbstractXmlBuilderTest {
     }
 
     @Test(expected = IllegalStateException.class)
+    public void exceptionShouldBeThrownWhenNameParamWasNotConfigured3() throws Exception {
+        builder.withType(String.class.getName()).build();
+    }
+
+    @Test(expected = IllegalStateException.class)
     public void exceptionShouldBeThrownWhenTypeParamWasNotConfigured() throws Exception {
         builder.withName("name").build();
     }
@@ -57,6 +62,15 @@ public class GFieldImplTest extends AbstractXmlBuilderTest {
     @Test
     public void fieldShouldBeCreated() throws Exception {
         String actualContent = builder.withName("name").withType(String.class).build();
+
+        String expectedContent = OFFSET + "<ui:with field='name' type='java.lang.String'/>";
+
+        assertEquals(expectedContent, actualContent);
+    }
+
+    @Test
+    public void fieldShouldBeCreated2() throws Exception {
+        String actualContent = builder.withName("name").withType(String.class.getName()).build();
 
         String expectedContent = OFFSET + "<ui:with field='name' type='java.lang.String'/>";
 

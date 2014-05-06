@@ -16,12 +16,13 @@
 
 package com.codenvy.modeling.adapter.editor;
 
-import com.codenvy.modeling.adapter.Adapter;
+import com.codenvy.modeling.configuration.EditorConfigurationAdapter;
 import com.codenvy.modeling.configuration.editor.EditorConfiguration;
 import com.codenvy.modeling.configuration.parser.editor.EditorConfigurationAdapterListener;
 import com.codenvy.modeling.configuration.parser.editor.EditorLexer;
 import com.codenvy.modeling.configuration.parser.editor.EditorParser;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.assistedinject.Assisted;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
@@ -38,25 +39,27 @@ import java.nio.file.Paths;
  * @author Dmitry Kuleshov
  * @author Andrey Plotnikov
  */
-public class EditorConfigurationAdapter implements Adapter<EditorConfiguration> {
+public class EditorConfigurationAdapterImpl implements EditorConfigurationAdapter {
 
-    private final InputStream inputStream;
+    private final InputStream                                  inputStream;
+    private final Provider<EditorConfigurationAdapterListener> editorConfigurationAdapterListenerProvider;
 
     @Inject
-    public EditorConfigurationAdapter(@Assisted String configurationPath) throws IOException {
+    public EditorConfigurationAdapterImpl(Provider<EditorConfigurationAdapterListener> editorConfigurationAdapterListenerProvider,
+                                          @Assisted String configurationPath) throws IOException {
+        this.editorConfigurationAdapterListenerProvider = editorConfigurationAdapterListenerProvider;
         this.inputStream = Files.newInputStream(Paths.get(configurationPath));
     }
 
     @Nonnull
     @Override
     public EditorConfiguration getConfiguration() throws IOException {
-
         ANTLRInputStream antlrInputStream = new ANTLRInputStream(inputStream);
         EditorLexer lexer = new EditorLexer(antlrInputStream);
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         EditorParser parser = new EditorParser(tokenStream);
         EditorConfigurationAdapterListener editorConfigurationAdapterListener
-                = new EditorConfigurationAdapterListener();
+                = editorConfigurationAdapterListenerProvider.get();
         (new ParseTreeWalker()).walk(editorConfigurationAdapterListener, parser.editor());
 
         return editorConfigurationAdapterListener.getEditorConfiguration();

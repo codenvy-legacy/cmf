@@ -230,7 +230,7 @@ public abstract class AbstractGWidget<T> implements GWidget<T>, HasEnable<T>, Ha
      */
     private String getWidget() {
         if (prefix == null) {
-            throw new IllegalStateException("The builder doesn't have any information about creating widget prefix. " +
+            throw new IllegalStateException("The builder has no information about creating widget prefix. " +
                                             "You should execute withPrefix method and then this one.");
         }
 

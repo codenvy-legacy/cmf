@@ -16,6 +16,8 @@
 
 package com.codenvy.modeling.configuration.metamodel.serialization;
 
+import com.google.inject.Inject;
+
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
 import java.util.LinkedList;
@@ -23,11 +25,17 @@ import java.util.List;
 
 /**
  * @author Dmitry Kuleshov
+ * @author Andrey Plotnikov
  */
 public class SerializationConfiguration {
     @Size(min = 1)
     @Valid
-    private List<Element> elements = new LinkedList<>();
+    private List<Element> elements;
+
+    @Inject
+    public SerializationConfiguration() {
+        elements = new LinkedList<>();
+    }
 
     public List<Element> getElements() {
         return elements;

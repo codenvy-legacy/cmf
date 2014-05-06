@@ -33,6 +33,8 @@ public class GFieldImpl implements GField {
     private String name;
     @Nullable
     private Class  type;
+    @Nullable
+    private String typeText;
 
     @Inject
     public GFieldImpl() {
@@ -58,22 +60,31 @@ public class GFieldImpl implements GField {
     /** {@inheritDoc} */
     @Nonnull
     @Override
+    public GField withType(@Nonnull String type) {
+        typeText = type;
+        return this;
+    }
+
+    /** {@inheritDoc} */
+    @Nonnull
+    @Override
     public String build() throws IllegalStateException {
         if (name == null) {
-            throw new IllegalStateException("The builder doesn't have any information about creating field name. " +
+            throw new IllegalStateException("The builder has no information about creating field name. " +
                                             "You should execute withName method and then this one.");
         }
 
-        if (type == null) {
-            throw new IllegalStateException("The builder doesn't have any information about creating field type. " +
+        if (type == null && typeText == null) {
+            throw new IllegalStateException("The builder has no information about creating field type. " +
                                             "You should execute withType method and then this one.");
         }
 
-        String content = String.format(FIELD_FORMAT, name, type.getName());
+        String content = String.format(FIELD_FORMAT, name, type != null ? type.getName() : typeText);
 
         // Clean builder configuration
         name = null;
         type = null;
+        typeText = null;
 
         return content;
     }

@@ -36,8 +36,18 @@
             <version>${version.logback}</version>
         </dependency>
         <dependency>
+            <groupId>com.allen-sauer.gwt.dnd</groupId>
+            <artifactId>gwt-dnd</artifactId>
+            <version>${version.gwt.dnd}</version>
+        </dependency>
+        <dependency>
             <groupId>com.codenvy.cmf</groupId>
             <artifactId>cmf-configuration-adapter</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.codenvy.cmf</groupId>
+            <artifactId>cmf-gwt-editor-core</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
@@ -50,10 +60,22 @@
             <artifactId>guice</artifactId>
             <version>${version.guice}</version>
         </dependency>
+        <!--TODO this dependency is absent in codenvy maven repo-->
+        <dependency>
+            <groupId>com.orange.links</groupId>
+            <artifactId>gwt-links</artifactId>
+            <version>${version.gwt.links}</version>
+        </dependency>
         <dependency>
             <groupId>joist</groupId>
             <artifactId>joist-util</artifactId>
             <version>${version.joist}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-user</artifactId>
+            <version>${version.gwt}</version>
+            <scope>provided</scope>
         </dependency>
         <!--Dependencies for testing-->
         <dependency>

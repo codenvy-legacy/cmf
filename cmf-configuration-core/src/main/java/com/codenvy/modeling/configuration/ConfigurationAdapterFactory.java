@@ -17,13 +17,23 @@
 package com.codenvy.modeling.configuration;
 
 import javax.annotation.Nonnull;
+import java.io.IOException;
 
 /**
  * @author Andrey Plotnikov
  */
-public interface ConfigurationFactoryCreator {
+public interface ConfigurationAdapterFactory {
 
     @Nonnull
-    ConfigurationFactory create(@Nonnull String configurationPath);
+    EditorConfigurationAdapter createEditorConfAdapter(@Nonnull String confPath) throws IOException;
+
+    @Nonnull
+    DiagramConfigurationAdapter createDiagramConfAdapter(@Nonnull String confPath) throws IOException;
+
+    @Nonnull
+    SerializationConfigurationAdapter createSerializationConfAdapter(@Nonnull String confPath) throws IOException;
+
+    @Nonnull
+    StyleConfigurationAdapter createStyleConfAdapter(@Nonnull String confPath) throws IOException;
 
 }

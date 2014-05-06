@@ -52,6 +52,7 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void onLeftMouseButtonClicked(int x, int y) {
         selectionManager.setElement(null);
 

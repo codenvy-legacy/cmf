@@ -72,4 +72,21 @@ public interface GField extends Builder {
     @Nonnull
     GField withType(@Nonnull Class type);
 
+    /**
+     * Add type of field.
+     * <p/>
+     * For example:
+     * <pre>
+     * {@code
+     * <ui:with field="field" type="added type"/>
+     * }
+     * </pre>
+     *
+     * @param type
+     *         type that need to be added
+     * @return a instance of builder with given configuration
+     */
+    @Nonnull
+    GField withType(@Nonnull String type);
+
 }

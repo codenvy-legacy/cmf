@@ -16,7 +16,7 @@
 
 package com.codenvy.modeling.configuration;
 
-import com.codenvy.modeling.adapter.editor.EditorConfigurationAdapter;
+import com.codenvy.modeling.adapter.editor.EditorConfigurationAdapterImpl;
 import com.codenvy.modeling.configuration.editor.EditorConfiguration;
 import com.codenvy.modeling.configuration.editor.Group;
 import com.codenvy.modeling.configuration.editor.Item;
@@ -25,6 +25,8 @@ import com.codenvy.modeling.configuration.editor.Size;
 import com.codenvy.modeling.configuration.editor.Text;
 import com.codenvy.modeling.configuration.editor.Toolbar;
 import com.codenvy.modeling.configuration.editor.Workspace;
+import com.codenvy.modeling.configuration.parser.editor.EditorConfigurationAdapterListener;
+import com.google.inject.Provider;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,10 +40,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Dmitry Kuleshov
  * @author Valeriy Svydenko
+ * @author Andrey Plotnikov
  */
 @RunWith(Parameterized.class)
 public class EditorAdapterTest {
@@ -56,16 +61,25 @@ public class EditorAdapterTest {
 
     private int numberOfGrammar;
 
-    @Parameters()
+    @Parameters
     public static Iterable<Object[]> dataOfConfigurations() {
         return Arrays.asList(new Object[][]{{EDITOR_GRAMMAR_TEST_I, 1}, {EDITOR_GRAMMAR_TEST_II, 2}});
     }
 
+    @SuppressWarnings("unchecked")
     public EditorAdapterTest(String grammar, int number) throws IOException {
         numberOfGrammar = number;
 
+        Provider<EditorConfiguration> editorConfigurationProvider = mock(Provider.class);
+        when(editorConfigurationProvider.get()).thenReturn(new EditorConfiguration());
+
+        Provider<EditorConfigurationAdapterListener> editorConfigurationAdapterListenerProvider = mock(Provider.class);
+        when(editorConfigurationAdapterListenerProvider.get())
+                .thenReturn(new EditorConfigurationAdapterListener(editorConfigurationProvider));
+
         String configurationFile = EditorAdapterTest.class.getResource(grammar).getFile();
-        EditorConfigurationAdapter editorConfigurationAdapter = new EditorConfigurationAdapter(configurationFile);
+        EditorConfigurationAdapterImpl editorConfigurationAdapter =
+                new EditorConfigurationAdapterImpl(editorConfigurationAdapterListenerProvider, configurationFile);
         EditorConfiguration configuration = editorConfigurationAdapter.getConfiguration();
 
         panel = configuration.getPanel();

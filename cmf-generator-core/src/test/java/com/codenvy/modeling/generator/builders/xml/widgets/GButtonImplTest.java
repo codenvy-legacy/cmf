@@ -153,17 +153,6 @@ public class GButtonImplTest extends AbstractXmlBuilderTest {
     }
 
     @Test
-    public void simpleButtonWithOffsetShouldBeCreated() throws Exception {
-        for (int i = 0; i < 5; i++) {
-            String actualContent = builder.withPrefix("g").withOffset(i).build();
-
-            String expectedContent = getOffset(i) + "<g:Button/>";
-
-            assertEquals(expectedContent, actualContent);
-        }
-    }
-
-    @Test
     public void complexButtonShouldBeCreated() throws Exception {
         String actualContent = builder.withPrefix("g")
                                       .withText("text")

@@ -19,13 +19,8 @@ package com.codenvy.modeling.configuration.validation;
 import com.codenvy.modeling.configuration.editor.Group;
 import com.codenvy.modeling.configuration.editor.Item;
 import com.codenvy.modeling.configuration.editor.Text;
-import com.codenvy.modeling.configuration.editor.Toolbar;
 
 import org.junit.Test;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.constraints.NotNull;
-import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

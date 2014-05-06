@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module rename-to='editor_name'>
+    <inherits name='com.google.gwt.user.User'/>
+
+    <inherits name='com.google.gwt.user.theme.standard.Standard'/>
+    <inherits name='com.google.gwt.inject.Inject'/>
+
+    <inherits name='com.codenvy.editor.api.EditorCore'/>
+
+    <inherits name='com.orange.links.Links'/>
+    <inherits name='com.google.gwt.widgetideas.WidgetIdeas'/>
+    <inherits name='com.google.gwt.libideas.LibIdeas'/>
+
+    <entry-point class='entry_point'/>
+
+    <source path='client'/>
+
+</module>

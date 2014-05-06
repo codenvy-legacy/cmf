@@ -16,12 +16,13 @@
 
 package com.codenvy.modeling.adapter.metamodel.serialization;
 
-import com.codenvy.modeling.adapter.Adapter;
+import com.codenvy.modeling.configuration.SerializationConfigurationAdapter;
 import com.codenvy.modeling.configuration.metamodel.serialization.SerializationConfiguration;
 import com.codenvy.modeling.configuration.parser.metamodel.serialization.SerializationConfigurationAdapterListener;
 import com.codenvy.modeling.configuration.parser.metamodel.serialization.SerializationLexer;
 import com.codenvy.modeling.configuration.parser.metamodel.serialization.SerializationParser;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.assistedinject.Assisted;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
@@ -38,12 +39,16 @@ import java.nio.file.Paths;
  * @author Dmitry Kuleshov
  * @author Andrey Plotnikov
  */
-public class SerializationConfigurationAdapter implements Adapter<SerializationConfiguration> {
+public class SerializationConfigurationAdapterImpl implements SerializationConfigurationAdapter {
 
-    private final InputStream inputStream;
+    private final InputStream                                         inputStream;
+    private final Provider<SerializationConfigurationAdapterListener> serializationConfigurationAdapterListenerProvider;
 
     @Inject
-    public SerializationConfigurationAdapter(@Assisted String configurationPath) throws IOException {
+    public SerializationConfigurationAdapterImpl(
+            Provider<SerializationConfigurationAdapterListener> serializationConfigurationAdapterListenerProvider,
+            @Assisted String configurationPath) throws IOException {
+        this.serializationConfigurationAdapterListenerProvider = serializationConfigurationAdapterListenerProvider;
         this.inputStream = Files.newInputStream(Paths.get(configurationPath));
     }
 
@@ -56,7 +61,7 @@ public class SerializationConfigurationAdapter implements Adapter<SerializationC
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         SerializationParser parser = new SerializationParser(tokenStream);
         SerializationConfigurationAdapterListener serializationConfigurationAdapterListener
-                = new SerializationConfigurationAdapterListener();
+                = serializationConfigurationAdapterListenerProvider.get();
         (new ParseTreeWalker()).walk(serializationConfigurationAdapterListener, parser.serialization());
 
         return serializationConfigurationAdapterListener.getSerializationConfiguration();

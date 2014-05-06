@@ -21,9 +21,15 @@
     <ui:with field="res" type="com.codenvy.editor.client.EditorResources"/>
 
     <g:DockLayoutPanel unit="PX" addStyleDependentNames="{res.editorCSS.fullSize}">
-        <g:center>
+        <g:north size="30">
             <g:Label text="Shape 1 properties panel"/>
-        </g:center>
+        </g:north>
+        <g:north size="50">
+            <g:FlowPanel>
+                <g:Label text="Property 1"/>
+                <g:TextBox ui:field="property1" width="120px"/>
+            </g:FlowPanel>
+        </g:north>
     </g:DockLayoutPanel>
 
 </ui:UiBinder>

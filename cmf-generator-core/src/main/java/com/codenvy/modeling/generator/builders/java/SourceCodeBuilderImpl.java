@@ -23,7 +23,6 @@ import joist.sourcegen.GMethod;
 import com.google.inject.Inject;
 
 import javax.annotation.Nonnull;
-import java.util.Map;
 
 /**
  * The implementation of {@link SourceCodeBuilder}. This implementation use 'Joist' library for generating java code.
@@ -159,6 +158,17 @@ public class SourceCodeBuilderImpl implements SourceCodeBuilder {
     /** {@inheritDoc} */
     @Nonnull
     @Override
+    public SourceCodeBuilder implementInterface(@Nonnull String implementedInterface) throws IllegalStateException {
+        checkClassStatus();
+
+        generatingClass.implementsInterface(implementedInterface);
+
+        return this;
+    }
+
+    /** {@inheritDoc} */
+    @Nonnull
+    @Override
     public SourceCodeBuilder baseClass(@Nonnull Class baseClass) throws IllegalStateException {
         checkClassStatus();
 
@@ -170,7 +180,40 @@ public class SourceCodeBuilderImpl implements SourceCodeBuilder {
     /** {@inheritDoc} */
     @Nonnull
     @Override
+    public SourceCodeBuilder baseClass(@Nonnull String baseClass) throws IllegalStateException {
+        checkClassStatus();
+
+        generatingClass.baseClassName(baseClass);
+
+        return this;
+    }
+
+    /** {@inheritDoc} */
+    @Nonnull
+    @Override
+    public SourceCodeBuilder withEnumValue(String enumValue) throws IllegalStateException {
+        checkClassStatus();
+
+        generatingClass.addEnumValue(enumValue);
+
+        return this;
+    }
+
+    /** {@inheritDoc} */
+    @Nonnull
+    @Override
     public SourceCodeBuilder addImport(@Nonnull Class importedClass) throws IllegalStateException {
+        checkClassStatus();
+
+        generatingClass.addImports(importedClass);
+
+        return this;
+    }
+
+    /** {@inheritDoc} */
+    @Nonnull
+    @Override
+    public SourceCodeBuilder addImport(@Nonnull String importedClass) throws IllegalStateException {
         checkClassStatus();
 
         generatingClass.addImports(importedClass);
@@ -315,12 +358,12 @@ public class SourceCodeBuilderImpl implements SourceCodeBuilder {
     /** {@inheritDoc} */
     @Nonnull
     @Override
-    public SourceCodeBuilder withMethodArguments(@Nonnull Map<String, String> arguments) throws IllegalStateException {
+    public SourceCodeBuilder withMethodArguments(@Nonnull Argument... arguments) throws IllegalStateException {
         checkClassStatus();
         checkMethodStatus();
 
-        for (Map.Entry<String, String> argument : arguments.entrySet()) {
-            generatingMethod.argument(argument.getKey(), argument.getValue());
+        for (Argument argument : arguments) {
+            generatingMethod.argument(argument.getType(), argument.getName());
         }
 
         return this;
@@ -388,10 +431,15 @@ public class SourceCodeBuilderImpl implements SourceCodeBuilder {
     /** {@inheritDoc} */
     @Nonnull
     @Override
-    public SourceCodeBuilder addConstructor(String... typeAndNames) throws IllegalStateException {
+    public SourceCodeBuilder addConstructor(@Nonnull Argument... arguments) throws IllegalStateException {
         checkClassStatus();
 
-        generatingConstructor = generatingClass.getConstructor(typeAndNames);
+        String[] typesAndNames = new String[arguments.length];
+        for (int i = 0; i < arguments.length; i++) {
+            typesAndNames[i] = arguments[i].toString();
+        }
+
+        generatingConstructor = generatingClass.getConstructor(typesAndNames);
 
         return this;
     }

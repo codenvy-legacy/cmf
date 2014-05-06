@@ -16,7 +16,9 @@
 
 package com.codenvy.modeling.configuration.metamodel.diagram;
 
-import com.codenvy.modeling.adapter.metamodel.diagram.DiagramConfigurationAdapter;
+import com.codenvy.modeling.adapter.metamodel.diagram.DiagramConfigurationAdapterImpl;
+import com.codenvy.modeling.configuration.parser.metamodel.diagram.DiagramConfigurationAdapterListener;
+import com.google.inject.Provider;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,10 +33,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Dmitry Kuleshov
  * @author Valeriy Svydenko
+ * @author Andrey Plotnikov
  */
 @RunWith(Parameterized.class)
 public class DiagramAdapterTest {
@@ -47,18 +52,24 @@ public class DiagramAdapterTest {
 
     private int numberOfGrammar;
 
+    @SuppressWarnings("unchecked")
     public DiagramAdapterTest(String grammar, int number) throws Exception {
         numberOfGrammar = number;
 
+        Provider<DiagramConfigurationAdapterListener> diagramConfigurationAdapterListenerProvider = mock(Provider.class);
+        when(diagramConfigurationAdapterListenerProvider.get())
+                .thenReturn(new DiagramConfigurationAdapterListener(new DiagramConfiguration()));
+
         String configurationFile = DiagramAdapterTest.class.getResource(grammar).getFile();
-        DiagramConfigurationAdapter diagramConfigurationAdapter = new DiagramConfigurationAdapter(configurationFile);
+        DiagramConfigurationAdapterImpl diagramConfigurationAdapter =
+                new DiagramConfigurationAdapterImpl(diagramConfigurationAdapterListenerProvider, configurationFile);
         DiagramConfiguration configuration = diagramConfigurationAdapter.getConfiguration();
 
         elements = configuration.getElements();
         connections = configuration.getConnections();
     }
 
-    @Parameters()
+    @Parameters
     public static Iterable<Object[]> dataOfConfigurations() {
         return Arrays.asList(new Object[][]{{DIAGRAM_GRAMMAR_TEST_I, 1}, {DIAGRAM_GRAMMAR_TEST_II, 2}});
     }

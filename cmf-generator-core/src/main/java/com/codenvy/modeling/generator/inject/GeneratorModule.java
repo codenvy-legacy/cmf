@@ -16,15 +16,23 @@
 
 package com.codenvy.modeling.generator.inject;
 
+import com.codenvy.modeling.adapter.editor.EditorConfigurationAdapterImpl;
+import com.codenvy.modeling.adapter.metamodel.diagram.DiagramConfigurationAdapterImpl;
+import com.codenvy.modeling.adapter.metamodel.serialization.SerializationConfigurationAdapterImpl;
+import com.codenvy.modeling.adapter.style.StyleConfigurationAdapterImpl;
 import com.codenvy.modeling.configuration.ConfigurationAdapterFactory;
-import com.codenvy.modeling.configuration.ConfigurationFactoryCreator;
-import com.codenvy.modeling.configuration.ConfigurationFactoryImpl;
+import com.codenvy.modeling.configuration.ConfigurationFactory;
+import com.codenvy.modeling.configuration.DiagramConfigurationAdapter;
+import com.codenvy.modeling.configuration.EditorConfigurationAdapter;
+import com.codenvy.modeling.configuration.SerializationConfigurationAdapter;
+import com.codenvy.modeling.configuration.StyleConfigurationAdapter;
 import com.codenvy.modeling.generator.builders.java.SourceCodeBuilder;
 import com.codenvy.modeling.generator.builders.java.SourceCodeBuilderImpl;
 import com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.GButton;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.GHtml;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.GLabel;
+import com.codenvy.modeling.generator.builders.xml.api.widgets.GPushButton;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.GTextArea;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.GTextBox;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GDockLayoutPanel;
@@ -36,6 +44,7 @@ import com.codenvy.modeling.generator.builders.xml.impl.UIXmlBuilderImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.GButtonImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.GHtmlImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.GLabelImpl;
+import com.codenvy.modeling.generator.builders.xml.impl.widgets.GPushButtonImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.GTextAreaImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.GTextBoxImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.containers.GDockLayoutPanelImpl;
@@ -57,14 +66,13 @@ public class GeneratorModule extends AbstractModule {
     @Override
     protected void configure() {
         // Configuration of configuration factory
-        install(new FactoryModuleBuilder().build(ConfigurationFactoryCreator.class));
-        // TODO recheck
-        bind(ConfigurationFactoryImpl.class).to(ConfigurationFactoryImpl.class);
-
-        // Configuration of configuration keeper
-        install(new FactoryModuleBuilder().build(ConfigurationFactoryImpl.class));
+        install(new FactoryModuleBuilder().build(ConfigurationFactory.class));
         install(new FactoryModuleBuilder().build(ConfigurationAdapterFactory.class));
 
+        bind(EditorConfigurationAdapter.class).to(EditorConfigurationAdapterImpl.class);
+        bind(DiagramConfigurationAdapter.class).to(DiagramConfigurationAdapterImpl.class);
+        bind(SerializationConfigurationAdapter.class).to(SerializationConfigurationAdapterImpl.class);
+        bind(StyleConfigurationAdapter.class).to(StyleConfigurationAdapterImpl.class);
 
         // Java code builder configuration
         bind(SourceCodeBuilder.class).to(SourceCodeBuilderImpl.class);
@@ -73,6 +81,7 @@ public class GeneratorModule extends AbstractModule {
         bind(UIXmlBuilder.class).to(UIXmlBuilderImpl.class);
 
         bind(GButton.class).to(GButtonImpl.class);
+        bind(GPushButton.class).to(GPushButtonImpl.class);
         bind(GHtml.class).to(GHtmlImpl.class);
         bind(GLabel.class).to(GLabelImpl.class);
         bind(GTextArea.class).to(GTextAreaImpl.class);

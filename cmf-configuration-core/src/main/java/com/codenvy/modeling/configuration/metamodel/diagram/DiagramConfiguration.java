@@ -16,6 +16,8 @@
 
 package com.codenvy.modeling.configuration.metamodel.diagram;
 
+import com.google.inject.Inject;
+
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
 import java.util.LinkedList;
@@ -23,14 +25,21 @@ import java.util.List;
 
 /**
  * @author Dmitry Kuleshov
+ * @author Andrey Plotnikov
  */
 public class DiagramConfiguration {
     @Size(min = 1)
     @Valid
-    private List<Element>    elements    = new LinkedList<>();
+    private List<Element>    elements;
     @Size(min = 1)
     @Valid
-    private List<Connection> connections = new LinkedList<>();
+    private List<Connection> connections;
+
+    @Inject
+    public DiagramConfiguration() {
+        elements = new LinkedList<>();
+        connections = new LinkedList<>();
+    }
 
     public List<Element> getElements() {
         return elements;
