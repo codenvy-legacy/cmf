@@ -27,6 +27,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 
+import static com.codenvy.modeling.configuration.ConfigurationFactory.ConfigurationPaths;
+
 /**
  * @author Dmitry Kuleshov
  * @author Andrey Plotnikov
@@ -52,15 +54,19 @@ public class Configuration {
 
     @Inject
     public Configuration(ConfigurationAdapterFactory configurationAdapterFactory,
-                         @Assisted String diagramConfigurationPath,
-                         @Assisted String editorConfigurationPath,
-                         @Assisted String serializationConfigurationPath,
-                         @Assisted String styleConfigurationPath) throws IOException {
-        this.diagramConfiguration = configurationAdapterFactory.createDiagramConfAdapter(diagramConfigurationPath).getConfiguration();
-        this.serializationConfiguration =
-                configurationAdapterFactory.createSerializationConfAdapter(serializationConfigurationPath).getConfiguration();
-        this.editorConfiguration = configurationAdapterFactory.createEditorConfAdapter(editorConfigurationPath).getConfiguration();
-        this.styleConfiguration = configurationAdapterFactory.createStyleConfAdapter(styleConfigurationPath).getConfiguration();
+                         @Assisted ConfigurationPaths configurationPaths) throws IOException {
+        this.diagramConfiguration = configurationAdapterFactory
+                .createDiagramConfAdapter(configurationPaths.getDiagramConfigurationPath())
+                .getConfiguration();
+        this.serializationConfiguration = configurationAdapterFactory
+                .createSerializationConfAdapter(configurationPaths.getSerializationConfigurationPath())
+                .getConfiguration();
+        this.editorConfiguration = configurationAdapterFactory
+                .createEditorConfAdapter(configurationPaths.getEditorConfigurationPath())
+                .getConfiguration();
+        this.styleConfiguration = configurationAdapterFactory
+                .createStyleConfAdapter(configurationPaths.getStyleConfigurationPath())
+                .getConfiguration();
     }
 
     public DiagramConfiguration getDiagramConfiguration() {

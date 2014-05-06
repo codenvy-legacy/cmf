@@ -26,6 +26,8 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.Map;
 
+import static com.codenvy.modeling.configuration.ConfigurationFactory.ConfigurationPaths;
+
 /**
  * The main class of generating GWT editor. It provides an ability to check configuration and generate GWT java code.
  *
@@ -52,10 +54,11 @@ public class GenerationController {
     public void generate(@Nonnull Map<Param, String> params) {
         try {
             // TODO need to add configuration paths and insert it into configuration factory
-            sourceCodeGenerator.generate(params, configurationFactory.getInstance("diagramConfigurationPath",
-                                                                                  "editorConfigurationPath",
-                                                                                  "serializationConfigurationPath",
-                                                                                  "styleConfigurationPath"));
+            sourceCodeGenerator.generate(params, configurationFactory.getInstance(new ConfigurationPaths("diagramConfigurationPath",
+                                                                                                         "editorConfigurationPath",
+                                                                                                         "serializationConfigurationPath",
+                                                                                                         "styleConfigurationPath")
+                                                                                 ));
         } catch (IOException e) {
             LOG.error("Some problem happened during code generating.", e);
         }
