@@ -28,6 +28,8 @@ import com.codenvy.modeling.configuration.SerializationConfigurationAdapter;
 import com.codenvy.modeling.configuration.StyleConfigurationAdapter;
 import com.codenvy.modeling.generator.builders.java.SourceCodeBuilder;
 import com.codenvy.modeling.generator.builders.java.SourceCodeBuilderImpl;
+import com.codenvy.modeling.generator.builders.xml.api.GField;
+import com.codenvy.modeling.generator.builders.xml.api.GStyle;
 import com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.GButton;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.GHtml;
@@ -40,6 +42,8 @@ import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GFlowP
 import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GScrollPanel;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GSimpleLayoutPanel;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GSplitLayoutPanel;
+import com.codenvy.modeling.generator.builders.xml.impl.GFieldImpl;
+import com.codenvy.modeling.generator.builders.xml.impl.GStyleImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.UIXmlBuilderImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.GButtonImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.GHtmlImpl;
@@ -67,18 +71,21 @@ public class GeneratorModule extends AbstractModule {
     protected void configure() {
         // Configuration of configuration factory
         install(new FactoryModuleBuilder().build(ConfigurationFactory.class));
-        install(new FactoryModuleBuilder().build(ConfigurationAdapterFactory.class));
-
-        bind(EditorConfigurationAdapter.class).to(EditorConfigurationAdapterImpl.class);
-        bind(DiagramConfigurationAdapter.class).to(DiagramConfigurationAdapterImpl.class);
-        bind(SerializationConfigurationAdapter.class).to(SerializationConfigurationAdapterImpl.class);
-        bind(StyleConfigurationAdapter.class).to(StyleConfigurationAdapterImpl.class);
+        install(new FactoryModuleBuilder()
+                        .implement(EditorConfigurationAdapter.class, EditorConfigurationAdapterImpl.class)
+                        .implement(DiagramConfigurationAdapter.class, DiagramConfigurationAdapterImpl.class)
+                        .implement(SerializationConfigurationAdapter.class, SerializationConfigurationAdapterImpl.class)
+                        .implement(StyleConfigurationAdapter.class, StyleConfigurationAdapterImpl.class)
+                        .build(ConfigurationAdapterFactory.class));
 
         // Java code builder configuration
         bind(SourceCodeBuilder.class).to(SourceCodeBuilderImpl.class);
 
         // UI XML builder configuration
         bind(UIXmlBuilder.class).to(UIXmlBuilderImpl.class);
+
+        bind(GField.class).to(GFieldImpl.class);
+        bind(GStyle.class).to(GStyleImpl.class);
 
         bind(GButton.class).to(GButtonImpl.class);
         bind(GPushButton.class).to(GPushButtonImpl.class);

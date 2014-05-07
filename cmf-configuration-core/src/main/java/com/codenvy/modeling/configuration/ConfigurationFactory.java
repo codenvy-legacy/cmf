@@ -54,10 +54,46 @@ public interface ConfigurationFactory {
         public abstract boolean isMandatory();
     }
 
+    class ConfigurationPaths {
+
+        private final String diagramConfigurationPath;
+        private final String editorConfigurationPath;
+        private final String serializationConfigurationPath;
+        private final String styleConfigurationPath;
+
+        public ConfigurationPaths(String diagramConfigurationPath,
+                                  String editorConfigurationPath,
+                                  String serializationConfigurationPath,
+                                  String styleConfigurationPath) {
+            this.diagramConfigurationPath = diagramConfigurationPath;
+            this.editorConfigurationPath = editorConfigurationPath;
+            this.serializationConfigurationPath = serializationConfigurationPath;
+            this.styleConfigurationPath = styleConfigurationPath;
+        }
+
+        @Nonnull
+        public String getDiagramConfigurationPath() {
+            return diagramConfigurationPath;
+        }
+
+        @Nonnull
+        public String getEditorConfigurationPath() {
+            return editorConfigurationPath;
+        }
+
+        @Nonnull
+        public String getSerializationConfigurationPath() {
+            return serializationConfigurationPath;
+        }
+
+        @Nonnull
+        public String getStyleConfigurationPath() {
+            return styleConfigurationPath;
+        }
+
+    }
+
     @Nonnull
-    Configuration getInstance(@Nonnull String diagramConfigurationPath,
-                              @Nonnull String editorConfigurationPath,
-                              @Nonnull String serializationConfigurationPath,
-                              @Nonnull String styleConfigurationPath) throws IOException;
+    Configuration getInstance(@Nonnull ConfigurationPaths configurationPaths) throws IOException;
 
 }
