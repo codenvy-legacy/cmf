@@ -72,11 +72,24 @@
             <version>${version.hibernate.validator}</version>
         </dependency>
         <dependency>
-        <groupId>junit</groupId>
+            <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${version.junit}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <testSourceDirectory>src/test/java</testSourceDirectory>
+
+        <testResources>
+            <testResource>
+                <directory>src/test/java</directory>
+            </testResource>
+            <testResource>
+                <directory>src/test/resources</directory>
+            </testResource>
+        </testResources>
+    </build>
 
 </project>

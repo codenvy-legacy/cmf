@@ -20,7 +20,11 @@ import com.codenvy.modeling.configuration.metamodel.serialization.Element;
 import com.codenvy.modeling.configuration.metamodel.serialization.ElementDesignation;
 import com.codenvy.modeling.configuration.metamodel.serialization.SerializationConfiguration;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExternalResource;
+import org.junit.rules.RuleChain;
+import org.junit.rules.TestRule;
 
 import java.util.LinkedList;
 
@@ -32,19 +36,24 @@ import static org.junit.Assert.assertTrue;
 public class SerializationValidatorTest {
     public static final String SIMPLE_STRING = "simple_text";
 
-    private ConnectionDesignation      connectionDesignation;
-    private Element                    element;
-    private ElementDesignation         elementDesignation;
-    private SerializationConfiguration serializationConfiguration;
+    @Rule
+    public ConnectionInitializer         connectionInitializer = new ConnectionInitializer();
+    @Rule
+    public ElementDesignationInitializer elementDesignation    = new ElementDesignationInitializer();
+    public ElementInitializer            elementInitializer    = new ElementInitializer();
+    @Rule
+    public TestRule                      chainElement          = RuleChain
+            .outerRule(elementDesignation)
+            .around(connectionInitializer)
+            .around(elementInitializer);
+    public SerializationConfiguration serializationConfiguration;
 
     //test connection
     @Test
     public void connectionValidationShouldResultInErrorIfNameIsNotValid() {
-        initializationConnection();
+        connectionInitializer.getConnectionDesignation().setReferencePropertyName("");
 
-        connectionDesignation.setReferencePropertyName("");
-
-        Report report = ConfigurationConstraintsValidator.validate(connectionDesignation);
+        Report report = ConfigurationConstraintsValidator.validate(connectionInitializer.getConnectionDesignation());
 
         assertTrue(report.hasErrors());
         assertEquals(1, report.getErrors().size());
@@ -52,11 +61,9 @@ public class SerializationValidatorTest {
 
     @Test
     public void connectionValidationShouldResultInErrorIfTemplateIsNotValid() {
-        initializationConnection();
+        connectionInitializer.getConnectionDesignation().setReferenceTemplate("");
 
-        connectionDesignation.setReferenceTemplate("");
-
-        Report report = ConfigurationConstraintsValidator.validate(connectionDesignation);
+        Report report = ConfigurationConstraintsValidator.validate(connectionInitializer.getConnectionDesignation());
 
         assertTrue(report.hasErrors());
         assertEquals(1, report.getErrors().size());
@@ -64,11 +71,9 @@ public class SerializationValidatorTest {
 
     @Test
     public void connectionValidationShouldResultInErrorIfTypeIsNull() {
-        initializationConnection();
+        connectionInitializer.getConnectionDesignation().setType(null);
 
-        connectionDesignation.setType(null);
-
-        Report report = ConfigurationConstraintsValidator.validate(connectionDesignation);
+        Report report = ConfigurationConstraintsValidator.validate(connectionInitializer.getConnectionDesignation());
 
         assertTrue(report.hasErrors());
         assertEquals(1, report.getErrors().size());
@@ -76,29 +81,17 @@ public class SerializationValidatorTest {
 
     @Test
     public void connectionValidationShouldResultWithoutError() {
-        initializationConnection();
-
-        Report report = ConfigurationConstraintsValidator.validate(connectionDesignation);
+        Report report = ConfigurationConstraintsValidator.validate(connectionInitializer.getConnectionDesignation());
 
         assertFalse(report.hasErrors());
-    }
-
-    private void initializationConnection() {
-        connectionDesignation = new ConnectionDesignation();
-
-        connectionDesignation.setType(ConnectionDesignation.Type.ORDERING);
-        connectionDesignation.setReferencePropertyName(SIMPLE_STRING);
-        connectionDesignation.setReferenceTemplate(SIMPLE_STRING);
     }
 
     //test ElementDesignation
     @Test
     public void elementDesignationValidationShouldResultInErrorIfNameIsNotValid() {
-        initializationElementDesignation();
+        elementDesignation.getElementDesignation().setReferencePropertyName("");
 
-        elementDesignation.setReferencePropertyName("");
-
-        Report report = ConfigurationConstraintsValidator.validate(elementDesignation);
+        Report report = ConfigurationConstraintsValidator.validate(elementDesignation.getElementDesignation());
 
         assertTrue(report.hasErrors());
         assertEquals(1, report.getErrors().size());
@@ -106,11 +99,9 @@ public class SerializationValidatorTest {
 
     @Test
     public void elementDesignationValidationShouldResultInErrorIfTemplateIsNotValid() {
-        initializationElementDesignation();
+        elementDesignation.getElementDesignation().setReferenceTemplate("");
 
-        elementDesignation.setReferenceTemplate("");
-
-        Report report = ConfigurationConstraintsValidator.validate(elementDesignation);
+        Report report = ConfigurationConstraintsValidator.validate(elementDesignation.getElementDesignation());
 
         assertTrue(report.hasErrors());
         assertEquals(1, report.getErrors().size());
@@ -118,11 +109,9 @@ public class SerializationValidatorTest {
 
     @Test
     public void elementDesignationValidationShouldResultInErrorIfTypeIsNull() {
-        initializationElementDesignation();
+        elementDesignation.getElementDesignation().setType(null);
 
-        elementDesignation.setType(null);
-
-        Report report = ConfigurationConstraintsValidator.validate(elementDesignation);
+        Report report = ConfigurationConstraintsValidator.validate(elementDesignation.getElementDesignation());
 
         assertTrue(report.hasErrors());
         assertEquals(1, report.getErrors().size());
@@ -130,41 +119,17 @@ public class SerializationValidatorTest {
 
     @Test
     public void elementDesignationValidationShouldResultWithoutError() {
-        initializationElementDesignation();
-
-        Report report = ConfigurationConstraintsValidator.validate(elementDesignation);
+        Report report = ConfigurationConstraintsValidator.validate(elementDesignation.getElementDesignation());
 
         assertFalse(report.hasErrors());
     }
 
-    private void initializationElementDesignation() {
-        elementDesignation = new ElementDesignation();
-
-        elementDesignation.setType(ElementDesignation.Type.INSERTION);
-        elementDesignation.setReferenceTemplate(SIMPLE_STRING);
-        elementDesignation.setReferencePropertyName(SIMPLE_STRING);
-    }
-
     //test
-    private void initializationElement() {
-        element = new Element();
-
-        initializationElementDesignation();
-        initializationConnection();
-
-        element.setName(SIMPLE_STRING);
-        element.setConnectionDesignation(connectionDesignation);
-        element.setTemplate(SIMPLE_STRING);
-        element.setElementDesignation(elementDesignation);
-    }
-
     @Test
     public void elementValidationShouldResultInErrorIfNameIsNotValid() {
-        initializationElement();
+        elementInitializer.getElement().setName("");
 
-        element.setName("");
-
-        Report report = ConfigurationConstraintsValidator.validate(element);
+        Report report = ConfigurationConstraintsValidator.validate(elementInitializer.getElement());
 
         assertTrue(report.hasErrors());
         assertEquals(1, report.getErrors().size());
@@ -172,11 +137,9 @@ public class SerializationValidatorTest {
 
     @Test
     public void elementValidationShouldResultInErrorIfTemplateIsNotValid() {
-        initializationElement();
+        elementInitializer.getElement().setTemplate("");
 
-        element.setTemplate("");
-
-        Report report = ConfigurationConstraintsValidator.validate(element);
+        Report report = ConfigurationConstraintsValidator.validate(elementInitializer.getElement());
 
         assertTrue(report.hasErrors());
         assertEquals(1, report.getErrors().size());
@@ -184,9 +147,7 @@ public class SerializationValidatorTest {
 
     @Test
     public void elementValidationShouldResultWithoutError() {
-        initializationElement();
-
-        Report report = ConfigurationConstraintsValidator.validate(element);
+        Report report = ConfigurationConstraintsValidator.validate(elementInitializer.getElement());
 
         assertFalse(report.hasErrors());
     }
@@ -196,10 +157,8 @@ public class SerializationValidatorTest {
     public void serializationValidationShouldResultWithoutError() {
         serializationConfiguration = new SerializationConfiguration();
 
-        initializationElement();
-
         LinkedList<Element> elements = new LinkedList<>();
-        elements.add(element);
+        elements.add(elementInitializer.getElement());
 
         serializationConfiguration.setElements(elements);
 
@@ -220,5 +179,57 @@ public class SerializationValidatorTest {
 
         assertTrue(report.hasErrors());
         assertEquals(1, report.getErrors().size());
+    }
+
+    private class ConnectionInitializer extends ExternalResource {
+        private ConnectionDesignation connectionDesignation;
+
+        @Override
+        protected void before() throws Throwable {
+            connectionDesignation = new ConnectionDesignation();
+
+            connectionDesignation.setType(ConnectionDesignation.Type.ORDERING);
+            connectionDesignation.setReferencePropertyName(SIMPLE_STRING);
+            connectionDesignation.setReferenceTemplate(SIMPLE_STRING);
+        }
+
+        protected ConnectionDesignation getConnectionDesignation() {
+            return connectionDesignation;
+        }
+    }
+
+    private class ElementDesignationInitializer extends ExternalResource {
+        private ElementDesignation elementDesignation;
+
+        @Override
+        protected void before() throws Throwable {
+            elementDesignation = new ElementDesignation();
+
+            elementDesignation.setType(ElementDesignation.Type.INSERTION);
+            elementDesignation.setReferenceTemplate(SIMPLE_STRING);
+            elementDesignation.setReferencePropertyName(SIMPLE_STRING);
+        }
+
+        protected ElementDesignation getElementDesignation() {
+            return elementDesignation;
+        }
+    }
+
+    private class ElementInitializer extends ExternalResource {
+        private Element element;
+
+        @Override
+        protected void before() throws Throwable {
+            element = new Element();
+
+            element.setName(SIMPLE_STRING);
+            element.setConnectionDesignation(connectionInitializer.getConnectionDesignation());
+            element.setTemplate(SIMPLE_STRING);
+            element.setElementDesignation(elementDesignation.getElementDesignation());
+        }
+
+        protected Element getElement() {
+            return element;
+        }
     }
 }

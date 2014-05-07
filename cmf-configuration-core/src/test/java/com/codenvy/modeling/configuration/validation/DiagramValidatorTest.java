@@ -22,7 +22,11 @@ import com.codenvy.modeling.configuration.metamodel.diagram.Element;
 import com.codenvy.modeling.configuration.metamodel.diagram.Pair;
 import com.codenvy.modeling.configuration.metamodel.diagram.Property;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExternalResource;
+import org.junit.rules.RuleChain;
+import org.junit.rules.TestRule;
 
 import java.util.LinkedList;
 
@@ -34,20 +38,31 @@ import static org.junit.Assert.assertTrue;
 public class DiagramValidatorTest {
     public static final String SIMPLE_STRING = "simple_text";
 
-    private Property             property;
-    private Component            component;
-    private Element              element;
-    private Connection           connection;
-    private Pair                 pair;
+    @Rule
+    public PropertyInitializer  propertyInitializer  = new PropertyInitializer();
+    @Rule
+    public ComponentInitializer componentInitializer = new ComponentInitializer();
+    public ElementInitializer   elementInitializer   = new ElementInitializer();
+    @Rule
+    public PairInitializer      pairInitializer      = new PairInitializer();
+    @Rule
+    public TestRule             chainElement         = RuleChain
+            .outerRule(propertyInitializer)
+            .around(componentInitializer)
+            .around(elementInitializer);
+
+    public ConnectionInitializer connectionInitializer = new ConnectionInitializer();
+    @Rule
+    public TestRule              chainConnection       = RuleChain
+            .outerRule(pairInitializer)
+            .around(connectionInitializer);
 
     //tests property
     @Test
     public void propertyValidationShouldResultInErrorIfNameIsNotValid() {
-        initializationProperty();
+        propertyInitializer.getProperty().setName("");
 
-        property.setName("");
-
-        Report report = ConfigurationConstraintsValidator.validate(property);
+        Report report = ConfigurationConstraintsValidator.validate(propertyInitializer.getProperty());
 
         assertTrue(report.hasErrors());
         assertEquals(1, report.getErrors().size());
@@ -55,11 +70,9 @@ public class DiagramValidatorTest {
 
     @Test
     public void propertyValidationShouldResultInErrorIfValueIsNotValid() {
-        initializationProperty();
+        propertyInitializer.getProperty().setValue("");
 
-        property.setValue("");
-
-        Report report = ConfigurationConstraintsValidator.validate(property);
+        Report report = ConfigurationConstraintsValidator.validate(propertyInitializer.getProperty());
 
         assertTrue(report.hasErrors());
         assertEquals(1, report.getErrors().size());
@@ -67,11 +80,9 @@ public class DiagramValidatorTest {
 
     @Test
     public void propertyValidationShouldResultInErrorIfTypeIsNull() {
-        initializationProperty();
+        propertyInitializer.getProperty().setType(null);
 
-        property.setType(null);
-
-        Report report = ConfigurationConstraintsValidator.validate(property);
+        Report report = ConfigurationConstraintsValidator.validate(propertyInitializer.getProperty());
 
         assertTrue(report.hasErrors());
         assertEquals(1, report.getErrors().size());
@@ -79,29 +90,17 @@ public class DiagramValidatorTest {
 
     @Test
     public void propertyValidationShouldResultWithoutError() {
-        initializationProperty();
-
-        Report report = ConfigurationConstraintsValidator.validate(property);
+        Report report = ConfigurationConstraintsValidator.validate(propertyInitializer.getProperty());
 
         assertFalse(report.hasErrors());
-    }
-
-    private void initializationProperty() {
-        property = new Property();
-
-        property.setName(SIMPLE_STRING);
-        property.setType(Property.Type.BOOLEAN);
-        property.setValue(SIMPLE_STRING);
     }
 
     //tests component
     @Test
     public void componentValidationShouldResultInErrorIfNameIsNotValid() {
-        initializationComponent();
+        componentInitializer.getComponent().setName("");
 
-        component.setName("");
-
-        Report report = ConfigurationConstraintsValidator.validate(component);
+        Report report = ConfigurationConstraintsValidator.validate(componentInitializer.getComponent());
 
         assertTrue(report.hasErrors());
         assertEquals(1, report.getErrors().size());
@@ -109,27 +108,17 @@ public class DiagramValidatorTest {
 
     @Test
     public void componentValidationShouldResultWithoutError() {
-        initializationComponent();
-
-        Report report = ConfigurationConstraintsValidator.validate(component);
+        Report report = ConfigurationConstraintsValidator.validate(componentInitializer.getComponent());
 
         assertFalse(report.hasErrors());
-    }
-
-    private void initializationComponent() {
-        component = new Component();
-
-        component.setName(SIMPLE_STRING);
     }
 
     //tests element
     @Test
     public void elementValidationShouldResultInErrorIfNameIsNotValid() {
-        initializationElement();
+        elementInitializer.getElement().setName("");
 
-        element.setName("");
-
-        Report report = ConfigurationConstraintsValidator.validate(element);
+        Report report = ConfigurationConstraintsValidator.validate(elementInitializer.getElement());
 
         assertTrue(report.hasErrors());
         assertEquals(1, report.getErrors().size());
@@ -137,11 +126,9 @@ public class DiagramValidatorTest {
 
     @Test
     public void elementValidationShouldResultInErrorIfRelationIsNull() {
-        initializationElement();
+        elementInitializer.getElement().setRelation(null);
 
-        element.setRelation(null);
-
-        Report report = ConfigurationConstraintsValidator.validate(element);
+        Report report = ConfigurationConstraintsValidator.validate(elementInitializer.getElement());
 
         assertTrue(report.hasErrors());
         assertEquals(1, report.getErrors().size());
@@ -149,11 +136,9 @@ public class DiagramValidatorTest {
 
     @Test
     public void elementValidationShouldResultInErrorIfPropertiesIsEmpty() {
-        initializationElement();
+        elementInitializer.getElement().setProperties(new LinkedList<Property>());
 
-        element.setProperties(new LinkedList<Property>());
-
-        Report report = ConfigurationConstraintsValidator.validate(element);
+        Report report = ConfigurationConstraintsValidator.validate(elementInitializer.getElement());
 
         assertTrue(report.hasErrors());
         assertEquals(1, report.getErrors().size());
@@ -161,11 +146,9 @@ public class DiagramValidatorTest {
 
     @Test
     public void elementValidationShouldResultInErrorIfComponentsIsEmpty() {
-        initializationElement();
+        elementInitializer.getElement().setComponents(new LinkedList<Component>());
 
-        element.setComponents(new LinkedList<Component>());
-
-        Report report = ConfigurationConstraintsValidator.validate(element);
+        Report report = ConfigurationConstraintsValidator.validate(elementInitializer.getElement());
 
         assertTrue(report.hasErrors());
         assertEquals(1, report.getErrors().size());
@@ -173,46 +156,17 @@ public class DiagramValidatorTest {
 
     @Test
     public void elementValidationShouldResultWithoutError() {
-        initializationElement();
-
-        Report report = ConfigurationConstraintsValidator.validate(element);
+        Report report = ConfigurationConstraintsValidator.validate(elementInitializer.getElement());
 
         assertFalse(report.hasErrors());
     }
 
-    private void initializationElement() {
-        element = new Element();
-
-        initializationComponent();
-        initializationProperty();
-
-        LinkedList<Property> properties = new LinkedList<>();
-        properties.add(property);
-
-        LinkedList<Component> components = new LinkedList<>();
-        components.add(component);
-
-        element.setName(SIMPLE_STRING);
-        element.setRelation(Element.Relation.MULTIPLE);
-        element.setComponents(components);
-        element.setProperties(properties);
-    }
-
     //tests pair
-    private void initializationPair() {
-        pair = new Pair();
-
-        pair.setFinish(SIMPLE_STRING);
-        pair.setStart(SIMPLE_STRING);
-    }
-
     @Test
     public void pairValidationShouldResultInErrorIfStartIsNotValid() {
-        initializationPair();
+        pairInitializer.getPair().setStart("");
 
-        pair.setStart("");
-
-        Report report = ConfigurationConstraintsValidator.validate(pair);
+        Report report = ConfigurationConstraintsValidator.validate(pairInitializer.getPair());
 
         assertTrue(report.hasErrors());
         assertEquals(1, report.getErrors().size());
@@ -220,11 +174,9 @@ public class DiagramValidatorTest {
 
     @Test
     public void pairValidationShouldResultInErrorIfFinishIsNotValid() {
-        initializationPair();
+        pairInitializer.getPair().setFinish("");
 
-        pair.setFinish("");
-
-        Report report = ConfigurationConstraintsValidator.validate(pair);
+        Report report = ConfigurationConstraintsValidator.validate(pairInitializer.getPair());
 
         assertTrue(report.hasErrors());
         assertEquals(1, report.getErrors().size());
@@ -232,9 +184,7 @@ public class DiagramValidatorTest {
 
     @Test
     public void pairValidationShouldResultWithoutError() {
-        initializationPair();
-
-        Report report = ConfigurationConstraintsValidator.validate(pair);
+        Report report = ConfigurationConstraintsValidator.validate(pairInitializer.getPair());
 
         assertFalse(report.hasErrors());
     }
@@ -242,11 +192,9 @@ public class DiagramValidatorTest {
     //tests connection
     @Test
     public void connectionValidationShouldResultInErrorIfNameIsNotValid() {
-        initializationConnection();
+        connectionInitializer.getConnection().setName("");
 
-        connection.setName("");
-
-        Report report = ConfigurationConstraintsValidator.validate(connection);
+        Report report = ConfigurationConstraintsValidator.validate(connectionInitializer.getConnection());
 
         assertTrue(report.hasErrors());
         assertEquals(1, report.getErrors().size());
@@ -254,11 +202,9 @@ public class DiagramValidatorTest {
 
     @Test
     public void connectionValidationShouldResultInErrorIfTypeIsNull() {
-        initializationConnection();
+        connectionInitializer.getConnection().setType(null);
 
-        connection.setType(null);
-
-        Report report = ConfigurationConstraintsValidator.validate(connection);
+        Report report = ConfigurationConstraintsValidator.validate(connectionInitializer.getConnection());
 
         assertTrue(report.hasErrors());
         assertEquals(1, report.getErrors().size());
@@ -266,13 +212,11 @@ public class DiagramValidatorTest {
 
     @Test
     public void connectionValidationShouldResultInErrorIfPairsIsEmpty() {
-        initializationConnection();
-
         LinkedList<Pair> pairs = new LinkedList<>();
 
-        connection.setPairs(pairs);
+        connectionInitializer.getConnection().setPairs(pairs);
 
-        Report report = ConfigurationConstraintsValidator.validate(connection);
+        Report report = ConfigurationConstraintsValidator.validate(connectionInitializer.getConnection());
 
         assertTrue(report.hasErrors());
         assertEquals(1, report.getErrors().size());
@@ -280,44 +224,118 @@ public class DiagramValidatorTest {
 
     @Test
     public void connectionValidationShouldResultWithoutError() {
-        initializationConnection();
-
-        Report report = ConfigurationConstraintsValidator.validate(connection);
+        Report report = ConfigurationConstraintsValidator.validate(connectionInitializer.getConnection());
 
         assertFalse(report.hasErrors());
-    }
-
-    private void initializationConnection() {
-        initializationPair();
-
-        connection = new Connection();
-
-        LinkedList<Pair> pairs = new LinkedList<>();
-        pairs.add(pair);
-
-        connection.setName(SIMPLE_STRING);
-        connection.setType(Connection.Type.DIRECTED);
-        connection.setPairs(pairs);
     }
 
     //tests diagram
     @Test
     public void diagramValidationShouldResultWithoutError() {
-        initializationConnection();
-        initializationElement();
-
         DiagramConfiguration diagramConfiguration = new DiagramConfiguration();
 
         LinkedList<Element> elements = new LinkedList<>();
-        elements.add(element);
+        elements.add(elementInitializer.getElement());
         LinkedList<Connection> connections = new LinkedList<>();
-        connections.add(connection);
+        connections.add(connectionInitializer.getConnection());
 
         diagramConfiguration.setElements(elements);
         diagramConfiguration.setConnections(connections);
 
-        Report report = ConfigurationConstraintsValidator.validate(connection);
+        Report report = ConfigurationConstraintsValidator.validate(connectionInitializer.getConnection());
 
         assertFalse(report.hasErrors());
+    }
+
+    private class PropertyInitializer extends ExternalResource {
+        private Property property;
+
+        @Override
+        protected void before() throws Throwable {
+            property = new Property();
+
+            property.setName(SIMPLE_STRING);
+            property.setType(Property.Type.BOOLEAN);
+            property.setValue(SIMPLE_STRING);
+        }
+
+        protected Property getProperty() {
+            return property;
+        }
+    }
+
+    private class ComponentInitializer extends ExternalResource {
+        private Component component;
+
+        protected Component getComponent() {
+            return component;
+        }
+
+        @Override
+        protected void before() throws Throwable {
+            component = new Component();
+
+            component.setName(SIMPLE_STRING);
+        }
+    }
+
+    private class ElementInitializer extends ExternalResource {
+        private Element element;
+
+        @Override
+        protected void before() throws Throwable {
+            element = new Element();
+
+            LinkedList<Property> properties = new LinkedList<>();
+            properties.add(propertyInitializer.getProperty());
+
+            LinkedList<Component> components = new LinkedList<>();
+            components.add(componentInitializer.getComponent());
+
+            element.setName(SIMPLE_STRING);
+            element.setRelation(Element.Relation.MULTIPLE);
+            element.setComponents(components);
+            element.setProperties(properties);
+        }
+
+        protected Element getElement() {
+            return element;
+        }
+    }
+
+    private class PairInitializer extends ExternalResource {
+        private Pair pair;
+
+        @Override
+        protected void before() throws Throwable {
+            pair = new Pair();
+
+            pair.setFinish(SIMPLE_STRING);
+            pair.setStart(SIMPLE_STRING);
+        }
+
+        protected Pair getPair() {
+            return pair;
+        }
+    }
+
+    private class ConnectionInitializer extends ExternalResource {
+        private Connection connection;
+
+        @Override
+        protected void before() throws Throwable {
+            connection = new Connection();
+
+            LinkedList<Pair> pairs = new LinkedList<>();
+            pairs.add(pairInitializer.getPair());
+
+            connection.setName(SIMPLE_STRING);
+            connection.setType(Connection.Type.DIRECTED);
+            connection.setPairs(pairs);
+        }
+
+        protected Connection getConnection() {
+            return connection;
+        }
     }
 }

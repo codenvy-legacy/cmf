@@ -24,7 +24,11 @@ import com.codenvy.modeling.configuration.editor.Text;
 import com.codenvy.modeling.configuration.editor.Toolbar;
 import com.codenvy.modeling.configuration.editor.Workspace;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExternalResource;
+import org.junit.rules.RuleChain;
+import org.junit.rules.TestRule;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -34,35 +38,43 @@ import static org.junit.Assert.assertTrue;
 public class EditorValidatorTest {
     public static final String SIMPLE_STRING = "simple_text";
 
-    private Group               group;
-    private Item                item;
-    private Panel               panel;
-    private Size                size;
-    private Text                text;
-    private Toolbar             toolbar;
+    @Rule
+    public TextInitializer  textInitializer  = new TextInitializer();
+    @Rule
+    public GroupInitializer groupInitializer = new GroupInitializer();
+    @Rule
+    public SizeInitializer  sizeInitializer  = new SizeInitializer();
+    @Rule
+    public PanelInitializer panelInitializer = new PanelInitializer();
+    public ItemInitializer  itemInitializer  = new ItemInitializer();
+    @Rule
+    public TestRule         chainText        = RuleChain
+            .outerRule(textInitializer)
+            .around(itemInitializer);
+
+    public ToolbarInitializer toolbarInitializer = new ToolbarInitializer();
+    @Rule
+    public TestRule           chainToolbar       = RuleChain
+            .outerRule(groupInitializer)
+            .around(textInitializer)
+            .around(itemInitializer)
+            .around(sizeInitializer)
+            .around(toolbarInitializer);
 
     //tests Text
     @Test
     public void textValidationShouldResultInErrorIfAlignmentIsNull() {
-        Text text = new Text();
-        text.setAlignment(null);
+        textInitializer.getText().setAlignment(null);
 
-        Report report = ConfigurationConstraintsValidator.validate(text);
+        Report report = ConfigurationConstraintsValidator.validate(textInitializer.getText());
 
         assertTrue(report.hasErrors());
         assertEquals(1, report.getErrors().size());
     }
 
-    private void initializationText() {
-        text = new Text();
-        text.setAlignment(Text.Alignment.BOTTOM);
-    }
-
     @Test
     public void textValidationShouldResultWithoutError() {
-        initializationText();
-
-        Report report = ConfigurationConstraintsValidator.validate(text);
+        Report report = ConfigurationConstraintsValidator.validate(textInitializer.getText());
 
         assertFalse(report.hasErrors());
     }
@@ -70,11 +82,9 @@ public class EditorValidatorTest {
     //tests Item
     @Test
     public void itemValidationShouldResultInErrorIfItemSizeIsNegative() {
-        initializationItem();
+        itemInitializer.getItem().setSize(-1);
 
-        item.setSize(-1);
-
-        Report report = ConfigurationConstraintsValidator.validate(item);
+        Report report = ConfigurationConstraintsValidator.validate(itemInitializer.getItem());
 
         assertTrue(report.hasErrors());
         assertEquals(1, report.getErrors().size());
@@ -82,16 +92,16 @@ public class EditorValidatorTest {
 
     @Test
     public void itemValidationShouldResultInErrorIfMarginIsNotValid() {
-        initializationItem();
+        itemInitializer.getItem().setMargin("#not()valid");
 
-        item.setMargin("#not()valid");
-
-        Report report = ConfigurationConstraintsValidator.validate(item);
+        Report report = ConfigurationConstraintsValidator.validate(itemInitializer.getItem());
 
         assertTrue(report.hasErrors());
         assertEquals(1, report.getErrors().size());
 
-        item.setMargin("");
+        itemInitializer.getItem().setMargin("");
+
+        report = ConfigurationConstraintsValidator.validate(itemInitializer.getItem());
 
         assertTrue(report.hasErrors());
         assertEquals(1, report.getErrors().size());
@@ -99,11 +109,9 @@ public class EditorValidatorTest {
 
     @Test
     public void itemValidationShouldResultInErrorIfAlignmentIsNull() {
-        initializationItem();
+        itemInitializer.getItem().setAlignment(null);
 
-        item.setAlignment(null);
-
-        Report report = ConfigurationConstraintsValidator.validate(item);
+        Report report = ConfigurationConstraintsValidator.validate(itemInitializer.getItem());
 
         assertTrue(report.hasErrors());
         assertEquals(1, report.getErrors().size());
@@ -111,60 +119,36 @@ public class EditorValidatorTest {
 
     @Test
     public void itemValidationShouldResultWithoutError() {
-        initializationItem();
-
-        Report report = ConfigurationConstraintsValidator.validate(item);
+        Report report = ConfigurationConstraintsValidator.validate(itemInitializer.getItem());
 
         assertFalse(report.hasErrors());
-    }
-
-    private void initializationItem() {
-        initializationText();
-
-        item = new Item();
-        item.setText(text);
-        item.setMargin(SIMPLE_STRING);
-        item.setAlignment(Item.Alignment.BOTTOM);
-        item.setSize(1);
     }
 
     //tests Group
     @Test
     public void groupValidationShouldResultWithoutError() {
-        initializationGroup();
-
-        Report report = ConfigurationConstraintsValidator.validate(group);
+        Report report = ConfigurationConstraintsValidator.validate(groupInitializer.getGroup());
 
         assertFalse(report.hasErrors());
     }
 
     @Test
     public void groupValidationShouldResultInErrorIfMarginIsNotValid() {
-        group = new Group();
+        groupInitializer.getGroup().setMargin("");
 
-        group.setMargin("");
-
-        Report report = ConfigurationConstraintsValidator.validate(group);
+        Report report = ConfigurationConstraintsValidator.validate(groupInitializer.getGroup());
 
         assertTrue(report.hasErrors());
         assertEquals(1, report.getErrors().size());
     }
 
-    private void initializationGroup() {
-        group = new Group();
-
-        group.setMargin(SIMPLE_STRING);
-    }
-
     //tests Size
     @Test
     public void sizeValidationShouldResultInErrorIfFieldsAreNegative() {
-        size = new Size();
+        sizeInitializer.getSize().setCompact(-1);
+        sizeInitializer.getSize().setFull(-2);
 
-        size.setCompact(-1);
-        size.setFull(-2);
-
-        Report report = ConfigurationConstraintsValidator.validate(size);
+        Report report = ConfigurationConstraintsValidator.validate(sizeInitializer.getSize());
 
         assertTrue(report.hasErrors());
         assertEquals(2, report.getErrors().size());
@@ -172,63 +156,35 @@ public class EditorValidatorTest {
 
     @Test
     public void sizeValidationShouldResultWithoutError() {
-        initializationSize();
-
-        Report report = ConfigurationConstraintsValidator.validate(size);
+        Report report = ConfigurationConstraintsValidator.validate(sizeInitializer.getSize());
 
         assertFalse(report.hasErrors());
-    }
-
-    private void initializationSize() {
-        size = new Size();
-
-        size.setFull(2);
-        size.setCompact(1);
     }
 
     //tests toolbar
     @Test
     public void toolbarValidationShouldResultWithoutError() {
-        initializationToolbar();
-
-        Report report = ConfigurationConstraintsValidator.validate(toolbar);
+        Report report = ConfigurationConstraintsValidator.validate(toolbarInitializer.getToolbar());
 
         assertFalse(report.hasErrors());
     }
 
     @Test
     public void toolbarValidationShouldResultInErrorIfAlignmentIsNull() {
-        initializationToolbar();
+        toolbarInitializer.getToolbar().setAlignment(null);
 
-        toolbar.setAlignment(null);
-
-        Report report = ConfigurationConstraintsValidator.validate(toolbar);
+        Report report = ConfigurationConstraintsValidator.validate(toolbarInitializer.getToolbar());
 
         assertTrue(report.hasErrors());
         assertEquals(1, report.getErrors().size());
     }
 
-    private void initializationToolbar() {
-        toolbar = new Toolbar();
-
-        initializationGroup();
-        initializationItem();
-        initializationSize();
-
-        toolbar.setAlignment(Toolbar.Alignment.EAST);
-        toolbar.setGroup(group);
-        toolbar.setItem(item);
-        toolbar.setSize(size);
-    }
-
     //tests panel
     @Test
     public void panelValidationShouldResultInErrorIfAlignmentIsNull() {
-        initializationPanel();
+        panelInitializer.getPanel().setAlignment(null);
 
-        panel.setAlignment(null);
-
-        Report report = ConfigurationConstraintsValidator.validate(panel);
+        Report report = ConfigurationConstraintsValidator.validate(panelInitializer.getPanel());
 
         assertTrue(report.hasErrors());
         assertEquals(1, report.getErrors().size());
@@ -236,11 +192,9 @@ public class EditorValidatorTest {
 
     @Test
     public void panelValidationShouldResultInErrorIfDefaultSizeIsNegative() {
-        initializationPanel();
+        panelInitializer.getPanel().setDefaultSize(-2);
 
-        panel.setDefaultSize(-2);
-
-        Report report = ConfigurationConstraintsValidator.validate(panel);
+        Report report = ConfigurationConstraintsValidator.validate(panelInitializer.getPanel());
 
         assertTrue(report.hasErrors());
         assertEquals(1, report.getErrors().size());
@@ -248,12 +202,10 @@ public class EditorValidatorTest {
 
     @Test
     public void panelValidationShouldResultInErrorIfParametersNotInitialized() {
-        initializationPanel();
+        panelInitializer.getPanel().setAlignment(null);
+        panelInitializer.getPanel().setDefaultSize(-2);
 
-        panel.setAlignment(null);
-        panel.setDefaultSize(-2);
-
-        Report report = ConfigurationConstraintsValidator.validate(panel);
+        Report report = ConfigurationConstraintsValidator.validate(panelInitializer.getPanel());
 
         assertTrue(report.hasErrors());
         assertEquals(2, report.getErrors().size());
@@ -261,18 +213,9 @@ public class EditorValidatorTest {
 
     @Test
     public void panelValidationShouldResultWithoutError() {
-        initializationPanel();
-
-        Report report = ConfigurationConstraintsValidator.validate(panel);
+        Report report = ConfigurationConstraintsValidator.validate(panelInitializer);
 
         assertFalse(report.hasErrors());
-    }
-
-    private void initializationPanel() {
-        panel = new Panel();
-
-        panel.setDefaultSize(2);
-        panel.setAlignment(Panel.Alignment.EAST);
     }
 
     //tests EditorConfiguration
@@ -280,16 +223,110 @@ public class EditorValidatorTest {
     public void editorValidationShouldResultWithoutError() {
         EditorConfiguration editorConfiguration = new EditorConfiguration();
 
-        initializationPanel();
-        initializationToolbar();
         Workspace workspace = new Workspace();
 
-        editorConfiguration.setPanel(panel);
-        editorConfiguration.setToolbar(toolbar);
+        editorConfiguration.setPanel(panelInitializer.getPanel());
+        editorConfiguration.setToolbar(toolbarInitializer.getToolbar());
         editorConfiguration.setWorkspace(workspace);
 
-        Report report = ConfigurationConstraintsValidator.validate(panel);
+        Report report = ConfigurationConstraintsValidator.validate(panelInitializer.getPanel());
 
         assertFalse(report.hasErrors());
+    }
+
+    private class TextInitializer extends ExternalResource {
+        private Text text;
+
+        @Override
+        protected void before() throws Throwable {
+            text = new Text();
+            text.setAlignment(Text.Alignment.BOTTOM);
+        }
+
+        protected Text getText() {
+            return text;
+        }
+    }
+
+    private class ItemInitializer extends ExternalResource {
+        private Item item;
+
+        @Override
+        protected void before() throws Throwable {
+            item = new Item();
+            item.setText(textInitializer.getText());
+            item.setMargin(SIMPLE_STRING);
+            item.setAlignment(Item.Alignment.BOTTOM);
+            item.setSize(1);
+        }
+
+        protected Item getItem() {
+            return item;
+        }
+    }
+
+    private class GroupInitializer extends ExternalResource {
+        private Group group;
+
+        @Override
+        protected void before() throws Throwable {
+            group = new Group();
+
+            group.setMargin(SIMPLE_STRING);
+        }
+
+        protected Group getGroup() {
+            return group;
+        }
+    }
+
+    private class SizeInitializer extends ExternalResource {
+        private Size size;
+
+        @Override
+        protected void before() throws Throwable {
+            size = new Size();
+
+            size.setFull(2);
+            size.setCompact(1);
+        }
+
+        protected Size getSize() {
+            return size;
+        }
+    }
+
+    private class ToolbarInitializer extends ExternalResource {
+        private Toolbar toolbar;
+
+        @Override
+        protected void before() throws Throwable {
+            toolbar = new Toolbar();
+
+            toolbar.setAlignment(Toolbar.Alignment.EAST);
+            toolbar.setGroup(groupInitializer.getGroup());
+            toolbar.setItem(itemInitializer.getItem());
+            toolbar.setSize(sizeInitializer.getSize());
+        }
+
+        protected Toolbar getToolbar() {
+            return toolbar;
+        }
+    }
+
+    private class PanelInitializer extends ExternalResource {
+        private Panel panel;
+
+        @Override
+        protected void before() throws Throwable {
+            panel = new Panel();
+
+            panel.setDefaultSize(2);
+            panel.setAlignment(Panel.Alignment.EAST);
+        }
+
+        protected Panel getPanel() {
+            return panel;
+        }
     }
 }
