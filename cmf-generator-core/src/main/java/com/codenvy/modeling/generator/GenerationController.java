@@ -17,6 +17,7 @@
 package com.codenvy.modeling.generator;
 
 import com.codenvy.modeling.configuration.ConfigurationFactory;
+import com.codenvy.modeling.generator.common.ProjectDescriptionReader;
 import com.google.inject.Inject;
 
 import org.slf4j.Logger;
@@ -24,7 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
-import java.util.Map;
+import java.util.Properties;
 
 import static com.codenvy.modeling.configuration.ConfigurationFactory.ConfigurationPaths;
 
@@ -32,6 +33,7 @@ import static com.codenvy.modeling.configuration.ConfigurationFactory.Configurat
  * The main class of generating GWT editor. It provides an ability to check configuration and generate GWT java code.
  *
  * @author Andrey Plotnikov
+ * @author Valeriy Svydenko
  */
 public class GenerationController {
     private static final Logger LOG = LoggerFactory.getLogger(GenerationController.class);
@@ -48,17 +50,22 @@ public class GenerationController {
     /**
      * Provides checking a given configuration and generates java code of GWT editor.
      *
-     * @param params
-     *         parameters are given by user
+     * @param baseDir
+     *         the path for the project directory
      */
-    public void generate(@Nonnull Map<Param, String> params) {
+    public void generate(@Nonnull String baseDir) {
+        ProjectDescriptionReader projectDescriptionReader = new ProjectDescriptionReader(baseDir);
+        Properties properties = projectDescriptionReader.getProjectProperties();
+        String sourcePath = properties.getProperty("baseDir");
         try {
             // TODO need to add configuration paths and insert it into configuration factory
-            sourceCodeGenerator.generate(params, configurationFactory.getInstance(new ConfigurationPaths("diagramConfigurationPath",
-                                                                                                         "editorConfigurationPath",
-                                                                                                         "serializationConfigurationPath",
-                                                                                                         "styleConfigurationPath")
-                                                                                 ));
+            sourceCodeGenerator.generate(properties,
+                                         configurationFactory.getInstance(new ConfigurationPaths(sourcePath + "/diagram/DiagramGrammar",
+                                                                                                 sourcePath + "/editor/EditorGrammar",
+                                                                                                 sourcePath +
+                                                                                                 "/serialization/SerializationGrammar",
+                                                                                                 "styleConfigurationPath")
+                                                                         ));
         } catch (IOException e) {
             LOG.error("Some problem happened during code generating.", e);
         }
@@ -66,7 +73,6 @@ public class GenerationController {
 
     /** The list of params for code generation. */
     public enum Param {
-        SOURCE_PATH,
         TARGET_PATH,
         MAIN_PACKAGE,
         EDITOR_NAME,

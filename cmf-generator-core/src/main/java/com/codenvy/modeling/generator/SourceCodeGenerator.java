@@ -90,8 +90,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
-import static com.codenvy.modeling.generator.GenerationController.Param;
 import static com.codenvy.modeling.generator.GenerationController.Param.EDITOR_NAME;
 import static com.codenvy.modeling.generator.GenerationController.Param.MAIN_PACKAGE;
 import static com.codenvy.modeling.generator.GenerationController.Param.MAVEN_ARTIFACT_ID;
@@ -109,6 +109,7 @@ import static com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder.OFFSE
  * The main class that provides an ability to generate java source code from given params.
  *
  * @author Andrey Plotnikov
+ * @author Valeriy Svydenko
  */
 public class SourceCodeGenerator {
 
@@ -205,20 +206,21 @@ public class SourceCodeGenerator {
     /**
      * Generates java source code of GWT editor.
      *
-     * @param params
-     *         params which are needed for code generation
+     * @param properties
+     *         properties which are needed for code generation
      * @param configuration
      *         configuration that contains full information about GWT editor
      */
-    public void generate(@Nonnull Map<Param, String> params, @Nonnull Configuration configuration) {
-        String targetPath = params.get(TARGET_PATH);
-        String packageName = params.get(MAIN_PACKAGE);
-        String editorName = params.get(EDITOR_NAME);
+    public void generate(@Nonnull Properties properties, @Nonnull Configuration configuration) {
+        String targetPath = properties.get(TARGET_PATH).toString();
+        String packageName = properties.get(MAIN_PACKAGE).toString();
+        String editorName = properties.get(EDITOR_NAME).toString();
 
         try {
             copyProjectHierarchy(targetPath);
 
-            modifyPom(targetPath, params.get(MAVEN_ARTIFACT_ID), params.get(MAVEN_GROUP_ID), params.get(MAVEN_ARTIFACT_NAME));
+            modifyPom(targetPath, properties.get(MAVEN_ARTIFACT_ID).toString(), properties.get(MAVEN_GROUP_ID).toString(),
+                      properties.get(MAVEN_ARTIFACT_NAME).toString());
             modifyMainHtmlFile(targetPath, editorName);
 
             generateResourcesFolder(targetPath, packageName, editorName);

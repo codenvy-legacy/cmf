@@ -53,10 +53,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Properties;
 
-import static com.codenvy.modeling.generator.GenerationController.Param;
 import static com.codenvy.modeling.generator.GenerationController.Param.EDITOR_NAME;
 import static com.codenvy.modeling.generator.GenerationController.Param.MAIN_PACKAGE;
 import static com.codenvy.modeling.generator.GenerationController.Param.MAVEN_ARTIFACT_ID;
@@ -69,6 +67,7 @@ import static org.mockito.Mockito.when;
 
 /**
  * @author Andrey Plotnikov
+ * @author Valeriy Svydenko
  */
 @RunWith(MockitoJUnitRunner.class)
 public class SourceCodeGeneratorTest {
@@ -193,18 +192,18 @@ public class SourceCodeGeneratorTest {
         when(configuration.getDiagramConfiguration().getElements()).thenReturn(Arrays.asList(element));
         when(configuration.getDiagramConfiguration().getConnections()).thenReturn(Arrays.asList(connection));
 
-        Map<Param, String> params = new HashMap<>();
+        Properties properties = new Properties();
 
-        params.put(TARGET_PATH, temporaryFolder.getRoot().getAbsolutePath() + "/testProject");
-        params.put(MAVEN_ARTIFACT_ID, "maven_artifact_id");
-        params.put(MAVEN_GROUP_ID, "maven_group_id");
-        params.put(MAVEN_ARTIFACT_NAME, "maven_artifact_name");
-        params.put(EDITOR_NAME, "EditorName");
-        params.put(MAIN_PACKAGE, "my.package");
+        properties.put(TARGET_PATH, temporaryFolder.getRoot().getAbsolutePath() + "/testProject");
+        properties.put(MAVEN_ARTIFACT_ID, "maven_artifact_id");
+        properties.put(MAVEN_GROUP_ID, "maven_group_id");
+        properties.put(MAVEN_ARTIFACT_NAME, "maven_artifact_name");
+        properties.put(EDITOR_NAME, "EditorName");
+        properties.put(MAIN_PACKAGE, "my.package");
 
-        generator.generate(params, configuration);
+        generator.generate(properties, configuration);
 
-        // TODO check content?
+        //TODO check content?
     }
 
 }
