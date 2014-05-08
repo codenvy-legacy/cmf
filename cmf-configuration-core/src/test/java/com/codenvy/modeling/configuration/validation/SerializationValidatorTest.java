@@ -36,19 +36,18 @@ import static org.junit.Assert.assertTrue;
 public class SerializationValidatorTest {
     public static final String SIMPLE_STRING = "simple_text";
 
-    @Rule
     public ConnectionInitializer         connectionInitializer = new ConnectionInitializer();
-    @Rule
     public ElementDesignationInitializer elementDesignation    = new ElementDesignationInitializer();
     public ElementInitializer            elementInitializer    = new ElementInitializer();
+    public SerializationConfiguration serializationConfiguration;
+
     @Rule
-    public TestRule                      chainElement          = RuleChain
+    public TestRule chainElement = RuleChain
             .outerRule(elementDesignation)
             .around(connectionInitializer)
             .around(elementInitializer);
-    public SerializationConfiguration serializationConfiguration;
 
-    //test connection
+    //tests connection
     @Test
     public void connectionValidationShouldResultInErrorIfNameIsNotValid() {
         connectionInitializer.getConnectionDesignation().setReferencePropertyName("");
@@ -86,7 +85,7 @@ public class SerializationValidatorTest {
         assertFalse(report.hasErrors());
     }
 
-    //test ElementDesignation
+    //tests ElementDesignation
     @Test
     public void elementDesignationValidationShouldResultInErrorIfNameIsNotValid() {
         elementDesignation.getElementDesignation().setReferencePropertyName("");
@@ -124,7 +123,7 @@ public class SerializationValidatorTest {
         assertFalse(report.hasErrors());
     }
 
-    //test
+    //tests ElementDesignation
     @Test
     public void elementValidationShouldResultInErrorIfNameIsNotValid() {
         elementInitializer.getElement().setName("");

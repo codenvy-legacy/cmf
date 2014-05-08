@@ -38,23 +38,21 @@ import static org.junit.Assert.assertTrue;
 public class EditorValidatorTest {
     public static final String SIMPLE_STRING = "simple_text";
 
-    @Rule
-    public TextInitializer  textInitializer  = new TextInitializer();
-    @Rule
-    public GroupInitializer groupInitializer = new GroupInitializer();
-    @Rule
-    public SizeInitializer  sizeInitializer  = new SizeInitializer();
+    public TextInitializer    textInitializer    = new TextInitializer();
+    public GroupInitializer   groupInitializer   = new GroupInitializer();
+    public SizeInitializer    sizeInitializer    = new SizeInitializer();
+    public ToolbarInitializer toolbarInitializer = new ToolbarInitializer();
+    public ItemInitializer    itemInitializer    = new ItemInitializer();
+
     @Rule
     public PanelInitializer panelInitializer = new PanelInitializer();
-    public ItemInitializer  itemInitializer  = new ItemInitializer();
+
     @Rule
-    public TestRule         chainText        = RuleChain
+    public TestRule chainText    = RuleChain
             .outerRule(textInitializer)
             .around(itemInitializer);
-
-    public ToolbarInitializer toolbarInitializer = new ToolbarInitializer();
     @Rule
-    public TestRule           chainToolbar       = RuleChain
+    public TestRule chainToolbar = RuleChain
             .outerRule(groupInitializer)
             .around(textInitializer)
             .around(itemInitializer)

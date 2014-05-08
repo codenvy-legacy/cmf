@@ -38,22 +38,19 @@ import static org.junit.Assert.assertTrue;
 public class DiagramValidatorTest {
     public static final String SIMPLE_STRING = "simple_text";
 
+    public PropertyInitializer   propertyInitializer   = new PropertyInitializer();
+    public ComponentInitializer  componentInitializer  = new ComponentInitializer();
+    public ElementInitializer    elementInitializer    = new ElementInitializer();
+    public PairInitializer       pairInitializer       = new PairInitializer();
+    public ConnectionInitializer connectionInitializer = new ConnectionInitializer();
+
     @Rule
-    public PropertyInitializer  propertyInitializer  = new PropertyInitializer();
-    @Rule
-    public ComponentInitializer componentInitializer = new ComponentInitializer();
-    public ElementInitializer   elementInitializer   = new ElementInitializer();
-    @Rule
-    public PairInitializer      pairInitializer      = new PairInitializer();
-    @Rule
-    public TestRule             chainElement         = RuleChain
+    public TestRule chainElement    = RuleChain
             .outerRule(propertyInitializer)
             .around(componentInitializer)
             .around(elementInitializer);
-
-    public ConnectionInitializer connectionInitializer = new ConnectionInitializer();
     @Rule
-    public TestRule              chainConnection       = RuleChain
+    public TestRule chainConnection = RuleChain
             .outerRule(pairInitializer)
             .around(connectionInitializer);
 
