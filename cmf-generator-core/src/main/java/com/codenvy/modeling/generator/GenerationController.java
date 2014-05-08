@@ -56,15 +56,15 @@ public class GenerationController {
     public void generate(@Nonnull String baseDir) {
         ProjectDescriptionReader projectDescriptionReader = new ProjectDescriptionReader(baseDir);
         Properties properties = projectDescriptionReader.getProjectProperties();
-        String sourcePath = properties.getProperty("baseDir");
+        String sourcePath = properties.get(Param.BASE_DIR).toString();
         try {
             // TODO need to add configuration paths and insert it into configuration factory
             sourceCodeGenerator.generate(properties,
-                                         configurationFactory.getInstance(new ConfigurationPaths(sourcePath + "/diagram/DiagramGrammar",
-                                                                                                 sourcePath + "/editor/EditorGrammar",
-                                                                                                 sourcePath +
-                                                                                                 "/serialization/SerializationGrammar",
-                                                                                                 "styleConfigurationPath")
+                                         configurationFactory.getInstance(new ConfigurationPaths(
+                                                 sourcePath + properties.get(ConfigurationFactory.PathParameter.DIAGRAM).toString(),
+                                                 sourcePath + properties.get(ConfigurationFactory.PathParameter.EDITOR).toString(),
+                                                 sourcePath + properties.get(ConfigurationFactory.PathParameter.SERIALIZATION).toString(),
+                                                 sourcePath + properties.get(ConfigurationFactory.PathParameter.STYLE).toString())
                                                                          ));
         } catch (IOException e) {
             LOG.error("Some problem happened during code generating.", e);
@@ -73,6 +73,7 @@ public class GenerationController {
 
     /** The list of params for code generation. */
     public enum Param {
+        BASE_DIR,
         TARGET_PATH,
         MAIN_PACKAGE,
         EDITOR_NAME,

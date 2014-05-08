@@ -15,6 +15,8 @@
  */
 package com.codenvy.modeling.generator.common;
 
+import com.codenvy.modeling.generator.GenerationController;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +32,6 @@ import java.util.Properties;
 public class ProjectDescriptionReader {
     private static final Logger LOG                 = LoggerFactory.getLogger(ProjectDescriptionReader.class);
     private static final String PROJECT_DESCRIPTION = "ProjectDescription";
-    private static final String BASE_DIR            = "baseDir";
 
     private String projectDescriptionPath;
 
@@ -52,7 +53,7 @@ public class ProjectDescriptionReader {
         } catch (Exception e) {
             LOG.error("Some problem happened during project description reading.", e);
         }
-        prop.setProperty(BASE_DIR, projectDescriptionPath);
+        prop.setProperty(GenerationController.Param.BASE_DIR.name(), projectDescriptionPath);
 
         return prop;
     }
