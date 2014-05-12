@@ -539,12 +539,14 @@ public class SourceCodeGenerator {
                 .get()
                 .newClass(clientPackage + editorName).baseClass(AbstractEditor.class)
                 .implementInterface(EditorView.class.getSimpleName() + '.' + EditorView.ActionDelegate.class.getSimpleName())
+
                 .addImport(EditorView.class)
                 .addImport(clientPackage + INJECT_FOLDER + '.' + EDITOR_FACTORY_NAME)
                 .addImport(SelectionManager.class)
                 .addImport(EmptyPropertiesPanelPresenter.class)
                 .addImport(EditorState.class)
-                .addImport(PropertiesPanelManager.class);
+                .addImport(PropertiesPanelManager.class)
+                .addImport(Inject.class);
 
         List<Argument> arguments = new ArrayList<>();
         arguments.add(new Argument(EditorView.class.getSimpleName(), "view"));
@@ -602,6 +604,7 @@ public class SourceCodeGenerator {
 
         String editorPresenter = editorPresenterBuilder
                 .addConstructor((Argument[])arguments.toArray(new Argument[arguments.size()]))
+                .withConstructorAnnotation("@Inject")
                 .withConstructorBody(constructorBody.toString())
 
                 .addMethod("serialize").withReturnType(String.class).withMethodAnnotation("@Override").withMethodBody("return \"\";")
@@ -895,7 +898,7 @@ public class SourceCodeGenerator {
         Path workspaceViewBinderJavaClassPath = Paths.get(clientPackageFolder, WORKSPACE_FOLDER, WORKSPACE_VIEW_IMPL_BINDER_NAME + ".java");
         Files.write(workspaceViewBinderJavaClassPath, workspaceViewImplBinderBuilder.build().getBytes());
 
-        Path workspaceUiXMLPath = Paths.get(clientPackageFolder, WORKSPACE_FOLDER, WORKSPACE_VIEW_IMPL_NAME + ".ui.xml");
+        Path workspaceUiXMLPath = Paths.get(clientPackageFolder, WORKSPACE_FOLDER, WORKSPACE_VIEW_IMPL_BINDER_NAME + ".ui.xml");
         Files.write(workspaceUiXMLPath, uiXmlBuilder.build().getBytes());
     }
 
@@ -1065,7 +1068,7 @@ public class SourceCodeGenerator {
         Path actionDelegateJavaClassPath = Paths.get(clientPackageFolder, TOOLBAR_FOLDER, ACTION_DELEGATE_NAME + ".java");
         Files.write(actionDelegateJavaClassPath, actionDelegateBuilder.build().getBytes());
 
-        Path toolbarUiXMLPath = Paths.get(clientPackageFolder, TOOLBAR_FOLDER, TOOLBAR_VIEW_IMPL_NAME + ".ui.xml");
+        Path toolbarUiXMLPath = Paths.get(clientPackageFolder, TOOLBAR_FOLDER, TOOLBAR_VIEW_IMPL_BINDER_NAME + ".ui.xml");
         Files.write(toolbarUiXMLPath, uiXmlBuilder.build().getBytes());
     }
 
@@ -1232,7 +1235,7 @@ public class SourceCodeGenerator {
             Files.write(actionDelegateJavaClassPath, actionDelegate.build().getBytes());
 
             Path propertiesPanelUiXMLPath =
-                    Paths.get(clientPackageFolder, PROPERTIES_PANEL_FOLDER, lowerCaseName, propertiesPanelViewImplName + ".ui.xml");
+                    Paths.get(clientPackageFolder, PROPERTIES_PANEL_FOLDER, lowerCaseName, propertiesPanelViewBinderName + ".ui.xml");
             Files.write(propertiesPanelUiXMLPath, uiXmlBuilder.build().getBytes());
         }
     }
@@ -1249,7 +1252,8 @@ public class SourceCodeGenerator {
 
         String gwtModuleContent = new String(Files.readAllBytes(gwtModuleSource));
         String newGwtModuleContent = gwtModuleContent.replaceAll(EDITOR_NAME_MASK, editorName)
-                                                     .replaceAll(ENTRY_POINT_CLASS_MASK, packageName + '.' + ENTRY_POINT_NAME);
+                                                     .replaceAll(ENTRY_POINT_CLASS_MASK,
+                                                                 packageName + '.' + CLIENT_PART_FOLDER + '.' + ENTRY_POINT_NAME);
 
         Files.write(gwtModuleTarget, newGwtModuleContent.getBytes());
         Files.delete(gwtModuleSource);

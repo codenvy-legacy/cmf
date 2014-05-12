@@ -18,23 +18,28 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:g='urn:import:com.google.gwt.user.client.ui'>
 
-    <ui:with field="res" type="com.codenvy.editor.client.EditorResources"/>
+    <ui:style>
+        .fullSize {
+            width: 100%;
+            height: 100%;
+        }
+    </ui:style>
 
-    <g:DockLayoutPanel unit="PX" addStyleDependentNames="{res.editorCSS.fullSize}">
+    <g:DockLayoutPanel unit="PX" addStyleDependentNames="{style.fullSize}">
 
         <g:west size="60">
-            <g:SimpleLayoutPanel ui:field="toolbar" addStyleDependentNames="{res.editorCSS.fullSize}"/>
+            <g:SimpleLayoutPanel ui:field="toolbar" addStyleDependentNames="{style.fullSize}"/>
         </g:west>
 
         <g:center>
             <g:SplitLayoutPanel>
 
                 <g:south size="100">
-                    <g:SimpleLayoutPanel ui:field="propertiesPanel" addStyleDependentNames="{res.editorCSS.fullSize}"/>
+                    <g:SimpleLayoutPanel ui:field="propertiesPanel" addStyleDependentNames="{style.fullSize}"/>
                 </g:south>
 
                 <g:center>
-                    <g:SimpleLayoutPanel ui:field="workspace" addStyleDependentNames="{res.editorCSS.fullSize}"/>
+                    <g:SimpleLayoutPanel ui:field="workspace" addStyleDependentNames="{style.fullSize}"/>
                 </g:center>
 
             </g:SplitLayoutPanel>

@@ -52,6 +52,12 @@
             <version>${version.gwt}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-dev</artifactId>
+            <version>${version.gwt}</version>
+            <scope>runtime</scope>
+        </dependency>
     </dependencies>
 
     <build>
