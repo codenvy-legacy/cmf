@@ -93,7 +93,7 @@ import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import static com.codenvy.modeling.generator.GenerationController.Param;
+import static com.codenvy.modeling.generator.GenerationController.Param.BASE_DIR;
 import static com.codenvy.modeling.generator.GenerationController.Param.EDITOR_NAME;
 import static com.codenvy.modeling.generator.GenerationController.Param.MAIN_PACKAGE;
 import static com.codenvy.modeling.generator.GenerationController.Param.MAVEN_ARTIFACT_ID;
@@ -214,15 +214,15 @@ public class SourceCodeGenerator {
      *         configuration that contains full information about GWT editor
      */
     public void generate(@Nonnull Properties properties, @Nonnull Configuration configuration) {
-        String targetPath = properties.get(TARGET_PATH).toString();
-        String packageName = properties.get(MAIN_PACKAGE).toString();
-        String editorName = properties.get(EDITOR_NAME).toString();
+        String targetPath = properties.get(TARGET_PATH.name()).toString();
+        String packageName = properties.get(MAIN_PACKAGE.name()).toString();
+        String editorName = properties.get(EDITOR_NAME.name()).toString();
 
         try {
-            copyProjectHierarchy(targetPath);
+            copyProjectHierarchy(targetPath, properties.get(BASE_DIR.name()).toString());
 
-            modifyPom(targetPath, properties.get(MAVEN_ARTIFACT_ID).toString(), properties.get(MAVEN_GROUP_ID).toString(),
-                      properties.get(MAVEN_ARTIFACT_NAME).toString());
+            modifyPom(targetPath, properties.get(MAVEN_ARTIFACT_ID.name()).toString(), properties.get(MAVEN_GROUP_ID.name()).toString(),
+                      properties.get(MAVEN_ARTIFACT_NAME.name()).toString());
             modifyMainHtmlFile(targetPath, editorName);
 
             generateResourcesFolder(targetPath, packageName, editorName);
@@ -233,10 +233,12 @@ public class SourceCodeGenerator {
         }
     }
 
-    private void copyProjectHierarchy(@Nonnull String targetPath) throws IOException {
+    private void copyProjectHierarchy(@Nonnull String targetPath, @Nonnull String baseDir) throws IOException {
         Path targetFolder = Paths.get(targetPath);
         Files.createDirectories(targetFolder);
 
+        System.out.println(Paths.get(baseDir + TEMPLATE_PROJECT_PATH).toFile().getAbsolutePath());
+        // TODO think about path. Need to improve this code
         try (ZipFile zipFile = new ZipFile(TEMPLATE_PROJECT_PATH)) {
             Enumeration<? extends ZipEntry> e = zipFile.entries();
 

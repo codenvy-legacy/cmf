@@ -43,7 +43,6 @@ import com.codenvy.modeling.generator.builders.xml.impl.widgets.containers.GScro
 import com.google.inject.Provider;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -56,6 +55,7 @@ import org.mockito.stubbing.Answer;
 import java.util.Arrays;
 import java.util.Properties;
 
+import static com.codenvy.modeling.generator.GenerationController.Param.BASE_DIR;
 import static com.codenvy.modeling.generator.GenerationController.Param.EDITOR_NAME;
 import static com.codenvy.modeling.generator.GenerationController.Param.MAIN_PACKAGE;
 import static com.codenvy.modeling.generator.GenerationController.Param.MAVEN_ARTIFACT_ID;
@@ -115,7 +115,6 @@ public class SourceCodeGeneratorTest {
     }
 
     @Test
-    @Ignore
     public void projectShouldBeGenerated() throws Exception {
         when(sourceCodeBuilderProvider.get()).thenAnswer(new Answer<SourceCodeBuilder>() {
             @Override
@@ -196,12 +195,14 @@ public class SourceCodeGeneratorTest {
 
         Properties properties = new Properties();
 
-        properties.put(TARGET_PATH, temporaryFolder.getRoot().getAbsolutePath() + "/testProject");
-        properties.put(MAVEN_ARTIFACT_ID, "maven_artifact_id");
-        properties.put(MAVEN_GROUP_ID, "maven_group_id");
-        properties.put(MAVEN_ARTIFACT_NAME, "maven_artifact_name");
-        properties.put(EDITOR_NAME, "EditorName");
-        properties.put(MAIN_PACKAGE, "my.package");
+        properties.put(TARGET_PATH.name(), temporaryFolder.getRoot().getAbsolutePath() + "/testProject");
+        properties.put(MAVEN_ARTIFACT_ID.name(), "maven_artifact_id");
+        properties.put(MAVEN_GROUP_ID.name(), "maven_group_id");
+        properties.put(MAVEN_ARTIFACT_NAME.name(), "maven_artifact_name");
+        properties.put(EDITOR_NAME.name(), "EditorName");
+        properties.put(MAIN_PACKAGE.name(), "my.package");
+        // TODO Need to fix problem with path
+        properties.put(BASE_DIR.name(), "");
 
         generator.generate(properties, configuration);
 

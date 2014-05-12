@@ -56,16 +56,20 @@ public class GenerationController {
     public void generate(@Nonnull String baseDir) {
         ProjectDescriptionReader projectDescriptionReader = new ProjectDescriptionReader(baseDir);
         Properties properties = projectDescriptionReader.getProjectProperties();
-        String sourcePath = properties.get(Param.BASE_DIR).toString();
+        String sourcePath = properties.get(Param.BASE_DIR.name()).toString();
         try {
-            // TODO need to add configuration paths and insert it into configuration factory
-            sourceCodeGenerator.generate(properties,
-                                         configurationFactory.getInstance(new ConfigurationPaths(
-                                                 sourcePath + properties.get(ConfigurationFactory.PathParameter.DIAGRAM).toString(),
-                                                 sourcePath + properties.get(ConfigurationFactory.PathParameter.EDITOR).toString(),
-                                                 sourcePath + properties.get(ConfigurationFactory.PathParameter.SERIALIZATION).toString(),
-                                                 sourcePath + properties.get(ConfigurationFactory.PathParameter.STYLE).toString())
-                                                                         ));
+            sourceCodeGenerator
+                    .generate(properties,
+                              configurationFactory.getInstance(
+                                      new ConfigurationPaths(
+                                              sourcePath + properties.get(ConfigurationFactory.PathParameter.DIAGRAM.name()).toString(),
+                                              sourcePath + properties.get(ConfigurationFactory.PathParameter.EDITOR.name()).toString(),
+                                              sourcePath +
+                                              properties.get(ConfigurationFactory.PathParameter.SERIALIZATION.name()).toString(),
+                                              sourcePath + properties.get(ConfigurationFactory.PathParameter.STYLE.name()).toString()
+                                      )
+                                                              )
+                             );
         } catch (IOException e) {
             LOG.error("Some problem happened during code generating.", e);
         }
