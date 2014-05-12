@@ -16,13 +16,13 @@
 
 lexer grammar Common;
 
-INTEGER                 :   DIGIT+
-                        ;
-DIGIT                   :   [0-9]
-                        ;
 TEXT                    :   (CHAR | DIGIT | '_')+
                         ;
 CHAR                    :   U_CHAR | L_CHAR
+                        ;
+INTEGER                 :   DIGIT+
+                        ;
+DIGIT                   :   [0-9]
                         ;
 U_CHAR                  :   [A-Z]
                         ;

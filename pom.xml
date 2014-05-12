@@ -37,8 +37,9 @@
         <module>cmf-configuration-core</module>
         <module>cmf-gwt-editor-core</module>
         <module>cmf-generator-core</module>
-        <module>cmf-gwt-editor-template</module>
+        <module>cmf-gwt-editor-prototype</module>
         <module>cmf-maven-plugin</module>
+        <module>cmf-gwt-editor-template</module>
     </modules>
 
     <properties>

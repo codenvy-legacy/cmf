@@ -64,11 +64,11 @@ tbSize                  :
                         ;
 
 compact                 :
-                            INTEGER
+                            TEXT
                         ;
 
 full                    :
-                            INTEGER
+                            TEXT
                         ;
 
 tbItem                  :
@@ -91,15 +91,15 @@ tbAlignment             :
                         ;
 
 cvSize                  :
-                            INTEGER
+                            TEXT
                         ;
 
 wvSize                  :
-                            INTEGER
+                            TEXT
                         ;
 
 iSize                   :
-                            INTEGER
+                            TEXT
                         ;
 
 iMargin                 :
@@ -128,7 +128,7 @@ ppAlignment             :
                         ;
 
 ppDefaultSize           :
-                            INTEGER
+                            TEXT
                         ;
 
 workspace               :

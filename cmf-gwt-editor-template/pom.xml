@@ -27,47 +27,8 @@
     </parent>
 
     <artifactId>cmf-gwt-editor-template</artifactId>
+    <packaging>pom</packaging>
     <name>↳ GWT Editor Template</name>
-
-    <dependencies>
-        <dependency>
-            <groupId>com.allen-sauer.gwt.dnd</groupId>
-            <artifactId>gwt-dnd</artifactId>
-            <version>${version.gwt.dnd}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.codenvy.cmf</groupId>
-            <artifactId>cmf-gwt-editor-core</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>annotations</artifactId>
-            <version>${version.google.findbugs}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-incubator</artifactId>
-            <version>${version.gwt.incubator}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.gwt.inject</groupId>
-            <artifactId>gin</artifactId>
-            <version>${version.gin}</version>
-        </dependency>
-        <!--TODO this dependency is absent in codenvy maven repo-->
-        <dependency>
-            <groupId>com.orange.links</groupId>
-            <artifactId>gwt-links</artifactId>
-            <version>${version.gwt.links}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-user</artifactId>
-            <version>${version.gwt}</version>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
 
     <build>
         <sourceDirectory>src/main/java</sourceDirectory>
@@ -80,32 +41,28 @@
                 <directory>src/main/resources</directory>
             </resource>
         </resources>
-
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>${version.war.plugin}</version>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>${version.assembly.plugin}</version>
                 <executions>
                     <execution>
-                        <phase>compile</phase>
+                        <id>${project.artifactId}</id>
+                        <phase>package</phase>
                         <goals>
-                            <goal>exploded</goal>
+                            <goal>single</goal>
                         </goals>
+                        <configuration>
+                            <appendAssemblyId>false</appendAssemblyId>
+                            <updateOnly>false</updateOnly>
+                            <descriptors>
+                                <descriptor>${project.basedir}/src/main/assembly/template-archive.xml</descriptor>
+                            </descriptors>
+                            <finalName>${project.artifactId}-${project.version}</finalName>
+                        </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <webappDirectory>${webappDirectory}</webappDirectory>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${version.compiler.plugin}</version>
-                <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
-                </configuration>
             </plugin>
         </plugins>
     </build>

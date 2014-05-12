@@ -51,16 +51,25 @@
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.codenvy.cmf</groupId>
+            <artifactId>cmf-gwt-editor-template</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>annotations</artifactId>
             <version>${version.google.findbugs}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-user</artifactId>
+            <version>${version.gwt}</version>
         </dependency>
         <dependency>
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
             <version>${version.guice}</version>
         </dependency>
-        <!--TODO this dependency is absent in codenvy maven repo-->
         <dependency>
             <groupId>com.orange.links</groupId>
             <artifactId>gwt-links</artifactId>
@@ -70,12 +79,6 @@
             <groupId>joist</groupId>
             <artifactId>joist-util</artifactId>
             <version>${version.joist}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-user</artifactId>
-            <version>${version.gwt}</version>
-            <scope>provided</scope>
         </dependency>
         <!--Dependencies for testing-->
         <dependency>
@@ -113,6 +116,36 @@
                 <directory>src/test/resources</directory>
             </testResource>
         </testResources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>${version.dependency.plugin}</version>
+                <executions>
+                    <execution>
+                        <id>copy-template</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>com.codenvy.cmf</groupId>
+                                    <artifactId>cmf-gwt-editor-template</artifactId>
+                                    <type>zip</type>
+                                    <version>${project.parent.version}</version>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}/classes</outputDirectory>
+                                    <destFileName>template.zip</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 
 </project>

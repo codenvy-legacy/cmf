@@ -11,6 +11,10 @@ import com.codenvy.editor.api.editor.workspace.AbstractWorkspacePresenter;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
+import javax.annotation.Nonnull;
+
+import_elements
+
 static_import_elements
 
 public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
@@ -57,6 +61,9 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
 
         Element element = elements.get(elementId);
         selectionManager.setElement(element);
+
+        Element source;
+        Shape parent;
 
         switch (getState()) {
             create_graphic_connections

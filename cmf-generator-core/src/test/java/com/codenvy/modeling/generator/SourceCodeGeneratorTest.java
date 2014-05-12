@@ -43,6 +43,7 @@ import com.codenvy.modeling.generator.builders.xml.impl.widgets.containers.GScro
 import com.google.inject.Provider;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -114,6 +115,7 @@ public class SourceCodeGeneratorTest {
     }
 
     @Test
+    @Ignore
     public void projectShouldBeGenerated() throws Exception {
         when(sourceCodeBuilderProvider.get()).thenAnswer(new Answer<SourceCodeBuilder>() {
             @Override

@@ -94,12 +94,12 @@ public class EditorConfigurationAdapterListener extends EditorBaseListener {
 
     @Override
     public void exitCompact(@NotNull EditorParser.CompactContext ctx) {
-        size.setCompact(Integer.parseInt(ctx.INTEGER().getText()));
+        size.setCompact(Integer.parseInt(ctx.TEXT().getText()));
     }
 
     @Override
     public void exitFull(@NotNull EditorParser.FullContext ctx) {
-        size.setFull(Integer.parseInt(ctx.INTEGER().getText()));
+        size.setFull(Integer.parseInt(ctx.TEXT().getText()));
     }
 
     @Override
@@ -114,7 +114,7 @@ public class EditorConfigurationAdapterListener extends EditorBaseListener {
 
     @Override
     public void exitISize(@NotNull EditorParser.ISizeContext ctx) {
-        item.setSize(Integer.parseInt(ctx.INTEGER().getText()));
+        item.setSize(Integer.parseInt(ctx.TEXT().getText()));
     }
 
     @Override
@@ -164,7 +164,7 @@ public class EditorConfigurationAdapterListener extends EditorBaseListener {
 
     @Override
     public void exitPpDefaultSize(@NotNull EditorParser.PpDefaultSizeContext ctx) {
-        panel.setDefaultSize(Integer.parseInt(ctx.INTEGER().getText()));
+        panel.setDefaultSize(Integer.parseInt(ctx.TEXT().getText()));
     }
 
     @Override
