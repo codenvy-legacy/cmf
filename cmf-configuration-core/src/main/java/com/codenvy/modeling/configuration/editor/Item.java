@@ -16,7 +16,7 @@
 
 package com.codenvy.modeling.configuration.editor;
 
-import com.codenvy.modeling.configuration.validation.ConfigurationConstraintsValidator;
+import com.codenvy.modeling.configuration.validation.constraints.ConfigurationConstraintsValidator;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;

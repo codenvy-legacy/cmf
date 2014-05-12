@@ -19,6 +19,7 @@ package com.codenvy.modeling.configuration.validation;
 import com.codenvy.modeling.configuration.editor.Group;
 import com.codenvy.modeling.configuration.editor.Item;
 import com.codenvy.modeling.configuration.editor.Text;
+import com.codenvy.modeling.configuration.validation.constraints.ConfigurationConstraintsValidator;
 
 import org.junit.Test;
 

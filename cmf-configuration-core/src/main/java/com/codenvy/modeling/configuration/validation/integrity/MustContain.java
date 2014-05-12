@@ -14,25 +14,22 @@
  * limitations under the License.
  */
 
-package com.codenvy.modeling.configuration.editor;
+package com.codenvy.modeling.configuration.validation.integrity;
 
-import com.codenvy.modeling.configuration.validation.constraints.ConfigurationConstraintsValidator;
-
-import javax.validation.constraints.Pattern;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * @author Dmitry Kuleshov
- * @author Valeriy Svydenko
  */
-public class Group {
-    @Pattern(regexp = ConfigurationConstraintsValidator.SIMPLE_TEXT)
-    private String margin;
+@Target({ElementType.FIELD})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface MustContain {
+    Match match() default Match.NON_STRICT;
 
-    public String getMargin() {
-        return margin;
-    }
-
-    public void setMargin(String margin) {
-        this.margin = margin;
+    public enum Match {
+        STRICT, NON_STRICT
     }
 }

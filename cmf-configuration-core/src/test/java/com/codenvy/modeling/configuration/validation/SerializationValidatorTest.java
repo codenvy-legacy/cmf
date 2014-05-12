@@ -19,6 +19,7 @@ import com.codenvy.modeling.configuration.metamodel.serialization.ConnectionDesi
 import com.codenvy.modeling.configuration.metamodel.serialization.Element;
 import com.codenvy.modeling.configuration.metamodel.serialization.ElementDesignation;
 import com.codenvy.modeling.configuration.metamodel.serialization.SerializationConfiguration;
+import com.codenvy.modeling.configuration.validation.constraints.ConfigurationConstraintsValidator;
 
 import org.junit.Rule;
 import org.junit.Test;

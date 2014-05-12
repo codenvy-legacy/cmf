@@ -27,6 +27,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -47,8 +48,8 @@ public class DiagramAdapterTest {
     private static final String DIAGRAM_GRAMMAR_TEST_I  = "/DiagramGrammarTest_I";
     private static final String DIAGRAM_GRAMMAR_TEST_II = "/DiagramGrammarTest_II";
 
-    private static List<Element>    elements;
-    private static List<Connection> connections;
+    private static Set<Element>    elements;
+    private static Set<Connection> connections;
 
     private int numberOfGrammar;
 

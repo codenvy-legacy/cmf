@@ -53,6 +53,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Properties;
 
 import static com.codenvy.modeling.generator.GenerationController.Param.EDITOR_NAME;
@@ -185,13 +186,13 @@ public class SourceCodeGeneratorTest {
         property.setType(Property.Type.INTEGER);
         property.setValue("10");
 
-        when(element.getProperties()).thenReturn(Arrays.asList(property));
+        when(element.getProperties()).thenReturn(new HashSet<>(Arrays.asList(property)));
 
         Connection connection = mock(Connection.class);
         when(connection.getName()).thenReturn("Connection1");
 
-        when(configuration.getDiagramConfiguration().getElements()).thenReturn(Arrays.asList(element));
-        when(configuration.getDiagramConfiguration().getConnections()).thenReturn(Arrays.asList(connection));
+        when(configuration.getDiagramConfiguration().getElements()).thenReturn(new HashSet<>(Arrays.asList(element)));
+        when(configuration.getDiagramConfiguration().getConnections()).thenReturn(new HashSet<>(Arrays.asList(connection)));
 
         Properties properties = new Properties();
 

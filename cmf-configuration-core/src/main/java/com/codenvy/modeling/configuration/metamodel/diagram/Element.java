@@ -16,14 +16,18 @@
 
 package com.codenvy.modeling.configuration.metamodel.diagram;
 
-import com.codenvy.modeling.configuration.validation.ConfigurationConstraintsValidator;
+import com.codenvy.modeling.configuration.validation.constraints.ConfigurationConstraintsValidator;
+import com.codenvy.modeling.configuration.validation.integrity.MustBeContained;
+import com.codenvy.modeling.configuration.validation.integrity.MustContain;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Dmitry Kuleshov
@@ -36,10 +40,10 @@ public class Element {
     private Relation relation;
     @Size(min = 1)
     @Valid
-    private List<Property>  properties = new LinkedList<>();
+    private Set<Property>  properties = new LinkedHashSet<>();
     @Size(min = 1)
     @Valid
-    private List<Component> components = new LinkedList<>();
+    private Set<Component> components = new LinkedHashSet<>();
 
     public String getName() {
         return name;
@@ -57,19 +61,19 @@ public class Element {
         this.relation = relation;
     }
 
-    public List<Property> getProperties() {
+    public Set<Property> getProperties() {
         return properties;
     }
 
-    public void setProperties(List<Property> properties) {
+    public void setProperties(Set<Property> properties) {
         this.properties = properties;
     }
 
-    public List<Component> getComponents() {
+    public Set<Component> getComponents() {
         return components;
     }
 
-    public void setComponents(List<Component> components) {
+    public void setComponents(Set<Component> components) {
         this.components = components;
     }
 

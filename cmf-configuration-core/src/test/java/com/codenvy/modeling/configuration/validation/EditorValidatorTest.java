@@ -23,6 +23,7 @@ import com.codenvy.modeling.configuration.editor.Size;
 import com.codenvy.modeling.configuration.editor.Text;
 import com.codenvy.modeling.configuration.editor.Toolbar;
 import com.codenvy.modeling.configuration.editor.Workspace;
+import com.codenvy.modeling.configuration.validation.constraints.ConfigurationConstraintsValidator;
 
 import org.junit.Rule;
 import org.junit.Test;

@@ -21,6 +21,7 @@ import com.codenvy.modeling.configuration.metamodel.diagram.DiagramConfiguration
 import com.codenvy.modeling.configuration.metamodel.diagram.Element;
 import com.codenvy.modeling.configuration.metamodel.diagram.Pair;
 import com.codenvy.modeling.configuration.metamodel.diagram.Property;
+import com.codenvy.modeling.configuration.validation.constraints.ConfigurationConstraintsValidator;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -28,7 +29,8 @@ import org.junit.rules.ExternalResource;
 import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 
-import java.util.LinkedList;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -133,7 +135,7 @@ public class DiagramValidatorTest {
 
     @Test
     public void elementValidationShouldResultInErrorIfPropertiesIsEmpty() {
-        elementInitializer.getElement().setProperties(new LinkedList<Property>());
+        elementInitializer.getElement().setProperties(new LinkedHashSet<Property>());
 
         Report report = ConfigurationConstraintsValidator.validate(elementInitializer.getElement());
 
@@ -143,7 +145,7 @@ public class DiagramValidatorTest {
 
     @Test
     public void elementValidationShouldResultInErrorIfComponentsIsEmpty() {
-        elementInitializer.getElement().setComponents(new LinkedList<Component>());
+        elementInitializer.getElement().setComponents(new LinkedHashSet<Component>());
 
         Report report = ConfigurationConstraintsValidator.validate(elementInitializer.getElement());
 
@@ -209,7 +211,7 @@ public class DiagramValidatorTest {
 
     @Test
     public void connectionValidationShouldResultInErrorIfPairsIsEmpty() {
-        LinkedList<Pair> pairs = new LinkedList<>();
+        Set<Pair> pairs = new LinkedHashSet<>();
 
         connectionInitializer.getConnection().setPairs(pairs);
 
@@ -231,9 +233,9 @@ public class DiagramValidatorTest {
     public void diagramValidationShouldResultWithoutError() {
         DiagramConfiguration diagramConfiguration = new DiagramConfiguration();
 
-        LinkedList<Element> elements = new LinkedList<>();
+        Set<Element> elements = new LinkedHashSet<>();
         elements.add(elementInitializer.getElement());
-        LinkedList<Connection> connections = new LinkedList<>();
+        Set<Connection> connections = new LinkedHashSet<>();
         connections.add(connectionInitializer.getConnection());
 
         diagramConfiguration.setElements(elements);
@@ -283,10 +285,10 @@ public class DiagramValidatorTest {
         protected void before() throws Throwable {
             element = new Element();
 
-            LinkedList<Property> properties = new LinkedList<>();
+            Set<Property> properties = new LinkedHashSet<>();
             properties.add(propertyInitializer.getProperty());
 
-            LinkedList<Component> components = new LinkedList<>();
+            Set<Component> components = new LinkedHashSet<>();
             components.add(componentInitializer.getComponent());
 
             element.setName(SIMPLE_STRING);
@@ -323,7 +325,7 @@ public class DiagramValidatorTest {
         protected void before() throws Throwable {
             connection = new Connection();
 
-            LinkedList<Pair> pairs = new LinkedList<>();
+            Set<Pair> pairs = new LinkedHashSet<>();
             pairs.add(pairInitializer.getPair());
 
             connection.setName(SIMPLE_STRING);

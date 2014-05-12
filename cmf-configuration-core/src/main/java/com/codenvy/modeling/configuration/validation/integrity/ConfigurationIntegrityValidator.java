@@ -14,29 +14,24 @@
  * limitations under the License.
  */
 
-package com.codenvy.modeling.configuration.validation;
+package com.codenvy.modeling.configuration.validation.integrity;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
+import com.codenvy.modeling.configuration.validation.Report;
+
 
 /**
  * @author Dmitry Kuleshov
- * @author Andrey Plotnikov
- * @author Valeriy Svydenko
  */
-public class ConfigurationConstraintsValidator {
-    public static final String SIMPLE_TEXT = "^[a-zA-Z0-9_]+$";
+public class ConfigurationIntegrityValidator {
 
     public static Report validate(Object object) {
         Report report = Report.getEmptyReport();
-        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
-        for (ConstraintViolation<?> violation : validator.validate(object)) {
-            report.addError(violation.getMessage());
-        }
+        IntegrityCheckRegistry integrityCheckRegistry = new IntegrityCheckRegistry();
+        IntegrityCheckRegistry.Initializer.initialize(integrityCheckRegistry, object);
+        IntegrityCheckRegistry.Analyzer.analyze(integrityCheckRegistry, report);
+
 
         return report;
     }
-
 }

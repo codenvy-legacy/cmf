@@ -20,8 +20,8 @@ import com.google.inject.Inject;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * @author Dmitry Kuleshov
@@ -30,30 +30,31 @@ import java.util.List;
 public class DiagramConfiguration {
     @Size(min = 1)
     @Valid
-    private List<Element>    elements;
+    private Set<Element> elements;
+
     @Size(min = 1)
     @Valid
-    private List<Connection> connections;
+    private Set<Connection> connections;
 
     @Inject
     public DiagramConfiguration() {
-        elements = new LinkedList<>();
-        connections = new LinkedList<>();
+        elements = new LinkedHashSet<>();
+        connections = new LinkedHashSet<>();
     }
 
-    public List<Element> getElements() {
+    public Set<Element> getElements() {
         return elements;
     }
 
-    public void setElements(List<Element> elements) {
+    public void setElements(Set<Element> elements) {
         this.elements = elements;
     }
 
-    public List<Connection> getConnections() {
+    public Set<Connection> getConnections() {
         return connections;
     }
 
-    public void setConnections(List<Connection> connections) {
+    public void setConnections(Set<Connection> connections) {
         this.connections = connections;
     }
 

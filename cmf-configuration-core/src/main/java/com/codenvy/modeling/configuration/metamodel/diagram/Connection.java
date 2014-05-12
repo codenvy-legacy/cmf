@@ -16,14 +16,15 @@
 
 package com.codenvy.modeling.configuration.metamodel.diagram;
 
-import com.codenvy.modeling.configuration.validation.ConfigurationConstraintsValidator;
+import com.codenvy.modeling.configuration.validation.constraints.ConfigurationConstraintsValidator;
+import com.codenvy.modeling.configuration.validation.integrity.MustBeContained;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * @author Dmitry Kuleshov
@@ -37,7 +38,7 @@ public class Connection {
     private Type   type;
     @Size(min = 1)
     @Valid
-    private List<Pair> pairs = new LinkedList<>();
+    private Set<Pair> pairs = new LinkedHashSet<>();
 
     public String getName() {
         return name;
@@ -55,11 +56,11 @@ public class Connection {
         this.type = type;
     }
 
-    public List<Pair> getPairs() {
+    public Set<Pair> getPairs() {
         return pairs;
     }
 
-    public void setPairs(List<Pair> pairs) {
+    public void setPairs(Set<Pair> pairs) {
         this.pairs = pairs;
     }
 

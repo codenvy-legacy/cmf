@@ -16,7 +16,7 @@
 
 package com.codenvy.modeling.configuration.metamodel.serialization;
 
-import com.codenvy.modeling.configuration.validation.ConfigurationConstraintsValidator;
+import com.codenvy.modeling.configuration.validation.constraints.ConfigurationConstraintsValidator;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
