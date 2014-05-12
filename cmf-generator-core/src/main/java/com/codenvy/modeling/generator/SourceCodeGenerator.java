@@ -402,7 +402,13 @@ public class SourceCodeGenerator {
                 String name = property.getName();
                 String argumentName = changeFirstSymbolToLowCase(name);
 
-                constructor.append(argumentName).append(" = ").append(property.getValue()).append(";\n");
+                constructor.append(argumentName).append(" = ");
+                if (javaClass.equals(String.class)) {
+                    constructor.append('"').append(property.getValue()).append('"');
+                } else {
+                    constructor.append(property.getValue());
+                }
+                constructor.append(";\n");
 
                 elementClassBuilder
                         .addField(argumentName, javaClass).withFieldAccessLevel(PRIVATE)
@@ -1196,7 +1202,7 @@ public class SourceCodeGenerator {
                                                           labelProvider
                                                                   .get()
                                                                   .withPrefix("g")
-                                                                  .withText(elementName)
+                                                                  .withText(propertyName)
                                                              )
                                                   .withWidget(
                                                           textBoxProvider
