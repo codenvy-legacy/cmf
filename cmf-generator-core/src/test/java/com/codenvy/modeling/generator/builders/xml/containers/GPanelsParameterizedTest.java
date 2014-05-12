@@ -71,18 +71,19 @@ public class GPanelsParameterizedTest extends AbstractXmlBuilderTest {
 
     @Test
     public void realDockLayoutPanelWithWidgetsShouldBeCreated() throws Exception {
+        double size = 20.;
         String actualContent = new GDockLayoutPanelImpl()
                 .withPrefix("g").withOffset(parameter)
-                .withNorth(20, new GDockLayoutPanelImpl().withPrefix("g").withWidget(new GLabelImpl().withPrefix("g")))
-                .withSouth(20, new GDockLayoutPanelImpl().withPrefix("g").withWidget(new GLabelImpl().withPrefix("g")))
-                .withEast(20, new GDockLayoutPanelImpl().withPrefix("g").withWidget(new GLabelImpl().withPrefix("g")))
-                .withWest(20, new GDockLayoutPanelImpl().withPrefix("g").withWidget(new GLabelImpl().withPrefix("g")))
+                .withNorth(size, new GDockLayoutPanelImpl().withPrefix("g").withWidget(new GLabelImpl().withPrefix("g")))
+                .withSouth(size, new GDockLayoutPanelImpl().withPrefix("g").withWidget(new GLabelImpl().withPrefix("g")))
+                .withEast(size, new GDockLayoutPanelImpl().withPrefix("g").withWidget(new GLabelImpl().withPrefix("g")))
+                .withWest(size, new GDockLayoutPanelImpl().withPrefix("g").withWidget(new GLabelImpl().withPrefix("g")))
                 .withWidget(new GDockLayoutPanelImpl().withPrefix("g").withWidget(new GLabelImpl().withPrefix("g")))
                 .build();
 
         String expectedContent = getOffset(parameter) + "<g:DockLayoutPanel>\n" +
 
-                                 getOffset(parameter + 1) + "<g:north size=\"20.00\">\n" +
+                                 getOffset(parameter + 1) + String.format("<g:north size=\"%.2f\">\n", size) +
                                  getOffset(parameter + 2) + "<g:DockLayoutPanel>\n" +
                                  getOffset(parameter + 3) + "<g:center>\n" +
                                  getOffset(parameter + 4) + "<g:Label/>\n" +
@@ -90,7 +91,7 @@ public class GPanelsParameterizedTest extends AbstractXmlBuilderTest {
                                  getOffset(parameter + 2) + "</g:DockLayoutPanel>\n" +
                                  getOffset(parameter + 1) + "</g:north>\n" +
 
-                                 getOffset(parameter + 1) + "<g:south size=\"20.00\">\n" +
+                                 getOffset(parameter + 1) + String.format("<g:south size=\"%.2f\">\n", size) +
                                  getOffset(parameter + 2) + "<g:DockLayoutPanel>\n" +
                                  getOffset(parameter + 3) + "<g:center>\n" +
                                  getOffset(parameter + 4) + "<g:Label/>\n" +
@@ -98,7 +99,7 @@ public class GPanelsParameterizedTest extends AbstractXmlBuilderTest {
                                  getOffset(parameter + 2) + "</g:DockLayoutPanel>\n" +
                                  getOffset(parameter + 1) + "</g:south>\n" +
 
-                                 getOffset(parameter + 1) + "<g:east size=\"20.00\">\n" +
+                                 getOffset(parameter + 1) + String.format("<g:east size=\"%.2f\">\n", size) +
                                  getOffset(parameter + 2) + "<g:DockLayoutPanel>\n" +
                                  getOffset(parameter + 3) + "<g:center>\n" +
                                  getOffset(parameter + 4) + "<g:Label/>\n" +
@@ -106,7 +107,7 @@ public class GPanelsParameterizedTest extends AbstractXmlBuilderTest {
                                  getOffset(parameter + 2) + "</g:DockLayoutPanel>\n" +
                                  getOffset(parameter + 1) + "</g:east>\n" +
 
-                                 getOffset(parameter + 1) + "<g:west size=\"20.00\">\n" +
+                                 getOffset(parameter + 1) + String.format("<g:west size=\"%.2f\">\n", size) +
                                  getOffset(parameter + 2) + "<g:DockLayoutPanel>\n" +
                                  getOffset(parameter + 3) + "<g:center>\n" +
                                  getOffset(parameter + 4) + "<g:Label/>\n" +
@@ -227,18 +228,19 @@ public class GPanelsParameterizedTest extends AbstractXmlBuilderTest {
 
     @Test
     public void realSplitLayoutPanelWithWidgetsShouldBeCreated() throws Exception {
+        double size = 20.;
         String actualContent = new GSplitLayoutPanelImpl()
                 .withPrefix("g").withOffset(parameter)
-                .withNorth(20, new GSplitLayoutPanelImpl().withPrefix("g").withWidget(new GLabelImpl().withPrefix("g")))
-                .withSouth(20, new GSplitLayoutPanelImpl().withPrefix("g").withWidget(new GLabelImpl().withPrefix("g")))
-                .withEast(20, new GSplitLayoutPanelImpl().withPrefix("g").withWidget(new GLabelImpl().withPrefix("g")))
-                .withWest(20, new GSplitLayoutPanelImpl().withPrefix("g").withWidget(new GLabelImpl().withPrefix("g")))
+                .withNorth(size, new GSplitLayoutPanelImpl().withPrefix("g").withWidget(new GLabelImpl().withPrefix("g")))
+                .withSouth(size, new GSplitLayoutPanelImpl().withPrefix("g").withWidget(new GLabelImpl().withPrefix("g")))
+                .withEast(size, new GSplitLayoutPanelImpl().withPrefix("g").withWidget(new GLabelImpl().withPrefix("g")))
+                .withWest(size, new GSplitLayoutPanelImpl().withPrefix("g").withWidget(new GLabelImpl().withPrefix("g")))
                 .withWidget(new GSplitLayoutPanelImpl().withPrefix("g").withWidget(new GLabelImpl().withPrefix("g")))
                 .build();
 
         String expectedContent = getOffset(parameter) + "<g:SplitLayoutPanel>\n" +
 
-                                 getOffset(parameter + 1) + "<g:north size=\"20.00\">\n" +
+                                 getOffset(parameter + 1) + String.format("<g:north size=\"%.2f\">\n", size) +
                                  getOffset(parameter + 2) + "<g:SplitLayoutPanel>\n" +
                                  getOffset(parameter + 3) + "<g:center>\n" +
                                  getOffset(parameter + 4) + "<g:Label/>\n" +
@@ -246,7 +248,7 @@ public class GPanelsParameterizedTest extends AbstractXmlBuilderTest {
                                  getOffset(parameter + 2) + "</g:SplitLayoutPanel>\n" +
                                  getOffset(parameter + 1) + "</g:north>\n" +
 
-                                 getOffset(parameter + 1) + "<g:south size=\"20.00\">\n" +
+                                 getOffset(parameter + 1) + String.format("<g:south size=\"%.2f\">\n", size) +
                                  getOffset(parameter + 2) + "<g:SplitLayoutPanel>\n" +
                                  getOffset(parameter + 3) + "<g:center>\n" +
                                  getOffset(parameter + 4) + "<g:Label/>\n" +
@@ -254,7 +256,7 @@ public class GPanelsParameterizedTest extends AbstractXmlBuilderTest {
                                  getOffset(parameter + 2) + "</g:SplitLayoutPanel>\n" +
                                  getOffset(parameter + 1) + "</g:south>\n" +
 
-                                 getOffset(parameter + 1) + "<g:east size=\"20.00\">\n" +
+                                 getOffset(parameter + 1) + String.format("<g:east size=\"%.2f\">\n", size) +
                                  getOffset(parameter + 2) + "<g:SplitLayoutPanel>\n" +
                                  getOffset(parameter + 3) + "<g:center>\n" +
                                  getOffset(parameter + 4) + "<g:Label/>\n" +
@@ -262,7 +264,7 @@ public class GPanelsParameterizedTest extends AbstractXmlBuilderTest {
                                  getOffset(parameter + 2) + "</g:SplitLayoutPanel>\n" +
                                  getOffset(parameter + 1) + "</g:east>\n" +
 
-                                 getOffset(parameter + 1) + "<g:west size=\"20.00\">\n" +
+                                 getOffset(parameter + 1) + String.format("<g:west size=\"%.2f\">\n", size) +
                                  getOffset(parameter + 2) + "<g:SplitLayoutPanel>\n" +
                                  getOffset(parameter + 3) + "<g:center>\n" +
                                  getOffset(parameter + 4) + "<g:Label/>\n" +
