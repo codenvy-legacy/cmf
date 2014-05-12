@@ -56,17 +56,15 @@ public class GenerationController {
     public void generate(@Nonnull String baseDir) {
         ProjectDescriptionReader projectDescriptionReader = new ProjectDescriptionReader(baseDir);
         Properties properties = projectDescriptionReader.getProjectProperties();
-        String sourcePath = properties.get(Param.BASE_DIR.name()).toString();
         try {
             sourceCodeGenerator
                     .generate(properties,
                               configurationFactory.getInstance(
                                       new ConfigurationPaths(
-                                              sourcePath + properties.get(ConfigurationFactory.PathParameter.DIAGRAM.name()).toString(),
-                                              sourcePath + properties.get(ConfigurationFactory.PathParameter.EDITOR.name()).toString(),
-                                              sourcePath +
+                                              properties.get(ConfigurationFactory.PathParameter.DIAGRAM.name()).toString(),
+                                              properties.get(ConfigurationFactory.PathParameter.EDITOR.name()).toString(),
                                               properties.get(ConfigurationFactory.PathParameter.SERIALIZATION.name()).toString(),
-                                              sourcePath + properties.get(ConfigurationFactory.PathParameter.STYLE.name()).toString()
+                                              properties.get(ConfigurationFactory.PathParameter.STYLE.name()).toString()
                                       )
                                                               )
                              );
@@ -77,7 +75,7 @@ public class GenerationController {
 
     /** The list of params for code generation. */
     public enum Param {
-        BASE_DIR,
+        TEMPLATE_PATH,
         TARGET_PATH,
         MAIN_PACKAGE,
         EDITOR_NAME,

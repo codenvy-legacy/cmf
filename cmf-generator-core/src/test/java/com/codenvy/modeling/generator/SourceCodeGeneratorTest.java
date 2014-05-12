@@ -55,13 +55,13 @@ import org.mockito.stubbing.Answer;
 import java.util.Arrays;
 import java.util.Properties;
 
-import static com.codenvy.modeling.generator.GenerationController.Param.BASE_DIR;
 import static com.codenvy.modeling.generator.GenerationController.Param.EDITOR_NAME;
 import static com.codenvy.modeling.generator.GenerationController.Param.MAIN_PACKAGE;
 import static com.codenvy.modeling.generator.GenerationController.Param.MAVEN_ARTIFACT_ID;
 import static com.codenvy.modeling.generator.GenerationController.Param.MAVEN_ARTIFACT_NAME;
 import static com.codenvy.modeling.generator.GenerationController.Param.MAVEN_GROUP_ID;
 import static com.codenvy.modeling.generator.GenerationController.Param.TARGET_PATH;
+import static com.codenvy.modeling.generator.GenerationController.Param.TEMPLATE_PATH;
 import static org.mockito.Answers.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -201,8 +201,7 @@ public class SourceCodeGeneratorTest {
         properties.put(MAVEN_ARTIFACT_NAME.name(), "maven_artifact_name");
         properties.put(EDITOR_NAME.name(), "EditorName");
         properties.put(MAIN_PACKAGE.name(), "my.package");
-        // TODO Need to fix problem with path
-        properties.put(BASE_DIR.name(), "");
+        properties.put(TEMPLATE_PATH.name(), "target/classes/template.zip");
 
         generator.generate(properties, configuration);
 

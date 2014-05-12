@@ -15,11 +15,13 @@
  */
 package com.codenvy.modeling.generator.common;
 
-import com.codenvy.modeling.generator.GenerationController;
+import com.codenvy.modeling.configuration.ConfigurationFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Properties;
@@ -28,14 +30,15 @@ import java.util.Properties;
  * The main class that provides an ability to read project description.
  *
  * @author Valeriy Svydenko
+ * @author Andrey Plotnikov
  */
 public class ProjectDescriptionReader {
     private static final Logger LOG                 = LoggerFactory.getLogger(ProjectDescriptionReader.class);
     private static final String PROJECT_DESCRIPTION = "ProjectDescription";
 
-    private String projectDescriptionPath;
+    private final String projectDescriptionPath;
 
-    public ProjectDescriptionReader(String path) {
+    public ProjectDescriptionReader(@Nonnull String path) {
         projectDescriptionPath = path;
     }
 
@@ -44,17 +47,34 @@ public class ProjectDescriptionReader {
      *
      * @return a properties
      */
+    @Nonnull
     public Properties getProjectProperties() {
-        Properties prop = new Properties();
+        Properties properties = new Properties();
 
         try {
-            InputStream inputStream = new FileInputStream(projectDescriptionPath + "/" + PROJECT_DESCRIPTION);
-            prop.load(inputStream);
+            InputStream inputStream = new FileInputStream(projectDescriptionPath + File.separator + PROJECT_DESCRIPTION);
+            properties.load(inputStream);
         } catch (Exception e) {
             LOG.error("Some problem happened during project description reading.", e);
         }
-        prop.setProperty(GenerationController.Param.BASE_DIR.name(), projectDescriptionPath);
 
-        return prop;
+        makeAbsolutePaths(properties);
+
+        return properties;
     }
+
+    private void makeAbsolutePaths(@Nonnull Properties properties) {
+        String diagramPathKey = ConfigurationFactory.PathParameter.DIAGRAM.name();
+        properties.setProperty(diagramPathKey, projectDescriptionPath + properties.getProperty(diagramPathKey));
+
+        String editorPathKey = ConfigurationFactory.PathParameter.EDITOR.name();
+        properties.setProperty(editorPathKey, projectDescriptionPath + properties.getProperty(editorPathKey));
+
+        String serializationPathKey = ConfigurationFactory.PathParameter.SERIALIZATION.name();
+        properties.setProperty(serializationPathKey, projectDescriptionPath + properties.getProperty(serializationPathKey));
+
+        String stylePathKey = ConfigurationFactory.PathParameter.STYLE.name();
+        properties.setProperty(stylePathKey, projectDescriptionPath + properties.getProperty(stylePathKey));
+    }
+
 }

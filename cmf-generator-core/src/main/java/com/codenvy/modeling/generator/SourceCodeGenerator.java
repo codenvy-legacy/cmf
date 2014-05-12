@@ -80,6 +80,7 @@ import com.orange.links.client.utils.LinksClientBundle;
 import javax.annotation.Nonnull;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -93,13 +94,13 @@ import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import static com.codenvy.modeling.generator.GenerationController.Param.BASE_DIR;
 import static com.codenvy.modeling.generator.GenerationController.Param.EDITOR_NAME;
 import static com.codenvy.modeling.generator.GenerationController.Param.MAIN_PACKAGE;
 import static com.codenvy.modeling.generator.GenerationController.Param.MAVEN_ARTIFACT_ID;
 import static com.codenvy.modeling.generator.GenerationController.Param.MAVEN_ARTIFACT_NAME;
 import static com.codenvy.modeling.generator.GenerationController.Param.MAVEN_GROUP_ID;
 import static com.codenvy.modeling.generator.GenerationController.Param.TARGET_PATH;
+import static com.codenvy.modeling.generator.GenerationController.Param.TEMPLATE_PATH;
 import static com.codenvy.modeling.generator.builders.java.SourceCodeBuilder.Access.DEFAULT;
 import static com.codenvy.modeling.generator.builders.java.SourceCodeBuilder.Access.PRIVATE;
 import static com.codenvy.modeling.generator.builders.java.SourceCodeBuilder.Access.PROTECTED;
@@ -128,7 +129,6 @@ public class SourceCodeGenerator {
     private static final String CREATE_GRAPHIC_CONNECTIONS_MASK = "create_graphic_connections";
     private static final String CHANGE_EDITOR_STATE_MASK        = "change_editor_states";
 
-    private static final String TEMPLATE_PROJECT_PATH     = "target/classes/template.zip";
     private static final String POM_FILE_FULL_NAME        = "pom.xml";
     private static final String MAIN_HTML_FILE_FULL_NAME  = "Editor.html";
     private static final String MAIN_GWT_MODULE_FILE_NAME = "Editor.gwt.xml";
@@ -219,7 +219,7 @@ public class SourceCodeGenerator {
         String editorName = properties.get(EDITOR_NAME.name()).toString();
 
         try {
-            copyProjectHierarchy(targetPath, properties.get(BASE_DIR.name()).toString());
+            copyProjectHierarchy(targetPath, properties.get(TEMPLATE_PATH.name()).toString());
 
             modifyPom(targetPath, properties.get(MAVEN_ARTIFACT_ID.name()).toString(), properties.get(MAVEN_GROUP_ID.name()).toString(),
                       properties.get(MAVEN_ARTIFACT_NAME.name()).toString());
@@ -233,13 +233,11 @@ public class SourceCodeGenerator {
         }
     }
 
-    private void copyProjectHierarchy(@Nonnull String targetPath, @Nonnull String baseDir) throws IOException {
+    private void copyProjectHierarchy(@Nonnull String targetPath, @Nonnull String templateDir) throws IOException {
         Path targetFolder = Paths.get(targetPath);
         Files.createDirectories(targetFolder);
 
-        System.out.println(Paths.get(baseDir + TEMPLATE_PROJECT_PATH).toFile().getAbsolutePath());
-        // TODO think about path. Need to improve this code
-        try (ZipFile zipFile = new ZipFile(TEMPLATE_PROJECT_PATH)) {
+        try (ZipFile zipFile = new ZipFile(templateDir)) {
             Enumeration<? extends ZipEntry> e = zipFile.entries();
 
             while (e.hasMoreElements()) {
@@ -249,22 +247,23 @@ public class SourceCodeGenerator {
                 Files.createDirectories(destinationPath.getParent());
 
                 if (!entry.isDirectory()) {
-                    try (BufferedInputStream bis = new BufferedInputStream(zipFile.getInputStream(entry));
-                         BufferedOutputStream bos = new BufferedOutputStream(Files.newOutputStream(destinationPath), 1024)) {
-                        int b;
-                        byte buffer[] = new byte[1024];
-
-                        while ((b = bis.read(buffer, 0, 1024)) != -1) {
-                            bos.write(buffer, 0, b);
-                        }
-
-                        bos.flush();
-                    }
+                    unzipFile(zipFile, entry, destinationPath);
                 }
             }
-        } catch (IOException ioe) {
-            // TODO think about type of exception
-            ioe.printStackTrace();
+        }
+    }
+
+    private void unzipFile(@Nonnull ZipFile zipFile, @Nonnull ZipEntry entry, @Nonnull Path destinationPath) throws IOException {
+        try (BufferedInputStream bis = new BufferedInputStream(zipFile.getInputStream(entry));
+             BufferedOutputStream bos = new BufferedOutputStream(Files.newOutputStream(destinationPath), 1024)) {
+            int b;
+            byte buffer[] = new byte[1024];
+
+            while ((b = bis.read(buffer, 0, 1024)) != -1) {
+                bos.write(buffer, 0, b);
+            }
+
+            bos.flush();
         }
     }
 
@@ -302,9 +301,9 @@ public class SourceCodeGenerator {
                                     @Nonnull Configuration configuration) throws IOException {
         String mainPackageFolder = convertPathToPackageName(packageName);
 
-        String javaFolder = targetPath + MAIN_SOURCE_PATH + '/' + JAVA_SOURCE_PATH;
-        String clientPackageFolder = mainPackageFolder + '/' + CLIENT_PART_FOLDER;
-        String clientFolder = javaFolder + '/' + clientPackageFolder;
+        String javaFolder = targetPath + MAIN_SOURCE_PATH + File.separator + JAVA_SOURCE_PATH;
+        String clientPackageFolder = mainPackageFolder + File.separator + CLIENT_PART_FOLDER;
+        String clientFolder = javaFolder + File.separator + clientPackageFolder;
 
         createInjectModule(clientFolder, packageName, editorName);
         createElements(clientFolder, packageName, configuration);
@@ -352,7 +351,6 @@ public class SourceCodeGenerator {
         Path editorFactoryPath = Paths.get(clientPackageFolder, INJECT_FOLDER, EDITOR_FACTORY_NAME + ".java");
         Files.write(editorFactoryPath, editorFactory.getBytes());
 
-        // Create Gin Module
         String ginModule = sourceCodeBuilderProvider
                 .get()
                 .newClass(injectPackageName + GIN_MODULE_NAME).baseClass(AbstractGinModule.class)
@@ -368,7 +366,6 @@ public class SourceCodeGenerator {
         Path ginModulePath = Paths.get(clientPackageFolder, INJECT_FOLDER, GIN_MODULE_NAME + ".java");
         Files.write(ginModulePath, ginModule.getBytes());
 
-        // Create Gin Injector
         String ginInjector = sourceCodeBuilderProvider
                 .get()
                 .newClass(injectPackageName + GIN_INJECTOR_NAME).makeInterface()
@@ -467,7 +464,6 @@ public class SourceCodeGenerator {
                                        @Nonnull Configuration configuration) throws IOException {
         String clientPackage = packageName + '.' + CLIENT_PART_FOLDER + '.';
 
-        // Create Editor State
         SourceCodeBuilder editorStateEnum = sourceCodeBuilderProvider
                 .get()
                 .newClass(clientPackage + EDITOR_STATE_NAME).makeEnum()
@@ -486,7 +482,6 @@ public class SourceCodeGenerator {
         Path editorStateJavaClassPath = Paths.get(clientPackageFolder, EDITOR_STATE_NAME + ".java");
         Files.write(editorStateJavaClassPath, editorStateEnum.build().getBytes());
 
-        // Create CSS Resource
         String cssResource = sourceCodeBuilderProvider
                 .get()
                 .newClass(clientPackage + EDITOR_CSS_RESOURCE_NAME).makeInterface().baseClass(CssResource.class)
@@ -500,7 +495,6 @@ public class SourceCodeGenerator {
         Path editorCSSResourceJavaClassPath = Paths.get(clientPackageFolder, EDITOR_CSS_RESOURCE_NAME + ".java");
         Files.write(editorCSSResourceJavaClassPath, cssResource.getBytes());
 
-        // Create Editor resources
         String editorResources = sourceCodeBuilderProvider
                 .get()
                 .newClass(clientPackage + EDITOR_RESOURCES_NAME).makeInterface().baseClass(ClientBundle.class)
@@ -514,7 +508,6 @@ public class SourceCodeGenerator {
         Path editorResourcesJavaClassPath = Paths.get(clientPackageFolder, EDITOR_RESOURCES_NAME + ".java");
         Files.write(editorResourcesJavaClassPath, editorResources.getBytes());
 
-        // Create Editor Entry Point
         String entryPointJavaClass = sourceCodeBuilderProvider
                 .get()
                 .newClass(clientPackage + ENTRY_POINT_NAME).implementInterface(EntryPoint.class)
@@ -542,7 +535,6 @@ public class SourceCodeGenerator {
         Path entryPointJavaClassPath = Paths.get(clientPackageFolder, ENTRY_POINT_NAME + ".java");
         Files.write(entryPointJavaClassPath, entryPointJavaClass.getBytes());
 
-        // Create Editor Presenter
         SourceCodeBuilder editorPresenterBuilder = sourceCodeBuilderProvider
                 .get()
                 .newClass(clientPackage + editorName).baseClass(AbstractEditor.class)
@@ -1248,9 +1240,8 @@ public class SourceCodeGenerator {
     private void generateResourcesFolder(@Nonnull String targetPath,
                                          @Nonnull String packageName,
                                          @Nonnull String editorName) throws IOException {
-        String resourceFolder = targetPath + '/' + MAIN_SOURCE_PATH + '/' + RESOURCES_SOURCE_PATH;
-        String packageFolder = convertPathToPackageName(packageName);
-        String mainPackageFolder = resourceFolder + '/' + packageFolder;
+        String resourceFolder = targetPath + File.separator + MAIN_SOURCE_PATH + File.separator + RESOURCES_SOURCE_PATH;
+        String mainPackageFolder = resourceFolder + File.separator + convertPathToPackageName(packageName);
 
         Path gwtModuleSource = Paths.get(resourceFolder, MAIN_GWT_MODULE_FILE_NAME);
         Path gwtModuleTarget = Paths.get(mainPackageFolder, MAIN_GWT_MODULE_FILE_NAME);
