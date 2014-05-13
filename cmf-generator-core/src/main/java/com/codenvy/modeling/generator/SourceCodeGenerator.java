@@ -661,7 +661,6 @@ public class SourceCodeGenerator {
                 .addImport(MouseDownHandler.class)
                 .addImport(MouseMoveEvent.class)
                 .addImport(MouseMoveHandler.class)
-                .addImport(UiBinder.class)
                 .addImport(UiField.class)
                 .addImport(Provider.class)
                 .addImport(HashMap.class)
@@ -708,10 +707,10 @@ public class SourceCodeGenerator {
                                 "}, ContextMenuEvent.getType());\n" +
                                 "\n" +
                                 "mainPanel.addDomHandler(new MouseMoveHandler() {\n" +
-                                "   @Override\n" +
-                                "   public void onMouseMove(MouseMoveEvent event) {\n" +
+                                "    @Override\n" +
+                                "    public void onMouseMove(MouseMoveEvent event) {\n" +
                                 "        delegate.onMouseMoved(event.getClientX(), event.getClientY());\n" +
-                                "   }\n" +
+                                "    }\n" +
                                 "}, MouseMoveEvent.getType());")
 
                 .addMethod("addElement").withMethodAccessLevel(PRIVATE)
@@ -748,7 +747,6 @@ public class SourceCodeGenerator {
         StringBuilder staticImports = new StringBuilder();
         StringBuilder imports = new StringBuilder();
         staticImports.append(stateClassImport).append(CREATE_NOTING_STATE).append(";\n");
-        boolean firstStep = true;
 
         for (Element element : configuration.getDiagramConfiguration().getElements()) {
             String elementName = element.getName();
@@ -772,13 +770,8 @@ public class SourceCodeGenerator {
                                     .withMethodArguments(argumentX, argumentY, argumentElement)
                                     .withMethodBody("addElement(x, y, element);\n");
 
-            if (!firstStep) {
-                createElements.append(OFFSET).append(OFFSET).append(OFFSET);
-            } else {
-                firstStep = false;
-            }
-
-            createElements.append("case ").append(createElementState).append(":\n")
+            createElements.append(OFFSET).append(OFFSET).append(OFFSET)
+                          .append("case ").append(createElementState).append(":\n")
                           .append(OFFSET).append(OFFSET).append(OFFSET).append(OFFSET)
                           .append(elementName).append(' ').append(argumentName).append(" = new ").append(elementName).append("();\n\n")
                           .append(OFFSET).append(OFFSET).append(OFFSET).append(OFFSET)
@@ -811,25 +804,18 @@ public class SourceCodeGenerator {
             String methodName = "add" + connectionName;
             String connectionPackage = elementsPackage + connectionName;
 
-            workspaceViewBuilder.addImport(connectionPackage)
-                                .addMethod(methodName).withAbstractMethodPrefix()
+            workspaceViewBuilder.addMethod(methodName).withAbstractMethodPrefix()
                                 .withMethodArguments(sourceElementIDArgument, targetElementIDArgument);
 
-            workspaceViewImplBuilder.addImport(connectionPackage)
-                                    .addMethod(methodName).withMethodAnnotation("@Override")
+            workspaceViewImplBuilder.addMethod(methodName).withMethodAnnotation("@Override")
                                     .withMethodArguments(sourceElementIDArgument, targetElementIDArgument)
                                     .withMethodBody("Widget sourceWidget = elements.get(sourceElementID);\n" +
                                                     "Widget targetWidget = elements.get(targetElementID);\n" +
                                                     "\n" +
                                                     "controller.drawStraightArrowConnection(sourceWidget, targetWidget);\n");
 
-            if (!firstStep) {
-                createElements.append(OFFSET).append(OFFSET).append(OFFSET);
-            } else {
-                firstStep = false;
-            }
-
-            createConnections.append("case ").append(createConnectionSourceState).append(":\n")
+            createConnections.append(OFFSET).append(OFFSET).append(OFFSET)
+                             .append("case ").append(createConnectionSourceState).append(":\n")
                              .append(OFFSET).append(OFFSET).append(OFFSET).append(OFFSET)
                              .append("setState(").append(createConnectionTargetState).append(");\n")
                              .append(OFFSET).append(OFFSET).append(OFFSET).append(OFFSET)
@@ -939,7 +925,6 @@ public class SourceCodeGenerator {
                 .addImport(UiField.class)
                 .addImport(ClickEvent.class)
                 .addImport(UiHandler.class)
-                .addImport(Widget.class)
                 .addImport(PushButton.class)
                 .addImport(Inject.class)
                 .addImport(clientPackage + EDITOR_RESOURCES_NAME);
@@ -985,7 +970,7 @@ public class SourceCodeGenerator {
             changeStates.append("@Override\n")
                         .append(OFFSET).append("public void ").append(methodName).append("() {\n")
                         .append(OFFSET).append(OFFSET).append("setState(").append(createElementState).append(");\n")
-                        .append(OFFSET).append("}\n");
+                        .append(OFFSET).append("}\n\n");
 
             staticImports.append(stateClassImport).append(String.format(CREATE_ELEMENT_STATE_FORMAT, upperCaseName)).append(";\n");
 
@@ -1024,7 +1009,7 @@ public class SourceCodeGenerator {
             changeStates.append("@Override\n")
                         .append(OFFSET).append("public void ").append(methodName).append("() {\n")
                         .append(OFFSET).append(OFFSET).append("setState(").append(createConnectionSourceState).append(");\n")
-                        .append(OFFSET).append("}\n");
+                        .append(OFFSET).append("}\n\n");
 
             staticImports.append(stateClassImport).append(String.format(CREATE_CONNECTION_SOURCE_STATE_FORMAT, upperCaseName))
                          .append(";\n");
