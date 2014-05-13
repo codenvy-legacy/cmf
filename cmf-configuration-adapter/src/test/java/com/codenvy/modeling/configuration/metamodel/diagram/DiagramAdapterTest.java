@@ -26,7 +26,6 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
@@ -85,7 +84,7 @@ public class DiagramAdapterTest {
     @Test
     public void elementsNamesShouldBeDefined() {
         for (Element e : elements) {
-            assertEquals("testElementName", e.getName());
+            assertFalse(e.getName().isEmpty());
         }
     }
 
@@ -136,7 +135,7 @@ public class DiagramAdapterTest {
         for (Element e : elements) {
             if (!e.getProperties().isEmpty()) {
                 for (Property prop : e.getProperties()) {
-                    assertEquals("testPropertyValue", prop.getValue());
+                    assertFalse(prop.getValue().isEmpty());
                 }
             }
         }
@@ -159,7 +158,7 @@ public class DiagramAdapterTest {
         for (Element e : elements) {
             if (!e.getProperties().isEmpty()) {
                 for (Property prop : e.getProperties()) {
-                    assertEquals("INTEGER", prop.getType().name());
+                    assertEquals(Property.Type.STRING, prop.getType());
                 }
             }
         }

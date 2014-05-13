@@ -16,7 +16,22 @@
 
 lexer grammar Common;
 
-TEXT                    :   (CHAR | DIGIT | '_')+
+TEXT                    :
+                            (
+                                DIGIT   |
+                                CHAR    |
+                                '_'     |
+                                '<'     |
+                                '>'     |
+                                '-'     |
+                                '('     |
+                                ')'     |
+                                '&'     |
+                                '$'     |
+                                '/'     |
+                                '\\'    |
+                                '%'
+                            )+
                         ;
 CHAR                    :   U_CHAR | L_CHAR
                         ;

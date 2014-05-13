@@ -31,7 +31,6 @@ public class ConfigurationIntegrityValidator {
         IntegrityCheckRegistry.Initializer.initialize(integrityCheckRegistry, object);
         IntegrityCheckRegistry.Analyzer.analyze(integrityCheckRegistry, report);
 
-
         return report;
     }
 }

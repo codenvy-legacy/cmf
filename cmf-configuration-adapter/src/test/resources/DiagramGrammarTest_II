@@ -1,16 +1,15 @@
-Elements :
-{
-    name : testElementName
-},
-{
-    name : testElementName
+Elements {
+    testElementNameOne{}
+    testElementNameTwo{}
 }
 
-Connections :
-{
-    name : testConnectionName
-    type : DIRECTED
-    {
-        {start, finish}
+Connections {
+    testConnectionName {
+        Type {
+            DIRECTED
+        }
+        Pairs{
+            {start <> finish}
+        }
     }
 }

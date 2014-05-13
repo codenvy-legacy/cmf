@@ -19,24 +19,40 @@ grammar Diagram;
 import Common;
 
 diagram                 :
-                            'Elements' COLON (BEGIN element END) (',' BEGIN element END)*
+                            'Elements'
+                            BEGIN
+                                element+
+                            END
                             (
-                                'Connections' COLON (BEGIN connection END) (',' BEGIN connection END)*
-                            )*
+                                'Connections'
+                                 BEGIN
+                                    connection+
+                                 END
+                            )?
                         ;
 
-connection              :
-                            'name' COLON connectionName
-                            'type' COLON connectionType
+element                 :
+                            elementName
                             BEGIN
-                                BEGIN
-                                    connectionPair
-                                END
+                                elementBody
+                            END
+                        ;
+connection              :
+                            connectionName
+                            BEGIN
+                                connectionBody
+                            END
+                        ;
+
+connectionBody          :
+                            connectionType
+                            'Pairs'
+                            BEGIN
                                 (
-                                    ',' BEGIN
+                                    BEGIN
                                         connectionPair
                                     END
-                                )*
+                                )+
                             END
                         ;
 
@@ -44,14 +60,20 @@ connectionName          :
                             TEXT
                         ;
 
-connectionType          :
+connectionType          :   'Type'
+                            BEGIN
+                                CONNECTION_TYPE
+                            END
+                        ;
+
+CONNECTION_TYPE         :
                             'DIRECTED'      |
                             'NONDIRECTED'   |
                             'POSITIONAL'
                         ;
 
 connectionPair          :
-                            connectionStart ',' connectionFinish
+                            connectionStart '<>' connectionFinish
                         ;
 
 connectionStart         :
@@ -62,19 +84,21 @@ connectionFinish        :
                             TEXT
                         ;
 
-element                 :
-                            elementName
+elementBody             :
                             elementRelation?
                             elementProperties?
                             elementComponents?
-
                         ;
 
 
 elementComponents       :
-                            'Components' COLON
+                            'Components'
                             BEGIN
-                                elementComponent  (',' elementComponent )*
+                                (
+                                    BEGIN
+                                        elementComponent
+                                    END
+                                )+
                             END
                         ;
 
@@ -83,18 +107,32 @@ elementComponent        :
                         ;
 
 elementName             :
-                            'name' COLON TEXT
+                            TEXT
                         ;
 
 elementProperties       :
-                            'Properties' COLON
-                            (BEGIN elementProperty END) (',' BEGIN elementProperty END)*
+                            'Properties'
+                            BEGIN
+                                elementProperty+
+                            END
                         ;
 
 elementProperty         :
-                            'name'  COLON propertyName
-                            'type'  COLON propertyType
-                            'value' COLON propertyValue
+                            propertyName
+                            BEGIN
+                                propertyBody
+                            END
+                        ;
+
+propertyBody             :
+                            'Type'
+                            BEGIN
+                                propertyType
+                            END
+                            'Value'
+                            BEGIN
+                                propertyValue
+                            END
                         ;
 
 propertyName            :
@@ -103,9 +141,16 @@ propertyName            :
 
 propertyType            :
                             'BOOLEAN'   |
+                            'boolean'   |
+
                             'INTEGER'   |
+                            'integer'   |
+
                             'FLOAT'     |
-                            'STRING'
+                            'float'     |
+
+                            'STRING'    |
+                            'string'
                         ;
 
 propertyValue           :
@@ -113,10 +158,15 @@ propertyValue           :
                         ;
 
 elementRelation         :
-                            'relation'  COLON RELATION
+                            'Relation'
+                             BEGIN
+                                RELATION
+                             END
                         ;
 
 RELATION                :
                             'SINGLE'    |
-                            'MULTIPLE'
+                            'single'    |
+                            'MULTIPLE'  |
+                            'multiple'
                         ;

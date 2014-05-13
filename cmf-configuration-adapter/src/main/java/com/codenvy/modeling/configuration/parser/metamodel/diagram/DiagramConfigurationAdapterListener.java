@@ -69,6 +69,11 @@ public class DiagramConfigurationAdapterListener extends DiagramBaseListener {
     }
 
     @Override
+    public void exitElementRelation(@NotNull DiagramParser.ElementRelationContext ctx) {
+        elementStack.peek().setRelation(Element.Relation.valueOf(ctx.RELATION().getText().toUpperCase()));
+    }
+
+    @Override
     public void enterElementProperty(@NotNull DiagramParser.ElementPropertyContext ctx) {
         propertyStack.push(new Property());
     }
@@ -80,7 +85,7 @@ public class DiagramConfigurationAdapterListener extends DiagramBaseListener {
 
     @Override
     public void exitPropertyType(@NotNull DiagramParser.PropertyTypeContext ctx) {
-        propertyStack.peek().setType(Property.Type.valueOf(ctx.getText().toUpperCase()));
+        propertyStack.peek().setType(Property.Type.valueOf(ctx.getText()));
     }
 
     @Override
@@ -105,11 +110,6 @@ public class DiagramConfigurationAdapterListener extends DiagramBaseListener {
     }
 
     @Override
-    public void exitElementRelation(@NotNull DiagramParser.ElementRelationContext ctx) {
-        elementStack.peek().setRelation(Element.Relation.valueOf(ctx.RELATION().getText().toUpperCase()));
-    }
-
-    @Override
     public void exitElement(@NotNull DiagramParser.ElementContext ctx) {
         diagramConfiguration.addElement(elementStack.pop());
     }
@@ -126,7 +126,7 @@ public class DiagramConfigurationAdapterListener extends DiagramBaseListener {
 
     @Override
     public void exitConnectionType(@NotNull DiagramParser.ConnectionTypeContext ctx) {
-        connectionStack.peek().setType(Connection.Type.valueOf(ctx.getText().toUpperCase()));
+        connectionStack.peek().setType(Connection.Type.valueOf(ctx.CONNECTION_TYPE().getText()));
     }
 
     @Override

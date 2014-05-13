@@ -1,45 +1,60 @@
-Elements :
-{
-    name : testElementName
-    relation : SINGLE
+Elements {
+    testElementNameOne {
+        Relation {
+            SINGLE
+        }
 
-    Properties :
-    {
-        name : testPropertyName
-        type : INTEGER
-        value : testPropertyValue
+        Properties {
+            testPropertyName {
+                Type {
+                    STRING
+                }
+                Value {
+                    test<>1$%()-_test
+                }
+            }
+        }
     }
-},
-{
-    name : testElementName
-    relation : SINGLE
+    testElementNameTwo {
+        Relation {
+            SINGLE
+        }
 
-    Properties :
-    {
-        name : testPropertyName
-        type : INTEGER
-        value : testPropertyValue
-    }
+        Properties {
+            testPropertyName {
+                Type {
+                    STRING
+                }
+                Value {
+                    testPropertyValue
+                }
+            }
+        }
 
-    Components :
-    {
-        test1, test2, test3
+        Components {
+            { test1 }
+            { test2 }
+            { test3 }
+        }
     }
 }
 
-Connections :
-{
-    name : testConnectionName
-    type : DIRECTED
-    {
-        {start, finish}
+Connections {
+    testConnectionName {
+        Type {
+            DIRECTED
+        }
+        Pairs {
+            {start <> finish}
+        }
     }
-},
-{
-    name : testConnectionName
-    type : DIRECTED
-    {
-        {start1, finish1},
-        {start2, finish2}
+    testConnectionName {
+        Type {
+            DIRECTED
+        }
+        Pairs {
+            {start1 <> finish1}
+            {start2 <> finish2}
+        }
     }
 }
