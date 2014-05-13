@@ -177,6 +177,7 @@ public class UIXmlBuilderImplTest extends AbstractXmlBuilderTest {
 
     @Test
     public void realXMLShouldBeCreated() throws Exception {
+        double size = 10;
         String threeOffsets = getOffset(3);
         String fourOffsets = getOffset(4);
 
@@ -186,8 +187,8 @@ public class UIXmlBuilderImplTest extends AbstractXmlBuilderTest {
 
         GDockLayoutPanel widget = new GDockLayoutPanelImpl()
                 .withPrefix("g")
-                .withNorth(10, new GLabelImpl().withPrefix("g").withText("text"))
-                .withSouth(10, new GTextBoxImpl().withPrefix("g").withText("text"))
+                .withNorth(size, new GLabelImpl().withPrefix("g").withText("text"))
+                .withSouth(size, new GTextBoxImpl().withPrefix("g").withText("text"))
                 .withWidget(new GFlowPanelImpl().withPrefix("g")
                                                 .withWidget(new GLabelImpl().withPrefix("g").withText("text"))
                            );
@@ -198,43 +199,46 @@ public class UIXmlBuilderImplTest extends AbstractXmlBuilderTest {
                                   .setWidget(widget)
                                   .build();
 
-        String expectedXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                             "<!DOCTYPE ui:UiBinder SYSTEM \"http://dl.google.com/gwt/DTD/xhtml.ent\">\n" +
-                             "<ui:UiBinder \n" +
-                             "             xmlns:ui='urn:ui:com.google.gwt.uibinder'>\n" +
-                             OFFSET + "<ui:with field='name1' type='java.lang.String'/>\n" +
-                             OFFSET + "<ui:with field='name2' type='java.lang.String'/>\n" +
-                             OFFSET + "<ui:style>\n" +
-                             TWO_OFFSETS + ".name{\n" +
-                             threeOffsets + "float: right;\n" +
-                             threeOffsets + "margin: 6px;\n" +
-                             threeOffsets + "margin-right: 5px;\n" +
-                             TWO_OFFSETS + "}\n" +
-                             TWO_OFFSETS + ".name2{\n" +
-                             threeOffsets + "float: right;\n" +
-                             threeOffsets + "margin: 6px;\n" +
-                             threeOffsets + "margin-right: 5px;\n" +
-                             TWO_OFFSETS + "}\n" +
-                             TWO_OFFSETS + ".name3{\n" +
-                             threeOffsets + "float: right;\n" +
-                             threeOffsets + "margin: 6px;\n" +
-                             threeOffsets + "margin-right: 5px;\n" +
-                             TWO_OFFSETS + "}\n" +
-                             OFFSET + "</ui:style>\n" +
-                             OFFSET + "<g:DockLayoutPanel>\n" +
-                             TWO_OFFSETS + "<g:north size=\"10.00\">\n" +
-                             threeOffsets + "<g:Label text=\"text\"/>\n" +
-                             TWO_OFFSETS + "</g:north>\n" +
-                             TWO_OFFSETS + "<g:south size=\"10.00\">\n" +
-                             threeOffsets + "<g:TextBox text=\"text\"/>\n" +
-                             TWO_OFFSETS + "</g:south>\n" +
-                             TWO_OFFSETS + "<g:center>\n" +
-                             threeOffsets + "<g:FlowPanel>\n" +
-                             fourOffsets + "<g:Label text=\"text\"/>\n" +
-                             threeOffsets + "</g:FlowPanel>\n" +
-                             TWO_OFFSETS + "</g:center>\n" +
-                             OFFSET + "</g:DockLayoutPanel>\n" +
-                             "</ui:UiBinder>";
+        String expectedXML = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>%n" +
+                                           "<!DOCTYPE ui:UiBinder SYSTEM \"http://dl.google.com/gwt/DTD/xhtml.ent\">%n" +
+                                           "<ui:UiBinder %n" +
+                                           "             xmlns:ui='urn:ui:com.google.gwt.uibinder'>%n" +
+                                           OFFSET + "<ui:with field='name1' type='java.lang.String'/>%n" +
+                                           OFFSET + "<ui:with field='name2' type='java.lang.String'/>%n" +
+                                           OFFSET + "<ui:style>%n" +
+                                           TWO_OFFSETS + ".name{%n" +
+                                           threeOffsets + "float: right;%n" +
+                                           threeOffsets + "margin: 6px;%n" +
+                                           threeOffsets + "margin-right: 5px;%n" +
+                                           TWO_OFFSETS + "}%n" +
+                                           TWO_OFFSETS + ".name2{%n" +
+                                           threeOffsets + "float: right;%n" +
+                                           threeOffsets + "margin: 6px;%n" +
+                                           threeOffsets + "margin-right: 5px;%n" +
+                                           TWO_OFFSETS + "}%n" +
+                                           TWO_OFFSETS + ".name3{%n" +
+                                           threeOffsets + "float: right;%n" +
+                                           threeOffsets + "margin: 6px;%n" +
+                                           threeOffsets + "margin-right: 5px;%n" +
+                                           TWO_OFFSETS + "}%n" +
+                                           OFFSET + "</ui:style>%n" +
+                                           OFFSET + "<g:DockLayoutPanel>%n" +
+                                           TWO_OFFSETS + "<g:north size=\"%.2f\">%n" +
+                                           threeOffsets + "<g:Label text=\"text\"/>%n" +
+                                           TWO_OFFSETS + "</g:north>\n" +
+                                           TWO_OFFSETS + "<g:south size=\"%.2f\">%n" +
+                                           threeOffsets + "<g:TextBox text=\"text\"/>%n" +
+                                           TWO_OFFSETS + "</g:south>%n" +
+                                           TWO_OFFSETS + "<g:center>%n" +
+                                           threeOffsets + "<g:FlowPanel>%n" +
+                                           fourOffsets + "<g:Label text=\"text\"/>%n" +
+                                           threeOffsets + "</g:FlowPanel>%n" +
+                                           TWO_OFFSETS + "</g:center>%n" +
+                                           OFFSET + "</g:DockLayoutPanel>%n" +
+                                           "</ui:UiBinder>",
+
+                                           size, size
+                                          );
 
         assertEquals(expectedXML, actualXML);
     }

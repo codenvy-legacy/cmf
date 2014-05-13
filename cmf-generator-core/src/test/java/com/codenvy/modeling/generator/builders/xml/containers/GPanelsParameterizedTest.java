@@ -81,49 +81,52 @@ public class GPanelsParameterizedTest extends AbstractXmlBuilderTest {
                 .withWidget(new GDockLayoutPanelImpl().withPrefix("g").withWidget(new GLabelImpl().withPrefix("g")))
                 .build();
 
-        String expectedContent = getOffset(parameter) + "<g:DockLayoutPanel>\n" +
+        String expectedContent = String.format(getOffset(parameter) + "<g:DockLayoutPanel>%n" +
 
-                                 getOffset(parameter + 1) + String.format("<g:north size=\"%.2f\">\n", size) +
-                                 getOffset(parameter + 2) + "<g:DockLayoutPanel>\n" +
-                                 getOffset(parameter + 3) + "<g:center>\n" +
-                                 getOffset(parameter + 4) + "<g:Label/>\n" +
-                                 getOffset(parameter + 3) + "</g:center>\n" +
-                                 getOffset(parameter + 2) + "</g:DockLayoutPanel>\n" +
-                                 getOffset(parameter + 1) + "</g:north>\n" +
+                                               getOffset(parameter + 1) + "<g:north size=\"%.2f\">%n" +
+                                               getOffset(parameter + 2) + "<g:DockLayoutPanel>%n" +
+                                               getOffset(parameter + 3) + "<g:center>%n" +
+                                               getOffset(parameter + 4) + "<g:Label/>%n" +
+                                               getOffset(parameter + 3) + "</g:center>%n" +
+                                               getOffset(parameter + 2) + "</g:DockLayoutPanel>%n" +
+                                               getOffset(parameter + 1) + "</g:north>%n" +
 
-                                 getOffset(parameter + 1) + String.format("<g:south size=\"%.2f\">\n", size) +
-                                 getOffset(parameter + 2) + "<g:DockLayoutPanel>\n" +
-                                 getOffset(parameter + 3) + "<g:center>\n" +
-                                 getOffset(parameter + 4) + "<g:Label/>\n" +
-                                 getOffset(parameter + 3) + "</g:center>\n" +
-                                 getOffset(parameter + 2) + "</g:DockLayoutPanel>\n" +
-                                 getOffset(parameter + 1) + "</g:south>\n" +
+                                               getOffset(parameter + 1) + "<g:south size=\"%.2f\">%n" +
+                                               getOffset(parameter + 2) + "<g:DockLayoutPanel>%n" +
+                                               getOffset(parameter + 3) + "<g:center>%n" +
+                                               getOffset(parameter + 4) + "<g:Label/>%n" +
+                                               getOffset(parameter + 3) + "</g:center>%n" +
+                                               getOffset(parameter + 2) + "</g:DockLayoutPanel>%n" +
+                                               getOffset(parameter + 1) + "</g:south>%n" +
 
-                                 getOffset(parameter + 1) + String.format("<g:east size=\"%.2f\">\n", size) +
-                                 getOffset(parameter + 2) + "<g:DockLayoutPanel>\n" +
-                                 getOffset(parameter + 3) + "<g:center>\n" +
-                                 getOffset(parameter + 4) + "<g:Label/>\n" +
-                                 getOffset(parameter + 3) + "</g:center>\n" +
-                                 getOffset(parameter + 2) + "</g:DockLayoutPanel>\n" +
-                                 getOffset(parameter + 1) + "</g:east>\n" +
+                                               getOffset(parameter + 1) + "<g:east size=\"%.2f\">%n" +
+                                               getOffset(parameter + 2) + "<g:DockLayoutPanel>%n" +
+                                               getOffset(parameter + 3) + "<g:center>%n" +
+                                               getOffset(parameter + 4) + "<g:Label/>%n" +
+                                               getOffset(parameter + 3) + "</g:center>%n" +
+                                               getOffset(parameter + 2) + "</g:DockLayoutPanel>%n" +
+                                               getOffset(parameter + 1) + "</g:east>%n" +
 
-                                 getOffset(parameter + 1) + String.format("<g:west size=\"%.2f\">\n", size) +
-                                 getOffset(parameter + 2) + "<g:DockLayoutPanel>\n" +
-                                 getOffset(parameter + 3) + "<g:center>\n" +
-                                 getOffset(parameter + 4) + "<g:Label/>\n" +
-                                 getOffset(parameter + 3) + "</g:center>\n" +
-                                 getOffset(parameter + 2) + "</g:DockLayoutPanel>\n" +
-                                 getOffset(parameter + 1) + "</g:west>\n" +
+                                               getOffset(parameter + 1) + "<g:west size=\"%.2f\">%n" +
+                                               getOffset(parameter + 2) + "<g:DockLayoutPanel>%n" +
+                                               getOffset(parameter + 3) + "<g:center>%n" +
+                                               getOffset(parameter + 4) + "<g:Label/>%n" +
+                                               getOffset(parameter + 3) + "</g:center>%n" +
+                                               getOffset(parameter + 2) + "</g:DockLayoutPanel>%n" +
+                                               getOffset(parameter + 1) + "</g:west>%n" +
 
-                                 getOffset(parameter + 1) + "<g:center>\n" +
-                                 getOffset(parameter + 2) + "<g:DockLayoutPanel>\n" +
-                                 getOffset(parameter + 3) + "<g:center>\n" +
-                                 getOffset(parameter + 4) + "<g:Label/>\n" +
-                                 getOffset(parameter + 3) + "</g:center>\n" +
-                                 getOffset(parameter + 2) + "</g:DockLayoutPanel>\n" +
-                                 getOffset(parameter + 1) + "</g:center>\n" +
+                                               getOffset(parameter + 1) + "<g:center>%n" +
+                                               getOffset(parameter + 2) + "<g:DockLayoutPanel>%n" +
+                                               getOffset(parameter + 3) + "<g:center>%n" +
+                                               getOffset(parameter + 4) + "<g:Label/>%n" +
+                                               getOffset(parameter + 3) + "</g:center>%n" +
+                                               getOffset(parameter + 2) + "</g:DockLayoutPanel>%n" +
+                                               getOffset(parameter + 1) + "</g:center>%n" +
 
-                                 getOffset(parameter) + "</g:DockLayoutPanel>";
+                                               getOffset(parameter) + "</g:DockLayoutPanel>",
+
+                                               size, size, size, size
+                                              );
 
         assertEquals(expectedContent, actualContent);
     }
@@ -238,49 +241,52 @@ public class GPanelsParameterizedTest extends AbstractXmlBuilderTest {
                 .withWidget(new GSplitLayoutPanelImpl().withPrefix("g").withWidget(new GLabelImpl().withPrefix("g")))
                 .build();
 
-        String expectedContent = getOffset(parameter) + "<g:SplitLayoutPanel>\n" +
+        String expectedContent = String.format(getOffset(parameter) + "<g:SplitLayoutPanel>%n" +
 
-                                 getOffset(parameter + 1) + String.format("<g:north size=\"%.2f\">\n", size) +
-                                 getOffset(parameter + 2) + "<g:SplitLayoutPanel>\n" +
-                                 getOffset(parameter + 3) + "<g:center>\n" +
-                                 getOffset(parameter + 4) + "<g:Label/>\n" +
-                                 getOffset(parameter + 3) + "</g:center>\n" +
-                                 getOffset(parameter + 2) + "</g:SplitLayoutPanel>\n" +
-                                 getOffset(parameter + 1) + "</g:north>\n" +
+                                               getOffset(parameter + 1) + "<g:north size=\"%.2f\">%n" +
+                                               getOffset(parameter + 2) + "<g:SplitLayoutPanel>%n" +
+                                               getOffset(parameter + 3) + "<g:center>%n" +
+                                               getOffset(parameter + 4) + "<g:Label/>%n" +
+                                               getOffset(parameter + 3) + "</g:center>%n" +
+                                               getOffset(parameter + 2) + "</g:SplitLayoutPanel>%n" +
+                                               getOffset(parameter + 1) + "</g:north>%n" +
 
-                                 getOffset(parameter + 1) + String.format("<g:south size=\"%.2f\">\n", size) +
-                                 getOffset(parameter + 2) + "<g:SplitLayoutPanel>\n" +
-                                 getOffset(parameter + 3) + "<g:center>\n" +
-                                 getOffset(parameter + 4) + "<g:Label/>\n" +
-                                 getOffset(parameter + 3) + "</g:center>\n" +
-                                 getOffset(parameter + 2) + "</g:SplitLayoutPanel>\n" +
-                                 getOffset(parameter + 1) + "</g:south>\n" +
+                                               getOffset(parameter + 1) + "<g:south size=\"%.2f\">%n" +
+                                               getOffset(parameter + 2) + "<g:SplitLayoutPanel>%n" +
+                                               getOffset(parameter + 3) + "<g:center>%n" +
+                                               getOffset(parameter + 4) + "<g:Label/>%n" +
+                                               getOffset(parameter + 3) + "</g:center>%n" +
+                                               getOffset(parameter + 2) + "</g:SplitLayoutPanel>%n" +
+                                               getOffset(parameter + 1) + "</g:south>%n" +
 
-                                 getOffset(parameter + 1) + String.format("<g:east size=\"%.2f\">\n", size) +
-                                 getOffset(parameter + 2) + "<g:SplitLayoutPanel>\n" +
-                                 getOffset(parameter + 3) + "<g:center>\n" +
-                                 getOffset(parameter + 4) + "<g:Label/>\n" +
-                                 getOffset(parameter + 3) + "</g:center>\n" +
-                                 getOffset(parameter + 2) + "</g:SplitLayoutPanel>\n" +
-                                 getOffset(parameter + 1) + "</g:east>\n" +
+                                               getOffset(parameter + 1) + "<g:east size=\"%.2f\">%n" +
+                                               getOffset(parameter + 2) + "<g:SplitLayoutPanel>%n" +
+                                               getOffset(parameter + 3) + "<g:center>%n" +
+                                               getOffset(parameter + 4) + "<g:Label/>%n" +
+                                               getOffset(parameter + 3) + "</g:center>%n" +
+                                               getOffset(parameter + 2) + "</g:SplitLayoutPanel>%n" +
+                                               getOffset(parameter + 1) + "</g:east>%n" +
 
-                                 getOffset(parameter + 1) + String.format("<g:west size=\"%.2f\">\n", size) +
-                                 getOffset(parameter + 2) + "<g:SplitLayoutPanel>\n" +
-                                 getOffset(parameter + 3) + "<g:center>\n" +
-                                 getOffset(parameter + 4) + "<g:Label/>\n" +
-                                 getOffset(parameter + 3) + "</g:center>\n" +
-                                 getOffset(parameter + 2) + "</g:SplitLayoutPanel>\n" +
-                                 getOffset(parameter + 1) + "</g:west>\n" +
+                                               getOffset(parameter + 1) + "<g:west size=\"%.2f\">%n" +
+                                               getOffset(parameter + 2) + "<g:SplitLayoutPanel>%n" +
+                                               getOffset(parameter + 3) + "<g:center>%n" +
+                                               getOffset(parameter + 4) + "<g:Label/>%n" +
+                                               getOffset(parameter + 3) + "</g:center>%n" +
+                                               getOffset(parameter + 2) + "</g:SplitLayoutPanel>%n" +
+                                               getOffset(parameter + 1) + "</g:west>%n" +
 
-                                 getOffset(parameter + 1) + "<g:center>\n" +
-                                 getOffset(parameter + 2) + "<g:SplitLayoutPanel>\n" +
-                                 getOffset(parameter + 3) + "<g:center>\n" +
-                                 getOffset(parameter + 4) + "<g:Label/>\n" +
-                                 getOffset(parameter + 3) + "</g:center>\n" +
-                                 getOffset(parameter + 2) + "</g:SplitLayoutPanel>\n" +
-                                 getOffset(parameter + 1) + "</g:center>\n" +
+                                               getOffset(parameter + 1) + "<g:center>%n" +
+                                               getOffset(parameter + 2) + "<g:SplitLayoutPanel>%n" +
+                                               getOffset(parameter + 3) + "<g:center>%n" +
+                                               getOffset(parameter + 4) + "<g:Label/>%n" +
+                                               getOffset(parameter + 3) + "</g:center>%n" +
+                                               getOffset(parameter + 2) + "</g:SplitLayoutPanel>%n" +
+                                               getOffset(parameter + 1) + "</g:center>%n" +
 
-                                 getOffset(parameter) + "</g:SplitLayoutPanel>";
+                                               getOffset(parameter) + "</g:SplitLayoutPanel>",
+
+                                               size, size, size, size
+                                              );
 
         assertEquals(expectedContent, actualContent);
     }

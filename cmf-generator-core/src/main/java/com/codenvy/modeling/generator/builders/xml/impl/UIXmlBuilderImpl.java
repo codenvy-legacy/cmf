@@ -27,7 +27,6 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -48,12 +47,6 @@ public class UIXmlBuilderImpl implements UIXmlBuilder {
 
     @Inject
     public UIXmlBuilderImpl() {
-        /*
-         * Setting formatter locale to US just to have XML compliant format for floating point numbers.
-         * E.g. some locales uses comma instead of dot to separate integer and fractional parts.
-         */
-        Locale.setDefault(Locale.US);
-
         clean();
     }
 
