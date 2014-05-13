@@ -18,6 +18,7 @@ package com.codenvy.modeling.configuration;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.util.Properties;
 
 /**
  * @author Dmitry Kuleshov
@@ -55,40 +56,35 @@ public interface ConfigurationFactory {
     }
 
     class ConfigurationPaths {
+        private final String diagram;
+        private final String editor;
+        private final String serialization;
+        private final String style;
 
-        private final String diagramConfigurationPath;
-        private final String editorConfigurationPath;
-        private final String serializationConfigurationPath;
-        private final String styleConfigurationPath;
-
-        public ConfigurationPaths(String diagramConfigurationPath,
-                                  String editorConfigurationPath,
-                                  String serializationConfigurationPath,
-                                  String styleConfigurationPath) {
-            this.diagramConfigurationPath = diagramConfigurationPath;
-            this.editorConfigurationPath = editorConfigurationPath;
-            this.serializationConfigurationPath = serializationConfigurationPath;
-            this.styleConfigurationPath = styleConfigurationPath;
+        public ConfigurationPaths(@Nonnull Properties properties) {
+            this.diagram = properties.getProperty(ConfigurationFactory.PathParameter.DIAGRAM.name());
+            this.editor = properties.getProperty(ConfigurationFactory.PathParameter.EDITOR.name());
+            this.serialization = properties.getProperty(ConfigurationFactory.PathParameter.SERIALIZATION.name());
+            this.style = properties.getProperty(ConfigurationFactory.PathParameter.STYLE.name());
+        }
+        @Nonnull
+        public String getDiagram() {
+            return diagram;
         }
 
         @Nonnull
-        public String getDiagramConfigurationPath() {
-            return diagramConfigurationPath;
+        public String getEditor() {
+            return editor;
         }
 
         @Nonnull
-        public String getEditorConfigurationPath() {
-            return editorConfigurationPath;
+        public String getSerialization() {
+            return serialization;
         }
 
         @Nonnull
-        public String getSerializationConfigurationPath() {
-            return serializationConfigurationPath;
-        }
-
-        @Nonnull
-        public String getStyleConfigurationPath() {
-            return styleConfigurationPath;
+        public String getStyle() {
+            return style;
         }
 
     }

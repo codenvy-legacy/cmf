@@ -51,11 +51,6 @@
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.codenvy.cmf</groupId>
-            <artifactId>cmf-gwt-editor-template</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-        <dependency>
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>annotations</artifactId>
             <version>${version.google.findbugs}</version>

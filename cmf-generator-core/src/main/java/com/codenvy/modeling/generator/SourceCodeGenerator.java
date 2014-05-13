@@ -30,6 +30,7 @@ import com.codenvy.editor.api.editor.propertiespanel.empty.EmptyPropertiesPanelP
 import com.codenvy.editor.api.editor.workspace.AbstractWorkspaceView;
 import com.codenvy.editor.api.mvp.AbstractView;
 import com.codenvy.modeling.configuration.Configuration;
+import com.codenvy.modeling.configuration.ConfigurationFactory;
 import com.codenvy.modeling.configuration.metamodel.diagram.Connection;
 import com.codenvy.modeling.configuration.metamodel.diagram.Element;
 import com.codenvy.modeling.configuration.metamodel.diagram.Property;
@@ -85,12 +86,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -210,30 +206,25 @@ public class SourceCodeGenerator {
      *
      * @param properties
      *         properties which are needed for code generation
-     * @param configuration
-     *         configuration that contains full information about GWT editor
+     * @param configurationFactory
+     *         provides configuration
      */
-    public void generate(@Nonnull Properties properties, @Nonnull Configuration configuration) {
-        String targetPath = properties.get(TARGET_PATH.name()).toString();
-        String packageName = properties.get(MAIN_PACKAGE.name()).toString();
-        String editorName = properties.get(EDITOR_NAME.name()).toString();
+    public void generate(@Nonnull Properties properties, @Nonnull ConfigurationFactory configurationFactory) throws IOException {
+        Configuration configuration = configurationFactory.getInstance(new ConfigurationFactory.ConfigurationPaths(properties));
 
-        try {
-            copyProjectHierarchy(targetPath, properties.get(TEMPLATE_PATH.name()).toString());
+        copyProjectHierarchy(properties);
 
-            modifyPom(targetPath, properties.get(MAVEN_ARTIFACT_ID.name()).toString(), properties.get(MAVEN_GROUP_ID.name()).toString(),
-                      properties.get(MAVEN_ARTIFACT_NAME.name()).toString());
-            modifyMainHtmlFile(targetPath, editorName);
+        modifyPom(properties);
+        modifyMainHtmlFile(properties);
 
-            generateResourcesFolder(targetPath, packageName, editorName);
-            generateJavaFolder(targetPath, packageName, editorName, configuration);
-        } catch (IOException e) {
-            // TODO think about type of exception
-            e.printStackTrace();
-        }
+        generateResourcesFolder(properties);
+        generateJavaFolder(properties, configuration);
     }
 
-    private void copyProjectHierarchy(@Nonnull String targetPath, @Nonnull String templateDir) throws IOException {
+    private void copyProjectHierarchy(@Nonnull Properties properties) throws IOException {
+        String targetPath = properties.getProperty(TARGET_PATH.name());
+        String templateDir = properties.getProperty(TEMPLATE_PATH.name());
+
         Path targetFolder = Paths.get(targetPath);
         Files.createDirectories(targetFolder);
 
@@ -267,21 +258,27 @@ public class SourceCodeGenerator {
         }
     }
 
-    private void modifyPom(@Nonnull String targetPath,
-                           @Nonnull String artifactId,
-                           @Nonnull String groupId,
-                           @Nonnull String artifactName) throws IOException {
+    private void modifyPom(@Nonnull Properties properties) throws IOException {
+        String targetPath = properties.getProperty(TARGET_PATH.name());
+        String artifactId = properties.getProperty(MAVEN_ARTIFACT_ID.name());
+        String groupId = properties.getProperty(MAVEN_GROUP_ID.name());
+        String artifactName = properties.getProperty(MAVEN_ARTIFACT_NAME.name());
+
         Path pomPath = Paths.get(targetPath, POM_FILE_FULL_NAME);
 
         String pomContent = new String(Files.readAllBytes(pomPath));
-        String newContent = pomContent.replaceAll(ARTIFACT_ID_MASK, artifactId)
-                                      .replaceAll(GROUP_ID_MASK, groupId)
-                                      .replaceAll(ARTIFACT_NAME_MASK, artifactName);
+        String newContent = pomContent
+                .replaceAll(ARTIFACT_ID_MASK, artifactId)
+                .replaceAll(GROUP_ID_MASK, groupId)
+                .replaceAll(ARTIFACT_NAME_MASK, artifactName);
 
         Files.write(pomPath, newContent.getBytes());
     }
 
-    private void modifyMainHtmlFile(@Nonnull String targetPath, @Nonnull String editorName) throws IOException {
+    private void modifyMainHtmlFile(@Nonnull Properties properties) throws IOException {
+        String targetPath = properties.getProperty(TARGET_PATH.name());
+        String editorName = properties.getProperty(EDITOR_NAME.name());
+
         Path mainHtmlFilePath = Paths.get(targetPath, MAIN_SOURCE_PATH, WEBAPP_SOURCE_PATH, MAIN_HTML_FILE_FULL_NAME);
 
         String content = new String(Files.readAllBytes(mainHtmlFilePath));
@@ -295,10 +292,11 @@ public class SourceCodeGenerator {
         return packagePath.replace('.', '/');
     }
 
-    private void generateJavaFolder(@Nonnull String targetPath,
-                                    @Nonnull String packageName,
-                                    @Nonnull String editorName,
-                                    @Nonnull Configuration configuration) throws IOException {
+    private void generateJavaFolder(@Nonnull Properties properties, @Nonnull Configuration configuration) throws IOException {
+        String packageName = properties.getProperty(MAIN_PACKAGE.name());
+        String targetPath = properties.getProperty(TARGET_PATH.name());
+        String editorName = properties.getProperty(EDITOR_NAME.name());
+
         String mainPackageFolder = convertPathToPackageName(packageName);
 
         String javaFolder = targetPath + MAIN_SOURCE_PATH + File.separator + JAVA_SOURCE_PATH;
@@ -436,7 +434,7 @@ public class SourceCodeGenerator {
                     .addImport(Shape.class)
 
                     .addConstructor(new Argument(Shape.class.getSimpleName(), "source"),
-                                    new Argument(Shape.class.getSimpleName(), "target"))
+                            new Argument(Shape.class.getSimpleName(), "target"))
                     .withConstructorBody("super(source, target);")
 
                     .build();
@@ -527,14 +525,14 @@ public class SourceCodeGenerator {
                 .addMethod("onModuleLoad")
                 .withMethodAnnotation("@Override")
                 .withMethodBody("LinksClientBundle.INSTANCE.css().ensureInjected();\n" +
-                                "\n" +
-                                "Injector injector = GWT.create(Injector.class);\n" +
-                                editorName + " editor = injector.getEditor();\n" +
-                                "\n" +
-                                "SimpleLayoutPanel mainPanel = new SimpleLayoutPanel();\n" +
-                                "editor.go(mainPanel);\n" +
-                                "\n" +
-                                "RootLayoutPanel.get().add(mainPanel);\n")
+                        "\n" +
+                        "Injector injector = GWT.create(Injector.class);\n" +
+                        editorName + " editor = injector.getEditor();\n" +
+                        "\n" +
+                        "SimpleLayoutPanel mainPanel = new SimpleLayoutPanel();\n" +
+                        "editor.go(mainPanel);\n" +
+                        "\n" +
+                        "RootLayoutPanel.get().add(mainPanel);\n")
 
                 .build();
 
@@ -1246,9 +1244,11 @@ public class SourceCodeGenerator {
         }
     }
 
-    private void generateResourcesFolder(@Nonnull String targetPath,
-                                         @Nonnull String packageName,
-                                         @Nonnull String editorName) throws IOException {
+    private void generateResourcesFolder(@Nonnull Properties properties) throws IOException {
+        String targetPath = properties.getProperty(TARGET_PATH.name());
+        String packageName = properties.getProperty(MAIN_PACKAGE.name());
+        String editorName = properties.getProperty(EDITOR_NAME.name());
+
         String resourceFolder = targetPath + File.separator + MAIN_SOURCE_PATH + File.separator + RESOURCES_SOURCE_PATH;
         String mainPackageFolder = resourceFolder + File.separator + convertPathToPackageName(packageName);
 

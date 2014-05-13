@@ -56,16 +56,16 @@ public class Configuration {
     public Configuration(ConfigurationAdapterFactory configurationAdapterFactory,
                          @Assisted ConfigurationPaths configurationPaths) throws IOException {
         this.diagramConfiguration = configurationAdapterFactory
-                .createDiagramConfAdapter(configurationPaths.getDiagramConfigurationPath())
+                .createDiagramConfAdapter(configurationPaths.getDiagram())
                 .getConfiguration();
         this.serializationConfiguration = configurationAdapterFactory
-                .createSerializationConfAdapter(configurationPaths.getSerializationConfigurationPath())
+                .createSerializationConfAdapter(configurationPaths.getSerialization())
                 .getConfiguration();
         this.editorConfiguration = configurationAdapterFactory
-                .createEditorConfAdapter(configurationPaths.getEditorConfigurationPath())
+                .createEditorConfAdapter(configurationPaths.getEditor())
                 .getConfiguration();
         this.styleConfiguration = configurationAdapterFactory
-                .createStyleConfAdapter(configurationPaths.getStyleConfigurationPath())
+                .createStyleConfAdapter(configurationPaths.getStyle())
                 .getConfiguration();
     }
 

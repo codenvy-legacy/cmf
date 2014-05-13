@@ -54,20 +54,9 @@ public class GenerationController {
      *         the path for the project directory
      */
     public void generate(@Nonnull String baseDir) {
-        ProjectDescriptionReader projectDescriptionReader = new ProjectDescriptionReader(baseDir);
-        Properties properties = projectDescriptionReader.getProjectProperties();
+        Properties properties = new ProjectDescriptionReader(baseDir).getProjectProperties();
         try {
-            sourceCodeGenerator
-                    .generate(properties,
-                              configurationFactory.getInstance(
-                                      new ConfigurationPaths(
-                                              properties.get(ConfigurationFactory.PathParameter.DIAGRAM.name()).toString(),
-                                              properties.get(ConfigurationFactory.PathParameter.EDITOR.name()).toString(),
-                                              properties.get(ConfigurationFactory.PathParameter.SERIALIZATION.name()).toString(),
-                                              properties.get(ConfigurationFactory.PathParameter.STYLE.name()).toString()
-                                      )
-                                                              )
-                             );
+            sourceCodeGenerator.generate(properties, configurationFactory);
         } catch (IOException e) {
             LOG.error("Some problem happened during code generating.", e);
         }

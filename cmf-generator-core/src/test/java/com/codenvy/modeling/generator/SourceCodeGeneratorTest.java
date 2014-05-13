@@ -17,6 +17,7 @@
 package com.codenvy.modeling.generator;
 
 import com.codenvy.modeling.configuration.Configuration;
+import com.codenvy.modeling.configuration.ConfigurationFactory;
 import com.codenvy.modeling.configuration.metamodel.diagram.Connection;
 import com.codenvy.modeling.configuration.metamodel.diagram.Element;
 import com.codenvy.modeling.configuration.metamodel.diagram.Property;
@@ -64,6 +65,7 @@ import static com.codenvy.modeling.generator.GenerationController.Param.MAVEN_GR
 import static com.codenvy.modeling.generator.GenerationController.Param.TARGET_PATH;
 import static com.codenvy.modeling.generator.GenerationController.Param.TEMPLATE_PATH;
 import static org.mockito.Answers.RETURNS_DEEP_STUBS;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -97,6 +99,8 @@ public class SourceCodeGeneratorTest {
     private Provider<GLabel>            labelProvider;
     @Mock
     private Provider<GTextBox>          textBoxProvider;
+    @Mock
+    private ConfigurationFactory        configurationFactory;
     @Mock(answer = RETURNS_DEEP_STUBS)
     private Configuration               configuration;
     private SourceCodeGenerator         generator;
@@ -191,6 +195,8 @@ public class SourceCodeGeneratorTest {
         Connection connection = mock(Connection.class);
         when(connection.getName()).thenReturn("Connection1");
 
+        when(configurationFactory.getInstance(any(ConfigurationFactory.ConfigurationPaths.class))).thenReturn(configuration);
+
         when(configuration.getDiagramConfiguration().getElements()).thenReturn(new HashSet<>(Arrays.asList(element)));
         when(configuration.getDiagramConfiguration().getConnections()).thenReturn(new HashSet<>(Arrays.asList(connection)));
 
@@ -204,7 +210,7 @@ public class SourceCodeGeneratorTest {
         properties.put(MAIN_PACKAGE.name(), "my.package");
         properties.put(TEMPLATE_PATH.name(), "target/classes/template.zip");
 
-        generator.generate(properties, configuration);
+        generator.generate(properties, configurationFactory);
 
         //TODO check content?
     }

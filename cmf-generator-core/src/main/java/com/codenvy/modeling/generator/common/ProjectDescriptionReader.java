@@ -17,13 +17,12 @@ package com.codenvy.modeling.generator.common;
 
 import com.codenvy.modeling.configuration.ConfigurationFactory;
 
+import com.codenvy.modeling.generator.GenerationController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Properties;
 
 /**
@@ -54,7 +53,7 @@ public class ProjectDescriptionReader {
         try {
             InputStream inputStream = new FileInputStream(projectDescriptionPath + File.separator + PROJECT_DESCRIPTION);
             properties.load(inputStream);
-        } catch (Exception e) {
+        } catch (IOException e) {
             LOG.error("Some problem happened during project description reading.", e);
         }
 
@@ -65,16 +64,19 @@ public class ProjectDescriptionReader {
 
     private void makeAbsolutePaths(@Nonnull Properties properties) {
         String diagramPathKey = ConfigurationFactory.PathParameter.DIAGRAM.name();
-        properties.setProperty(diagramPathKey, projectDescriptionPath + properties.getProperty(diagramPathKey));
-
         String editorPathKey = ConfigurationFactory.PathParameter.EDITOR.name();
-        properties.setProperty(editorPathKey, projectDescriptionPath + properties.getProperty(editorPathKey));
-
         String serializationPathKey = ConfigurationFactory.PathParameter.SERIALIZATION.name();
-        properties.setProperty(serializationPathKey, projectDescriptionPath + properties.getProperty(serializationPathKey));
-
         String stylePathKey = ConfigurationFactory.PathParameter.STYLE.name();
-        properties.setProperty(stylePathKey, projectDescriptionPath + properties.getProperty(stylePathKey));
-    }
 
+        String templatePath = GenerationController.Param.TEMPLATE_PATH.name();
+        String targetPath = GenerationController.Param.TARGET_PATH.name();
+
+        properties.setProperty(diagramPathKey, projectDescriptionPath + properties.getProperty(diagramPathKey));
+        properties.setProperty(editorPathKey, projectDescriptionPath + properties.getProperty(editorPathKey));
+        properties.setProperty(serializationPathKey, projectDescriptionPath + properties.getProperty(serializationPathKey));
+        properties.setProperty(stylePathKey, projectDescriptionPath + properties.getProperty(stylePathKey));
+
+        properties.setProperty(templatePath, projectDescriptionPath + properties.getProperty(templatePath));
+        properties.setProperty(targetPath, projectDescriptionPath + properties.getProperty(targetPath));
+    }
 }
