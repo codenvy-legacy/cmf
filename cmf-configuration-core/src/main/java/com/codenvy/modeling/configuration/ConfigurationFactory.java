@@ -67,6 +67,7 @@ public interface ConfigurationFactory {
             this.serialization = properties.getProperty(ConfigurationFactory.PathParameter.SERIALIZATION.name());
             this.style = properties.getProperty(ConfigurationFactory.PathParameter.STYLE.name());
         }
+
         @Nonnull
         public String getDiagram() {
             return diagram;

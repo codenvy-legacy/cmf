@@ -27,8 +27,6 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.Properties;
 
-import static com.codenvy.modeling.configuration.ConfigurationFactory.ConfigurationPaths;
-
 /**
  * The main class of generating GWT editor. It provides an ability to check configuration and generate GWT java code.
  *

@@ -16,13 +16,16 @@
 package com.codenvy.modeling.generator.common;
 
 import com.codenvy.modeling.configuration.ConfigurationFactory;
-
 import com.codenvy.modeling.generator.GenerationController;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Properties;
 
 /**
@@ -50,8 +53,7 @@ public class ProjectDescriptionReader {
     public Properties getProjectProperties() {
         Properties properties = new Properties();
 
-        try {
-            InputStream inputStream = new FileInputStream(projectDescriptionPath + File.separator + PROJECT_DESCRIPTION);
+        try (InputStream inputStream = Files.newInputStream(Paths.get(projectDescriptionPath, PROJECT_DESCRIPTION))) {
             properties.load(inputStream);
         } catch (IOException e) {
             LOG.error("Some problem happened during project description reading.", e);

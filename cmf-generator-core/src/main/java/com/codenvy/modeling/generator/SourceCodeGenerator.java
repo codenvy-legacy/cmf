@@ -86,7 +86,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -434,7 +439,7 @@ public class SourceCodeGenerator {
                     .addImport(Shape.class)
 
                     .addConstructor(new Argument(Shape.class.getSimpleName(), "source"),
-                            new Argument(Shape.class.getSimpleName(), "target"))
+                                    new Argument(Shape.class.getSimpleName(), "target"))
                     .withConstructorBody("super(source, target);")
 
                     .build();
@@ -525,14 +530,14 @@ public class SourceCodeGenerator {
                 .addMethod("onModuleLoad")
                 .withMethodAnnotation("@Override")
                 .withMethodBody("LinksClientBundle.INSTANCE.css().ensureInjected();\n" +
-                        "\n" +
-                        "Injector injector = GWT.create(Injector.class);\n" +
-                        editorName + " editor = injector.getEditor();\n" +
-                        "\n" +
-                        "SimpleLayoutPanel mainPanel = new SimpleLayoutPanel();\n" +
-                        "editor.go(mainPanel);\n" +
-                        "\n" +
-                        "RootLayoutPanel.get().add(mainPanel);\n")
+                                "\n" +
+                                "Injector injector = GWT.create(Injector.class);\n" +
+                                editorName + " editor = injector.getEditor();\n" +
+                                "\n" +
+                                "SimpleLayoutPanel mainPanel = new SimpleLayoutPanel();\n" +
+                                "editor.go(mainPanel);\n" +
+                                "\n" +
+                                "RootLayoutPanel.get().add(mainPanel);\n")
 
                 .build();
 
