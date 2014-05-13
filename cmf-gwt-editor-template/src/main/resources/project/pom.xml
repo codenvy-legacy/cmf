@@ -11,8 +11,8 @@
         <version>1.0.0-M1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>artifact_id</artifactId>
     <groupId>group_id</groupId>
+    <artifactId>artifact_id</artifactId>
     <name>artifact_name</name>
 
     <dependencies>
