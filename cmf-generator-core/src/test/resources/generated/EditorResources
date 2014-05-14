@@ -1,0 +1,10 @@
+package my.package.client;
+
+import com.google.gwt.resources.client.ClientBundle;
+
+public interface EditorResources extends ClientBundle {
+
+    @Source("editor.css")
+    EditorCSS editorCSS();
+
+}

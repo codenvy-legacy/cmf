@@ -1,0 +1,12 @@
+package my.package.client.inject;
+
+import com.google.gwt.inject.client.GinModules;
+import com.google.gwt.inject.client.Ginjector;
+import my.package.client.EditorName;
+
+@GinModules(GinModule.class)
+public interface Injector extends Ginjector {
+
+    EditorName getEditor();
+
+}

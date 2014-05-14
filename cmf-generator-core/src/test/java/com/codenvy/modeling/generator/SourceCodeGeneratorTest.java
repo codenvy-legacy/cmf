@@ -43,27 +43,36 @@ import com.codenvy.modeling.generator.builders.xml.impl.widgets.containers.GFlow
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.containers.GScrollPanelImpl;
 import com.google.inject.Provider;
 
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExternalResource;
+import org.junit.rules.RuleChain;
 import org.junit.rules.TemporaryFolder;
+import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
+import javax.annotation.Nonnull;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Properties;
 
-import static com.codenvy.modeling.generator.GenerationController.Param.EDITOR_NAME;
 import static com.codenvy.modeling.generator.GenerationController.Param.MAIN_PACKAGE;
 import static com.codenvy.modeling.generator.GenerationController.Param.MAVEN_ARTIFACT_ID;
 import static com.codenvy.modeling.generator.GenerationController.Param.MAVEN_ARTIFACT_NAME;
 import static com.codenvy.modeling.generator.GenerationController.Param.MAVEN_GROUP_ID;
 import static com.codenvy.modeling.generator.GenerationController.Param.TARGET_PATH;
 import static com.codenvy.modeling.generator.GenerationController.Param.TEMPLATE_PATH;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Answers.RETURNS_DEEP_STUBS;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -75,9 +84,47 @@ import static org.mockito.Mockito.when;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class SourceCodeGeneratorTest {
+    private static final String RESOURCES_FOLDER          = "/generated";
+    private static final String POM_FILE_FULL_NAME        = "pom.xml";
+    private static final String MAIN_HTML_FILE_FULL_NAME  = "Editor.html";
+    private static final String MAIN_GWT_MODULE_FILE_NAME = "Editor.gwt.xml";
+    private static final String MAIN_CSS_FILE_NAME        = "editor.css";
 
-    @Rule
-    public TemporaryFolder temporaryFolder = new TemporaryFolder();
+    private static final String MAIN_SOURCE_PATH        = "/src/main";
+    private static final String JAVA_SOURCE_PATH        = "java";
+    private static final String RESOURCES_SOURCE_PATH   = "resources";
+    private static final String WEBAPP_SOURCE_PATH      = "webapp";
+    private static final String CLIENT_PART_FOLDER      = "client";
+    private static final String INJECT_FOLDER           = "inject";
+    private static final String TOOLBAR_FOLDER          = "toolbar";
+    private static final String WORKSPACE_FOLDER        = "workspace";
+    private static final String PROPERTIES_PANEL_FOLDER = "propertiespanel";
+    private static final String ELEMENTS_FOLDER         = "elements";
+
+    private static final String ENTRY_POINT_NAME                           = "EditorEntryPoint.java";
+    private static final String TOOLBAR_PRESENTER_NAME                     = "ToolbarPresenter.java";
+    private static final String TOOLBAR_VIEW_NAME                          = "ToolbarView.java";
+    private static final String TOOLBAR_VIEW_IMPL_BINDER_XML_NAME          = "ToolbarViewImplUiBinder.ui.xml";
+    private static final String TOOLBAR_VIEW_IMPL_BINDER_NAME              = "ToolbarViewImplUiBinder.java";
+    private static final String TOOLBAR_VIEW_IMPL_NAME                     = "ToolbarViewImpl.java";
+    private static final String ACTION_DELEGATE_NAME                       = "ActionDelegate.java";
+    private static final String WORKSPACE_PRESENTER_NAME                   = "WorkspacePresenter.java";
+    private static final String WORKSPACE_VIEW_NAME                        = "WorkspaceView.java";
+    private static final String WORKSPACE_VIEW_IMPL_NAME                   = "WorkspaceViewImpl.java";
+    private static final String WORKSPACE_VIEW_IMPL_BINDER_NAME            = "WorkspaceViewImplUiBinder.java";
+    private static final String WORKSPACE_VIEW_IMPL_BINDER_XML_NAME        = "WorkspaceViewImplUiBinder.ui.xml";
+    private static final String PROPERTIES_PANEL_PRESENTER_NAME            = "Element1PropertiesPanelPresenter.java";
+    private static final String PROPERTIES_PANEL_VIEW_NAME                 = "Element1PropertiesPanelView.java";
+    private static final String PROPERTIES_PANEL_VIEW_IMPL_NAME            = "Element1PropertiesPanelViewImpl.java";
+    private static final String PROPERTIES_PANEL_VIEW_IMPL_BINDER_NAME     = "Element1PropertiesPanelViewImplUiBinder.java";
+    private static final String PROPERTIES_PANEL_VIEW_IMPL_BINDER_XML_NAME = "Element1PropertiesPanelViewImplUiBinder.ui.xml";
+    private static final String EDITOR_STATE_NAME                          = "State.java";
+    private static final String EDITOR_RESOURCES_NAME                      = "EditorResources.java";
+    private static final String GIN_MODULE_NAME                            = "GinModule.java";
+    private static final String EDITOR_CSS_RESOURCE_NAME                   = "EditorCSS.java";
+    private static final String EDITOR_NAME_CLASS                          = "EditorName.java";
+    private static final String GIN_INJECTOR_NAME                          = "Injector.java";
+    private static final String EDITOR_FACTORY_NAME                        = "EditorFactory.java";
 
     @Mock
     private Provider<SourceCodeBuilder> sourceCodeBuilderProvider;
@@ -103,116 +150,367 @@ public class SourceCodeGeneratorTest {
     private ConfigurationFactory        configurationFactory;
     @Mock(answer = RETURNS_DEEP_STUBS)
     private Configuration               configuration;
-    private SourceCodeGenerator         generator;
+    public GeneratorRule   generatorRule   = new GeneratorRule();
+    public TemporaryFolder temporaryFolder = new TemporaryFolder();
+    @Rule
+    public TestRule        chainGenerator  = RuleChain
+            .outerRule(temporaryFolder)
+            .around(generatorRule);
 
-    @Before
-    public void setUp() throws Exception {
-        generator = new SourceCodeGenerator(sourceCodeBuilderProvider,
-                                            uiXmlBuilderProvider,
-                                            fieldProvider,
-                                            scrollPanelProvider,
-                                            flowPanelProvider,
-                                            styleProvider,
-                                            dockLayoutPanelProvider,
-                                            pushButtonProvider,
-                                            labelProvider,
-                                            textBoxProvider);
+
+    private void assertContent(String expectedFilePath, String rootFolderPath, String... actualFilePath) throws IOException {
+        String actualContent = new String(Files.readAllBytes(Paths.get(rootFolderPath, actualFilePath)));
+
+        expectedFilePath = SourceCodeGeneratorTest.class.getResource(RESOURCES_FOLDER + expectedFilePath).getFile();
+        String expectedContent = new String(Files.readAllBytes(Paths.get(expectedFilePath)));
+
+        assertEquals(expectedContent, actualContent);
     }
 
     @Test
-    public void projectShouldBeGenerated() throws Exception {
-        when(sourceCodeBuilderProvider.get()).thenAnswer(new Answer<SourceCodeBuilder>() {
-            @Override
-            public SourceCodeBuilder answer(InvocationOnMock invocation) throws Throwable {
-                return new SourceCodeBuilderImpl();
-            }
-        });
-        when(uiXmlBuilderProvider.get()).thenAnswer(new Answer<UIXmlBuilder>() {
-            @Override
-            public UIXmlBuilder answer(InvocationOnMock invocation) throws Throwable {
-                return new UIXmlBuilderImpl();
-            }
-        });
-        when(fieldProvider.get()).thenAnswer(new Answer<GField>() {
-            @Override
-            public GField answer(InvocationOnMock invocation) throws Throwable {
-                return new GFieldImpl();
-            }
-        });
-        when(scrollPanelProvider.get()).thenAnswer(new Answer<GScrollPanel>() {
-            @Override
-            public GScrollPanel answer(InvocationOnMock invocation) throws Throwable {
-                return new GScrollPanelImpl();
-            }
-        });
-        when(flowPanelProvider.get()).thenAnswer(new Answer<GFlowPanel>() {
-            @Override
-            public GFlowPanel answer(InvocationOnMock invocation) throws Throwable {
-                return new GFlowPanelImpl();
-            }
-        });
-        when(styleProvider.get()).thenAnswer(new Answer<GStyle>() {
-            @Override
-            public GStyle answer(InvocationOnMock invocation) throws Throwable {
-                return new GStyleImpl();
-            }
-        });
-        when(dockLayoutPanelProvider.get()).thenAnswer(new Answer<GDockLayoutPanel>() {
-            @Override
-            public GDockLayoutPanel answer(InvocationOnMock invocation) throws Throwable {
-                return new GDockLayoutPanelImpl();
-            }
-        });
-        when(pushButtonProvider.get()).thenAnswer(new Answer<GPushButton>() {
-            @Override
-            public GPushButton answer(InvocationOnMock invocation) throws Throwable {
-                return new GPushButtonImpl();
-            }
-        });
-        when(labelProvider.get()).thenAnswer(new Answer<GLabel>() {
-            @Override
-            public GLabel answer(InvocationOnMock invocation) throws Throwable {
-                return new GLabelImpl();
-            }
-        });
-        when(textBoxProvider.get()).thenAnswer(new Answer<GTextBox>() {
-            @Override
-            public GTextBox answer(InvocationOnMock invocation) throws Throwable {
-                return new GTextBoxImpl();
-            }
-        });
-
-        Element element = mock(Element.class);
-        when(element.getName()).thenReturn("Element1");
-
-        Property property = new Property();
-        property.setName("Property1");
-        property.setType(Property.Type.INTEGER);
-        property.setValue("10");
-
-        when(element.getProperties()).thenReturn(new HashSet<>(Arrays.asList(property)));
-
-        Connection connection = mock(Connection.class);
-        when(connection.getName()).thenReturn("Connection1");
-
-        when(configurationFactory.getInstance(any(ConfigurationFactory.ConfigurationPaths.class))).thenReturn(configuration);
-
-        when(configuration.getDiagramConfiguration().getElements()).thenReturn(new HashSet<>(Arrays.asList(element)));
-        when(configuration.getDiagramConfiguration().getConnections()).thenReturn(new HashSet<>(Arrays.asList(connection)));
-
-        Properties properties = new Properties();
-
-        properties.put(TARGET_PATH.name(), temporaryFolder.getRoot().getAbsolutePath() + "/testProject");
-        properties.put(MAVEN_ARTIFACT_ID.name(), "maven_artifact_id");
-        properties.put(MAVEN_GROUP_ID.name(), "maven_group_id");
-        properties.put(MAVEN_ARTIFACT_NAME.name(), "maven_artifact_name");
-        properties.put(EDITOR_NAME.name(), "EditorName");
-        properties.put(MAIN_PACKAGE.name(), "my.package");
-        properties.put(TEMPLATE_PATH.name(), "target/classes/template.zip");
-
-        generator.generate(properties, configurationFactory);
-
-        //TODO check content?
+    public void editorResourcesShouldBeCreated() throws IOException {
+        assertContent("/EditorResources", generatorRule.getClientFolder(), EDITOR_RESOURCES_NAME);
     }
 
+    @Test
+    public void editorNameShouldBeCreated() throws IOException {
+        assertContent("/EditorName", generatorRule.getClientFolder(), EDITOR_NAME_CLASS);
+    }
+
+    @Test
+    public void stateShouldBeCreated() throws IOException {
+        assertContent("/State", generatorRule.getClientFolder(), EDITOR_STATE_NAME);
+    }
+
+    @Test
+    public void editorCSSShouldBeCreated() throws IOException {
+        assertContent("/EditorCSS", generatorRule.getClientFolder(), EDITOR_CSS_RESOURCE_NAME);
+    }
+
+    @Test
+    public void editorEntryPointShouldBeCreated() throws IOException {
+        assertContent("/EditorEntryPoint", generatorRule.getClientFolder(), ENTRY_POINT_NAME);
+    }
+
+    @Test
+    public void editorFactoryShouldBeCreated() throws IOException {
+        assertContent("/inject/EditorFactory", generatorRule.getClientFolder(), INJECT_FOLDER, EDITOR_FACTORY_NAME);
+    }
+
+    @Test
+    public void injectorShouldBeCreated() throws IOException {
+        assertContent("/inject/Injector", generatorRule.getClientFolder(), INJECT_FOLDER, GIN_INJECTOR_NAME);
+    }
+
+    @Test
+    public void ginModuleShouldBeCreated() throws IOException {
+        assertContent("/inject/GinModule", generatorRule.getClientFolder(), INJECT_FOLDER, GIN_MODULE_NAME);
+    }
+
+    @Test
+    public void connection1ShouldBeCreated() throws IOException {
+        assertContent("/elements/Connection1", generatorRule.getClientFolder(), ELEMENTS_FOLDER, "Connection1.java");
+    }
+
+    @Test
+    public void element1ShouldBeCreated() throws IOException {
+        assertContent("/elements/Element1", generatorRule.getClientFolder(), ELEMENTS_FOLDER, "Element1.java");
+    }
+
+    @Test
+    public void actionDelegateShouldBeCreated() throws IOException {
+        assertContent("/toolbar/ActionDelegate", generatorRule.getClientFolder(), TOOLBAR_FOLDER, ACTION_DELEGATE_NAME);
+    }
+
+    @Test
+    public void toolbarPresenterShouldBeCreated() throws IOException {
+        assertContent("/toolbar/Presenter", generatorRule.getClientFolder(), TOOLBAR_FOLDER, TOOLBAR_PRESENTER_NAME);
+    }
+
+    @Test
+    public void toolbarViewShouldBeCreated() throws IOException {
+        assertContent("/toolbar/View", generatorRule.getClientFolder(), TOOLBAR_FOLDER, TOOLBAR_VIEW_NAME);
+    }
+
+    @Test
+    public void toolbarViewImplShouldBeCreated() throws IOException {
+        assertContent("/toolbar/ViewImpl", generatorRule.getClientFolder(), TOOLBAR_FOLDER, TOOLBAR_VIEW_IMPL_NAME);
+    }
+
+    @Test
+    public void toolbarUiBinderShouldBeCreated() throws IOException {
+        assertContent("/toolbar/ImplBinder", generatorRule.getClientFolder(), TOOLBAR_FOLDER, TOOLBAR_VIEW_IMPL_BINDER_NAME);
+    }
+
+    @Test
+    public void binderXMLShouldBeCreated() throws IOException {
+        assertContent("/toolbar/BinderXML", generatorRule.getClientFolder(), TOOLBAR_FOLDER, TOOLBAR_VIEW_IMPL_BINDER_XML_NAME);
+    }
+
+    @Test
+    public void workspacePresenterShouldBeCreated() throws IOException {
+        assertContent("/workspace/Presenter", generatorRule.getClientFolder(), WORKSPACE_FOLDER, WORKSPACE_PRESENTER_NAME);
+    }
+
+    @Test
+    public void workspaceViewShouldBeCreated() throws IOException {
+        assertContent("/workspace/View", generatorRule.getClientFolder(), WORKSPACE_FOLDER, WORKSPACE_VIEW_NAME);
+    }
+
+    @Test
+    public void workspaceViewImplShouldBeCreated() throws IOException {
+        assertContent("/workspace/ViewImpl", generatorRule.getClientFolder(), WORKSPACE_FOLDER, WORKSPACE_VIEW_IMPL_NAME);
+    }
+
+    @Test
+    public void workspaceViewImpBinderShouldBeCreated() throws IOException {
+        assertContent("/workspace/ViewBinderImpl", generatorRule.getClientFolder(), WORKSPACE_FOLDER,
+                      WORKSPACE_VIEW_IMPL_BINDER_NAME);
+    }
+
+    @Test
+    public void workspaceViewImpBinderXMLShouldBeCreated() throws IOException {
+        assertContent("/workspace/ViewBinderImplXML", generatorRule.getClientFolder(), WORKSPACE_FOLDER,
+                      WORKSPACE_VIEW_IMPL_BINDER_XML_NAME);
+    }
+
+    @Test
+    public void actionDelegatePanelShouldBeCreated() throws IOException {
+        assertContent("/propertiespanel/ActionDelegate", generatorRule.getClientFolder(), PROPERTIES_PANEL_FOLDER, "element1",
+                      ACTION_DELEGATE_NAME);
+    }
+
+    @Test
+    public void presenterPanelShouldBeCreated() throws IOException {
+        assertContent("/propertiespanel/Presenter", generatorRule.getClientFolder(), PROPERTIES_PANEL_FOLDER, "element1",
+                      PROPERTIES_PANEL_PRESENTER_NAME);
+    }
+
+    @Test
+    public void viewPanelShouldBeCreated() throws IOException {
+        assertContent("/propertiespanel/View", generatorRule.getClientFolder(), PROPERTIES_PANEL_FOLDER, "element1",
+                      PROPERTIES_PANEL_VIEW_NAME);
+    }
+
+    @Test
+    public void viewImplPanelShouldBeCreated() throws IOException {
+        assertContent("/propertiespanel/ViewImpl", generatorRule.getClientFolder(), PROPERTIES_PANEL_FOLDER, "element1",
+                      PROPERTIES_PANEL_VIEW_IMPL_NAME);
+    }
+
+    @Test
+    public void viewImplBinderPanelShouldBeCreated() throws IOException {
+        assertContent("/propertiespanel/ViewImplBinder", generatorRule.getClientFolder(), PROPERTIES_PANEL_FOLDER, "element1",
+                      PROPERTIES_PANEL_VIEW_IMPL_BINDER_NAME);
+    }
+
+    @Test
+    public void viewImplBinderXMLPanelShouldBeCreated() throws IOException {
+        assertContent("/propertiespanel/ViewImplBinderXML", generatorRule.getClientFolder(), PROPERTIES_PANEL_FOLDER, "element1",
+                      PROPERTIES_PANEL_VIEW_IMPL_BINDER_XML_NAME);
+    }
+
+    @Test
+    public void editorGwtXmlShouldBeCreated() throws IOException {
+        assertContent("/EditorGwtXml", prepareMainPackageFolderPath(), MAIN_GWT_MODULE_FILE_NAME);
+    }
+
+    @Test
+    public void editorCssXmlShouldBeCreated() throws IOException {
+        assertContent("/EditorGwtXml", prepareMainPackageFolderPath(), MAIN_GWT_MODULE_FILE_NAME);
+    }
+
+    @Test
+    public void editorResourcesCssXmlShouldBeCreated() throws IOException {
+        assertContent("/EditorResourcesCss", prepareMainPackageFolderPath(), CLIENT_PART_FOLDER, MAIN_CSS_FILE_NAME);
+    }
+
+    private String prepareMainPackageFolderPath() {
+        String targetPath = generatorRule.getProperties().getProperty(TARGET_PATH.name());
+        String packageName = generatorRule.getProperties().getProperty(MAIN_PACKAGE.name());
+
+        String resourceFolder = targetPath + File.separator + MAIN_SOURCE_PATH + File.separator + RESOURCES_SOURCE_PATH;
+
+        return resourceFolder + File.separator + convertPathToPackageName(packageName);
+    }
+
+    @Test
+    public void editorHtmlShouldBeCreated() throws IOException {
+        String targetPath = generatorRule.getProperties().getProperty(TARGET_PATH.name());
+
+        assertContent("/webapp/EditorHtml", targetPath, MAIN_SOURCE_PATH, WEBAPP_SOURCE_PATH, MAIN_HTML_FILE_FULL_NAME);
+    }
+
+    @Test
+    public void webXmlShouldBeCreated() throws IOException {
+        String targetPath = generatorRule.getProperties().getProperty(TARGET_PATH.name());
+
+        assertContent("/webapp/webXml", targetPath, MAIN_SOURCE_PATH, WEBAPP_SOURCE_PATH, "/WEB-INF/web.xml");
+    }
+
+    @Test
+    public void pomShouldBeModified() throws Exception {
+        Path pomPath = Paths.get(temporaryFolder.getRoot().getAbsolutePath() + "/testProject", POM_FILE_FULL_NAME);
+
+        String pomContent = new String(Files.readAllBytes(pomPath));
+
+        assertTrue(pomContent.contains(generatorRule.getProperties().getProperty(MAVEN_ARTIFACT_ID.name())));
+        assertTrue(pomContent.contains(generatorRule.getProperties().getProperty(MAVEN_GROUP_ID.name())));
+        assertTrue(pomContent.contains(generatorRule.getProperties().getProperty(MAVEN_ARTIFACT_NAME.name())));
+    }
+
+    @Test
+    public void mainHTMLFileShouldBeDefined() throws IOException {
+        String editorName = generatorRule.getProperties().getProperty(GenerationController.Param.EDITOR_NAME.name());
+
+        Path mainHtmlFilePath =
+                Paths.get(temporaryFolder.getRoot().getAbsolutePath() + "/testProject", MAIN_SOURCE_PATH, WEBAPP_SOURCE_PATH,
+                          MAIN_HTML_FILE_FULL_NAME);
+
+        String content = new String(Files.readAllBytes(mainHtmlFilePath));
+
+        assertTrue(content.contains(editorName));
+    }
+
+    private class GeneratorRule extends ExternalResource {
+        private SourceCodeGenerator generator;
+        private Properties          properties;
+        private String              clientFolder;
+
+        @Override
+        protected void before() throws Throwable {
+            generator = new SourceCodeGenerator(sourceCodeBuilderProvider,
+                                                uiXmlBuilderProvider,
+                                                fieldProvider,
+                                                scrollPanelProvider,
+                                                flowPanelProvider,
+                                                styleProvider,
+                                                dockLayoutPanelProvider,
+                                                pushButtonProvider,
+                                                labelProvider,
+                                                textBoxProvider);
+
+            when(sourceCodeBuilderProvider.get()).thenAnswer(new Answer<SourceCodeBuilder>() {
+                @Override
+                public SourceCodeBuilder answer(InvocationOnMock invocation) throws Throwable {
+                    return new SourceCodeBuilderImpl();
+                }
+            });
+            when(uiXmlBuilderProvider.get()).thenAnswer(new Answer<UIXmlBuilder>() {
+                @Override
+                public UIXmlBuilder answer(InvocationOnMock invocation) throws Throwable {
+                    return new UIXmlBuilderImpl();
+                }
+            });
+            when(fieldProvider.get()).thenAnswer(new Answer<GField>() {
+                @Override
+                public GField answer(InvocationOnMock invocation) throws Throwable {
+                    return new GFieldImpl();
+                }
+            });
+            when(scrollPanelProvider.get()).thenAnswer(new Answer<GScrollPanel>() {
+                @Override
+                public GScrollPanel answer(InvocationOnMock invocation) throws Throwable {
+                    return new GScrollPanelImpl();
+                }
+            });
+            when(flowPanelProvider.get()).thenAnswer(new Answer<GFlowPanel>() {
+                @Override
+                public GFlowPanel answer(InvocationOnMock invocation) throws Throwable {
+                    return new GFlowPanelImpl();
+                }
+            });
+            when(styleProvider.get()).thenAnswer(new Answer<GStyle>() {
+                @Override
+                public GStyle answer(InvocationOnMock invocation) throws Throwable {
+                    return new GStyleImpl();
+                }
+            });
+            when(dockLayoutPanelProvider.get()).thenAnswer(new Answer<GDockLayoutPanel>() {
+                @Override
+                public GDockLayoutPanel answer(InvocationOnMock invocation) throws Throwable {
+                    return new GDockLayoutPanelImpl();
+                }
+            });
+            when(pushButtonProvider.get()).thenAnswer(new Answer<GPushButton>() {
+                @Override
+                public GPushButton answer(InvocationOnMock invocation) throws Throwable {
+                    return new GPushButtonImpl();
+                }
+            });
+            when(labelProvider.get()).thenAnswer(new Answer<GLabel>() {
+                @Override
+                public GLabel answer(InvocationOnMock invocation) throws Throwable {
+                    return new GLabelImpl();
+                }
+            });
+            when(textBoxProvider.get()).thenAnswer(new Answer<GTextBox>() {
+                @Override
+                public GTextBox answer(InvocationOnMock invocation) throws Throwable {
+                    return new GTextBoxImpl();
+                }
+            });
+
+            Element element = mock(Element.class);
+            when(element.getName()).thenReturn("Element1");
+
+            Property property = new Property();
+            property.setName("Property1");
+            property.setType(Property.Type.INTEGER);
+            property.setValue("10");
+
+            when(element.getProperties()).thenReturn(new HashSet<>(Arrays.asList(property)));
+
+            Connection connection = mock(Connection.class);
+            when(connection.getName()).thenReturn("Connection1");
+
+            when(configurationFactory.getInstance(any(ConfigurationFactory.ConfigurationPaths.class))).thenReturn(configuration);
+
+            when(configuration.getDiagramConfiguration().getElements()).thenReturn(new HashSet<>(Arrays.asList(element)));
+            when(configuration.getDiagramConfiguration().getConnections()).thenReturn(new HashSet<>(Arrays.asList(connection)));
+
+            properties = new Properties();
+
+            properties.put(TARGET_PATH.name(), temporaryFolder.getRoot().getAbsolutePath() + "/testProject");
+            properties.put(MAVEN_ARTIFACT_ID.name(), "maven_artifact_id");
+            properties.put(MAVEN_GROUP_ID.name(), "maven_group_id");
+            properties.put(MAVEN_ARTIFACT_NAME.name(), "maven_artifact_name");
+            properties.put(GenerationController.Param.EDITOR_NAME.name(), "EditorName");
+            properties.put(MAIN_PACKAGE.name(), "my.package");
+            properties.put(TEMPLATE_PATH.name(), "target/classes/template.zip");
+
+            clientFolder = prepareClientFolderPath();
+
+            generator.generate(properties, configurationFactory);
+        }
+
+        protected Properties getProperties() {
+            return properties;
+        }
+
+        protected SourceCodeGenerator getGenerator() {
+            return generator;
+        }
+
+        protected String getClientFolder() {
+            return clientFolder;
+        }
+
+        @Nonnull
+        private String prepareClientFolderPath() {
+            String packageName = generatorRule.getProperties().getProperty(MAIN_PACKAGE.name());
+            String targetPath = generatorRule.getProperties().getProperty(TARGET_PATH.name());
+
+            String mainPackageFolder = convertPathToPackageName(packageName);
+            String javaFolder = targetPath + MAIN_SOURCE_PATH + File.separator + JAVA_SOURCE_PATH;
+            String clientPackageFolder = mainPackageFolder + File.separator + CLIENT_PART_FOLDER;
+
+            return javaFolder + File.separator + clientPackageFolder;
+        }
+    }
+
+    @Nonnull
+    private String convertPathToPackageName(@Nonnull String packagePath) {
+        return packagePath.replace('.', '/');
+    }
 }

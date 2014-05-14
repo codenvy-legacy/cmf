@@ -1,0 +1,39 @@
+package my.package.client;
+
+import com.codenvy.editor.api.editor.AbstractEditor;
+import com.codenvy.editor.api.editor.EditorState;
+import com.codenvy.editor.api.editor.EditorView;
+import com.codenvy.editor.api.editor.SelectionManager;
+import com.codenvy.editor.api.editor.propertiespanel.PropertiesPanelManager;
+import com.codenvy.editor.api.editor.propertiespanel.empty.EmptyPropertiesPanelPresenter;
+import com.google.inject.Inject;
+import my.package.client.elements.Element1;
+import my.package.client.inject.EditorFactory;
+import my.package.client.propertiespanel.element1.Element1PropertiesPanelPresenter;
+
+public class EditorName extends AbstractEditor implements EditorView.ActionDelegate {
+
+    @Inject
+    public EditorName(EditorView view, EditorFactory editorFactory, SelectionManager selectionManager, EmptyPropertiesPanelPresenter emptyPropertiesPanelPresenter, Element1PropertiesPanelPresenter element1PropertiesPanelPresenter) {
+        super(view);
+
+        EditorState<State> state = new EditorState<>(State.CREATING_NOTING);
+
+        this.workspace = editorFactory.createWorkspace(state, selectionManager);
+        this.toolbar = editorFactory.createToolbar(state);
+        PropertiesPanelManager propertiesPanelManager = editorFactory.createPropertiesPanelManager(view.getPropertiesPanel());
+        propertiesPanelManager.register(null, emptyPropertiesPanelPresenter);
+        propertiesPanelManager.register(Element1.class, element1PropertiesPanelPresenter);
+        selectionManager.addListener(propertiesPanelManager);
+    }
+
+    @Override
+    public String serialize() {
+        return "";
+    }
+
+    @Override
+    public void deserialize(String content) {
+    }
+
+}

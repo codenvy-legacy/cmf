@@ -1,0 +1,102 @@
+package my.package.client.workspace;
+
+import my.package.client.State;
+
+import com.codenvy.editor.api.editor.EditorState;
+import com.codenvy.editor.api.editor.SelectionManager;
+import com.codenvy.editor.api.editor.elements.Element;
+import com.codenvy.editor.api.editor.elements.MainElement;
+import com.codenvy.editor.api.editor.elements.Shape;
+import com.codenvy.editor.api.editor.workspace.AbstractWorkspacePresenter;
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
+
+import javax.annotation.Nonnull;
+
+import my.package.client.elements.Element1;
+import my.package.client.elements.Connection1;
+
+
+import static my.package.client.State.CREATING_NOTING;
+import static my.package.client.State.CREATING_ELEMENT1;
+import static my.package.client.State.CREATING_CONNECTION1_SOURCE;
+import static my.package.client.State.CREATING_CONNECTION1_TARGET;
+
+
+public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
+
+    @Inject
+    public WorkspacePresenter(WorkspaceView view, @Assisted EditorState<State> state, @Assisted SelectionManager selectionManager) {
+        super(view, state, new MainElement(), selectionManager);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onRightMouseButtonClicked(int x, int y) {
+
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onLeftMouseButtonClicked(int x, int y) {
+        selectionManager.setElement(null);
+
+        switch (getState()) {
+                        case CREATING_ELEMENT1:
+                Element1 element1 = new Element1();
+
+                ((WorkspaceView)view).addElement1(x, y, element1);
+                addElement(element1);
+
+                setState(CREATING_NOTING);
+                break;
+
+        }
+    }
+
+    private void addElement(Element element) {
+        elements.put(element.getId(), element);
+
+        Shape parent = (Shape)elements.get(selectedElement);
+        parent.addElement(element);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onMouseMoved(int x, int y) {
+
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onDiagramElementClicked(@Nonnull String elementId) {
+        String prevSelectedElement = selectedElement;
+        selectedElement = elementId;
+
+        Element element = elements.get(elementId);
+        selectionManager.setElement(element);
+
+        Element source;
+        Shape parent;
+
+        switch (getState()) {
+                        case CREATING_CONNECTION1_SOURCE:
+                setState(CREATING_CONNECTION1_TARGET);
+                break;
+            case CREATING_CONNECTION1_TARGET:
+                ((WorkspaceView)view).addConnection1(prevSelectedElement, selectedElement);
+                source = elements.get(prevSelectedElement);
+                Connection1 connection1 = new Connection1((Shape)source, (Shape)element);
+                elements.put(element.getId(), element);
+
+                parent = source.getParent();
+                if (parent != null) {
+                    parent.addElement(connection1);
+                }
+                setState(CREATING_NOTING);
+                break;
+
+        }
+    }
+
+}

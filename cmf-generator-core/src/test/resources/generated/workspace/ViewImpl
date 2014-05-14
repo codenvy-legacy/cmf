@@ -1,0 +1,105 @@
+package my.package.client.workspace;
+
+import com.allen_sauer.gwt.dnd.client.PickupDragController;
+import com.codenvy.editor.api.editor.elements.Shape;
+import com.codenvy.editor.api.editor.elements.widgets.shape.ShapeWidget;
+import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.ContextMenuEvent;
+import com.google.gwt.event.dom.client.ContextMenuHandler;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.event.dom.client.MouseMoveEvent;
+import com.google.gwt.event.dom.client.MouseMoveHandler;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
+import com.orange.links.client.DiagramController;
+import java.util.HashMap;
+import java.util.Map;
+import my.package.client.elements.Element1;
+
+public class WorkspaceViewImpl extends WorkspaceView {
+
+    @UiField
+    FlowPanel mainPanel;
+    private DiagramController controller;
+    private PickupDragController dragController;
+    private Provider<ShapeWidget> widgetProvider;
+    private Map<String, Widget> elements;
+
+    @Inject
+    public WorkspaceViewImpl(WorkspaceViewImplUiBinder ourUiBinder, Provider<ShapeWidget> widgetProvider) {
+        this.widgetProvider = widgetProvider;
+        this.elements = new HashMap<>();
+
+        widget = ourUiBinder.createAndBindUi(this);
+
+        controller = new DiagramController(400, 400);
+        mainPanel.add(controller.getView());
+        controller.showGrid(true);
+
+        dragController = new PickupDragController(controller.getView(), true);
+        controller.registerDragController(dragController);
+
+        bind();
+    }
+
+    private void bind() {
+        mainPanel.addDomHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                delegate.onLeftMouseButtonClicked(event.getClientX(), event.getClientY());
+            }
+        }, ClickEvent.getType());
+
+        mainPanel.addDomHandler(new ContextMenuHandler() {
+            @Override
+            public void onContextMenu(ContextMenuEvent event) {
+                NativeEvent nativeEvent = event.getNativeEvent();
+                delegate.onRightMouseButtonClicked(nativeEvent.getClientX(), nativeEvent.getClientY());
+            }
+        }, ContextMenuEvent.getType());
+
+        mainPanel.addDomHandler(new MouseMoveHandler() {
+            @Override
+            public void onMouseMove(MouseMoveEvent event) {
+                delegate.onMouseMoved(event.getClientX(), event.getClientY());
+            }
+        }, MouseMoveEvent.getType());
+    }
+
+    private void addElement(int x, int y, final Shape element) {
+        ShapeWidget elementWidget = widgetProvider.get();
+
+        elementWidget.setTitle(element.getTitle());
+        elementWidget.addDomHandler(new MouseDownHandler() {
+            @Override
+            public void onMouseDown(MouseDownEvent event) {
+                delegate.onDiagramElementClicked(element.getId());
+            }
+        }, MouseDownEvent.getType());
+
+        controller.addWidget(elementWidget, x - 60, y);
+        dragController.makeDraggable(elementWidget);
+
+        elements.put(element.getId(), elementWidget);
+    }
+
+    @Override
+    public void addElement1(int x, int y, Element1 element) {
+        addElement(x, y, element);
+    }
+
+    @Override
+    public void addConnection1(String sourceElementID, String targetElementID) {
+        Widget sourceWidget = elements.get(sourceElementID);
+        Widget targetWidget = elements.get(targetElementID);
+
+        controller.drawStraightArrowConnection(sourceWidget, targetWidget);
+    }
+
+}

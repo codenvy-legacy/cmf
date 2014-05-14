@@ -1,0 +1,9 @@
+package my.package.client;
+
+import com.google.gwt.resources.client.CssResource;
+
+public interface EditorCSS extends CssResource {
+
+    String fullSize();
+
+}

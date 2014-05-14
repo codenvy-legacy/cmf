@@ -1,0 +1,10 @@
+package my.package.client;
+
+public enum State {
+
+    CREATING_NOTING,
+    CREATING_ELEMENT1,
+    CREATING_CONNECTION1_SOURCE,
+    CREATING_CONNECTION1_TARGET
+
+}

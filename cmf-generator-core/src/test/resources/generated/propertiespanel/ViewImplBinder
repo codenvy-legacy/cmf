@@ -1,0 +1,8 @@
+package my.package.client.propertiespanel.element1;
+
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.user.client.ui.Widget;
+
+public interface Element1PropertiesPanelViewImplUiBinder extends UiBinder<Widget, Element1PropertiesPanelViewImpl> {
+
+}

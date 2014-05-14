@@ -1,0 +1,26 @@
+package my.package.client.propertiespanel.element1;
+
+import com.codenvy.editor.api.editor.propertiespanel.AbstractPropertiesPanel;
+import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import com.google.inject.Inject;
+import my.package.client.elements.Element1;
+
+public class Element1PropertiesPanelPresenter extends AbstractPropertiesPanel<Element1> implements ActionDelegate {
+
+    @Inject
+    public Element1PropertiesPanelPresenter(Element1PropertiesPanelView view) {
+        super(view);
+    }
+
+    @Override
+    public void onProperty1Changed() {
+        element.setProperty1(((Element1PropertiesPanelView)view).getProperty1());
+    }
+
+    @Override
+    public void go(AcceptsOneWidget container) {
+        super.go(container);
+        ((Element1PropertiesPanelView)view).setProperty1(element.getProperty1());
+    }
+
+}

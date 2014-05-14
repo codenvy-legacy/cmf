@@ -1,0 +1,34 @@
+package my.package.client.toolbar;
+
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.PushButton;
+import com.google.inject.Inject;
+import my.package.client.EditorResources;
+
+public class ToolbarViewImpl extends ToolbarView {
+
+    @UiField(provided = true)
+    PushButton element1;
+    @UiField(provided = true)
+    PushButton connection1;
+
+    @Inject
+    public ToolbarViewImpl(ToolbarViewImplUiBinder ourUiBinder, EditorResources resources) {
+        element1 = new PushButton();
+        connection1 = new PushButton();
+        widget = ourUiBinder.createAndBindUi(this);
+    }
+
+    @UiHandler("element1")
+    public void onElement1ButtonClicked(ClickEvent event) {
+        delegate.onElement1ButtonClicked();
+    }
+
+    @UiHandler("connection1")
+    public void onConnection1ButtonClicked(ClickEvent event) {
+        delegate.onConnection1ButtonClicked();
+    }
+
+}

@@ -1,0 +1,34 @@
+package my.package.client.propertiespanel.element1;
+
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.inject.Inject;
+
+public class Element1PropertiesPanelViewImpl extends Element1PropertiesPanelView {
+
+    @UiField
+    TextBox property1;
+
+    @Inject
+    public Element1PropertiesPanelViewImpl(Element1PropertiesPanelViewImplUiBinder ourUiBinder) {
+        widget = ourUiBinder.createAndBindUi(this);
+    }
+
+    @Override
+    public Integer getProperty1() {
+        return Integer.valueOf(property1.getText());
+    }
+
+    @Override
+    public void setProperty1(Integer property1) {
+        this.property1.setText(property1.toString());
+    }
+
+    @UiHandler("property1")
+    public void onProperty1Changed(KeyUpEvent event) {
+        delegate.onProperty1Changed();
+    }
+
+}

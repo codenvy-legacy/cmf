@@ -1,0 +1,13 @@
+package my.package.client.propertiespanel.element1;
+
+import com.codenvy.editor.api.mvp.AbstractView;
+import com.google.inject.ImplementedBy;
+
+@ImplementedBy(Element1PropertiesPanelViewImpl.class)
+public abstract class Element1PropertiesPanelView extends AbstractView<ActionDelegate> {
+
+    public abstract Integer getProperty1();
+
+    public abstract void setProperty1(Integer property1);
+
+}

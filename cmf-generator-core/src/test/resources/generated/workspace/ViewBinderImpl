@@ -1,0 +1,8 @@
+package my.package.client.workspace;
+
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.user.client.ui.Widget;
+
+public interface WorkspaceViewImplUiBinder extends UiBinder<Widget, WorkspaceViewImpl> {
+
+}

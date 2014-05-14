@@ -1,0 +1,9 @@
+package my.package.client.propertiespanel.element1;
+
+import com.codenvy.editor.api.mvp.AbstractView;
+
+public interface ActionDelegate extends AbstractView.ActionDelegate {
+
+    void onProperty1Changed();
+
+}

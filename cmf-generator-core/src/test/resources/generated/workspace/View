@@ -1,0 +1,14 @@
+package my.package.client.workspace;
+
+import com.codenvy.editor.api.editor.workspace.AbstractWorkspaceView;
+import com.google.inject.ImplementedBy;
+import my.package.client.elements.Element1;
+
+@ImplementedBy(WorkspaceViewImpl.class)
+public abstract class WorkspaceView extends AbstractWorkspaceView {
+
+    public abstract void addElement1(int x, int y, Element1 element);
+
+    public abstract void addConnection1(String sourceElementID, String targetElementID);
+
+}

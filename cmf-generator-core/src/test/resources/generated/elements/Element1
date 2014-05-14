@@ -1,0 +1,22 @@
+package my.package.client.elements;
+
+import com.codenvy.editor.api.editor.elements.AbstractShape;
+
+public class Element1 extends AbstractShape {
+
+    private Integer property1;
+
+    public Element1() {
+        super();
+        property1 = 10;
+    }
+
+    public Integer getProperty1() {
+        return property1;
+    }
+
+    public void setProperty1(Integer property1) {
+        this.property1 = property1;
+    }
+
+}

@@ -1,0 +1,8 @@
+package my.package.client.toolbar;
+
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.user.client.ui.Widget;
+
+public interface ToolbarViewImplUiBinder extends UiBinder<Widget, ToolbarViewImpl> {
+
+}

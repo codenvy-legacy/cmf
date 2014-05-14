@@ -1,0 +1,9 @@
+package my.package.client.toolbar;
+
+import com.codenvy.editor.api.mvp.AbstractView;
+import com.google.inject.ImplementedBy;
+
+@ImplementedBy(ToolbarViewImpl.class)
+public abstract class ToolbarView extends AbstractView<ActionDelegate> {
+
+}

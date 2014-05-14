@@ -1,0 +1,11 @@
+package my.package.client.toolbar;
+
+import com.codenvy.editor.api.mvp.AbstractView;
+
+public interface ActionDelegate extends AbstractView.ActionDelegate {
+
+    void onElement1ButtonClicked();
+
+    void onConnection1ButtonClicked();
+
+}

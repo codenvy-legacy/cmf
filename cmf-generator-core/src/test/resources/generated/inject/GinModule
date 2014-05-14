@@ -1,0 +1,13 @@
+package my.package.client.inject;
+
+import com.google.gwt.inject.client.AbstractGinModule;
+import com.google.gwt.inject.client.assistedinject.GinFactoryModuleBuilder;
+
+public class GinModule extends AbstractGinModule {
+
+    @Override
+    protected void configure() {
+        install(new GinFactoryModuleBuilder().build(EditorFactory.class));
+    }
+
+}

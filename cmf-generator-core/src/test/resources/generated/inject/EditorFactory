@@ -1,0 +1,19 @@
+package my.package.client.inject;
+
+import com.codenvy.editor.api.editor.EditorState;
+import com.codenvy.editor.api.editor.SelectionManager;
+import com.codenvy.editor.api.editor.propertiespanel.PropertiesPanelManager;
+import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import my.package.client.State;
+import my.package.client.toolbar.ToolbarPresenter;
+import my.package.client.workspace.WorkspacePresenter;
+
+public interface EditorFactory {
+
+    ToolbarPresenter createToolbar(EditorState<State> editorState);
+
+    WorkspacePresenter createWorkspace(EditorState<State> editorState, SelectionManager selectionManager);
+
+    PropertiesPanelManager createPropertiesPanelManager(AcceptsOneWidget container);
+
+}
