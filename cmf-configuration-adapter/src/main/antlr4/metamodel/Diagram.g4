@@ -19,16 +19,21 @@ grammar Diagram;
 import Common;
 
 diagram                 :
+                            elements
+                            connections?
+                        ;
+elements                :
                             'Elements'
                             BEGIN
                                 element+
                             END
-                            (
-                                'Connections'
-                                 BEGIN
-                                    connection+
-                                 END
-                            )?
+                        ;
+
+connections              :
+                            'Connections'
+                            BEGIN
+                                connection+
+                            END
                         ;
 
 element                 :
@@ -37,6 +42,7 @@ element                 :
                                 elementBody
                             END
                         ;
+
 connection              :
                             connectionName
                             BEGIN
@@ -46,18 +52,18 @@ connection              :
 
 connectionBody          :
                             connectionType
-                            'Pairs'
-                            BEGIN
-                                (
-                                    BEGIN
-                                        connectionPair
-                                    END
-                                )+
-                            END
+                            connectionPairs
                         ;
 
 connectionName          :
                             TEXT
+                        ;
+
+connectionPairs         :
+                            'Pairs'
+                            BEGIN
+                                connectionPair+
+                            END
                         ;
 
 connectionType          :   'Type'
@@ -66,14 +72,10 @@ connectionType          :   'Type'
                             END
                         ;
 
-CONNECTION_TYPE         :
-                            'DIRECTED'      |
-                            'NONDIRECTED'   |
-                            'POSITIONAL'
-                        ;
-
 connectionPair          :
-                            connectionStart '<>' connectionFinish
+                            BEGIN
+                                connectionStart '<>' connectionFinish
+                            END
                         ;
 
 connectionStart         :
@@ -94,16 +96,14 @@ elementBody             :
 elementComponents       :
                             'Components'
                             BEGIN
-                                (
-                                    BEGIN
-                                        elementComponent
-                                    END
-                                )+
+                                elementComponent+
                             END
                         ;
 
 elementComponent        :
-                            TEXT
+                            BEGIN
+                                TEXT
+                            END
                         ;
 
 elementName             :
@@ -125,14 +125,8 @@ elementProperty         :
                         ;
 
 propertyBody             :
-                            'Type'
-                            BEGIN
-                                propertyType
-                            END
-                            'Value'
-                            BEGIN
-                                propertyValue
-                            END
+                            propertyType
+                            propertyValue?
                         ;
 
 propertyName            :
@@ -140,6 +134,38 @@ propertyName            :
                         ;
 
 propertyType            :
+                            'Type'
+                            BEGIN
+                                PROPERTY_TYPE
+                            END
+                        ;
+
+propertyValue           :
+                            'Value'
+                            BEGIN
+                                TEXT
+                            END
+                        ;
+
+elementRelation         :
+                            'Relation'
+                            BEGIN
+                               RELATION
+                            END
+                        ;
+
+RELATION                :
+                            'SINGLE'    |
+                            'single'    |
+                            'MULTIPLE'  |
+                            'multiple'
+                        ;
+CONNECTION_TYPE         :
+                            'DIRECTED'      |
+                            'NONDIRECTED'   |
+                            'POSITIONAL'
+                        ;
+PROPERTY_TYPE           :
                             'BOOLEAN'   |
                             'boolean'   |
 
@@ -151,22 +177,4 @@ propertyType            :
 
                             'STRING'    |
                             'string'
-                        ;
-
-propertyValue           :
-                            TEXT
-                        ;
-
-elementRelation         :
-                            'Relation'
-                             BEGIN
-                                RELATION
-                             END
-                        ;
-
-RELATION                :
-                            'SINGLE'    |
-                            'single'    |
-                            'MULTIPLE'  |
-                            'multiple'
-                        ;
+                         ;

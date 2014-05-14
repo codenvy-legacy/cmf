@@ -85,7 +85,7 @@ public class DiagramConfigurationAdapterListener extends DiagramBaseListener {
 
     @Override
     public void exitPropertyType(@NotNull DiagramParser.PropertyTypeContext ctx) {
-        propertyStack.peek().setType(Property.Type.valueOf(ctx.getText()));
+        propertyStack.peek().setType(Property.Type.valueOf(ctx.PROPERTY_TYPE().getText()));
     }
 
     @Override
