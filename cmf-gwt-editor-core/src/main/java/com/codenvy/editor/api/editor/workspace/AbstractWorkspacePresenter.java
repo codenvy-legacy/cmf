@@ -23,7 +23,9 @@ import com.codenvy.editor.api.editor.elements.Shape;
 import com.codenvy.editor.api.mvp.AbstractPresenter;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -35,10 +37,11 @@ public abstract class AbstractWorkspacePresenter<T> extends AbstractPresenter im
 
     private EditorState<T> state;
 
-    protected       String               selectedElement;
-    protected final Shape                mainElement;
-    protected       SelectionManager     selectionManager;
-    protected       Map<String, Element> elements;
+    protected       String                      selectedElement;
+    protected final Shape                       mainElement;
+    protected       SelectionManager            selectionManager;
+    protected final Map<String, Element>        elements;
+    private final   List<DiagramChangeListener> listeners;
 
     protected AbstractWorkspacePresenter(@Nonnull AbstractWorkspaceView view,
                                          @Nonnull EditorState<T> state,
@@ -50,6 +53,7 @@ public abstract class AbstractWorkspacePresenter<T> extends AbstractPresenter im
         this.selectionManager = selectionManager;
         this.mainElement = mainElement;
         this.elements = new HashMap<>();
+        this.listeners = new ArrayList<>();
     }
 
     /** {@inheritDoc} */
@@ -63,6 +67,31 @@ public abstract class AbstractWorkspacePresenter<T> extends AbstractPresenter im
     @Override
     public void setState(@Nonnull T state) {
         this.state.setState(state);
+    }
+
+    @Nonnull
+    public Shape getMainElement() {
+        return mainElement;
+    }
+
+    public void addListener(@Nonnull DiagramChangeListener listener) {
+        listeners.add(listener);
+    }
+
+    public void removeListener(@Nonnull DiagramChangeListener listener) {
+        listeners.remove(listener);
+    }
+
+    public void notifyListeners() {
+        for (DiagramChangeListener listener : listeners) {
+            listener.onChanged();
+        }
+    }
+
+    public interface DiagramChangeListener {
+
+        void onChanged();
+
     }
 
 }

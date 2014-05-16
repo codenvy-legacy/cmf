@@ -59,14 +59,14 @@ public class EditorPresenter extends AbstractEditor implements EditorView.Action
         propertiesPanelManager.register(null, emptyPropertiesPanelPresenter);
 
         selectionManager.addListener(propertiesPanelManager);
+        workspace.addListener(this);
     }
 
     /** {@inheritDoc} */
     @Nonnull
     @Override
     public String serialize() {
-        // TODO add serialize
-        return "";
+        return workspace.getMainElement().serialize();
     }
 
     /** {@inheritDoc} */

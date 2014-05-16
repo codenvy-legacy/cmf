@@ -20,36 +20,30 @@ import com.codenvy.editor.api.editor.elements.Shape;
 
 import javax.annotation.Nonnull;
 
-import static com.codenvy.editor.client.elements.link1.Link1.Color.GREEN;
-
 /**
  * @author Andrey Plotnikov
  */
 public class Link1 extends AbstractLink {
 
-    public enum Color {
-        RED, GREEN, BLUE
-    }
-
-    private Color color;
+    private String color;
 
     public Link1(@Nonnull Shape source, @Nonnull Shape target) {
-        this(target, source, GREEN);
+        this(target, source, "GREEN");
     }
 
-    public Link1(@Nonnull Shape source, @Nonnull Shape target, @Nonnull Color color) {
-        super(source, target);
+    public Link1(@Nonnull Shape source, @Nonnull Shape target, @Nonnull String color) {
+        super(source, target, "Link1");
 
         this.color = color;
     }
 
     // Some additional param
     @Nonnull
-    public Color getColor() {
+    public String getColor() {
         return color;
     }
 
-    public void setColor(@Nonnull Color color) {
+    public void setColor(@Nonnull String color) {
         this.color = color;
     }
 

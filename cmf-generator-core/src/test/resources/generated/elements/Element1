@@ -7,7 +7,7 @@ public class Element1 extends AbstractShape {
     private Integer property1;
 
     public Element1() {
-        super();
+        super("Element1");
         property1 = 10;
     }
 
@@ -17,6 +17,15 @@ public class Element1 extends AbstractShape {
 
     public void setProperty1(Integer property1) {
         this.property1 = property1;
+    }
+
+    @Override
+    protected String serializeProperties() {
+        StringBuilder properties = new StringBuilder();
+        properties.append("<").append("Property1").append(">\n")
+        .append(property1).append("\n")
+        .append("</").append("Property1").append(">\n");
+        return properties.toString();
     }
 
 }

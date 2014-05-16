@@ -20,18 +20,22 @@
 
     <ui:style>
         .background {
-            background: greenyellow;
+            background: burlywood;
         }
     </ui:style>
 
-    <g:DockLayoutPanel unit="PX" width="100px" height="50px" styleName="{style.background}">
+    <g:DockLayoutPanel unit="PX" width="52px" height="70px" styleName="{style.background}">
 
-        <g:north size="25">
+        <g:south size="20">
             <g:Label ui:field="title"/>
-        </g:north>
+        </g:south>
+
+        <g:south size="5">
+            <g:Label ui:field="body"/>
+        </g:south>
 
         <g:center>
-            <g:Label ui:field="body"/>
+            <g:Image ui:field="icon"/>
         </g:center>
 
     </g:DockLayoutPanel>

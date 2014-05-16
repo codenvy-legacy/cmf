@@ -28,5 +28,4 @@ public class ToolbarPresenter extends AbstractToolbarPresenter<State> implements
         setState(CREATING_CONNECTION1_SOURCE);
     }
 
-
 }

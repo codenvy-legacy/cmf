@@ -43,6 +43,7 @@ import java.util.Map;
 
 /**
  * @author Andrey Plotnikov
+ * @author Valeriy Svydenko
  */
 public class WorkspaceViewImpl extends WorkspaceView {
 
@@ -66,7 +67,6 @@ public class WorkspaceViewImpl extends WorkspaceView {
 
         controller = new DiagramController(400, 400);
         mainPanel.add(controller.getView());
-        controller.showGrid(true);
 
         dragController = new PickupDragController(controller.getView(), true);
         controller.registerDragController(dragController);

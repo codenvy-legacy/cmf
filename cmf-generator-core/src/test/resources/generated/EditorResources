@@ -1,10 +1,14 @@
 package my.package.client;
 
 import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.ImageResource;
 
 public interface EditorResources extends ClientBundle {
 
     @Source("editor.css")
     EditorCSS editorCSS();
+
+    @Source("icons/element1.png")
+    ImageResource element1();
 
 }

@@ -16,5 +16,4 @@ public class ToolbarPresenter extends AbstractToolbarPresenter<State> implements
         super(view, editorState);
     }
 
-    change_editor_states
-}
+change_editor_states}

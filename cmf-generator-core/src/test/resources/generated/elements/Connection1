@@ -6,7 +6,7 @@ import com.codenvy.editor.api.editor.elements.Shape;
 public class Connection1 extends AbstractLink {
 
     public Connection1(Shape source, Shape target) {
-        super(source, target);
+        super(source, target, "Connection1");
     }
 
 }

@@ -1,6 +1,6 @@
-package my.package.client.toolbar;
+package current_package;
 
-import my.package.client.EditorResources;
+import main_package.client.EditorResources;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -15,27 +15,11 @@ public class ToolbarViewImpl extends ToolbarView {
     interface ToolbarViewImplUiBinder extends UiBinder<Widget, ToolbarViewImpl> {
     }
 
-    @UiField(provided = true)
-    PushButton element1;
-    @UiField(provided = true)
-    PushButton connection1;
-
+ui_fields
     @Inject
     public ToolbarViewImpl(ToolbarViewImplUiBinder ourUiBinder, EditorResources resources) {
-        element1 = new PushButton(new Image(resources.element1()));
-        connection1 = new PushButton(new Image(resources.connection1()));
-
+fields_initialize
         widget = ourUiBinder.createAndBindUi(this);
     }
 
-    @UiHandler("element1")
-    public void onElement1ButtonClicked(ClickEvent event) {
-        delegate.onElement1ButtonClicked();
-    }
-
-    @UiHandler("connection1")
-    public void onConnection1ButtonClicked(ClickEvent event) {
-        delegate.onConnection1ButtonClicked();
-    }
-
-}
+action_delegates}

@@ -27,8 +27,8 @@ public abstract class AbstractLink extends AbstractElement implements Link {
     private Shape source;
     private Shape target;
 
-    protected AbstractLink(@Nonnull Shape source, @Nonnull Shape target) {
-        super();
+    protected AbstractLink(@Nonnull Shape source, @Nonnull Shape target, @Nonnull String elementName) {
+        super(elementName);
 
         this.source = source;
         this.target = target;
@@ -58,6 +58,14 @@ public abstract class AbstractLink extends AbstractElement implements Link {
     @Override
     public void setTarget(@Nonnull Shape target) {
         this.target = target;
+    }
+
+    /** {@inheritDoc} */
+    @Nonnull
+    @Override
+    public String serialize() {
+        // TODO It is not implemented for now.
+        return "";
     }
 
 }

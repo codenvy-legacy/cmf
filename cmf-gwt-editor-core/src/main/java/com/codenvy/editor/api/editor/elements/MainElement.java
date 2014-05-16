@@ -23,4 +23,8 @@ package com.codenvy.editor.api.editor.elements;
  */
 public class MainElement extends AbstractShape {
 
+    public MainElement() {
+        super("MainElement");
+    }
+
 }

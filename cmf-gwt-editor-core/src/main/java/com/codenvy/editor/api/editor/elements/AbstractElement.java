@@ -30,9 +30,11 @@ public abstract class AbstractElement implements Element {
     private final String id;
     private       Shape  parent;
     private       String title;
+    private       String elementName;
 
-    protected AbstractElement() {
-        this.title = getClass().getSimpleName() + ' ' + INDEX++;
+    protected AbstractElement(String elementName) {
+        this.elementName = elementName;
+        this.title = elementName + '_' + INDEX++;
         id = UUID.get();
     }
 
@@ -67,6 +69,12 @@ public abstract class AbstractElement implements Element {
     @Override
     public void setParent(@Nullable Shape parent) {
         this.parent = parent;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getElementName() {
+        return elementName;
     }
 
 }

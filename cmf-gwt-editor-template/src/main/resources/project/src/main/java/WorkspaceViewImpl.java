@@ -1,12 +1,10 @@
-package my.package.client.workspace;
+package current_package;
 
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.codenvy.editor.api.editor.elements.Shape;
 import com.codenvy.editor.api.editor.elements.widgets.shape.ShapeWidget;
 import com.codenvy.ide.client.EditorResources;
-import my.package.client.elements.Element1;
-import my.package.client.elements.Connection1;
-
+import_elements
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -103,16 +101,4 @@ public class WorkspaceViewImpl extends WorkspaceView {
         elements.put(element.getId(), elementWidget);
     }
 
-    @Override
-    public void addElement1(int x, int y,Element1 element) {
-        addElement(x, y, element, resources.element1());
-    }
-
-    @Override
-    public void addConnection1(String sourceElementID, String targetElementID) {
-        Widget sourceWidget = elements.get(sourceElementID);
-        Widget targetWidget = elements.get(targetElementID);
-        controller.drawStraightArrowConnection(sourceWidget, targetWidget);
-    }
-
-}
+action_delegates}

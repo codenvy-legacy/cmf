@@ -25,6 +25,7 @@ import javax.annotation.Nullable;
  * @author Andrey Plotnikov
  */
 public interface Element {
+
     /**
      * @return an unique element identifier. All instances of elements will have an unique identifier. This means that anyone can find
      * needed diagram element.
@@ -55,5 +56,15 @@ public interface Element {
      *         parent that needs to be applied
      */
     void setParent(@Nullable Shape parent);
+
+    String getElementName();
+
+    /**
+     * Serialize diagram element with all inner elements.
+     *
+     * @return serialized view of diagram element
+     */
+    @Nonnull
+    String serialize();
 
 }

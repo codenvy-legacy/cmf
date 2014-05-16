@@ -16,18 +16,19 @@ import javax.annotation.Nonnull;
 import my.package.client.elements.Element1;
 import my.package.client.elements.Connection1;
 
-
 import static my.package.client.State.CREATING_NOTING;
 import static my.package.client.State.CREATING_ELEMENT1;
 import static my.package.client.State.CREATING_CONNECTION1_SOURCE;
 import static my.package.client.State.CREATING_CONNECTION1_TARGET;
-
 
 public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
 
     @Inject
     public WorkspacePresenter(WorkspaceView view, @Assisted EditorState<State> state, @Assisted SelectionManager selectionManager) {
         super(view, state, new MainElement(), selectionManager);
+
+        selectedElement = mainElement.getId();
+        elements.put(selectedElement, mainElement);
     }
 
     /** {@inheritDoc} */
@@ -42,7 +43,7 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
         selectionManager.setElement(null);
 
         switch (getState()) {
-                        case CREATING_ELEMENT1:
+            case CREATING_ELEMENT1:
                 Element1 element1 = new Element1();
 
                 ((WorkspaceView)view).addElement1(x, y, element1);
@@ -50,8 +51,9 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
 
                 setState(CREATING_NOTING);
                 break;
-
         }
+        
+        notifyListeners();
     }
 
     private void addElement(Element element) {
@@ -80,7 +82,7 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
         Shape parent;
 
         switch (getState()) {
-                        case CREATING_CONNECTION1_SOURCE:
+            case CREATING_CONNECTION1_SOURCE:
                 setState(CREATING_CONNECTION1_TARGET);
                 break;
             case CREATING_CONNECTION1_TARGET:
@@ -95,8 +97,9 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
                 }
                 setState(CREATING_NOTING);
                 break;
-
         }
+
+        notifyListeners();
     }
 
 }

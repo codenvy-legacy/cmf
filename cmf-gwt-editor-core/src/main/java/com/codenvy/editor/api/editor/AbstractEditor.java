@@ -21,6 +21,8 @@ import com.codenvy.editor.api.mvp.AbstractPresenter;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -29,13 +31,16 @@ import javax.annotation.Nonnull;
  *
  * @author Andrey Plotnikov
  */
-public abstract class AbstractEditor<T> extends AbstractPresenter {
+public abstract class AbstractEditor<T> extends AbstractPresenter implements AbstractWorkspacePresenter.DiagramChangeListener {
 
-    protected AbstractWorkspacePresenter<T> workspace;
-    protected AbstractToolbarPresenter<T>   toolbar;
+    protected     AbstractWorkspacePresenter<T> workspace;
+    protected     AbstractToolbarPresenter<T>   toolbar;
+    private final List<EditorChangeListener>    listeners;
 
     protected AbstractEditor(@Nonnull EditorView view) {
         super(view);
+
+        listeners = new ArrayList<>();
     }
 
     /** {@inheritDoc} */
@@ -45,6 +50,26 @@ public abstract class AbstractEditor<T> extends AbstractPresenter {
         workspace.go(((EditorView)view).getWorkspacePanel());
 
         super.go(container);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onChanged() {
+        notifyListeners();
+    }
+
+    public void addListener(@Nonnull EditorChangeListener listener) {
+        listeners.add(listener);
+    }
+
+    public void removeListener(@Nonnull EditorChangeListener listener) {
+        listeners.remove(listener);
+    }
+
+    public void notifyListeners() {
+        for (EditorChangeListener listener : listeners) {
+            listener.onChanged();
+        }
     }
 
     /** @return a serialized text type of diagram */
@@ -58,5 +83,11 @@ public abstract class AbstractEditor<T> extends AbstractPresenter {
      *         content that need to be parsed
      */
     public abstract void deserialize(@Nonnull String content);
+
+    public interface EditorChangeListener {
+
+        void onChanged();
+
+    }
 
 }

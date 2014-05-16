@@ -25,11 +25,12 @@ public class EditorName extends AbstractEditor implements EditorView.ActionDeleg
         propertiesPanelManager.register(null, emptyPropertiesPanelPresenter);
         propertiesPanelManager.register(Element1.class, element1PropertiesPanelPresenter);
         selectionManager.addListener(propertiesPanelManager);
+        workspace.addListener(this);
     }
 
     @Override
     public String serialize() {
-        return "";
+        return workspace.getMainElement().serialize();
     }
 
     @Override

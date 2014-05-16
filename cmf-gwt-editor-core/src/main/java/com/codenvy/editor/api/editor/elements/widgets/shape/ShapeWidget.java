@@ -32,9 +32,11 @@ import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.dom.client.MouseWheelEvent;
 import com.google.gwt.event.dom.client.MouseWheelHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -45,6 +47,7 @@ import javax.annotation.Nonnull;
  * The widget that represents a shape diagram element on GWT panel.
  *
  * @author Andrey Plotnikov
+ * @author Valeriy Svydenko
  */
 public class ShapeWidget extends Composite implements HasAllMouseHandlers, HasClickHandlers {
 
@@ -55,6 +58,8 @@ public class ShapeWidget extends Composite implements HasAllMouseHandlers, HasCl
     Label title;
     @UiField
     Label body;
+    @UiField
+    Image icon;
 
     @Inject
     public ShapeWidget(ShapeWidgetUiBinder ourUiBinder) {
@@ -81,6 +86,16 @@ public class ShapeWidget extends Composite implements HasAllMouseHandlers, HasCl
     @Nonnull
     public String getBody() {
         return body.getText();
+    }
+
+    /**
+     * Change icon of element.
+     *
+     * @param resource
+     *         icon that need to be applied
+     */
+    public void setIcon(@Nonnull ImageResource resource) {
+        icon.setResource(resource);
     }
 
     /**

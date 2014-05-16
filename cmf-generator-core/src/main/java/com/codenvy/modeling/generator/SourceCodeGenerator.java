@@ -15,7 +15,6 @@
  */
 package com.codenvy.modeling.generator;
 
-import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.codenvy.editor.api.editor.AbstractEditor;
 import com.codenvy.editor.api.editor.EditorState;
 import com.codenvy.editor.api.editor.EditorView;
@@ -23,7 +22,6 @@ import com.codenvy.editor.api.editor.SelectionManager;
 import com.codenvy.editor.api.editor.elements.AbstractLink;
 import com.codenvy.editor.api.editor.elements.AbstractShape;
 import com.codenvy.editor.api.editor.elements.Shape;
-import com.codenvy.editor.api.editor.elements.widgets.shape.ShapeWidget;
 import com.codenvy.editor.api.editor.propertiespanel.AbstractPropertiesPanel;
 import com.codenvy.editor.api.editor.propertiespanel.PropertiesPanelManager;
 import com.codenvy.editor.api.editor.propertiespanel.empty.EmptyPropertiesPanelPresenter;
@@ -46,36 +44,21 @@ import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GFlowP
 import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GScrollPanel;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.ContextMenuEvent;
-import com.google.gwt.event.dom.client.ContextMenuHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.MouseDownEvent;
-import com.google.gwt.event.dom.client.MouseDownHandler;
-import com.google.gwt.event.dom.client.MouseMoveEvent;
-import com.google.gwt.event.dom.client.MouseMoveHandler;
 import com.google.gwt.inject.client.AbstractGinModule;
 import com.google.gwt.inject.client.GinModules;
 import com.google.gwt.inject.client.Ginjector;
 import com.google.gwt.inject.client.assistedinject.GinFactoryModuleBuilder;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.orange.links.client.DiagramController;
 import com.orange.links.client.utils.LinksClientBundle;
 
 import javax.annotation.Nonnull;
@@ -83,14 +66,15 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -129,6 +113,10 @@ public class SourceCodeGenerator {
     private static final String CREATE_GRAPHIC_ELEMENTS_MASK    = "create_graphic_elements";
     private static final String CREATE_GRAPHIC_CONNECTIONS_MASK = "create_graphic_connections";
     private static final String CHANGE_EDITOR_STATE_MASK        = "change_editor_states";
+    private static final String UI_FIELDS_MASK                  = "ui_fields";
+    private static final String FIELDS_INITIALIZE_MASK          = "fields_initialize";
+    private static final String ACTION_DELEGATE_MASK            = "action_delegates";
+    private static final String ELEMENT_NAME_MASK               = "element_name";
 
     private static final String POM_FILE_FULL_NAME        = "pom.xml";
     private static final String MAIN_HTML_FILE_FULL_NAME  = "Editor.html";
@@ -142,30 +130,29 @@ public class SourceCodeGenerator {
     private static final String CLIENT_PART_FOLDER      = "client";
     private static final String INJECT_FOLDER           = "inject";
     private static final String TOOLBAR_FOLDER          = "toolbar";
+    private static final String ICONS_FOLDER            = "icons";
     private static final String WORKSPACE_FOLDER        = "workspace";
     private static final String PROPERTIES_PANEL_FOLDER = "propertiespanel";
     private static final String ELEMENTS_FOLDER         = "elements";
 
-    private static final String ENTRY_POINT_NAME                       = "EditorEntryPoint";
-    private static final String TOOLBAR_PRESENTER_NAME                 = "ToolbarPresenter";
-    private static final String TOOLBAR_VIEW_NAME                      = "ToolbarView";
-    private static final String TOOLBAR_VIEW_IMPL_BINDER_NAME          = "ToolbarViewImplUiBinder";
-    private static final String TOOLBAR_VIEW_IMPL_NAME                 = "ToolbarViewImpl";
-    private static final String ACTION_DELEGATE_NAME                   = "ActionDelegate";
-    private static final String WORKSPACE_PRESENTER_NAME               = "WorkspacePresenter";
-    private static final String WORKSPACE_VIEW_NAME                    = "WorkspaceView";
-    private static final String WORKSPACE_VIEW_IMPL_NAME               = "WorkspaceViewImpl";
-    private static final String WORKSPACE_VIEW_IMPL_BINDER_NAME        = "WorkspaceViewImplUiBinder";
-    private static final String PROPERTIES_PANEL_PRESENTER_NAME        = "PropertiesPanelPresenter";
-    private static final String PROPERTIES_PANEL_VIEW_NAME             = "PropertiesPanelView";
-    private static final String PROPERTIES_PANEL_VIEW_IMPL_NAME        = "PropertiesPanelViewImpl";
-    private static final String PROPERTIES_PANEL_VIEW_IMPL_BINDER_NAME = "PropertiesPanelViewImplUiBinder";
-    private static final String EDITOR_STATE_NAME                      = "State";
-    private static final String EDITOR_RESOURCES_NAME                  = "EditorResources";
-    private static final String EDITOR_CSS_RESOURCE_NAME               = "EditorCSS";
-    private static final String GIN_MODULE_NAME                        = "GinModule";
-    private static final String GIN_INJECTOR_NAME                      = "Injector";
-    private static final String EDITOR_FACTORY_NAME                    = "EditorFactory";
+    private static final String ENTRY_POINT_NAME                = "EditorEntryPoint";
+    private static final String TOOLBAR_PRESENTER_NAME          = "ToolbarPresenter";
+    private static final String TOOLBAR_VIEW_NAME               = "ToolbarView";
+    private static final String TOOLBAR_VIEW_IMPL_NAME          = "ToolbarViewImpl";
+    private static final String ACTION_DELEGATE_NAME            = "ActionDelegate";
+    private static final String WORKSPACE_PRESENTER_NAME        = "WorkspacePresenter";
+    private static final String WORKSPACE_VIEW_NAME             = "WorkspaceView";
+    private static final String WORKSPACE_VIEW_IMPL_NAME        = "WorkspaceViewImpl";
+    private static final String PROPERTIES_PANEL_PRESENTER_NAME = "PropertiesPanelPresenter";
+    private static final String PROPERTIES_PANEL_VIEW_NAME      = "PropertiesPanelView";
+    private static final String PROPERTIES_PANEL_VIEW_IMPL_NAME = "PropertiesPanelViewImpl";
+    private static final String EDITOR_STATE_NAME               = "State";
+    private static final String EDITOR_RESOURCES_NAME           = "EditorResources";
+    private static final String EDITOR_CSS_RESOURCE_NAME        = "EditorCSS";
+    private static final String EDITOR_IMAGE_RESOURCE           = "ImageResource";
+    private static final String GIN_MODULE_NAME                 = "GinModule";
+    private static final String GIN_INJECTOR_NAME               = "Injector";
+    private static final String EDITOR_FACTORY_NAME             = "EditorFactory";
 
     private static final String CREATE_NOTING_STATE                   = "CREATING_NOTING";
     private static final String CREATE_ELEMENT_STATE_FORMAT           = "CREATING_%s";
@@ -310,10 +297,10 @@ public class SourceCodeGenerator {
 
         createInjectModule(clientFolder, packageName, editorName);
         createElements(clientFolder, packageName, configuration);
-        createMainGWTElements(clientFolder, packageName, editorName, configuration);
+        createMainGWTElements(properties, clientFolder, configuration);
         createWorkspace(javaFolder, clientFolder, packageName, configuration);
         createToolbar(javaFolder, clientFolder, packageName, configuration);
-        createPropertiesPanel(clientFolder, packageName, configuration);
+        createPropertiesPanel(javaFolder, clientFolder, packageName, configuration);
     }
 
     private void createInjectModule(@Nonnull String clientPackageFolder,
@@ -398,7 +385,8 @@ public class SourceCodeGenerator {
             SourceCodeBuilder elementClassBuilder = sourceCodeBuilderProvider
                     .get()
                     .newClass(elementsPackageName + elementName).baseClass(AbstractShape.class);
-            StringBuilder constructor = new StringBuilder("super();\n");
+            StringBuilder constructor = new StringBuilder("super(\"" + elementName + "\");\n");
+            StringBuilder serializePropertiesMethodBody = new StringBuilder("StringBuilder properties = new StringBuilder();\n");
 
             for (Property property : element.getProperties()) {
                 Class javaClass = convertPropertyTypeToJavaClass(property);
@@ -422,13 +410,25 @@ public class SourceCodeGenerator {
                         .addMethod("set" + name)
                         .withMethodAccessLevel(PUBLIC).withMethodArguments(new Argument(javaClass.getSimpleName(), argumentName))
                         .withMethodBody("this." + argumentName + " = " + argumentName + ';');
+
+                serializePropertiesMethodBody.append("properties.append('<').append(\"").append(name).append("\").append(\">\\n\")\n")
+                                             .append(".append(").append(argumentName).append(").append('\\n')\n")
+                                             .append(".append(\"</\").append(\"").append(name).append("\").append(\">\\n\");\n");
             }
+
+            serializePropertiesMethodBody.append("return properties.toString();\n");
+
+            elementClassBuilder
+                    .addMethod("serializeProperties")
+                    .withReturnType(String.class).withMethodAccessLevel(PROTECTED).withMethodAnnotation("@Override")
+                    .withMethodBody(serializePropertiesMethodBody.toString());
 
             elementClassBuilder.addConstructor().withConstructorBody(constructor.toString());
 
             Path elementJavaClassPath = Paths.get(clientPackageFolder, ELEMENTS_FOLDER, elementName + ".java");
             Files.write(elementJavaClassPath, elementClassBuilder.build().getBytes());
         }
+
 
         for (Connection connection : configuration.getDiagramConfiguration().getConnections()) {
             String connectionName = connection.getName();
@@ -440,7 +440,7 @@ public class SourceCodeGenerator {
 
                     .addConstructor(new Argument(Shape.class.getSimpleName(), "source"),
                                     new Argument(Shape.class.getSimpleName(), "target"))
-                    .withConstructorBody("super(source, target);")
+                    .withConstructorBody("super(source, target, \"" + connectionName + "\");")
 
                     .build();
 
@@ -467,10 +467,12 @@ public class SourceCodeGenerator {
         }
     }
 
-    private void createMainGWTElements(@Nonnull String clientPackageFolder,
-                                       @Nonnull String packageName,
-                                       @Nonnull String editorName,
+    private void createMainGWTElements(@Nonnull Properties properties,
+                                       @Nonnull String clientPackageFolder,
                                        @Nonnull Configuration configuration) throws IOException {
+        String packageName = properties.getProperty(MAIN_PACKAGE.name());
+        String editorName = properties.getProperty(EDITOR_NAME.name());
+
         String clientPackage = packageName + '.' + CLIENT_PART_FOLDER + '.';
 
         SourceCodeBuilder editorStateEnum = sourceCodeBuilderProvider
@@ -504,18 +506,31 @@ public class SourceCodeGenerator {
         Path editorCSSResourceJavaClassPath = Paths.get(clientPackageFolder, EDITOR_CSS_RESOURCE_NAME + ".java");
         Files.write(editorCSSResourceJavaClassPath, cssResource.getBytes());
 
-        String editorResources = sourceCodeBuilderProvider
+        SourceCodeBuilder editorResources = sourceCodeBuilderProvider
                 .get()
                 .newClass(clientPackage + EDITOR_RESOURCES_NAME).makeInterface().baseClass(ClientBundle.class)
-
+                .addImport(ImageResource.class)
                 .addMethod("editorCSS")
-                .withReturnType(EDITOR_CSS_RESOURCE_NAME).withMethodAnnotation("@Source(\"editor.css\")").withMethodAccessLevel(DEFAULT)
-                        // TODO It is the place for adding custom icons into client bundle
+                .withReturnType(EDITOR_CSS_RESOURCE_NAME).withMethodAnnotation("@Source(\"editor.css\")").withMethodAccessLevel(DEFAULT);
 
-                .build();
+        String targetPath = properties.getProperty(TARGET_PATH.name());
+        String resourceFolder = targetPath + File.separator + MAIN_SOURCE_PATH + File.separator + RESOURCES_SOURCE_PATH;
+        String mainPackageFolder = resourceFolder + File.separator + convertPathToPackageName(packageName);
+
+        File iconsFolder = Paths.get(mainPackageFolder, CLIENT_PART_FOLDER, ICONS_FOLDER).toFile();
+
+        File[] icons = iconsFolder.listFiles();
+        if (null != icons) {
+            for (File icon : icons) {
+                editorResources.addMethod(changeFirstSymbolToLowCase(icon.getName().substring(0, icon.getName().indexOf('.'))))
+                               .withMethodAccessLevel(DEFAULT)
+                               .withReturnType(EDITOR_IMAGE_RESOURCE)
+                               .withMethodAnnotation("@Source(\"" + ICONS_FOLDER + File.separator + icon.getName() + "\")");
+            }
+        }
 
         Path editorResourcesJavaClassPath = Paths.get(clientPackageFolder, EDITOR_RESOURCES_NAME + ".java");
-        Files.write(editorResourcesJavaClassPath, editorResources.getBytes());
+        Files.write(editorResourcesJavaClassPath, editorResources.build().getBytes());
 
         String entryPointJavaClass = sourceCodeBuilderProvider
                 .get()
@@ -609,14 +624,16 @@ public class SourceCodeGenerator {
 //                           .append(");\n");
 //        }
 
-        constructorBody.append("selectionManager.addListener(propertiesPanelManager);\n");
+        constructorBody.append("selectionManager.addListener(propertiesPanelManager);\n")
+                       .append("workspace.addListener(this);\n");
 
         String editorPresenter = editorPresenterBuilder
                 .addConstructor((Argument[])arguments.toArray(new Argument[arguments.size()]))
                 .withConstructorAnnotation("@Inject")
                 .withConstructorBody(constructorBody.toString())
 
-                .addMethod("serialize").withReturnType(String.class).withMethodAnnotation("@Override").withMethodBody("return \"\";")
+                .addMethod("serialize").withReturnType(String.class).withMethodAnnotation("@Override")
+                .withMethodBody("return workspace.getMainElement().serialize();")
 
                 .addMethod("deserialize").withMethodAnnotation("@Override")
                 .withMethodArguments(new Argument(String.class.getSimpleName(), "content"))
@@ -639,103 +656,12 @@ public class SourceCodeGenerator {
         String workspacePackage = packageName + '.' + CLIENT_PART_FOLDER + '.' + WORKSPACE_FOLDER;
 
         Path workspacePresenterSource = Paths.get(javaFolder, WORKSPACE_PRESENTER_NAME + ".java");
+        Path workspaceViewImplSource = Paths.get(javaFolder, WORKSPACE_VIEW_IMPL_NAME + ".java");
         SourceCodeBuilder workspaceViewBuilder = sourceCodeBuilderProvider
                 .get()
                 .newClass(workspacePackage + '.' + WORKSPACE_VIEW_NAME).withAbstractClassPrefix()
                 .baseClass(AbstractWorkspaceView.class).withClassAnnotation("@ImplementedBy(" + WORKSPACE_VIEW_IMPL_NAME + ".class)")
                 .addImport(ImplementedBy.class);
-
-        SourceCodeBuilder workspaceViewImplBuilder = sourceCodeBuilderProvider
-                .get()
-                .newClass(workspacePackage + '.' + WORKSPACE_VIEW_IMPL_NAME).baseClass(WORKSPACE_VIEW_NAME)
-
-                .addImport(Inject.class)
-                .addImport(Shape.class)
-                .addImport(ShapeWidget.class)
-                .addImport(NativeEvent.class)
-                .addImport(ClickEvent.class)
-                .addImport(ClickHandler.class)
-                .addImport(ContextMenuEvent.class)
-                .addImport(ContextMenuHandler.class)
-                .addImport(MouseDownEvent.class)
-                .addImport(MouseDownHandler.class)
-                .addImport(MouseMoveEvent.class)
-                .addImport(MouseMoveHandler.class)
-                .addImport(UiField.class)
-                .addImport(Provider.class)
-                .addImport(HashMap.class)
-                .addImport(Map.class)
-                .addImport(Widget.class)
-
-                .addField("mainPanel", FlowPanel.class).withFieldAnnotation("@UiField").withFieldAccessLevel(DEFAULT)
-                .addField("controller", DiagramController.class).withFieldAccessLevel(PRIVATE)
-                .addField("dragController", PickupDragController.class).withFieldAccessLevel(PRIVATE)
-                .addField("widgetProvider", "Provider<ShapeWidget>").withFieldAccessLevel(PRIVATE)
-                .addField("elements", "Map<String, Widget>").withFieldAccessLevel(PRIVATE)
-
-                .addConstructor(new Argument("WorkspaceViewImplUiBinder", "ourUiBinder"),
-                                new Argument("Provider<ShapeWidget>", "widgetProvider"))
-                .withConstructorAnnotation("@Inject")
-                .withConstructorBody("this.widgetProvider = widgetProvider;\n" +
-                                     "this.elements = new HashMap<>();\n" +
-                                     "\n" +
-                                     "widget = ourUiBinder.createAndBindUi(this);\n" +
-                                     "\n" +
-                                     "controller = new DiagramController(400, 400);\n" +
-                                     "mainPanel.add(controller.getView());\n" +
-                                     "controller.showGrid(true);\n" +
-                                     "\n" +
-                                     "dragController = new PickupDragController(controller.getView(), true);\n" +
-                                     "controller.registerDragController(dragController);\n" +
-                                     "\n" +
-                                     "bind();")
-
-                .addMethod("bind").withMethodAccessLevel(PRIVATE)
-                .withMethodBody("mainPanel.addDomHandler(new ClickHandler() {\n" +
-                                "    @Override\n" +
-                                "    public void onClick(ClickEvent event) {\n" +
-                                "        delegate.onLeftMouseButtonClicked(event.getClientX(), event.getClientY());\n" +
-                                "    }\n" +
-                                "}, ClickEvent.getType());\n" +
-                                "\n" +
-                                "mainPanel.addDomHandler(new ContextMenuHandler() {\n" +
-                                "    @Override\n" +
-                                "    public void onContextMenu(ContextMenuEvent event) {\n" +
-                                "        NativeEvent nativeEvent = event.getNativeEvent();\n" +
-                                "        delegate.onRightMouseButtonClicked(nativeEvent.getClientX(), nativeEvent.getClientY());\n" +
-                                "    }\n" +
-                                "}, ContextMenuEvent.getType());\n" +
-                                "\n" +
-                                "mainPanel.addDomHandler(new MouseMoveHandler() {\n" +
-                                "    @Override\n" +
-                                "    public void onMouseMove(MouseMoveEvent event) {\n" +
-                                "        delegate.onMouseMoved(event.getClientX(), event.getClientY());\n" +
-                                "    }\n" +
-                                "}, MouseMoveEvent.getType());")
-
-                .addMethod("addElement").withMethodAccessLevel(PRIVATE)
-                .withMethodArguments(new Argument("int", "x"), new Argument("int", "y"), new Argument("final Shape", "element"))
-                .withMethodBody("ShapeWidget elementWidget = widgetProvider.get();\n" +
-                                "\n" +
-                                "elementWidget.setTitle(element.getTitle());\n" +
-                                "elementWidget.addDomHandler(new MouseDownHandler() {\n" +
-                                "    @Override\n" +
-                                "    public void onMouseDown(MouseDownEvent event) {\n" +
-                                "        delegate.onDiagramElementClicked(element.getId());\n" +
-                                "    }\n" +
-                                "}, MouseDownEvent.getType());\n" +
-                                "\n" +
-                                "controller.addWidget(elementWidget, x - 60, y);\n" +
-                                "dragController.makeDraggable(elementWidget);\n" +
-                                "\n" +
-                                "elements.put(element.getId(), elementWidget);");
-
-        SourceCodeBuilder workspaceViewImplBinderBuilder = sourceCodeBuilderProvider
-                .get()
-                .newClass(workspacePackage + '.' + WORKSPACE_VIEW_IMPL_BINDER_NAME)
-                .makeInterface().baseClass("UiBinder<Widget, " + WORKSPACE_VIEW_IMPL_NAME + ">")
-                .addImport(Widget.class)
-                .addImport(UiBinder.class);
 
         String clientPackage = packageName + '.' + CLIENT_PART_FOLDER + '.';
         String elementsPackage = clientPackage + ELEMENTS_FOLDER + '.';
@@ -746,6 +672,7 @@ public class SourceCodeGenerator {
         StringBuilder createElements = new StringBuilder();
         StringBuilder staticImports = new StringBuilder();
         StringBuilder imports = new StringBuilder();
+        StringBuilder actionDelegateMethods = new StringBuilder();
         staticImports.append(stateClassImport).append(CREATE_NOTING_STATE).append(";\n");
 
         for (Element element : configuration.getDiagramConfiguration().getElements()) {
@@ -765,10 +692,12 @@ public class SourceCodeGenerator {
                                 .addMethod(methodName).withAbstractMethodPrefix()
                                 .withMethodArguments(argumentX, argumentY, argumentElement);
 
-            workspaceViewImplBuilder.addImport(elementPackage)
-                                    .addMethod(methodName).withMethodAnnotation("@Override")
-                                    .withMethodArguments(argumentX, argumentY, argumentElement)
-                                    .withMethodBody("addElement(x, y, element);\n");
+            actionDelegateMethods.append(OFFSET).append("@Override\n")
+                                 .append(OFFSET).append("public void ").append(methodName)
+                                 .append("(int x, int y,").append(elementName).append(" element").append(") {\n")
+                                 .append(OFFSET).append(OFFSET).append("addElement(x, y, element, resources.")
+                                 .append(changeFirstSymbolToLowCase(element.getName())).append("());\n")
+                                 .append(OFFSET).append("}\n\n");
 
             createElements.append(OFFSET).append(OFFSET).append(OFFSET)
                           .append("case ").append(createElementState).append(":\n")
@@ -807,12 +736,14 @@ public class SourceCodeGenerator {
             workspaceViewBuilder.addMethod(methodName).withAbstractMethodPrefix()
                                 .withMethodArguments(sourceElementIDArgument, targetElementIDArgument);
 
-            workspaceViewImplBuilder.addMethod(methodName).withMethodAnnotation("@Override")
-                                    .withMethodArguments(sourceElementIDArgument, targetElementIDArgument)
-                                    .withMethodBody("Widget sourceWidget = elements.get(sourceElementID);\n" +
-                                                    "Widget targetWidget = elements.get(targetElementID);\n" +
-                                                    "\n" +
-                                                    "controller.drawStraightArrowConnection(sourceWidget, targetWidget);\n");
+            actionDelegateMethods.append(OFFSET).append("@Override\n")
+                                 .append(OFFSET).append("public void ").append(methodName)
+                                 .append("(String sourceElementID, String targetElementID) {\n")
+                                 .append(OFFSET).append(OFFSET).append("Widget sourceWidget = elements.get(sourceElementID);\n")
+                                 .append(OFFSET).append(OFFSET).append("Widget targetWidget = elements.get(targetElementID);\n")
+                                 .append(OFFSET).append(OFFSET)
+                                 .append("controller.drawStraightArrowConnection(sourceWidget, targetWidget);\n")
+                                 .append(OFFSET).append("}\n\n");
 
             createConnections.append(OFFSET).append(OFFSET).append(OFFSET)
                              .append("case ").append(createConnectionSourceState).append(":\n")
@@ -887,13 +818,16 @@ public class SourceCodeGenerator {
         Path workspaceViewJavaClassPath = Paths.get(clientPackageFolder, WORKSPACE_FOLDER, WORKSPACE_VIEW_NAME + ".java");
         Files.write(workspaceViewJavaClassPath, workspaceViewBuilder.build().getBytes());
 
+        String workspaceViewImplContent = new String(Files.readAllBytes(workspaceViewImplSource))
+                .replaceAll(CURRENT_PACKAGE_MASK, workspacePackage)
+                .replaceAll(IMPORT_MASK, imports.toString())
+                .replaceAll(ACTION_DELEGATE_MASK, actionDelegateMethods.toString());
+        Files.delete(workspaceViewImplSource);
+
         Path workspaceViewImplJavaClassPath = Paths.get(clientPackageFolder, WORKSPACE_FOLDER, WORKSPACE_VIEW_IMPL_NAME + ".java");
-        Files.write(workspaceViewImplJavaClassPath, workspaceViewImplBuilder.build().getBytes());
+        Files.write(workspaceViewImplJavaClassPath, workspaceViewImplContent.getBytes());
 
-        Path workspaceViewBinderJavaClassPath = Paths.get(clientPackageFolder, WORKSPACE_FOLDER, WORKSPACE_VIEW_IMPL_BINDER_NAME + ".java");
-        Files.write(workspaceViewBinderJavaClassPath, workspaceViewImplBinderBuilder.build().getBytes());
-
-        Path workspaceUiXMLPath = Paths.get(clientPackageFolder, WORKSPACE_FOLDER, WORKSPACE_VIEW_IMPL_BINDER_NAME + ".ui.xml");
+        Path workspaceUiXMLPath = Paths.get(clientPackageFolder, WORKSPACE_FOLDER, WORKSPACE_VIEW_IMPL_NAME + ".ui.xml");
         Files.write(workspaceUiXMLPath, uiXmlBuilder.build().getBytes());
     }
 
@@ -904,7 +838,9 @@ public class SourceCodeGenerator {
         String clientPackage = packageName + '.' + CLIENT_PART_FOLDER + '.';
         String toolbarPackage = clientPackage + TOOLBAR_FOLDER;
         String stateClassImport = "import static " + clientPackage + EDITOR_STATE_NAME + '.';
+
         Path toolbarPresenterSource = Paths.get(javaFolder, TOOLBAR_PRESENTER_NAME + ".java");
+        Path toolbarViewImplSource = Paths.get(javaFolder, TOOLBAR_VIEW_IMPL_NAME + ".java");
 
         SourceCodeBuilder toolbarViewBuilder = sourceCodeBuilderProvider
                 .get()
@@ -919,23 +855,6 @@ public class SourceCodeGenerator {
                 .newClass(toolbarPackage + '.' + ACTION_DELEGATE_NAME).makeInterface().baseClass("AbstractView.ActionDelegate")
                 .addImport(AbstractView.class);
 
-        SourceCodeBuilder toolbarViewImplBuilder = sourceCodeBuilderProvider
-                .get()
-                .newClass(toolbarPackage + '.' + TOOLBAR_VIEW_IMPL_NAME).baseClass(TOOLBAR_VIEW_NAME)
-                .addImport(UiField.class)
-                .addImport(ClickEvent.class)
-                .addImport(UiHandler.class)
-                .addImport(PushButton.class)
-                .addImport(Inject.class)
-                .addImport(clientPackage + EDITOR_RESOURCES_NAME);
-
-        SourceCodeBuilder toolbarViewImplBinderBuilder = sourceCodeBuilderProvider
-                .get()
-                .newClass(toolbarPackage + '.' + TOOLBAR_VIEW_IMPL_BINDER_NAME)
-                .makeInterface().baseClass("UiBinder<Widget, " + TOOLBAR_VIEW_IMPL_NAME + ">")
-                .addImport(Widget.class)
-                .addImport(UiBinder.class);
-
         GDockLayoutPanel dockLayoutPanel = dockLayoutPanelProvider.get().withPrefix("g");
         UIXmlBuilder uiXmlBuilder = uiXmlBuilderProvider.get()
                                                         .withXmlns("g", "urn:import:com.google.gwt.user.client.ui")
@@ -947,8 +866,9 @@ public class SourceCodeGenerator {
 
         StringBuilder staticImports = new StringBuilder();
         StringBuilder changeStates = new StringBuilder();
-        StringBuilder viewConstructor = new StringBuilder();
-        Argument argumentClickEvent = new Argument("ClickEvent", "event");
+        StringBuilder fields = new StringBuilder();
+        StringBuilder fieldsInitialization = new StringBuilder();
+        StringBuilder actionDelegateMethods = new StringBuilder();
 
         boolean firstStep = true;
 
@@ -967,7 +887,7 @@ public class SourceCodeGenerator {
                 firstStep = false;
             }
 
-            changeStates.append("@Override\n")
+            changeStates.append(OFFSET).append("@Override\n")
                         .append(OFFSET).append("public void ").append(methodName).append("() {\n")
                         .append(OFFSET).append(OFFSET).append("setState(").append(createElementState).append(");\n")
                         .append(OFFSET).append("}\n\n");
@@ -976,13 +896,16 @@ public class SourceCodeGenerator {
 
             actionDelegateBuilder.addMethod(methodName).withMethodAccessLevel(DEFAULT);
 
-            toolbarViewImplBuilder.addField(argumentName, PushButton.class)
-                                  .withFieldAnnotation("@UiField(provided = true)").withFieldAccessLevel(DEFAULT)
-                                  .addMethod(methodName)
-                                  .withMethodAnnotation("@UiHandler(\"" + argumentName + "\")").withMethodArguments(argumentClickEvent)
-                                  .withMethodBody("delegate." + methodName + "();");
+            fields.append(OFFSET).append("@UiField(provided = true)\n")
+                  .append(OFFSET).append(PushButton.class.getSimpleName()).append(' ').append(argumentName).append(";\n");
 
-            viewConstructor.append(argumentName).append(" = new PushButton();\n");
+            fieldsInitialization.append(OFFSET).append(OFFSET).append(argumentName).append(" = new PushButton(new Image(resources.")
+                                .append(argumentName).append("()));\n");
+
+            actionDelegateMethods.append(OFFSET).append("@UiHandler(\"").append(argumentName).append("\")\n")
+                                 .append(OFFSET).append("public void on").append(elementName).append("ButtonClicked(ClickEvent event) {\n")
+                                 .append(OFFSET).append(OFFSET).append("delegate.on").append(elementName).append("ButtonClicked();\n")
+                                 .append(OFFSET).append("}\n\n");
 
             dockLayoutPanel.withNorth(50, pushButtonProvider.get()
                                                             .withPrefix("g")
@@ -1016,13 +939,17 @@ public class SourceCodeGenerator {
 
             actionDelegateBuilder.addMethod(methodName).withMethodAccessLevel(DEFAULT);
 
-            toolbarViewImplBuilder.addField(argumentName, PushButton.class)
-                                  .withFieldAnnotation("@UiField(provided = true)").withFieldAccessLevel(DEFAULT)
-                                  .addMethod(methodName)
-                                  .withMethodAnnotation("@UiHandler(\"" + argumentName + "\")").withMethodArguments(argumentClickEvent)
-                                  .withMethodBody("delegate." + methodName + "();");
+            fields.append(OFFSET).append("@UiField(provided = true)\n")
+                  .append(OFFSET).append(PushButton.class.getSimpleName()).append(' ').append(argumentName).append(";\n");
 
-            viewConstructor.append(argumentName).append(" = new PushButton();\n");
+            fieldsInitialization.append(OFFSET).append(OFFSET).append(argumentName).append(" = new PushButton(new Image(resources.")
+                                .append(argumentName).append("()));\n");
+
+            actionDelegateMethods.append(OFFSET).append("@UiHandler(\"").append(argumentName).append("\")\n")
+                                 .append(OFFSET).append("public void on").append(connectionName)
+                                 .append("ButtonClicked(ClickEvent event) {\n")
+                                 .append(OFFSET).append(OFFSET).append("delegate.on").append(connectionName).append("ButtonClicked();\n")
+                                 .append(OFFSET).append("}\n\n");
 
             dockLayoutPanel.withNorth(50, pushButtonProvider.get()
                                                             .withPrefix("g")
@@ -1030,13 +957,6 @@ public class SourceCodeGenerator {
                                                             .withAddStyle("style.fullSize")
                                      );
         }
-
-        viewConstructor.append("widget = ourUiBinder.createAndBindUi(this);\n");
-
-        toolbarViewImplBuilder.addConstructor(new Argument(TOOLBAR_VIEW_IMPL_BINDER_NAME, "ourUiBinder"),
-                                              new Argument(EDITOR_RESOURCES_NAME, "resources"))
-                              .withConstructorAnnotation("@Inject")
-                              .withConstructorBody(viewConstructor.toString());
 
         String toolbarPresenterContent = new String(Files.readAllBytes(toolbarPresenterSource))
                 .replaceAll(MAIN_PACKAGE_MASK, packageName)
@@ -1053,25 +973,33 @@ public class SourceCodeGenerator {
         Path toolbarViewJavaClassPath = Paths.get(clientPackageFolder, TOOLBAR_FOLDER, TOOLBAR_VIEW_NAME + ".java");
         Files.write(toolbarViewJavaClassPath, toolbarViewBuilder.build().getBytes());
 
-        Path toolbarViewImplJavaClassPath = Paths.get(clientPackageFolder, TOOLBAR_FOLDER, TOOLBAR_VIEW_IMPL_NAME + ".java");
-        Files.write(toolbarViewImplJavaClassPath, toolbarViewImplBuilder.build().getBytes());
+        String toolbarViewImplContent = new String(Files.readAllBytes(toolbarViewImplSource))
+                .replaceAll(MAIN_PACKAGE_MASK, packageName)
+                .replaceAll(CURRENT_PACKAGE_MASK, toolbarPackage)
+                .replaceAll(UI_FIELDS_MASK, fields.toString())
+                .replaceAll(FIELDS_INITIALIZE_MASK, fieldsInitialization.toString())
+                .replaceAll(ACTION_DELEGATE_MASK, actionDelegateMethods.toString());
+        Files.delete(toolbarViewImplSource);
 
-        Path toolbarViewImplBinderJavaClassPath = Paths.get(clientPackageFolder, TOOLBAR_FOLDER, TOOLBAR_VIEW_IMPL_BINDER_NAME + ".java");
-        Files.write(toolbarViewImplBinderJavaClassPath, toolbarViewImplBinderBuilder.build().getBytes());
+        Path toolbarViewImplJavaClassPath = Paths.get(clientPackageFolder, TOOLBAR_FOLDER, TOOLBAR_VIEW_IMPL_NAME + ".java");
+        Files.write(toolbarViewImplJavaClassPath, toolbarViewImplContent.getBytes());
 
         Path actionDelegateJavaClassPath = Paths.get(clientPackageFolder, TOOLBAR_FOLDER, ACTION_DELEGATE_NAME + ".java");
         Files.write(actionDelegateJavaClassPath, actionDelegateBuilder.build().getBytes());
 
-        Path toolbarUiXMLPath = Paths.get(clientPackageFolder, TOOLBAR_FOLDER, TOOLBAR_VIEW_IMPL_BINDER_NAME + ".ui.xml");
+        Path toolbarUiXMLPath = Paths.get(clientPackageFolder, TOOLBAR_FOLDER, TOOLBAR_VIEW_IMPL_NAME + ".ui.xml");
         Files.write(toolbarUiXMLPath, uiXmlBuilder.build().getBytes());
     }
 
-    private void createPropertiesPanel(@Nonnull String clientPackageFolder,
+    private void createPropertiesPanel(@Nonnull String javaFolder,
+                                       @Nonnull String clientPackageFolder,
                                        @Nonnull String packageName,
                                        @Nonnull Configuration configuration) throws IOException {
         String clientPackage = packageName + '.' + CLIENT_PART_FOLDER + '.';
         String propertiesPanelPackage = clientPackage + PROPERTIES_PANEL_FOLDER + '.';
         String elementsPackage = clientPackage + ELEMENTS_FOLDER + '.';
+
+        Path propertiesPanelViewImplSource = Paths.get(javaFolder, PROPERTIES_PANEL_VIEW_IMPL_NAME + ".java");
 
         Files.createDirectories(Paths.get(clientPackageFolder, PROPERTIES_PANEL_FOLDER));
 
@@ -1081,7 +1009,6 @@ public class SourceCodeGenerator {
             String propertiesPanelPresenterName = elementName + PROPERTIES_PANEL_PRESENTER_NAME;
             String propertiesPanelViewName = elementName + PROPERTIES_PANEL_VIEW_NAME;
             String propertiesPanelViewImplName = elementName + PROPERTIES_PANEL_VIEW_IMPL_NAME;
-            String propertiesPanelViewBinderName = elementName + PROPERTIES_PANEL_VIEW_IMPL_BINDER_NAME;
 
             SourceCodeBuilder propertiesPanelPresenter = sourceCodeBuilderProvider
                     .get()
@@ -1105,26 +1032,6 @@ public class SourceCodeGenerator {
                     .addImport(ImplementedBy.class)
                     .addImport(AbstractView.class);
 
-            SourceCodeBuilder propertiesPanelViewImpl = sourceCodeBuilderProvider
-                    .get()
-                    .newClass(propertiesPanelPackage + lowerCaseName + '.' + propertiesPanelViewImplName).baseClass(propertiesPanelViewName)
-
-                    .addConstructor(new Argument(propertiesPanelViewBinderName, "ourUiBinder"))
-                    .withConstructorAnnotation("@Inject").withConstructorBody("widget = ourUiBinder.createAndBindUi(this);")
-
-                    .addImport(Inject.class)
-                    .addImport(KeyUpEvent.class)
-                    .addImport(UiField.class)
-                    .addImport(UiHandler.class)
-                    .addImport(TextBox.class);
-
-            SourceCodeBuilder propertiesPanelViewBinder = sourceCodeBuilderProvider
-                    .get()
-                    .newClass(propertiesPanelPackage + lowerCaseName + '.' + propertiesPanelViewBinderName)
-                    .makeInterface().baseClass("UiBinder<Widget, " + propertiesPanelViewImplName + ">")
-                    .addImport(Widget.class)
-                    .addImport(UiBinder.class);
-
             SourceCodeBuilder actionDelegate = sourceCodeBuilderProvider
                     .get()
                     .newClass(propertiesPanelPackage + lowerCaseName + '.' + ACTION_DELEGATE_NAME)
@@ -1143,7 +1050,9 @@ public class SourceCodeGenerator {
                     .setWidget(dockLayoutPanel);
 
             StringBuilder presenterGoMethodBody = new StringBuilder("super.go(container);\n");
-            Argument keyUpEventArgument = new Argument(KeyUpEvent.class.getSimpleName(), "event");
+
+            StringBuilder fields = new StringBuilder();
+            StringBuilder actionDelegateMethods = new StringBuilder();
 
             for (Property property : element.getProperties()) {
                 String propertyName = property.getName();
@@ -1165,20 +1074,27 @@ public class SourceCodeGenerator {
                         .addMethod("set" + propertyName)
                         .withAbstractMethodPrefix().withMethodArguments(new Argument(javaClass.getSimpleName(), argumentName));
 
-                propertiesPanelViewImpl
-                        .addField(argumentName, TextBox.class).withFieldAnnotation("@UiField").withFieldAccessLevel(DEFAULT)
+                fields.append(OFFSET).append("@UiField\n")
+                      .append(OFFSET).append(TextBox.class.getSimpleName()).append(' ').append(argumentName).append(";\n");
 
-                        .addMethod("get" + propertyName)
-                        .withReturnType(javaClass).withMethodAnnotation("@Override")
-                        .withMethodBody("return " + javaClass.getSimpleName() + ".valueOf(" + argumentName + ".getText());")
+                actionDelegateMethods.append(OFFSET).append("@Override\n")
+                                     .append(OFFSET).append("public ").append(javaClass.getSimpleName()).append(" get").append(propertyName)
+                                     .append("() {\n")
+                                     .append(OFFSET).append(OFFSET).append("return ").append(javaClass.getSimpleName()).append(".valueOf(")
+                                     .append(argumentName).append(".getText());\n")
+                                     .append(OFFSET).append("}\n\n")
 
-                        .addMethod("set" + propertyName)
-                        .withMethodAnnotation("@Override").withMethodArguments(new Argument(javaClass.getSimpleName(), argumentName))
-                        .withMethodBody("this." + argumentName + ".setText(" + argumentName + ".toString());")
+                                     .append(OFFSET).append("@Override\n")
+                                     .append(OFFSET).append("public void set").append(propertyName).append('(')
+                                     .append(javaClass.getSimpleName()).append(' ').append(argumentName).append(") {\n")
+                                     .append(OFFSET).append(OFFSET).append("this.").append(argumentName).append(".setText(")
+                                     .append(argumentName).append(".toString());\n")
+                                     .append(OFFSET).append("}\n\n")
 
-                        .addMethod("on" + propertyName + "Changed")
-                        .withMethodAnnotation("@UiHandler(\"" + argumentName + "\")")
-                        .withMethodArguments(keyUpEventArgument).withMethodBody("delegate.on" + propertyName + "Changed();");
+                                     .append(OFFSET).append("@UiHandler(\"").append(argumentName).append("\")\n")
+                                     .append(OFFSET).append("public void on").append(propertyName).append("Changed(KeyUpEvent event) {\n")
+                                     .append(OFFSET).append(OFFSET).append("delegate.on").append(propertyName).append("Changed();\n")
+                                     .append(OFFSET).append("}\n\n");
 
                 actionDelegate.addMethod("on" + propertyName + "Changed").withMethodAccessLevel(DEFAULT);
 
@@ -1216,31 +1132,37 @@ public class SourceCodeGenerator {
                     Paths.get(clientPackageFolder, PROPERTIES_PANEL_FOLDER, lowerCaseName, propertiesPanelViewName + ".java");
             Files.write(propertiesPanelViewJavaClassPath, propertiesPanelView.build().getBytes());
 
+
+            String propertiesPanelViewImplContent = new String(Files.readAllBytes(propertiesPanelViewImplSource))
+                    .replaceAll(CURRENT_PACKAGE_MASK, propertiesPanelPackage + lowerCaseName)
+                    .replaceAll(ELEMENT_NAME_MASK, elementName)
+                    .replaceAll(UI_FIELDS_MASK, fields.toString())
+                    .replaceAll(ACTION_DELEGATE_MASK, actionDelegateMethods.toString());
+
             Path propertiesPanelViewImplJavaClassPath =
                     Paths.get(clientPackageFolder, PROPERTIES_PANEL_FOLDER, lowerCaseName, propertiesPanelViewImplName + ".java");
-            Files.write(propertiesPanelViewImplJavaClassPath, propertiesPanelViewImpl.build().getBytes());
-
-            Path propertiesPanelViewBinderJavaClassPath =
-                    Paths.get(clientPackageFolder, PROPERTIES_PANEL_FOLDER, lowerCaseName, propertiesPanelViewBinderName + ".java");
-            Files.write(propertiesPanelViewBinderJavaClassPath, propertiesPanelViewBinder.build().getBytes());
+            Files.write(propertiesPanelViewImplJavaClassPath, propertiesPanelViewImplContent.getBytes());
 
             Path actionDelegateJavaClassPath =
                     Paths.get(clientPackageFolder, PROPERTIES_PANEL_FOLDER, lowerCaseName, ACTION_DELEGATE_NAME + ".java");
             Files.write(actionDelegateJavaClassPath, actionDelegate.build().getBytes());
 
             Path propertiesPanelUiXMLPath =
-                    Paths.get(clientPackageFolder, PROPERTIES_PANEL_FOLDER, lowerCaseName, propertiesPanelViewBinderName + ".ui.xml");
+                    Paths.get(clientPackageFolder, PROPERTIES_PANEL_FOLDER, lowerCaseName, propertiesPanelViewImplName + ".ui.xml");
             Files.write(propertiesPanelUiXMLPath, uiXmlBuilder.build().getBytes());
         }
+
+        Files.delete(propertiesPanelViewImplSource);
     }
 
     private void generateResourcesFolder(@Nonnull Properties properties) throws IOException {
         String targetPath = properties.getProperty(TARGET_PATH.name());
         String packageName = properties.getProperty(MAIN_PACKAGE.name());
         String editorName = properties.getProperty(EDITOR_NAME.name());
+        final String iconsName = properties.getProperty(ConfigurationFactory.PathParameter.STYLE.name());
 
         String resourceFolder = targetPath + File.separator + MAIN_SOURCE_PATH + File.separator + RESOURCES_SOURCE_PATH;
-        String mainPackageFolder = resourceFolder + File.separator + convertPathToPackageName(packageName);
+        final String mainPackageFolder = resourceFolder + File.separator + convertPathToPackageName(packageName);
 
         Path gwtModuleSource = Paths.get(resourceFolder, MAIN_GWT_MODULE_FILE_NAME);
         Path gwtModuleTarget = Paths.get(mainPackageFolder, MAIN_GWT_MODULE_FILE_NAME);
@@ -1254,10 +1176,22 @@ public class SourceCodeGenerator {
         Files.write(gwtModuleTarget, newGwtModuleContent.getBytes());
         Files.delete(gwtModuleSource);
 
+        Files.createDirectories(Paths.get(mainPackageFolder, CLIENT_PART_FOLDER, ICONS_FOLDER));
+
+        Files.walkFileTree(Paths.get(iconsName, ICONS_FOLDER), new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                Path iconsDirectory = Paths.get(mainPackageFolder, CLIENT_PART_FOLDER, ICONS_FOLDER, file.getFileName().toString());
+                if (!Files.exists(Paths.get(mainPackageFolder, CLIENT_PART_FOLDER, ICONS_FOLDER, file.getFileName().toString()))) {
+                    Files.copy(Paths.get(iconsName, ICONS_FOLDER, file.getFileName().toString()), iconsDirectory);
+                }
+
+                return FileVisitResult.CONTINUE;
+            }
+        });
+
         Path mainCssFileSource = Paths.get(resourceFolder, MAIN_CSS_FILE_NAME);
         Path mainCssFileTarget = Paths.get(mainPackageFolder, CLIENT_PART_FOLDER, MAIN_CSS_FILE_NAME);
-        Files.createDirectories(Paths.get(mainPackageFolder, CLIENT_PART_FOLDER));
-
         // TODO It is the best place for adding custom styles
         Files.move(mainCssFileSource, mainCssFileTarget);
     }

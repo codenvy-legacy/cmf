@@ -14,14 +14,15 @@ import com.google.inject.assistedinject.Assisted;
 import javax.annotation.Nonnull;
 
 import_elements
-
 static_import_elements
-
 public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
 
     @Inject
     public WorkspacePresenter(WorkspaceView view, @Assisted EditorState<State> state, @Assisted SelectionManager selectionManager) {
         super(view, state, new MainElement(), selectionManager);
+
+        selectedElement = mainElement.getId();
+        elements.put(selectedElement, mainElement);
     }
 
     /** {@inheritDoc} */
@@ -36,8 +37,9 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
         selectionManager.setElement(null);
 
         switch (getState()) {
-            create_graphic_elements
-        }
+create_graphic_elements        }
+        
+        notifyListeners();
     }
 
     private void addElement(Element element) {
@@ -66,8 +68,9 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
         Shape parent;
 
         switch (getState()) {
-            create_graphic_connections
-        }
+create_graphic_connections        }
+
+        notifyListeners();
     }
 
 }

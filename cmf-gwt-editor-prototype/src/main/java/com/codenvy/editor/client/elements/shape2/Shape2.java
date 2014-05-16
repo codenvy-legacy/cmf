@@ -22,4 +22,8 @@ import com.codenvy.editor.api.editor.elements.AbstractShape;
  */
 public class Shape2 extends AbstractShape {
 
+    public Shape2() {
+        super("Shape2");
+    }
+
 }

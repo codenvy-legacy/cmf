@@ -28,8 +28,8 @@ public abstract class AbstractShape extends AbstractElement implements Shape {
 
     private final List<Element> elements;
 
-    protected AbstractShape() {
-        super();
+    protected AbstractShape(String elementName) {
+        super(elementName);
         this.elements = new ArrayList<>();
     }
 
@@ -58,6 +58,26 @@ public abstract class AbstractShape extends AbstractElement implements Shape {
     @Override
     public boolean hasElements() {
         return !elements.isEmpty();
+    }
+
+    @Nonnull
+    @Override
+    public String serialize() {
+        StringBuilder content = new StringBuilder("<" + getElementName() + ">\n");
+        content.append(serializeProperties());
+
+        for (Element element : elements) {
+            content.append(element.serialize());
+        }
+
+        content.append("</").append(getElementName()).append(">\n");
+
+        return content.toString();
+    }
+
+    @Nonnull
+    protected String serializeProperties() {
+        return "";
     }
 
 }

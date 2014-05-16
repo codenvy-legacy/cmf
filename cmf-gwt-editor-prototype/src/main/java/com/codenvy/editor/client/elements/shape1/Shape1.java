@@ -17,6 +17,8 @@ package com.codenvy.editor.client.elements.shape1;
 
 import com.codenvy.editor.api.editor.elements.AbstractShape;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author Andrey Plotnikov
  */
@@ -24,12 +26,30 @@ public class Shape1 extends AbstractShape {
 
     private String property1;
 
+    public Shape1() {
+        super("Shape1");
+
+        property1 = "property1";
+    }
+
     public String getProperty1() {
         return property1;
     }
 
     public void setProperty1(String property1) {
         this.property1 = property1;
+    }
+
+    @Nonnull
+    @Override
+    protected String serializeProperties() {
+        StringBuilder properties = new StringBuilder();
+
+        properties.append('<').append("property1").append(">\n")
+                  .append(property1).append('\n')
+                  .append("</").append("property1").append(">\n");
+
+        return properties.toString();
     }
 
 }

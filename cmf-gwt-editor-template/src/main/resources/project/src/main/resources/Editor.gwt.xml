@@ -11,7 +11,7 @@
     <inherits name='com.google.gwt.widgetideas.WidgetIdeas'/>
     <inherits name='com.google.gwt.libideas.LibIdeas'/>
 
-    <entry-point class='entry_point'/>
+    <!--<entry-point class='entry_point'/>-->
 
     <source path='client'/>
 

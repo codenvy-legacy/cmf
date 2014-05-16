@@ -43,7 +43,6 @@ import com.codenvy.modeling.generator.builders.xml.impl.widgets.containers.GFlow
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.containers.GScrollPanelImpl;
 import com.google.inject.Provider;
 
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExternalResource;
@@ -105,20 +104,17 @@ public class SourceCodeGeneratorTest {
     private static final String ENTRY_POINT_NAME                           = "EditorEntryPoint.java";
     private static final String TOOLBAR_PRESENTER_NAME                     = "ToolbarPresenter.java";
     private static final String TOOLBAR_VIEW_NAME                          = "ToolbarView.java";
-    private static final String TOOLBAR_VIEW_IMPL_BINDER_XML_NAME          = "ToolbarViewImplUiBinder.ui.xml";
-    private static final String TOOLBAR_VIEW_IMPL_BINDER_NAME              = "ToolbarViewImplUiBinder.java";
+    private static final String TOOLBAR_VIEW_IMPL_BINDER_XML_NAME          = "ToolbarViewImpl.ui.xml";
     private static final String TOOLBAR_VIEW_IMPL_NAME                     = "ToolbarViewImpl.java";
     private static final String ACTION_DELEGATE_NAME                       = "ActionDelegate.java";
     private static final String WORKSPACE_PRESENTER_NAME                   = "WorkspacePresenter.java";
     private static final String WORKSPACE_VIEW_NAME                        = "WorkspaceView.java";
     private static final String WORKSPACE_VIEW_IMPL_NAME                   = "WorkspaceViewImpl.java";
-    private static final String WORKSPACE_VIEW_IMPL_BINDER_NAME            = "WorkspaceViewImplUiBinder.java";
-    private static final String WORKSPACE_VIEW_IMPL_BINDER_XML_NAME        = "WorkspaceViewImplUiBinder.ui.xml";
+    private static final String WORKSPACE_VIEW_IMPL_BINDER_XML_NAME        = "WorkspaceViewImpl.ui.xml";
     private static final String PROPERTIES_PANEL_PRESENTER_NAME            = "Element1PropertiesPanelPresenter.java";
     private static final String PROPERTIES_PANEL_VIEW_NAME                 = "Element1PropertiesPanelView.java";
     private static final String PROPERTIES_PANEL_VIEW_IMPL_NAME            = "Element1PropertiesPanelViewImpl.java";
-    private static final String PROPERTIES_PANEL_VIEW_IMPL_BINDER_NAME     = "Element1PropertiesPanelViewImplUiBinder.java";
-    private static final String PROPERTIES_PANEL_VIEW_IMPL_BINDER_XML_NAME = "Element1PropertiesPanelViewImplUiBinder.ui.xml";
+    private static final String PROPERTIES_PANEL_VIEW_IMPL_BINDER_XML_NAME = "Element1PropertiesPanelViewImpl.ui.xml";
     private static final String EDITOR_STATE_NAME                          = "State.java";
     private static final String EDITOR_RESOURCES_NAME                      = "EditorResources.java";
     private static final String GIN_MODULE_NAME                            = "GinModule.java";
@@ -224,6 +220,11 @@ public class SourceCodeGeneratorTest {
     }
 
     @Test
+    public void binderXMLShouldBeCreated() throws IOException {
+        assertContent("/toolbar/BinderXML", generatorRule.getClientFolder(), TOOLBAR_FOLDER, TOOLBAR_VIEW_IMPL_BINDER_XML_NAME);
+    }
+
+    @Test
     public void toolbarPresenterShouldBeCreated() throws IOException {
         assertContent("/toolbar/Presenter", generatorRule.getClientFolder(), TOOLBAR_FOLDER, TOOLBAR_PRESENTER_NAME);
     }
@@ -239,17 +240,6 @@ public class SourceCodeGeneratorTest {
     }
 
     @Test
-    public void toolbarUiBinderShouldBeCreated() throws IOException {
-        assertContent("/toolbar/ImplBinder", generatorRule.getClientFolder(), TOOLBAR_FOLDER, TOOLBAR_VIEW_IMPL_BINDER_NAME);
-    }
-
-    @Ignore("Need to make locale independent testing")
-    @Test
-    public void binderXMLShouldBeCreated() throws IOException {
-        assertContent("/toolbar/BinderXML", generatorRule.getClientFolder(), TOOLBAR_FOLDER, TOOLBAR_VIEW_IMPL_BINDER_XML_NAME);
-    }
-
-    @Test
     public void workspacePresenterShouldBeCreated() throws IOException {
         assertContent("/workspace/Presenter", generatorRule.getClientFolder(), WORKSPACE_FOLDER, WORKSPACE_PRESENTER_NAME);
     }
@@ -260,20 +250,14 @@ public class SourceCodeGeneratorTest {
     }
 
     @Test
+    public void workspaceViewImpBinderXMLShouldBeCreated() throws IOException {
+        assertContent("/workspace/ViewBinderImplXml", generatorRule.getClientFolder(), WORKSPACE_FOLDER,
+                      WORKSPACE_VIEW_IMPL_BINDER_XML_NAME);
+    }
+
+    @Test
     public void workspaceViewImplShouldBeCreated() throws IOException {
         assertContent("/workspace/ViewImpl", generatorRule.getClientFolder(), WORKSPACE_FOLDER, WORKSPACE_VIEW_IMPL_NAME);
-    }
-
-    @Test
-    public void workspaceViewImpBinderShouldBeCreated() throws IOException {
-        assertContent("/workspace/ViewBinderImpl", generatorRule.getClientFolder(), WORKSPACE_FOLDER,
-                      WORKSPACE_VIEW_IMPL_BINDER_NAME);
-    }
-
-    @Test
-    public void workspaceViewImpBinderXMLShouldBeCreated() throws IOException {
-        assertContent("/workspace/ViewBinderImplXML", generatorRule.getClientFolder(), WORKSPACE_FOLDER,
-                      WORKSPACE_VIEW_IMPL_BINDER_XML_NAME);
     }
 
     @Test
@@ -301,19 +285,6 @@ public class SourceCodeGeneratorTest {
     }
 
     @Test
-    public void viewImplBinderPanelShouldBeCreated() throws IOException {
-        assertContent("/propertiespanel/ViewImplBinder", generatorRule.getClientFolder(), PROPERTIES_PANEL_FOLDER, "element1",
-                      PROPERTIES_PANEL_VIEW_IMPL_BINDER_NAME);
-    }
-
-    @Ignore("Need to make locale independent testing")
-    @Test
-    public void viewImplBinderXMLPanelShouldBeCreated() throws IOException {
-        assertContent("/propertiespanel/ViewImplBinderXML", generatorRule.getClientFolder(), PROPERTIES_PANEL_FOLDER, "element1",
-                      PROPERTIES_PANEL_VIEW_IMPL_BINDER_XML_NAME);
-    }
-
-    @Test
     public void editorGwtXmlShouldBeCreated() throws IOException {
         assertContent("/EditorGwtXml", prepareMainPackageFolderPath(), MAIN_GWT_MODULE_FILE_NAME);
     }
@@ -321,6 +292,12 @@ public class SourceCodeGeneratorTest {
     @Test
     public void editorCssXmlShouldBeCreated() throws IOException {
         assertContent("/EditorGwtXml", prepareMainPackageFolderPath(), MAIN_GWT_MODULE_FILE_NAME);
+    }
+
+    @Test
+    public void viewImplBinderXMLPanelShouldBeCreated() throws IOException {
+        assertContent("/propertiespanel/ViewImplBinderXML", generatorRule.getClientFolder(), PROPERTIES_PANEL_FOLDER, "element1",
+                      PROPERTIES_PANEL_VIEW_IMPL_BINDER_XML_NAME);
     }
 
     @Test
@@ -481,6 +458,7 @@ public class SourceCodeGeneratorTest {
             properties.put(GenerationController.Param.EDITOR_NAME.name(), "EditorName");
             properties.put(MAIN_PACKAGE.name(), "my.package");
             properties.put(TEMPLATE_PATH.name(), "target/classes/template.zip");
+            properties.put(ConfigurationFactory.PathParameter.STYLE.name(), getClass().getResource("/style").getFile());
 
             clientFolder = prepareClientFolderPath();
 
