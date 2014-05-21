@@ -16,7 +16,7 @@
 package com.codenvy.editor.client.propertiespanel.shape1;
 
 import com.codenvy.editor.api.editor.propertiespanel.AbstractPropertiesPanel;
-import com.codenvy.editor.client.elements.shape1.Shape1;
+import com.codenvy.editor.client.elements.Shape1;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 

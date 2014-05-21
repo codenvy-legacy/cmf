@@ -1,13 +1,14 @@
 package my.package.client.elements;
 
-import com.codenvy.editor.api.editor.elements.AbstractShape;
+import com.google.gwt.xml.client.Node;
+import java.util.Arrays;
 
-public class Element1 extends AbstractShape {
+public class Element1 extends MainElement {
 
     private Integer property1;
 
     public Element1() {
-        super("Element1");
+        super("Element1", Arrays.asList("Property1"));
         property1 = 10;
     }
 
@@ -26,6 +27,18 @@ public class Element1 extends AbstractShape {
         .append(property1).append("\n")
         .append("</").append("Property1").append(">\n");
         return properties.toString();
+    }
+
+    @Override
+    public void applyProperty(Node node) {
+        String nodeName = node.getNodeName();
+        String nodeValue = node.getChildNodes().item(0).getNodeValue();
+
+        switch (nodeName) {
+            case "Property1":
+                property1 = Integer.valueOf(nodeValue);
+            break;
+        }
     }
 
 }

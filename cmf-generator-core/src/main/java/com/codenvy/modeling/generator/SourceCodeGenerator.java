@@ -19,9 +19,7 @@ import com.codenvy.editor.api.editor.AbstractEditor;
 import com.codenvy.editor.api.editor.EditorState;
 import com.codenvy.editor.api.editor.EditorView;
 import com.codenvy.editor.api.editor.SelectionManager;
-import com.codenvy.editor.api.editor.elements.AbstractLink;
 import com.codenvy.editor.api.editor.elements.AbstractShape;
-import com.codenvy.editor.api.editor.elements.Shape;
 import com.codenvy.editor.api.editor.propertiespanel.AbstractPropertiesPanel;
 import com.codenvy.editor.api.editor.propertiespanel.PropertiesPanelManager;
 import com.codenvy.editor.api.editor.propertiespanel.empty.EmptyPropertiesPanelPresenter;
@@ -29,6 +27,7 @@ import com.codenvy.editor.api.editor.workspace.AbstractWorkspaceView;
 import com.codenvy.editor.api.mvp.AbstractView;
 import com.codenvy.modeling.configuration.Configuration;
 import com.codenvy.modeling.configuration.ConfigurationFactory;
+import com.codenvy.modeling.configuration.metamodel.diagram.Component;
 import com.codenvy.modeling.configuration.metamodel.diagram.Connection;
 import com.codenvy.modeling.configuration.metamodel.diagram.Element;
 import com.codenvy.modeling.configuration.metamodel.diagram.Property;
@@ -56,6 +55,8 @@ import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.xml.client.Node;
+import com.google.gwt.xml.client.NodeList;
 import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -73,9 +74,13 @@ import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -117,23 +122,27 @@ public class SourceCodeGenerator {
     private static final String FIELDS_INITIALIZE_MASK          = "fields_initialize";
     private static final String ACTION_DELEGATE_MASK            = "action_delegates";
     private static final String ELEMENT_NAME_MASK               = "element_name";
+    private static final String CREATE_GRAPHICAL_ELEMENTS_MASK  = "create_graphical_elements";
+    private static final String MAIN_ELEMENT_NAME_MASK          = "main_element_name";
+    private static final String CONNECTION_NAME_MASK            = "connection_name";
 
     private static final String POM_FILE_FULL_NAME        = "pom.xml";
     private static final String MAIN_HTML_FILE_FULL_NAME  = "Editor.html";
     private static final String MAIN_GWT_MODULE_FILE_NAME = "Editor.gwt.xml";
     private static final String MAIN_CSS_FILE_NAME        = "editor.css";
 
-    private static final String MAIN_SOURCE_PATH        = "/src/main";
-    private static final String JAVA_SOURCE_PATH        = "java";
-    private static final String RESOURCES_SOURCE_PATH   = "resources";
-    private static final String WEBAPP_SOURCE_PATH      = "webapp";
-    private static final String CLIENT_PART_FOLDER      = "client";
-    private static final String INJECT_FOLDER           = "inject";
-    private static final String TOOLBAR_FOLDER          = "toolbar";
-    private static final String ICONS_FOLDER            = "icons";
-    private static final String WORKSPACE_FOLDER        = "workspace";
-    private static final String PROPERTIES_PANEL_FOLDER = "propertiespanel";
-    private static final String ELEMENTS_FOLDER         = "elements";
+    private static final String MAIN_SOURCE_PATH         = "/src/main";
+    private static final String JAVA_SOURCE_PATH         = "java";
+    private static final String RESOURCES_SOURCE_PATH    = "resources";
+    private static final String WEBAPP_SOURCE_PATH       = "webapp";
+    private static final String CLIENT_PART_FOLDER       = "client";
+    private static final String INJECT_FOLDER            = "inject";
+    private static final String TOOLBAR_FOLDER           = "toolbar";
+    private static final String ICONS_FOLDER             = "icons";
+    private static final String WORKSPACE_FOLDER         = "workspace";
+    private static final String PROPERTIES_PANEL_FOLDER  = "propertiespanel";
+    private static final String ELEMENTS_FOLDER          = "elements";
+    private static final String CONNECTION_TEMPLATE_NAME = "Connection";
 
     private static final String ENTRY_POINT_NAME                = "EditorEntryPoint";
     private static final String TOOLBAR_PRESENTER_NAME          = "ToolbarPresenter";
@@ -169,6 +178,8 @@ public class SourceCodeGenerator {
     private final Provider<GPushButton>       pushButtonProvider;
     private final Provider<GLabel>            labelProvider;
     private final Provider<GTextBox>          textBoxProvider;
+
+    private Element mainElement;
 
     @Inject
     public SourceCodeGenerator(Provider<SourceCodeBuilder> sourceCodeBuilderProvider,
@@ -296,7 +307,7 @@ public class SourceCodeGenerator {
         String clientFolder = javaFolder + File.separator + clientPackageFolder;
 
         createInjectModule(clientFolder, packageName, editorName);
-        createElements(clientFolder, packageName, configuration);
+        createElements(javaFolder, clientFolder, packageName, configuration);
         createMainGWTElements(properties, clientFolder, configuration);
         createWorkspace(javaFolder, clientFolder, packageName, configuration);
         createToolbar(javaFolder, clientFolder, packageName, configuration);
@@ -372,34 +383,139 @@ public class SourceCodeGenerator {
         Files.write(ginInjectorPath, ginInjector.getBytes());
     }
 
-    private void createElements(@Nonnull String clientPackageFolder,
+    private void findMainElement(@Nonnull Configuration configuration) {
+        Set<Element> elements = configuration.getDiagramConfiguration().getElements();
+        Set<String> subElements = new HashSet<>();
+
+        for (Element element : elements) {
+            for (Component component : element.getComponents()) {
+                subElements.add(component.getName());
+            }
+        }
+
+        for (Element element : elements) {
+            if (!subElements.contains(element.getName())) {
+                mainElement = element;
+            }
+        }
+    }
+
+    private String createFindElementMethod(@Nonnull Configuration configuration) {
+        StringBuilder result = new StringBuilder("switch (elementName) {\n");
+
+
+        for (Iterator<Element> iterator = configuration.getDiagramConfiguration().getElements().iterator(); iterator.hasNext(); ) {
+            Element element = iterator.next();
+
+            if (!element.equals(mainElement)) {
+                String elementName = element.getName();
+
+                result.append(OFFSET).append("case \"").append(elementName).append("\":\n");
+                if (!iterator.hasNext()) {
+                    result.append(OFFSET).append("default:\n");
+                }
+
+                result.append(OFFSET).append(OFFSET).append("return new ").append(elementName).append("();\n");
+            }
+        }
+
+        result.append("}\n");
+
+        return result.toString();
+    }
+
+    private void createElements(@Nonnull String javaFolder,
+                                @Nonnull String clientPackageFolder,
                                 @Nonnull String packageName,
                                 @Nonnull Configuration configuration) throws IOException {
+        findMainElement(configuration);
+
         Path elementsFolder = Paths.get(clientPackageFolder, ELEMENTS_FOLDER);
         Files.createDirectories(elementsFolder);
 
-        String elementsPackageName = packageName + '.' + CLIENT_PART_FOLDER + '.' + ELEMENTS_FOLDER + '.';
+        String elementsPackageName = packageName + '.' + CLIENT_PART_FOLDER + '.' + ELEMENTS_FOLDER;
+        String mainElementName = mainElement.getName();
 
         for (Element element : configuration.getDiagramConfiguration().getElements()) {
             String elementName = element.getName();
             SourceCodeBuilder elementClassBuilder = sourceCodeBuilderProvider
                     .get()
-                    .newClass(elementsPackageName + elementName).baseClass(AbstractShape.class);
-            StringBuilder constructor = new StringBuilder("super(\"" + elementName + "\");\n");
-            StringBuilder serializePropertiesMethodBody = new StringBuilder("StringBuilder properties = new StringBuilder();\n");
+                    .newClass(elementsPackageName + '.' + elementName);
 
-            for (Property property : element.getProperties()) {
+            StringBuilder constructor;
+
+            if (!element.equals(mainElement)) {
+                elementClassBuilder.baseClass(mainElementName);
+
+                constructor = new StringBuilder("super(\"" + elementName + "\", ");
+            } else {
+                elementClassBuilder.baseClass(AbstractShape.class)
+
+                                   .addImport(List.class)
+
+                                   .addConstructor(new Argument(String.class.getSimpleName(), "elementName"),
+                                                   new Argument("List<String>", "properties"))
+                                   .withConstructorBody("super(elementName, properties);\n")
+
+                                   .addImport(NodeList.class)
+                                   .addMethod("deserialize").withMethodAnnotation("@Override")
+                                   .withMethodArguments(new Argument(Node.class.getSimpleName(), "node"))
+                                   .withMethodBody("NodeList childNodes = node.getChildNodes();\n" +
+                                                   "\n" +
+                                                   "for (int i = 0; i < childNodes.getLength(); i++) {\n" +
+                                                   "    Node item = childNodes.item(i);\n" +
+                                                   "    String name = item.getNodeName();\n" +
+                                                   "\n" +
+                                                   "    if (isProperty(name)) {\n" +
+                                                   "        applyProperty(item);\n" +
+                                                   "    } else {\n" +
+                                                   "        Element element = findElement(name);\n" +
+                                                   "        element.deserialize(item);\n" +
+                                                   "        addElement(element);\n" +
+                                                   "    }\n" +
+                                                   "}")
+
+                                   .addMethod("findElement").withMethodAccessLevel(PRIVATE)
+                                   .withReturnType(com.codenvy.editor.api.editor.elements.Element.class)
+                                   .withMethodArguments(new Argument(String.class.getSimpleName(), "elementName"))
+                                   .withMethodBody(createFindElementMethod(configuration));
+
+                constructor = new StringBuilder("this(\"" + elementName + "\", ");
+            }
+
+            StringBuilder serializePropertiesMethodBody = new StringBuilder("StringBuilder properties = new StringBuilder();\n");
+            StringBuilder properties = new StringBuilder();
+            StringBuilder initializeFields = new StringBuilder();
+            StringBuilder applyPropertyMethod = new StringBuilder("String nodeName = node.getNodeName();\n" +
+                                                                  "String nodeValue = node.getChildNodes().item(0).getNodeValue();\n" +
+                                                                  "\n" +
+                                                                  "switch (nodeName) {\n");
+            Set<Property> elementProperties = element.getProperties();
+
+            for (Iterator<Property> iterator = elementProperties.iterator(); iterator.hasNext(); ) {
+                Property property = iterator.next();
+
                 Class javaClass = convertPropertyTypeToJavaClass(property);
                 String name = property.getName();
                 String argumentName = changeFirstSymbolToLowCase(name);
 
-                constructor.append(argumentName).append(" = ");
-                if (javaClass.equals(String.class)) {
-                    constructor.append('"').append(property.getValue()).append('"');
-                } else {
-                    constructor.append(property.getValue());
+                properties.append('"').append(name).append('"');
+                if (iterator.hasNext()) {
+                    properties.append(", ");
                 }
-                constructor.append(";\n");
+
+                applyPropertyMethod.append(OFFSET).append("case \"").append(name).append("\":\n")
+                                   .append(OFFSET).append(OFFSET)
+                                   .append(argumentName).append(" = ").append(javaClass.getSimpleName()).append(".valueOf(nodeValue);\n")
+                                   .append(OFFSET).append("break;\n");
+
+                initializeFields.append(argumentName).append(" = ");
+                if (javaClass.equals(String.class)) {
+                    initializeFields.append('"').append(property.getValue()).append('"');
+                } else {
+                    initializeFields.append(property.getValue());
+                }
+                initializeFields.append(";\n");
 
                 elementClassBuilder
                         .addField(argumentName, javaClass).withFieldAccessLevel(PRIVATE)
@@ -416,12 +532,31 @@ public class SourceCodeGenerator {
                                              .append(".append(\"</\").append(\"").append(name).append("\").append(\">\\n\");\n");
             }
 
+            applyPropertyMethod.append("}\n");
+
+            if (elementProperties.isEmpty()) {
+                constructor.append("new ArrayList<String>());\n");
+                elementClassBuilder.addImport(ArrayList.class);
+            } else {
+                constructor.append("Arrays.asList(").append(properties).append("));\n");
+                elementClassBuilder.addImport(Arrays.class);
+            }
+            constructor.append(initializeFields);
+
             serializePropertiesMethodBody.append("return properties.toString();\n");
 
             elementClassBuilder
                     .addMethod("serializeProperties")
                     .withReturnType(String.class).withMethodAccessLevel(PROTECTED).withMethodAnnotation("@Override")
-                    .withMethodBody(serializePropertiesMethodBody.toString());
+                    .withMethodBody(serializePropertiesMethodBody.toString())
+
+                    .addImport(Node.class)
+                    .addMethod("applyProperty").withMethodAnnotation("@Override")
+                    .withMethodArguments(new Argument(Node.class.getSimpleName(), "node"));
+
+            if (!elementProperties.isEmpty()) {
+                elementClassBuilder.withMethodBody(applyPropertyMethod.toString());
+            }
 
             elementClassBuilder.addConstructor().withConstructorBody(constructor.toString());
 
@@ -429,24 +564,20 @@ public class SourceCodeGenerator {
             Files.write(elementJavaClassPath, elementClassBuilder.build().getBytes());
         }
 
+        Path connectionSource = Paths.get(javaFolder, CONNECTION_TEMPLATE_NAME + ".java");
 
         for (Connection connection : configuration.getDiagramConfiguration().getConnections()) {
             String connectionName = connection.getName();
-            String connectionClass = sourceCodeBuilderProvider
-                    .get()
-                    .newClass(elementsPackageName + connectionName).baseClass(AbstractLink.class)
 
-                    .addImport(Shape.class)
-
-                    .addConstructor(new Argument(Shape.class.getSimpleName(), "source"),
-                                    new Argument(Shape.class.getSimpleName(), "target"))
-                    .withConstructorBody("super(source, target, \"" + connectionName + "\");")
-
-                    .build();
+            String connectionContent = new String(Files.readAllBytes(connectionSource))
+                    .replaceAll(CURRENT_PACKAGE_MASK, elementsPackageName)
+                    .replaceAll(CONNECTION_NAME_MASK, connectionName);
 
             Path connectionJavaClassPath = Paths.get(clientPackageFolder, ELEMENTS_FOLDER, connectionName + ".java");
-            Files.write(connectionJavaClassPath, connectionClass.getBytes());
+            Files.write(connectionJavaClassPath, connectionContent.getBytes());
         }
+
+        Files.delete(connectionSource);
     }
 
     @Nonnull
@@ -481,7 +612,9 @@ public class SourceCodeGenerator {
                 .withEnumValue(CREATE_NOTING_STATE);
 
         for (Element element : configuration.getDiagramConfiguration().getElements()) {
-            editorStateEnum.withEnumValue(String.format(CREATE_ELEMENT_STATE_FORMAT, element.getName().toUpperCase()));
+            if (!element.equals(mainElement)) {
+                editorStateEnum.withEnumValue(String.format(CREATE_ELEMENT_STATE_FORMAT, element.getName().toUpperCase()));
+            }
         }
 
         for (Connection connection : configuration.getDiagramConfiguration().getConnections()) {
@@ -593,19 +726,21 @@ public class SourceCodeGenerator {
         String elementsPackage = clientPackage + ELEMENTS_FOLDER + '.';
 
         for (Element element : configuration.getDiagramConfiguration().getElements()) {
-            String elementName = element.getName();
-            String elementPropertiesPanelName = elementName + PROPERTIES_PANEL_PRESENTER_NAME;
-            String elementPropertiesPanelArgument = changeFirstSymbolToLowCase(elementPropertiesPanelName);
+            if (!element.equals(mainElement)) {
+                String elementName = element.getName();
+                String elementPropertiesPanelName = elementName + PROPERTIES_PANEL_PRESENTER_NAME;
+                String elementPropertiesPanelArgument = changeFirstSymbolToLowCase(elementPropertiesPanelName);
 
-            editorPresenterBuilder.addImport(propertiesPanelPackage + elementName.toLowerCase() + '.' + elementPropertiesPanelName);
-            editorPresenterBuilder.addImport(elementsPackage + elementName);
+                editorPresenterBuilder.addImport(propertiesPanelPackage + elementName.toLowerCase() + '.' + elementPropertiesPanelName);
+                editorPresenterBuilder.addImport(elementsPackage + elementName);
 
-            arguments.add(new Argument(elementPropertiesPanelName, elementPropertiesPanelArgument));
+                arguments.add(new Argument(elementPropertiesPanelName, elementPropertiesPanelArgument));
 
-            constructorBody.append("propertiesPanelManager.register(")
-                           .append(elementName).append(".class, ")
-                           .append(elementPropertiesPanelArgument)
-                           .append(");\n");
+                constructorBody.append("propertiesPanelManager.register(")
+                               .append(elementName).append(".class, ")
+                               .append(elementPropertiesPanelArgument)
+                               .append(");\n");
+            }
         }
 
         // TODO We don't have connection properties for now
@@ -633,10 +768,11 @@ public class SourceCodeGenerator {
                 .withConstructorBody(constructorBody.toString())
 
                 .addMethod("serialize").withReturnType(String.class).withMethodAnnotation("@Override")
-                .withMethodBody("return workspace.getMainElement().serialize();")
+                .withMethodBody("return workspace.serialize();")
 
                 .addMethod("deserialize").withMethodAnnotation("@Override")
                 .withMethodArguments(new Argument(String.class.getSimpleName(), "content"))
+                .withMethodBody("workspace.deserialize(content);")
 
                 .build();
 
@@ -673,47 +809,60 @@ public class SourceCodeGenerator {
         StringBuilder staticImports = new StringBuilder();
         StringBuilder imports = new StringBuilder();
         StringBuilder actionDelegateMethods = new StringBuilder();
+        StringBuilder createGraphicalElements = new StringBuilder();
         staticImports.append(stateClassImport).append(CREATE_NOTING_STATE).append(";\n");
+        imports.append("import ").append(elementsPackage).append(mainElement.getName()).append(";\n");
 
         for (Element element : configuration.getDiagramConfiguration().getElements()) {
-            String elementName = element.getName();
+            if (!element.equals(mainElement)) {
+                String elementName = element.getName();
 
-            String upperCaseName = elementName.toUpperCase();
-            String argumentName = changeFirstSymbolToLowCase(elementName);
+                String upperCaseName = elementName.toUpperCase();
+                String argumentName = changeFirstSymbolToLowCase(elementName);
 
-            String createElementState = String.format(CREATE_ELEMENT_STATE_FORMAT, upperCaseName);
+                String createElementState = String.format(CREATE_ELEMENT_STATE_FORMAT, upperCaseName);
 
-            String methodName = "add" + elementName;
-            String elementPackage = elementsPackage + elementName;
+                String methodName = "add" + elementName;
+                String elementPackage = elementsPackage + elementName;
 
-            Argument argumentElement = new Argument(elementName, "element");
+                Argument argumentElement = new Argument(elementName, "element");
 
-            workspaceViewBuilder.addImport(elementPackage)
-                                .addMethod(methodName).withAbstractMethodPrefix()
-                                .withMethodArguments(argumentX, argumentY, argumentElement);
+                workspaceViewBuilder.addImport(elementPackage)
+                                    .addMethod(methodName).withAbstractMethodPrefix()
+                                    .withMethodArguments(argumentX, argumentY, argumentElement);
 
-            actionDelegateMethods.append(OFFSET).append("@Override\n")
-                                 .append(OFFSET).append("public void ").append(methodName)
-                                 .append("(int x, int y,").append(elementName).append(" element").append(") {\n")
-                                 .append(OFFSET).append(OFFSET).append("addElement(x, y, element, resources.")
-                                 .append(changeFirstSymbolToLowCase(element.getName())).append("());\n")
-                                 .append(OFFSET).append("}\n\n");
+                actionDelegateMethods.append(OFFSET).append("@Override\n")
+                                     .append(OFFSET).append("public void ").append(methodName)
+                                     .append("(int x, int y,").append(elementName).append(" element").append(") {\n")
+                                     .append(OFFSET).append(OFFSET).append("addElement(x, y, element, resources.")
+                                     .append(changeFirstSymbolToLowCase(element.getName())).append("());\n")
+                                     .append(OFFSET).append("}\n\n");
 
-            createElements.append(OFFSET).append(OFFSET).append(OFFSET)
-                          .append("case ").append(createElementState).append(":\n")
-                          .append(OFFSET).append(OFFSET).append(OFFSET).append(OFFSET)
-                          .append(elementName).append(' ').append(argumentName).append(" = new ").append(elementName).append("();\n\n")
-                          .append(OFFSET).append(OFFSET).append(OFFSET).append(OFFSET)
-                          .append("((WorkspaceView)view).").append(methodName).append("(x, y, ").append(argumentName).append(");\n")
-                          .append(OFFSET).append(OFFSET).append(OFFSET).append(OFFSET)
-                          .append("addElement(").append(argumentName).append(");\n\n")
-                          .append(OFFSET).append(OFFSET).append(OFFSET).append(OFFSET)
-                          .append("setState(").append(CREATE_NOTING_STATE).append(");\n")
-                          .append(OFFSET).append(OFFSET).append(OFFSET).append(OFFSET)
-                          .append("break;\n");
+                createElements.append(OFFSET).append(OFFSET).append(OFFSET)
+                              .append("case ").append(createElementState).append(":\n")
+                              .append(OFFSET).append(OFFSET).append(OFFSET).append(OFFSET)
+                              .append(elementName).append(' ').append(argumentName).append(" = new ").append(elementName).append("();\n\n")
+                              .append(OFFSET).append(OFFSET).append(OFFSET).append(OFFSET)
+                              .append("((WorkspaceView)view).").append(methodName).append("(x, y, ").append(argumentName).append(");\n")
+                              .append(OFFSET).append(OFFSET).append(OFFSET).append(OFFSET)
+                              .append("addElement(").append(argumentName).append(");\n\n")
+                              .append(OFFSET).append(OFFSET).append(OFFSET).append(OFFSET)
+                              .append("setState(").append(CREATE_NOTING_STATE).append(");\n")
+                              .append(OFFSET).append(OFFSET).append(OFFSET).append(OFFSET)
+                              .append("break;\n");
 
-            staticImports.append(stateClassImport).append(String.format(CREATE_ELEMENT_STATE_FORMAT, upperCaseName)).append(";\n");
-            imports.append("import ").append(elementPackage).append(";\n");
+                staticImports.append(stateClassImport).append(String.format(CREATE_ELEMENT_STATE_FORMAT, upperCaseName)).append(";\n");
+                imports.append("import ").append(elementPackage).append(";\n");
+
+                createGraphicalElements
+                        .append(OFFSET).append(OFFSET).append(OFFSET)
+                        .append("if (element instanceof ").append(elementName).append(") {\n")
+                        .append(OFFSET).append(OFFSET).append(OFFSET).append(OFFSET)
+                        .append("((WorkspaceView)view).add").append(elementName).append("(x, y, (").append(elementName)
+                        .append(")element);\n")
+                        .append(OFFSET).append(OFFSET).append(OFFSET)
+                        .append("}\n");
+            }
         }
 
         StringBuilder createConnections = new StringBuilder();
@@ -806,8 +955,10 @@ public class SourceCodeGenerator {
                 .replaceAll(CURRENT_PACKAGE_MASK, workspacePackage)
                 .replaceAll(STATIC_IMPORT_MASK, staticImports.toString())
                 .replaceAll(IMPORT_MASK, imports.toString())
+                .replaceAll(MAIN_ELEMENT_NAME_MASK, mainElement.getName())
                 .replaceAll(CREATE_GRAPHIC_ELEMENTS_MASK, createElements.toString())
-                .replaceAll(CREATE_GRAPHIC_CONNECTIONS_MASK, createConnections.toString());
+                .replaceAll(CREATE_GRAPHIC_CONNECTIONS_MASK, createConnections.toString())
+                .replaceAll(CREATE_GRAPHICAL_ELEMENTS_MASK, createGraphicalElements.toString());
         Files.delete(workspacePresenterSource);
 
         Files.createDirectories(Paths.get(clientPackageFolder, WORKSPACE_FOLDER));
@@ -873,45 +1024,48 @@ public class SourceCodeGenerator {
         boolean firstStep = true;
 
         for (Element element : configuration.getDiagramConfiguration().getElements()) {
-            String elementName = element.getName();
+            if (!element.equals(mainElement)) {
+                String elementName = element.getName();
 
-            String upperCaseName = elementName.toUpperCase();
-            String argumentName = changeFirstSymbolToLowCase(elementName);
+                String upperCaseName = elementName.toUpperCase();
+                String argumentName = changeFirstSymbolToLowCase(elementName);
 
-            String createElementState = String.format(CREATE_ELEMENT_STATE_FORMAT, upperCaseName);
-            String methodName = "on" + elementName + "ButtonClicked";
+                String createElementState = String.format(CREATE_ELEMENT_STATE_FORMAT, upperCaseName);
+                String methodName = "on" + elementName + "ButtonClicked";
 
-            if (!firstStep) {
-                changeStates.append(OFFSET);
-            } else {
-                firstStep = false;
+                if (!firstStep) {
+                    changeStates.append(OFFSET);
+                } else {
+                    firstStep = false;
+                }
+
+                changeStates.append(OFFSET).append("@Override\n")
+                            .append(OFFSET).append("public void ").append(methodName).append("() {\n")
+                            .append(OFFSET).append(OFFSET).append("setState(").append(createElementState).append(");\n")
+                            .append(OFFSET).append("}\n\n");
+
+                staticImports.append(stateClassImport).append(String.format(CREATE_ELEMENT_STATE_FORMAT, upperCaseName)).append(";\n");
+
+                actionDelegateBuilder.addMethod(methodName).withMethodAccessLevel(DEFAULT);
+
+                fields.append(OFFSET).append("@UiField(provided = true)\n")
+                      .append(OFFSET).append(PushButton.class.getSimpleName()).append(' ').append(argumentName).append(";\n");
+
+                fieldsInitialization.append(OFFSET).append(OFFSET).append(argumentName).append(" = new PushButton(new Image(resources.")
+                                    .append(argumentName).append("()));\n");
+
+                actionDelegateMethods.append(OFFSET).append("@UiHandler(\"").append(argumentName).append("\")\n")
+                                     .append(OFFSET).append("public void on").append(elementName)
+                                     .append("ButtonClicked(ClickEvent event) {\n")
+                                     .append(OFFSET).append(OFFSET).append("delegate.on").append(elementName).append("ButtonClicked();\n")
+                                     .append(OFFSET).append("}\n\n");
+
+                dockLayoutPanel.withNorth(50, pushButtonProvider.get()
+                                                                .withPrefix("g")
+                                                                .withName(argumentName)
+                                                                .withAddStyle("style.fullSize")
+                                         );
             }
-
-            changeStates.append(OFFSET).append("@Override\n")
-                        .append(OFFSET).append("public void ").append(methodName).append("() {\n")
-                        .append(OFFSET).append(OFFSET).append("setState(").append(createElementState).append(");\n")
-                        .append(OFFSET).append("}\n\n");
-
-            staticImports.append(stateClassImport).append(String.format(CREATE_ELEMENT_STATE_FORMAT, upperCaseName)).append(";\n");
-
-            actionDelegateBuilder.addMethod(methodName).withMethodAccessLevel(DEFAULT);
-
-            fields.append(OFFSET).append("@UiField(provided = true)\n")
-                  .append(OFFSET).append(PushButton.class.getSimpleName()).append(' ').append(argumentName).append(";\n");
-
-            fieldsInitialization.append(OFFSET).append(OFFSET).append(argumentName).append(" = new PushButton(new Image(resources.")
-                                .append(argumentName).append("()));\n");
-
-            actionDelegateMethods.append(OFFSET).append("@UiHandler(\"").append(argumentName).append("\")\n")
-                                 .append(OFFSET).append("public void on").append(elementName).append("ButtonClicked(ClickEvent event) {\n")
-                                 .append(OFFSET).append(OFFSET).append("delegate.on").append(elementName).append("ButtonClicked();\n")
-                                 .append(OFFSET).append("}\n\n");
-
-            dockLayoutPanel.withNorth(50, pushButtonProvider.get()
-                                                            .withPrefix("g")
-                                                            .withName(argumentName)
-                                                            .withAddStyle("style.fullSize")
-                                     );
         }
 
         for (Connection connection : configuration.getDiagramConfiguration().getConnections()) {

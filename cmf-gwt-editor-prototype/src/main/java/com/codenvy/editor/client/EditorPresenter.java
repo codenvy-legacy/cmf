@@ -21,9 +21,9 @@ import com.codenvy.editor.api.editor.EditorView;
 import com.codenvy.editor.api.editor.SelectionManager;
 import com.codenvy.editor.api.editor.propertiespanel.PropertiesPanelManager;
 import com.codenvy.editor.api.editor.propertiespanel.empty.EmptyPropertiesPanelPresenter;
-import com.codenvy.editor.client.elements.link1.Link1;
-import com.codenvy.editor.client.elements.shape1.Shape1;
-import com.codenvy.editor.client.elements.shape2.Shape2;
+import com.codenvy.editor.client.elements.Link1;
+import com.codenvy.editor.client.elements.Shape1;
+import com.codenvy.editor.client.elements.Shape2;
 import com.codenvy.editor.client.inject.EditorFactory;
 import com.codenvy.editor.client.propertiespanel.link1.Link1PropertiesPanelPresenter;
 import com.codenvy.editor.client.propertiespanel.shape1.Shape1PropertiesPanelPresenter;
@@ -66,13 +66,13 @@ public class EditorPresenter extends AbstractEditor implements EditorView.Action
     @Nonnull
     @Override
     public String serialize() {
-        return workspace.getMainElement().serialize();
+        return workspace.serialize();
     }
 
     /** {@inheritDoc} */
     @Override
     public void deserialize(@Nonnull String content) {
-        // TODO add deserialize
+        workspace.deserialize(content);
     }
 
 }

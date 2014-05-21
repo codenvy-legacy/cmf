@@ -5,7 +5,6 @@ import main_package.client.State;
 import com.codenvy.editor.api.editor.EditorState;
 import com.codenvy.editor.api.editor.SelectionManager;
 import com.codenvy.editor.api.editor.elements.Element;
-import com.codenvy.editor.api.editor.elements.MainElement;
 import com.codenvy.editor.api.editor.elements.Shape;
 import com.codenvy.editor.api.editor.workspace.AbstractWorkspacePresenter;
 import com.google.inject.Inject;
@@ -19,7 +18,7 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
 
     @Inject
     public WorkspacePresenter(WorkspaceView view, @Assisted EditorState<State> state, @Assisted SelectionManager selectionManager) {
-        super(view, state, new MainElement(), selectionManager);
+        super(view, state, new main_element_name(), selectionManager);
 
         selectedElement = mainElement.getId();
         elements.put(selectedElement, mainElement);
@@ -71,6 +70,23 @@ create_graphic_elements        }
 create_graphic_connections        }
 
         notifyListeners();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void deserialize(@Nonnull String content) {
+        super.deserialize(content);
+
+        int x = 100;
+        int y = 100;
+
+        for (Element element : mainElement.getElements()) {
+create_graphical_elements
+
+            elements.put(element.getId(), element);
+
+            x += 100;
+        }
     }
 
 }

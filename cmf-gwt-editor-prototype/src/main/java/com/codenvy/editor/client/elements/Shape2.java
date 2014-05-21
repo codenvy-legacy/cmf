@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codenvy.editor.client.elements.shape2;
+package com.codenvy.editor.client.elements;
 
-import com.codenvy.editor.api.editor.elements.AbstractShape;
+import java.util.ArrayList;
 
 /**
  * @author Andrey Plotnikov
  */
-public class Shape2 extends AbstractShape {
+public class Shape2 extends MainElement {
 
     public Shape2() {
-        super("Shape2");
+        super("Shape2", new ArrayList<String>());
     }
 
 }

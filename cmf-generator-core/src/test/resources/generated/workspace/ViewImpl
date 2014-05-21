@@ -4,6 +4,7 @@ import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.codenvy.editor.api.editor.elements.Shape;
 import com.codenvy.editor.api.editor.elements.widgets.shape.ShapeWidget;
 import com.codenvy.ide.client.EditorResources;
+import my.package.client.elements.MainElement;
 import my.package.client.elements.Element1;
 import my.package.client.elements.Connection1;
 

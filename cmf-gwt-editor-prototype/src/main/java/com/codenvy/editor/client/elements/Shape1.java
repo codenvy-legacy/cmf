@@ -13,21 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codenvy.editor.client.elements.shape1;
+package com.codenvy.editor.client.elements;
 
-import com.codenvy.editor.api.editor.elements.AbstractShape;
+import com.google.gwt.xml.client.Node;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 
 /**
  * @author Andrey Plotnikov
  */
-public class Shape1 extends AbstractShape {
+public class Shape1 extends MainElement {
 
     private String property1;
 
     public Shape1() {
-        super("Shape1");
+        super("Shape1", Arrays.asList("property1"));
 
         property1 = "property1";
     }
@@ -43,13 +44,19 @@ public class Shape1 extends AbstractShape {
     @Nonnull
     @Override
     protected String serializeProperties() {
-        StringBuilder properties = new StringBuilder();
+        return "<property1>\n" + property1 + "\n</property1>\n";
+    }
 
-        properties.append('<').append("property1").append(">\n")
-                  .append(property1).append('\n')
-                  .append("</").append("property1").append(">\n");
+    @Override
+    public void applyProperty(@Nonnull Node node) {
+        String nodeName = node.getNodeName();
+        String nodeValue = node.getChildNodes().item(0).getNodeValue();
 
-        return properties.toString();
+        switch (nodeName) {
+            case "property1":
+                property1 = nodeValue;
+                break;
+        }
     }
 
 }

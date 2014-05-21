@@ -1,0 +1,56 @@
+package my.package.client.elements;
+
+import com.codenvy.editor.api.editor.elements.AbstractShape;
+import com.codenvy.editor.api.editor.elements.Element;
+import com.google.gwt.xml.client.Node;
+import com.google.gwt.xml.client.NodeList;
+import java.util.ArrayList;
+import java.util.List;
+
+public class MainElement extends AbstractShape {
+
+    public MainElement(String elementName, List<String> properties) {
+        super(elementName, properties);
+    }
+
+    public MainElement() {
+        this("MainElement", new ArrayList<String>());
+    }
+
+    @Override
+    public void deserialize(Node node) {
+        NodeList childNodes = node.getChildNodes();
+
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Node item = childNodes.item(i);
+            String name = item.getNodeName();
+
+            if (isProperty(name)) {
+                applyProperty(item);
+            } else {
+                Element element = findElement(name);
+                element.deserialize(item);
+                addElement(element);
+            }
+        }
+    }
+
+    private Element findElement(String elementName) {
+        switch (elementName) {
+            case "Element1":
+            default:
+                return new Element1();
+        }
+    }
+
+    @Override
+    protected String serializeProperties() {
+        StringBuilder properties = new StringBuilder();
+        return properties.toString();
+    }
+
+    @Override
+    public void applyProperty(Node node) {
+    }
+
+}

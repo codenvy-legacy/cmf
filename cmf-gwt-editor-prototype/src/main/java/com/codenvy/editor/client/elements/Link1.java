@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codenvy.editor.client.elements.link1;
+package com.codenvy.editor.client.elements;
 
 import com.codenvy.editor.api.editor.elements.AbstractLink;
 import com.codenvy.editor.api.editor.elements.Shape;
+import com.google.gwt.xml.client.Node;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 
 /**
  * @author Andrey Plotnikov
@@ -32,12 +34,11 @@ public class Link1 extends AbstractLink {
     }
 
     public Link1(@Nonnull Shape source, @Nonnull Shape target, @Nonnull String color) {
-        super(source, target, "Link1");
+        super(source, target, "Link1", new ArrayList<String>());
 
         this.color = color;
     }
 
-    // Some additional param
     @Nonnull
     public String getColor() {
         return color;
@@ -45,6 +46,21 @@ public class Link1 extends AbstractLink {
 
     public void setColor(@Nonnull String color) {
         this.color = color;
+    }
+
+    @Override
+    public void deserialize(@Nonnull String content) {
+        // it isn't implemented for now.
+    }
+
+    @Override
+    public void deserialize(@Nonnull Node node) {
+        // it isn't implemented for now.
+    }
+
+    @Override
+    public void applyProperty(@Nonnull Node node) {
+        // this class doesn't have any properties. That's why this method is empty
     }
 
 }

@@ -15,6 +15,8 @@
  */
 package com.codenvy.editor.api.editor.elements;
 
+import com.google.gwt.xml.client.Node;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -66,5 +68,29 @@ public interface Element {
      */
     @Nonnull
     String serialize();
+
+    /**
+     * Deserialize diagram element with all inner elements.
+     *
+     * @param content
+     *         a serialized content
+     */
+    void deserialize(@Nonnull String content);
+
+    /**
+     * Deserialize diagram element with all inner elements.
+     *
+     * @param node
+     *         XML node that need to be deserialized
+     */
+    void deserialize(@Nonnull Node node);
+
+    /**
+     * Apply property from XML node to the diagram element.
+     *
+     * @param node
+     *         XML node that need to be analyzed
+     */
+    void applyProperty(@Nonnull Node node);
 
 }

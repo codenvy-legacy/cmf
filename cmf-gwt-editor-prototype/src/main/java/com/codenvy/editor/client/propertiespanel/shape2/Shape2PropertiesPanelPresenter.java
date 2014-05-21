@@ -16,7 +16,7 @@
 package com.codenvy.editor.client.propertiespanel.shape2;
 
 import com.codenvy.editor.api.editor.propertiespanel.AbstractPropertiesPanel;
-import com.codenvy.editor.client.elements.shape2.Shape2;
+import com.codenvy.editor.client.elements.Shape2;
 import com.google.inject.Inject;
 
 /**

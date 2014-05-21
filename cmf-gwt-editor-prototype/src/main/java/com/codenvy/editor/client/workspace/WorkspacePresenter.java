@@ -18,13 +18,13 @@ package com.codenvy.editor.client.workspace;
 import com.codenvy.editor.api.editor.EditorState;
 import com.codenvy.editor.api.editor.SelectionManager;
 import com.codenvy.editor.api.editor.elements.Element;
-import com.codenvy.editor.api.editor.elements.MainElement;
 import com.codenvy.editor.api.editor.elements.Shape;
 import com.codenvy.editor.api.editor.workspace.AbstractWorkspacePresenter;
 import com.codenvy.editor.client.State;
-import com.codenvy.editor.client.elements.link1.Link1;
-import com.codenvy.editor.client.elements.shape1.Shape1;
-import com.codenvy.editor.client.elements.shape2.Shape2;
+import com.codenvy.editor.client.elements.Link1;
+import com.codenvy.editor.client.elements.MainElement;
+import com.codenvy.editor.client.elements.Shape1;
+import com.codenvy.editor.client.elements.Shape2;
 import com.google.gwt.user.client.Window;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
@@ -129,6 +129,28 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
         }
 
         notifyListeners();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void deserialize(@Nonnull String content) {
+        super.deserialize(content);
+
+        int x = 100;
+        int y = 100;
+
+        // TODO create element just from main element w/o inner elements
+        for (Element element : mainElement.getElements()) {
+            if (element instanceof Shape1) {
+                ((WorkspaceView)view).addShape1(x, y, (Shape1)element);
+            } else if (element instanceof Shape2) {
+                ((WorkspaceView)view).addShape2(x, y, (Shape2)element);
+            }
+
+            elements.put(element.getId(), element);
+
+            x += 100;
+        }
     }
 
 }

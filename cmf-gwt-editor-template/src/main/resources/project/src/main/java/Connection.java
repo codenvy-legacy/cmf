@@ -1,4 +1,4 @@
-package my.package.client.elements;
+package current_package;
 
 import com.codenvy.editor.api.editor.elements.AbstractLink;
 import com.codenvy.editor.api.editor.elements.Shape;
@@ -7,10 +7,10 @@ import com.google.gwt.xml.client.Node;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 
-public class Connection1 extends AbstractLink {
+public class connection_name extends AbstractLink {
 
-    public Connection1(Shape source, Shape target) {
-        super(source, target, "Connection1", new ArrayList<String>());
+    public connection_name(Shape source, Shape target) {
+        super(source, target, "connection_name", new ArrayList<String>());
     }
 
     @Override

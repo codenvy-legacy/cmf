@@ -16,8 +16,8 @@
 package com.codenvy.editor.client.workspace;
 
 import com.codenvy.editor.api.editor.workspace.AbstractWorkspaceView;
-import com.codenvy.editor.client.elements.shape1.Shape1;
-import com.codenvy.editor.client.elements.shape2.Shape2;
+import com.codenvy.editor.client.elements.Shape1;
+import com.codenvy.editor.client.elements.Shape2;
 import com.google.inject.ImplementedBy;
 
 import javax.annotation.Nonnull;

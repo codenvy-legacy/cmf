@@ -69,11 +69,6 @@ public abstract class AbstractWorkspacePresenter<T> extends AbstractPresenter im
         this.state.setState(state);
     }
 
-    @Nonnull
-    public Shape getMainElement() {
-        return mainElement;
-    }
-
     public void addListener(@Nonnull DiagramChangeListener listener) {
         listeners.add(listener);
     }
@@ -86,6 +81,15 @@ public abstract class AbstractWorkspacePresenter<T> extends AbstractPresenter im
         for (DiagramChangeListener listener : listeners) {
             listener.onChanged();
         }
+    }
+
+    @Nonnull
+    public String serialize() {
+        return mainElement.serialize();
+    }
+
+    public void deserialize(@Nonnull String content) {
+        mainElement.deserialize(content);
     }
 
     public interface DiagramChangeListener {

@@ -16,7 +16,7 @@
 package com.codenvy.editor.client.propertiespanel.link1;
 
 import com.codenvy.editor.api.editor.propertiespanel.AbstractPropertiesPanel;
-import com.codenvy.editor.client.elements.link1.Link1;
+import com.codenvy.editor.client.elements.Link1;
 import com.google.inject.Inject;
 
 /**

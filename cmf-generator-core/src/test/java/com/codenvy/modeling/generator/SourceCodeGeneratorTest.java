@@ -18,6 +18,7 @@ package com.codenvy.modeling.generator;
 
 import com.codenvy.modeling.configuration.Configuration;
 import com.codenvy.modeling.configuration.ConfigurationFactory;
+import com.codenvy.modeling.configuration.metamodel.diagram.Component;
 import com.codenvy.modeling.configuration.metamodel.diagram.Connection;
 import com.codenvy.modeling.configuration.metamodel.diagram.Element;
 import com.codenvy.modeling.configuration.metamodel.diagram.Property;
@@ -63,6 +64,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Properties;
 
 import static com.codenvy.modeling.generator.GenerationController.Param.MAIN_PACKAGE;
@@ -212,6 +214,11 @@ public class SourceCodeGeneratorTest {
     @Test
     public void element1ShouldBeCreated() throws IOException {
         assertContent("/elements/Element1", generatorRule.getClientFolder(), ELEMENTS_FOLDER, "Element1.java");
+    }
+
+    @Test
+    public void mainElementShouldBeCreated() throws IOException {
+        assertContent("/elements/MainElement", generatorRule.getClientFolder(), ELEMENTS_FOLDER, "MainElement.java");
     }
 
     @Test
@@ -431,22 +438,29 @@ public class SourceCodeGeneratorTest {
                 }
             });
 
-            Element element = mock(Element.class);
-            when(element.getName()).thenReturn("Element1");
-
             Property property = new Property();
             property.setName("Property1");
             property.setType(Property.Type.INTEGER);
             property.setValue("10");
 
-            when(element.getProperties()).thenReturn(new HashSet<>(Arrays.asList(property)));
+            Element element = new Element();
+            element.setName("Element1");
+            element.setProperties(new HashSet<>(Arrays.asList(property)));
+
+            Component component = new Component();
+            component.setName("Element1");
+
+            Element mainElement = new Element();
+            mainElement.setName("MainElement");
+            mainElement.setComponents(new HashSet<>(Arrays.asList(component)));
 
             Connection connection = mock(Connection.class);
             when(connection.getName()).thenReturn("Connection1");
 
             when(configurationFactory.getInstance(any(ConfigurationFactory.ConfigurationPaths.class))).thenReturn(configuration);
 
-            when(configuration.getDiagramConfiguration().getElements()).thenReturn(new HashSet<>(Arrays.asList(element)));
+            when(configuration.getDiagramConfiguration().getElements())
+                    .thenReturn(new LinkedHashSet<>(Arrays.asList(mainElement, element)));
             when(configuration.getDiagramConfiguration().getConnections()).thenReturn(new HashSet<>(Arrays.asList(connection)));
 
             properties = new Properties();

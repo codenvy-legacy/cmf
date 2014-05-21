@@ -15,6 +15,9 @@
  */
 package com.codenvy.editor.api.editor.elements;
 
+import com.google.gwt.xml.client.Document;
+import com.google.gwt.xml.client.XMLParser;
+
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +31,9 @@ public abstract class AbstractShape extends AbstractElement implements Shape {
 
     private final List<Element> elements;
 
-    protected AbstractShape(String elementName) {
-        super(elementName);
+    protected AbstractShape(String elementName, List<String> properties) {
+        super(elementName, properties);
+
         this.elements = new ArrayList<>();
     }
 
@@ -78,6 +82,16 @@ public abstract class AbstractShape extends AbstractElement implements Shape {
     @Nonnull
     protected String serializeProperties() {
         return "";
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void deserialize(@Nonnull String content) {
+        elements.clear();
+
+        Document xml = XMLParser.parse(content);
+
+        deserialize(xml.getFirstChild());
     }
 
 }

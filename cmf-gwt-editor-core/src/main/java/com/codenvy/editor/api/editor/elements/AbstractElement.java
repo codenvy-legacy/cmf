@@ -17,6 +17,7 @@ package com.codenvy.editor.api.editor.elements;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * The abstract implementation of {@link Element}. It contains the implementation of general methods which might not be changed.
@@ -27,13 +28,15 @@ public abstract class AbstractElement implements Element {
 
     private static int INDEX = 0;
 
-    private final String id;
-    private       Shape  parent;
-    private       String title;
-    private       String elementName;
+    private final String       id;
+    private       Shape        parent;
+    private       String       title;
+    private       String       elementName;
+    private final List<String> properties;
 
-    protected AbstractElement(String elementName) {
+    protected AbstractElement(@Nonnull String elementName, @Nonnull List<String> properties) {
         this.elementName = elementName;
+        this.properties = properties;
         this.title = elementName + '_' + INDEX++;
         id = UUID.get();
     }
@@ -75,6 +78,17 @@ public abstract class AbstractElement implements Element {
     @Override
     public String getElementName() {
         return elementName;
+    }
+
+    /**
+     * Returns <code>true</code> if a given XML tag name is property name.
+     *
+     * @param name
+     *         XML tag name
+     * @return <code>true</code> if a given XML tag name is property name, <code>false</code> if it is not
+     */
+    protected boolean isProperty(@Nonnull String name) {
+        return properties.contains(name);
     }
 
 }

@@ -30,11 +30,12 @@ public class EditorName extends AbstractEditor implements EditorView.ActionDeleg
 
     @Override
     public String serialize() {
-        return workspace.getMainElement().serialize();
+        return workspace.serialize();
     }
 
     @Override
     public void deserialize(String content) {
+        workspace.deserialize(content);
     }
 
 }

@@ -5,7 +5,6 @@ import my.package.client.State;
 import com.codenvy.editor.api.editor.EditorState;
 import com.codenvy.editor.api.editor.SelectionManager;
 import com.codenvy.editor.api.editor.elements.Element;
-import com.codenvy.editor.api.editor.elements.MainElement;
 import com.codenvy.editor.api.editor.elements.Shape;
 import com.codenvy.editor.api.editor.workspace.AbstractWorkspacePresenter;
 import com.google.inject.Inject;
@@ -13,6 +12,7 @@ import com.google.inject.assistedinject.Assisted;
 
 import javax.annotation.Nonnull;
 
+import my.package.client.elements.MainElement;
 import my.package.client.elements.Element1;
 import my.package.client.elements.Connection1;
 
@@ -100,6 +100,26 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
         }
 
         notifyListeners();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void deserialize(@Nonnull String content) {
+        super.deserialize(content);
+
+        int x = 100;
+        int y = 100;
+
+        for (Element element : mainElement.getElements()) {
+            if (element instanceof Element1) {
+                ((WorkspaceView)view).addElement1(x, y, (Element1)element);
+            }
+
+
+            elements.put(element.getId(), element);
+
+            x += 100;
+        }
     }
 
 }
