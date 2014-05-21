@@ -121,8 +121,7 @@ public class WorkspaceViewImpl extends WorkspaceView {
             }
         }, MouseDownEvent.getType());
 
-        // TODO Toolbar size is 60 pixels
-        controller.addWidget(elementWidget, x - 60, y);
+        controller.addWidget(elementWidget, x, y);
         dragController.makeDraggable(elementWidget);
 
         elements.put(element.getId(), elementWidget);

@@ -18,6 +18,7 @@ package com.codenvy.editor.api.editor.workspace;
 import com.codenvy.editor.api.editor.EditorState;
 import com.codenvy.editor.api.editor.HasState;
 import com.codenvy.editor.api.editor.SelectionManager;
+import com.codenvy.editor.api.editor.common.ContentFormatter;
 import com.codenvy.editor.api.editor.elements.Element;
 import com.codenvy.editor.api.editor.elements.Shape;
 import com.codenvy.editor.api.mvp.AbstractPresenter;
@@ -32,6 +33,7 @@ import java.util.Map;
  * The abstract presentation of an editor workspace. It contains the implementation of general methods which might not be changed.
  *
  * @author Andrey Plotnikov
+ * @author Valeriy Svydenko
  */
 public abstract class AbstractWorkspacePresenter<T> extends AbstractPresenter implements AbstractWorkspaceView.ActionDelegate, HasState<T> {
 
@@ -85,11 +87,11 @@ public abstract class AbstractWorkspacePresenter<T> extends AbstractPresenter im
 
     @Nonnull
     public String serialize() {
-        return mainElement.serialize();
+        return ContentFormatter.formatXML(ContentFormatter.trimXML(mainElement.serialize()));
     }
 
     public void deserialize(@Nonnull String content) {
-        mainElement.deserialize(content);
+        mainElement.deserialize(ContentFormatter.trimXML(content));
     }
 
     public interface DiagramChangeListener {

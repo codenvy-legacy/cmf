@@ -49,6 +49,7 @@
         <version.google.findbugs>2.0.2</version.google.findbugs>
         <version.guice>3.0</version.guice>
         <version.gwt>2.6.0</version.gwt>
+        <version.gwt-test-utils>0.47</version.gwt-test-utils>
         <version.gwt.dnd>3.2.3</version.gwt.dnd>
         <version.gwt.incubator>2.0.1</version.gwt.incubator>
         <version.gwt.links>1.4.2</version.gwt.links>
