@@ -62,7 +62,7 @@ public class WorkspaceViewImpl extends WorkspaceView {
         mainPanel.addDomHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                delegate.onLeftMouseButtonClicked(event.getClientX(), event.getClientY());
+                delegate.onLeftMouseButtonClicked(event.getRelativeX(mainPanel.getElement()), event.getRelativeY(mainPanel.getElement()));
             }
         }, ClickEvent.getType());
 
@@ -77,7 +77,7 @@ public class WorkspaceViewImpl extends WorkspaceView {
         mainPanel.addDomHandler(new MouseMoveHandler() {
             @Override
             public void onMouseMove(MouseMoveEvent event) {
-                delegate.onMouseMoved(event.getClientX(), event.getClientY());
+                delegate.onMouseMoved(event.getRelativeX(mainPanel.getElement()), event.getRelativeY(mainPanel.getElement()));
             }
         }, MouseMoveEvent.getType());
     }
