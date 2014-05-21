@@ -23,7 +23,9 @@ public class EditorName extends AbstractEditor implements EditorView.ActionDeleg
         this.toolbar = editorFactory.createToolbar(state);
         PropertiesPanelManager propertiesPanelManager = editorFactory.createPropertiesPanelManager(view.getPropertiesPanel());
         propertiesPanelManager.register(null, emptyPropertiesPanelPresenter);
+        emptyPropertiesPanelPresenter.addListener(this);
         propertiesPanelManager.register(Element1.class, element1PropertiesPanelPresenter);
+        element1PropertiesPanelPresenter.addListener(this);
         selectionManager.addListener(propertiesPanelManager);
         workspace.addListener(this);
     }

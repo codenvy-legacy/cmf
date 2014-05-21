@@ -58,6 +58,11 @@ public class EditorPresenter extends AbstractEditor implements EditorView.Action
         propertiesPanelManager.register(Link1.class, link1PropertiesPanelPresenter);
         propertiesPanelManager.register(null, emptyPropertiesPanelPresenter);
 
+        shape1PropertiesPanelPresenter.addListener(this);
+        shape2PropertiesPanelPresenter.addListener(this);
+        link1PropertiesPanelPresenter.addListener(this);
+        emptyPropertiesPanelPresenter.addListener(this);
+
         selectionManager.addListener(propertiesPanelManager);
         workspace.addListener(this);
     }

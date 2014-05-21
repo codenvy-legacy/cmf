@@ -719,7 +719,8 @@ public class SourceCodeGenerator {
                 "this.workspace = editorFactory.createWorkspace(state, selectionManager);\n" +
                 "this.toolbar = editorFactory.createToolbar(state);\n" +
                 "PropertiesPanelManager propertiesPanelManager = editorFactory.createPropertiesPanelManager(view.getPropertiesPanel());\n" +
-                "propertiesPanelManager.register(null, emptyPropertiesPanelPresenter);\n"
+                "propertiesPanelManager.register(null, emptyPropertiesPanelPresenter);\n" +
+                "emptyPropertiesPanelPresenter.addListener(this);\n"
         );
 
         String propertiesPanelPackage = clientPackage + PROPERTIES_PANEL_FOLDER + '.';
@@ -736,10 +737,10 @@ public class SourceCodeGenerator {
 
                 arguments.add(new Argument(elementPropertiesPanelName, elementPropertiesPanelArgument));
 
-                constructorBody.append("propertiesPanelManager.register(")
-                               .append(elementName).append(".class, ")
-                               .append(elementPropertiesPanelArgument)
-                               .append(");\n");
+                constructorBody
+                        .append("propertiesPanelManager.register(").append(elementName).append(".class, ")
+                        .append(elementPropertiesPanelArgument).append(");\n")
+                        .append(elementPropertiesPanelArgument).append(".addListener(this);\n");
             }
         }
 
@@ -1216,7 +1217,9 @@ public class SourceCodeGenerator {
                 propertiesPanelPresenter
                         .addMethod("on" + propertyName + "Changed").withMethodAnnotation("@Override")
                         .withMethodBody(
-                                "element.set" + propertyName + "(((" + propertiesPanelViewName + ")view).get" + propertyName + "());");
+                                "element.set" + propertyName + "(((" + propertiesPanelViewName + ")view).get" + propertyName + "());\n" +
+                                "notifyListeners();"
+                                       );
 
                 presenterGoMethodBody.append("((").append(propertiesPanelViewName).append(")view).set").append(propertyName)
                                      .append("(element.get").append(propertyName).append("());\n");

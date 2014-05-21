@@ -20,6 +20,8 @@ import com.codenvy.editor.api.mvp.AbstractPresenter;
 import com.codenvy.editor.api.mvp.AbstractView;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The general presentation of properties panel.
@@ -30,10 +32,12 @@ import javax.annotation.Nonnull;
  */
 public abstract class AbstractPropertiesPanel<T extends Element> extends AbstractPresenter {
 
-    protected T element;
+    protected     T                             element;
+    private final List<PropertyChangedListener> listeners;
 
     protected AbstractPropertiesPanel(@Nonnull AbstractView view) {
         super(view);
+        listeners = new ArrayList<>();
     }
 
     /**
@@ -44,6 +48,26 @@ public abstract class AbstractPropertiesPanel<T extends Element> extends Abstrac
      */
     public void setElement(@Nonnull T element) {
         this.element = element;
+    }
+
+    public void addListener(@Nonnull PropertyChangedListener listener) {
+        listeners.add(listener);
+    }
+
+    public void removeListener(@Nonnull PropertyChangedListener listener) {
+        listeners.remove(listener);
+    }
+
+    public void notifyListeners() {
+        for (PropertyChangedListener listener : listeners) {
+            listener.onPropertyChanged();
+        }
+    }
+
+    public interface PropertyChangedListener {
+
+        void onPropertyChanged();
+
     }
 
 }

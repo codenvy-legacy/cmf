@@ -44,6 +44,7 @@ public class Shape1PropertiesPanelPresenter extends AbstractPropertiesPanel<Shap
     @Override
     public void onProperty1Changed() {
         element.setProperty1(((Shape1PropertiesPanelView)view).getProperty1());
+        notifyListeners();
     }
 
 }

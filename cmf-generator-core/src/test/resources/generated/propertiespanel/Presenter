@@ -15,6 +15,7 @@ public class Element1PropertiesPanelPresenter extends AbstractPropertiesPanel<El
     @Override
     public void onProperty1Changed() {
         element.setProperty1(((Element1PropertiesPanelView)view).getProperty1());
+        notifyListeners();
     }
 
     @Override

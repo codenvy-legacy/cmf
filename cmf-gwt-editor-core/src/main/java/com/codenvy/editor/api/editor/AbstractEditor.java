@@ -15,6 +15,7 @@
  */
 package com.codenvy.editor.api.editor;
 
+import com.codenvy.editor.api.editor.propertiespanel.AbstractPropertiesPanel;
 import com.codenvy.editor.api.editor.toolbar.AbstractToolbarPresenter;
 import com.codenvy.editor.api.editor.workspace.AbstractWorkspacePresenter;
 import com.codenvy.editor.api.mvp.AbstractPresenter;
@@ -31,7 +32,8 @@ import java.util.List;
  *
  * @author Andrey Plotnikov
  */
-public abstract class AbstractEditor<T> extends AbstractPresenter implements AbstractWorkspacePresenter.DiagramChangeListener {
+public abstract class AbstractEditor<T> extends AbstractPresenter implements AbstractWorkspacePresenter.DiagramChangeListener,
+                                                                             AbstractPropertiesPanel.PropertyChangedListener {
 
     protected     AbstractWorkspacePresenter<T> workspace;
     protected     AbstractToolbarPresenter<T>   toolbar;
@@ -55,6 +57,12 @@ public abstract class AbstractEditor<T> extends AbstractPresenter implements Abs
     /** {@inheritDoc} */
     @Override
     public void onChanged() {
+        notifyListeners();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onPropertyChanged() {
         notifyListeners();
     }
 
