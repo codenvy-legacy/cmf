@@ -99,4 +99,23 @@ public class ContentFormatterTest extends GwtTestWithMockito {
         prepareIfTwoNodes();
         assertEquals(expectedResult, ContentFormatter.formatXML(inputData));
     }
+
+    @Test
+    public void textShouldBeTrimmed() {
+        inputData = "<MainElement>\n" +
+                    "<Log>\n" +
+                    "<LogCategory>INFO</LogCategory>\n" +
+                    "<LogLevel>SIMPLE</LogLevel>\n" +
+                    "<LogSeparator>enter_text</LogSeparator>\n" +
+                    "<LogProperties>enter_properties</LogProperties>\n" +
+                    "<Description>enter_description</Description>\n" +
+                    "</Log>\n" +
+                    "</MainElement>";
+
+        expectedResult =
+                "<MainElement><Log><LogCategory>INFO</LogCategory><LogLevel>SIMPLE</LogLevel><LogSeparator>enter_text</LogSeparator" +
+                "><LogProperties>enter_properties</LogProperties><Description>enter_description</Description></Log></MainElement>";
+
+        assertEquals(expectedResult, ContentFormatter.trimXML(inputData));
+    }
 }
