@@ -40,6 +40,7 @@
         <module>cmf-gwt-editor-prototype</module>
         <module>cmf-maven-plugin</module>
         <module>cmf-gwt-editor-template</module>
+        <module>gwt-links</module>
     </modules>
 
     <properties>
@@ -52,7 +53,7 @@
         <version.gwt-test-utils>0.47</version.gwt-test-utils>
         <version.gwt.dnd>3.2.3</version.gwt.dnd>
         <version.gwt.incubator>2.0.1</version.gwt.incubator>
-        <version.gwt.links>1.4.2</version.gwt.links>
+        <version.gwt.links>1.4.3-SNAPSHOT</version.gwt.links>
         <version.hibernate.validator>5.1.0.Final</version.hibernate.validator>
         <version.javax.el>2.2.4</version.javax.el>
         <version.joist>1.7.0</version.joist>
