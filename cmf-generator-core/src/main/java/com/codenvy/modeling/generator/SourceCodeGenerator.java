@@ -1053,7 +1053,7 @@ public class SourceCodeGenerator {
                       .append(OFFSET).append(PushButton.class.getSimpleName()).append(' ').append(argumentName).append(";\n");
 
                 fieldsInitialization.append(OFFSET).append(OFFSET).append(argumentName).append(" = new PushButton(new Image(resources.")
-                                    .append(argumentName).append("()));\n");
+                                    .append(argumentName).append("Toolbar").append("()));\n");
 
                 actionDelegateMethods.append(OFFSET).append("@UiHandler(\"").append(argumentName).append("\")\n")
                                      .append(OFFSET).append("public void on").append(elementName)
@@ -1061,7 +1061,7 @@ public class SourceCodeGenerator {
                                      .append(OFFSET).append(OFFSET).append("delegate.on").append(elementName).append("ButtonClicked();\n")
                                      .append(OFFSET).append("}\n\n");
 
-                dockLayoutPanel.withNorth(50, pushButtonProvider.get()
+                dockLayoutPanel.withNorth(32, pushButtonProvider.get()
                                                                 .withPrefix("g")
                                                                 .withName(argumentName)
                                                                 .withAddStyle("style.fullSize")
@@ -1106,7 +1106,7 @@ public class SourceCodeGenerator {
                                  .append(OFFSET).append(OFFSET).append("delegate.on").append(connectionName).append("ButtonClicked();\n")
                                  .append(OFFSET).append("}\n\n");
 
-            dockLayoutPanel.withNorth(50, pushButtonProvider.get()
+            dockLayoutPanel.withNorth(32, pushButtonProvider.get()
                                                             .withPrefix("g")
                                                             .withName(argumentName)
                                                             .withAddStyle("style.fullSize")

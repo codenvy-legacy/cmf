@@ -27,7 +27,7 @@
 
     <g:DockLayoutPanel unit="PX" addStyleDependentNames="{style.fullSize}">
 
-        <g:west size="60">
+        <g:west size="37">
             <g:SimpleLayoutPanel ui:field="toolbar" addStyleDependentNames="{style.fullSize}"/>
         </g:west>
 

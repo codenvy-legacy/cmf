@@ -10,10 +10,10 @@
         }
     </ui:style>
     <g:DockLayoutPanel>
-        <g:north size="50.00">
+        <g:north size="32.00">
             <g:PushButton ui:field="element1" addStyleNames="{style.fullSize}"/>
         </g:north>
-        <g:north size="50.00">
+        <g:north size="32.00">
             <g:PushButton ui:field="connection1" addStyleNames="{style.fullSize}"/>
         </g:north>
     </g:DockLayoutPanel>

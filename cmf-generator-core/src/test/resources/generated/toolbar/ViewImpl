@@ -22,7 +22,7 @@ public class ToolbarViewImpl extends ToolbarView {
 
     @Inject
     public ToolbarViewImpl(ToolbarViewImplUiBinder ourUiBinder, EditorResources resources) {
-        element1 = new PushButton(new Image(resources.element1()));
+        element1 = new PushButton(new Image(resources.element1Toolbar()));
         connection1 = new PushButton(new Image(resources.connection1()));
 
         widget = ourUiBinder.createAndBindUi(this);
