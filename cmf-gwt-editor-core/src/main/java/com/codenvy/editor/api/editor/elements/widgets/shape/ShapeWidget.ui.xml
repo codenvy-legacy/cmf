@@ -19,8 +19,10 @@
              xmlns:g='urn:import:com.google.gwt.user.client.ui'>
 
     <ui:style>
-        .background {
+        .dockLayoutPanel {
             background: #CCFFCC;
+            border: 2px solid #CCFFCC;
+            border-radius: 5px;
         }
 
         .title {
@@ -28,9 +30,10 @@
             color: black;
             font-weight: bold;
         }
+
     </ui:style>
 
-    <g:DockLayoutPanel unit="PX" width="70px" height="90px" styleName="{style.background}">
+    <g:DockLayoutPanel unit="PX" width="70px" height="90px" styleName="{style.dockLayoutPanel}">
 
         <g:south size="25">
             <g:Label ui:field="title" styleName="{style.title}"/>
@@ -42,7 +45,7 @@
 
         <g:center>
             <g:HTMLPanel>
-                <table  width="100%" height="100%">
+                <table width="100%" height="100%">
                     <tr>
                         <td align="center">
                             <g:Image ui:field="icon"/>
