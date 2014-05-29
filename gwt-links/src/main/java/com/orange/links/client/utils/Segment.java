@@ -4,60 +4,89 @@ import com.orange.links.client.shapes.Point;
 
 public class Segment {
 
-    private Point p1;
-    private Point p2;
+    private Point startPoint;
+    private Point endPoint;
 
-    public Segment(Point p1, Point p2) {
-        this.p1 = p1;
-        this.p2 = p2;
+    public static Segment make() {
+        return new Segment();
     }
 
-    public Point getP1() {
-        return p1;
+    private Segment() {
     }
 
-    public void setP1(Point p1) {
-        this.p1 = p1;
+    public Point getStartPoint() {
+        return startPoint;
     }
 
-    public Point getP2() {
-        return p2;
+    public Segment startPoint(Point point1) {
+        this.startPoint = point1;
+        return this;
     }
 
-    public void setP2(Point p2) {
-        this.p2 = p2;
+    public Point getEndPoint() {
+        return endPoint;
     }
 
-    public boolean equals(Segment s) {
-        return s.getP1().equals(p1) && s.getP2().equals(p2);
+    public Segment endPoint(Point point2) {
+        this.endPoint = point2;
+        return this;
     }
 
     @Override
     public String toString() {
-        return p1 + " , " + p2;
+        return startPoint + " , " + endPoint;
+    }
+
+    public static double length(Point point1, Point point2) {
+        return Math.sqrt(Math.pow(point2.getLeft() - point1.getLeft(), 2) + Math.pow(point2.getTop() - point1.getTop(), 2));
     }
 
     public double length() {
-        return Math.sqrt((p2.getLeft() - p1.getLeft()) ^ 2 + (p2.getTop() - p1.getTop()) ^ 2);
+        return length(startPoint, endPoint);
     }
 
     public void translate(int left, int top) {
-        p1.translate(left, top);
-        p2.translate(left, top);
+        startPoint.translate(left, top);
+        endPoint.translate(left, top);
+    }
+
+    public static Point middle(Point point1, Point point2) {
+        return Point.make()
+                    .x((point2.getLeft() + point1.getLeft()) / 2)
+                    .y((point2.getTop() + point1.getTop()) / 2);
     }
 
     public Point middle() {
-        return new Point(
-                (p2.getLeft() + p1.getLeft()) / 2,
-                (p2.getTop() + p1.getTop()) / 2
-        );
+        return middle(startPoint, endPoint);
     }
 
     public double getAngleWithTop() {
-        double linkAngle = Math.acos((p2.getLeft() - p1.getLeft()) /
-                                     Math.sqrt(Math.pow(p2.getLeft() - p1.getLeft(), 2) + Math.pow(p2.getTop() - p1.getTop(), 2)));
-        if (p2.getTop() < p1.getTop())
+        double linkAngle = Math.acos(
+                (endPoint.getLeft() - startPoint.getLeft()) /
+                Math.sqrt(Math.pow(endPoint.getLeft() - startPoint.getLeft(), 2) + Math.pow(endPoint.getTop() - startPoint.getTop(), 2))
+                                    );
+
+        if (endPoint.getTop() < startPoint.getTop()) {
             linkAngle = linkAngle * -1;
+        }
+
         return linkAngle;
     }
+
+    public static double getСosine(Point point1, Point point2) {
+        double hypotenuseLength = length(point1, point2);
+        double adjacentLength = length(
+                Point.make()
+                     .x(point1.getLeft())
+                     .y(point2.getTop()),
+                point1
+                                      );
+
+        return adjacentLength / hypotenuseLength;
+    }
+
+    public double getСosine() {
+        return getСosine(startPoint, endPoint);
+    }
+
 }

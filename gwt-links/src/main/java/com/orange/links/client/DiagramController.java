@@ -76,17 +76,10 @@ import java.util.Map;
 public class DiagramController implements HasNewFunctionHandlers,
                                           HasTieLinkHandlers, HasUntieLinkHandlers, HasChangeOnDiagramHandlers, HasContextMenu {
 
-    /**
-     * If the distance between the mouse and segment is under this number in pixels, then,
-     * the mouse is considered over the segment
-     */
+    /** If the distance between the mouse and segment is under this number in pixels, then, the mouse is considered over the segment */
     public static int minDistanceToSegment = 10;
-
-    /**
-     * Timer refresh duration, in milliseconds. It defers if the application is running in development mode
-     * or in the web mode
-     */
-    public static int refreshRate = GWT.isScript() ? 25 : 50;
+    /** Timer refresh duration, in milliseconds. It defers if the application is running in development mode or in the web mode */
+    public static int refreshRate          = GWT.isScript() ? 25 : 50;
 
     private boolean allowingUserInteractions = true;
 
@@ -100,13 +93,13 @@ public class DiagramController implements HasNewFunctionHandlers,
 
     protected ContextMenu canvasMenu;
 
-    protected DrawableSet<Connection>              connections    = new DrawableSet<Connection>();
-    protected DrawableSet<FunctionShape>           shapes         = new DrawableSet<FunctionShape>();
-    protected Map<Widget, FunctionShape>           widgetShapeMap = new HashMap<Widget, FunctionShape>();
-    protected Map<Widget, Map<Widget, Connection>> functionsMap   = new HashMap<Widget, Map<Widget, Connection>>();
+    protected DrawableSet<Connection>              connections    = new DrawableSet<>();
+    protected DrawableSet<FunctionShape>           shapes         = new DrawableSet<>();
+    protected Map<Widget, FunctionShape>           widgetShapeMap = new HashMap<>();
+    protected Map<Widget, Map<Widget, Connection>> functionsMap   = new HashMap<>();
 
-    protected Point mousePoint       = new Point(0, 0);
-    protected Point mouseOffsetPoint = new Point(0, 0);
+    protected Point mousePoint       = Point.make().x(0).y(0);
+    protected Point mouseOffsetPoint = Point.make().x(0).y(0);
 
     // Drag Edition status
     public boolean inEditionDragMovablePoint                = false;
@@ -395,7 +388,7 @@ public class DiagramController implements HasNewFunctionHandlers,
      *         Top margin in pixels
      */
     public void addPointOnConnection(Connection c, int left, int top) {
-        c.addMovablePoint(new Point(left, top));
+        c.addMovablePoint(Point.make().x(left).y(top));
     }
 
     /**
@@ -407,6 +400,7 @@ public class DiagramController implements HasNewFunctionHandlers,
     public void showGrid(boolean showGrid) {
         this.showGrid = showGrid;
         backgroundCanvas.initGrid();
+
         if (this.showGrid) {
             widgetPanel.add(backgroundCanvas.asWidget());
         } else {
@@ -781,7 +775,7 @@ public class DiagramController implements HasNewFunctionHandlers,
     protected void drawBuildArrow(Widget startFunctionWidget, Point mousePoint) {
         topCanvas.setForeground();
         Shape startShape = new FunctionShape(this, startFunctionWidget);
-        final MouseShape endShape = new MouseShape(mousePoint);
+        final MouseShape endShape = MouseShape.make().mousePoint(mousePoint);
         buildConnection = drawConnection(ConnectionFactory.ARROW, startShape, endShape);
         buildConnection.setAllowSynchronized(false);
         buildConnection.setSynchronized(false);
@@ -810,7 +804,7 @@ public class DiagramController implements HasNewFunctionHandlers,
     }
 
 	/*
-	 * Public methods to debug
+     * Public methods to debug
 	 */
 
     /**
@@ -890,7 +884,7 @@ public class DiagramController implements HasNewFunctionHandlers,
 
             // Add the movable points
             for (int[] p : link.pointList) {
-                c.addMovablePoint(new com.orange.links.client.shapes.Point(p[0], p[1]));
+                c.addMovablePoint(Point.make().x(p[0]).y(p[1]));
             }
 
             // Fire TieEvent

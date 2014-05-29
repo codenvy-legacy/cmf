@@ -10,73 +10,84 @@ public class Point implements Shape {
     protected int       top;
     private   Direction direction;
 
-    public Point(int left, int top) {
-        this.left = left;
-        this.top = top;
+    public static Point make() {
+        return new Point();
     }
 
-    public Point(double left, double top) {
-        this.left = new Double(left).intValue();
-        this.top = new Double(top).intValue();
+    protected Point() {
     }
 
     public void setLeft(int left) {
         this.left = left;
     }
 
+    public Point x(int x) {
+        this.left = x;
+        return this;
+    }
+
     public void setTop(int top) {
         this.top = top;
     }
 
+    public Point y(int y) {
+        this.top = y;
+        return this;
+    }
+
+    @Override
     public int getLeft() {
         return left;
     }
 
+    @Override
     public int getTop() {
         return top;
     }
 
+    @Override
     public int getWidth() {
         return 1;
     }
 
+    @Override
     public int getHeight() {
         return 1;
     }
 
     public double distance(Point other) {
-        return Math.sqrt((getLeft() - other.getLeft()) * (getLeft() - other.getLeft()) + (getTop() - other.getTop())
-                                                                                         * (getTop() - other.getTop()));
+        return Math.sqrt((getLeft() - other.getLeft()) * (getLeft() - other.getLeft()) +
+                         (getTop() - other.getTop()) * (getTop() - other.getTop()));
     }
 
     public Point move(Direction dir, int distance) {
         if (dir == Direction.S) {
-            return new Point(left, top + distance);
+            return make().x(left).y(top + distance);
         } else if (dir == Direction.SE) {
-            return new Point(left + Math.cos(distance), top - Math.sin(distance));
+            return make().x(left + (int)Math.cos(distance)).y(top - (int)Math.sin(distance));
         } else if (dir == Direction.SW) {
-            return new Point(left - Math.cos(distance), top - Math.sin(distance));
+            return make().x(left - (int)Math.cos(distance)).y(top - (int)Math.sin(distance));
         } else if (dir == Direction.N) {
-            return new Point(left, top - distance);
+            return make().x(left).y(top - distance);
         } else if (dir == Direction.NE) {
-            return new Point(left + Math.cos(distance), top + Math.sin(distance));
+            return make().x(left + (int)Math.cos(distance)).y(top + (int)Math.sin(distance));
         } else if (dir == Direction.NW) {
-            return new Point(left - Math.cos(distance), top + Math.sin(distance));
+            return make().x(left - (int)Math.cos(distance)).y(top + (int)Math.sin(distance));
         } else if (dir == Direction.W) {
-            return new Point(left - distance, top);
+            return make().x(left - distance).y(top);
         } else if (dir == Direction.E) {
-            return new Point(left + distance, top);
+            return make().x(left + distance).y(top);
         } else {
             throw new IllegalStateException();
         }
     }
 
     public Point move(Point vector) {
-        return new Point(left + vector.left, top + vector.top);
+        return make().x(left + vector.left).y(top + vector.top);
     }
 
     public Point negative() {
-        return new Point(-left, -top);
+        return make().x(-left).y(-top);
     }
 
     public static boolean equals(Point p1, Point p2) {
@@ -101,7 +112,7 @@ public class Point implements Shape {
     }
 
     public boolean isInside(Shape s) {
-        Rectangle r = new Rectangle(s);
+        Rectangle r = Rectangle.make().shape(s);
         return getLeft() >= r.getLeft() && getTop() >= r.getTop() && getLeft() <= r.getLeft() + r.getWidth()
                && getTop() <= r.getTop() + r.getHeight();
     }

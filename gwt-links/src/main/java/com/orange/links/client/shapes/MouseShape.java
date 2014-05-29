@@ -2,13 +2,10 @@ package com.orange.links.client.shapes;
 
 public class MouseShape extends Point {
 
-    private int height = 1;
-    private int width  = 1;
-    Point mousePoint;
+    private Point mousePoint;
 
-    public MouseShape(Point mousePoint) {
-        super(mousePoint.getLeft(), mousePoint.getTop());
-        this.mousePoint = mousePoint;
+    public static MouseShape make() {
+        return new MouseShape();
     }
 
     @Override
@@ -21,14 +18,20 @@ public class MouseShape extends Point {
         return mousePoint.getTop();
     }
 
+    public MouseShape mousePoint(Point mousePoint) {
+        x(mousePoint.getLeft()).y(mousePoint.getTop());
+        this.mousePoint = mousePoint;
+        return this;
+    }
+
     @Override
     public int getWidth() {
-        return width;
+        return 1;
     }
 
     @Override
     public int getHeight() {
-        return height;
+        return 1;
     }
 
 }

@@ -45,9 +45,11 @@ public class FunctionShape extends AbstractShape {
         if (closestSelectablePoint != null) {
             DiagramCanvas canvas = controller.getDiagramCanvas();
             canvas.beginPath();
-            canvas.arc(closestSelectablePoint.getLeft(), closestSelectablePoint.getTop(), selectableAreaRadius, direction.getAngle()
-                                                                                                                - Math.PI / 2,
-                       direction.getAngle() + Math.PI / 2, true);
+            canvas.arc(closestSelectablePoint.getLeft(),
+                       closestSelectablePoint.getTop(),
+                       selectableAreaRadius, direction.getAngle() - Math.PI / 2,
+                       direction.getAngle() + Math.PI / 2,
+                       true);
             canvas.setStrokeStyle(highlightSelectableAreaColor);
             canvas.stroke();
             canvas.setFillStyle(highlightSelectableAreaColor);
@@ -59,21 +61,22 @@ public class FunctionShape extends AbstractShape {
     public Couple<Direction, Point> getSelectableArea(Point p) {
         // Center of the selectable areas
         if (centerW == null || !isSynchronized()) {
-            centerW = new Point(getLeft(), getTop() + getHeight() / 2);
-            centerN = new Point(getLeft() + getWidth() / 2, getTop());
-            centerS = new Point(getLeft() + getWidth() / 2, getTop() + getHeight() - 1);
-            centerE = new Point(getLeft() + getWidth() - 1, getTop() + getHeight() / 2);
+            centerW = Point.make().x(getLeft()).y(getTop() + getHeight() / 2);
+            centerN = Point.make().x(getLeft() + getWidth() / 2).y(getTop());
+            centerS = Point.make().x(getLeft() + getWidth() / 2).y(getTop() + getHeight() - 1);
+            centerE = Point.make().x(getLeft() + getWidth() - 1).y(getTop() + getHeight() / 2);
+
             setSynchronized(true);
         }
 
         if (p.distance(centerW) <= selectableAreaRadius) {
-            return new Couple<Direction, Point>(Direction.W, centerW);
+            return new Couple<>(Direction.W, centerW);
         } else if (p.distance(centerN) <= selectableAreaRadius) {
-            return new Couple<Direction, Point>(Direction.N, centerN);
+            return new Couple<>(Direction.N, centerN);
         } else if (p.distance(centerS) <= selectableAreaRadius) {
-            return new Couple<Direction, Point>(Direction.S, centerS);
+            return new Couple<>(Direction.S, centerS);
         } else if (p.distance(centerE) <= selectableAreaRadius) {
-            return new Couple<Direction, Point>(Direction.E, centerE);
+            return new Couple<>(Direction.E, centerE);
         }
         return null;
     }

@@ -3,6 +3,10 @@ package com.orange.links.client.utils;
 import com.orange.links.client.shapes.Point;
 import com.orange.links.client.shapes.Shape;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class Rectangle {
 
     private Point cornerTopLeft;
@@ -10,69 +14,91 @@ public class Rectangle {
     private Point cornerBottomLeft;
     private Point cornerBottomRight;
 
-    private Shape shape;
-
-    public Rectangle(Shape s) {
-        shape = s;
-        cornerTopLeft = new Point(s.getLeft(), s.getTop());
-        cornerTopRight = new Point(s.getLeft() + s.getWidth(), s.getTop());
-        cornerBottomLeft = new Point(s.getLeft(), s.getTop() + s.getHeight());
-        cornerBottomRight = new Point(s.getLeft() + s.getWidth(), s.getTop() + s.getHeight());
+    public static Rectangle make() {
+        return new Rectangle();
     }
 
-    public Rectangle(Point cornerTopLeft, Point cornerTopRight, Point cornerBottomLeft, Point cornerBottomRight) {
-        this.cornerTopLeft = cornerTopLeft;
-        this.cornerTopRight = cornerTopRight;
-        this.cornerBottomLeft = cornerBottomLeft;
-        this.cornerBottomRight = cornerBottomRight;
+    private Rectangle() {
+    }
+
+    public Rectangle shape(Shape shape) {
+        this.cornerTopLeft = Point.make().x(shape.getLeft()).y(shape.getTop());
+        this.cornerTopRight = Point.make().x(shape.getLeft() + shape.getWidth()).y(shape.getTop());
+        this.cornerBottomLeft = Point.make().x(shape.getLeft()).y(shape.getTop() + shape.getHeight());
+        this.cornerBottomRight = Point.make().x(shape.getLeft() + shape.getWidth()).y(shape.getTop() + shape.getHeight());
+
+        return this;
     }
 
     public Point getCornerTopLeft() {
         return cornerTopLeft;
     }
 
-    public void setCornerTopLeft(Point cornerTopLeft) {
-        this.cornerTopLeft = cornerTopLeft;
+    public Rectangle cornerTopLeft(Point point) {
+        this.cornerTopLeft = point;
+        return this;
     }
 
     public Point getCornerTopRight() {
         return cornerTopRight;
     }
 
-    public void setCornerTopRight(Point cornerTopRight) {
-        this.cornerTopRight = cornerTopRight;
+    public Rectangle cornerTopRight(Point point) {
+        this.cornerTopRight = point;
+        return this;
     }
 
     public Point getCornerBottomLeft() {
         return cornerBottomLeft;
     }
 
-    public void setCornerBottomLeft(Point cornerBottomLeft) {
-        this.cornerBottomLeft = cornerBottomLeft;
+    public Rectangle cornerBottomLeft(Point point) {
+        this.cornerBottomLeft = point;
+        return this;
     }
 
     public Point getCornerBottomRight() {
         return cornerBottomRight;
     }
 
-    public void setCornerBottomRight(Point cornerBottomRight) {
-        this.cornerBottomRight = cornerBottomRight;
+    public Rectangle cornerBottomRight(Point point) {
+        this.cornerBottomRight = point;
+        return this;
+    }
+
+    public Point getCenter() {
+        return Segment.middle(cornerTopLeft, cornerBottomRight);
+    }
+
+    public List<Point> getSideCenters() {
+        List<Point> points = new ArrayList<>();
+
+        points.add(Segment.middle(cornerTopLeft, cornerTopRight));
+        points.add(Segment.middle(cornerTopRight, cornerBottomRight));
+        points.add(Segment.middle(cornerBottomRight, cornerBottomLeft));
+        points.add(Segment.middle(cornerBottomLeft, cornerTopLeft));
+
+        return points;
+    }
+
+    public List<Point> getCornerPoints() {
+        return Arrays.asList(cornerTopLeft, cornerTopRight, cornerBottomRight, cornerBottomLeft);
     }
 
     public Segment getBorderLeft() {
-        return new Segment(cornerTopLeft, cornerBottomLeft);
+        return Segment.make().startPoint(cornerTopLeft).endPoint(cornerBottomLeft);
     }
 
     public Segment getBorderRight() {
-        return new Segment(cornerTopRight, cornerBottomRight);
+        return Segment.make().startPoint(cornerTopRight).endPoint(cornerBottomRight);
     }
 
     public Segment getBorderTop() {
-        return new Segment(cornerTopLeft, cornerTopRight);
+        return Segment.make().startPoint(cornerTopLeft).endPoint(cornerTopRight);
     }
 
     public Segment getBorderBottom() {
-        return new Segment(cornerBottomLeft, cornerBottomRight);
+        return Segment.make().startPoint(cornerBottomLeft).endPoint(cornerBottomRight);
     }
 
     public void translate(int left, int top) {
@@ -83,11 +109,10 @@ public class Rectangle {
     }
 
     public boolean isInside(Point p) {
-        return p.getLeft() >= getLeft()
-               && p.getTop() >= getTop()
-               && p.getLeft() <= getLeft() + getWidth()
-               && p.getTop() <= getTop() + getHeight()
-                ;
+        return p.getLeft() >= getLeft() &&
+               p.getTop() >= getTop() &&
+               p.getLeft() <= getLeft() + getWidth() &&
+               p.getTop() <= getTop() + getHeight();
     }
 
     public int getLeft() {

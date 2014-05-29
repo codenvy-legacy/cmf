@@ -11,26 +11,32 @@ public class WidgetUtils {
     public static int getLeft(Widget widget) {
         int containerOffset = 0;
         Element parent = DOM.getParent(widget.getElement());
+
         while (parent != null) {
             if (containerFinder.isContainer(parent)) {
                 containerOffset = parent.getAbsoluteLeft();
                 break;
             }
+
             parent = DOM.getParent(parent);
         }
+
         return widget.getAbsoluteLeft() - containerOffset;
     }
 
     public static int getTop(Widget widget) {
         int containerOffset = 0;
         Element parent = DOM.getParent(widget.getElement());
+
         while (parent != null) {
             if (containerFinder.isContainer(parent)) {
                 containerOffset = parent.getAbsoluteTop();
                 break;
             }
+
             parent = DOM.getParent(parent);
         }
+
         return widget.getAbsoluteTop() - containerOffset;
     }
 

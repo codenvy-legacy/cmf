@@ -12,35 +12,35 @@ public interface Shape extends Drawable {
     /**
      * @return left margin
      */
-    public int getLeft();
+    int getLeft();
 
     /**
      * @return top margin
      */
-    public int getTop();
+    int getTop();
 
     /**
      * @return width of the shape
      */
-    public int getWidth();
+    int getWidth();
 
     /**
      * @return height of the shape
      */
-    public int getHeight();
+    int getHeight();
 
     /**
      * Add a connection to this shape.
      *
      * @return whether or not a connection was added
      */
-    public boolean addConnection(Connection connection);
+    boolean addConnection(Connection connection);
 
     /**
      * Remove a connection to this shape.
      *
      * @return whether or not a connection was removed
      */
-    public boolean removeConnection(Connection connection);
+    boolean removeConnection(Connection connection);
 
 }

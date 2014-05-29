@@ -51,7 +51,7 @@ public abstract class AbstractConnection implements Connection {
     public AbstractConnection(DiagramController controller, Shape startShape, Shape endShape) throws DiagramViewNotDisplayedException {
         this.startShape = startShape;
         this.endShape = endShape;
-        this.segmentSet = new HashSet<Segment>();
+        this.segmentSet = new HashSet<>();
 
         // Build Path
         this.segmentPath = new SegmentPath(startShape, endShape);
@@ -115,23 +115,22 @@ public abstract class AbstractConnection implements Connection {
 
     public void draw() {
         // Reset the segments
-        segmentSet = new HashSet<Segment>();
+        segmentSet = new HashSet<>();
 
         // Draw each segment
         segmentPath.update();
-        List<Point> pointList = new ArrayList<Point>();
+        List<Point> pointList = new ArrayList<>();
         Point startPoint = segmentPath.getFirstPoint();
         pointList.add(startPoint);
         for (Point p : segmentPath.getPathWithoutExtremities()) {
-            Point endPoint = p;
-            pointList.add(endPoint);
-            segmentSet.add(new Segment(startPoint, endPoint));
-            startPoint = endPoint;
+            pointList.add(p);
+            segmentSet.add(Segment.make().startPoint(startPoint).endPoint(p));
+            startPoint = p;
         }
         // Draw last segment
         Point lastPoint = segmentPath.getLastPoint();
         pointList.add(lastPoint);
-        segmentSet.add(new Segment(startPoint, lastPoint));
+        segmentSet.add(Segment.make().startPoint(startPoint).endPoint(lastPoint));
 
         // Draw All the register point
         draw(pointList);
@@ -152,9 +151,9 @@ public abstract class AbstractConnection implements Connection {
     }
 
     public MovablePoint addMovablePoint(Point p) {
-        Point startSegmentPoint = highlightSegment.getP1();
-        Point endSegmentPoint = highlightSegment.getP2();
-        MovablePoint movablePoint = new MovablePoint(p);
+        Point startSegmentPoint = highlightSegment.getStartPoint();
+        Point endSegmentPoint = highlightSegment.getEndPoint();
+        MovablePoint movablePoint = MovablePoint.make().x(p.getLeft()).y(p.getTop());
         segmentPath.add(movablePoint, startSegmentPoint, endSegmentPoint);
         return movablePoint;
     }
@@ -200,7 +199,8 @@ public abstract class AbstractConnection implements Connection {
 
     public boolean isMouseNearConnection(Point p) {
         for (Segment s : segmentSet) {
-            if (!s.getP1().equals(s.getP2()) && ConnectionUtils.distanceToSegment(s, p) < DiagramController.minDistanceToSegment) {
+            if (!s.getStartPoint().equals(s.getEndPoint()) &&
+                ConnectionUtils.distanceToSegment(s, p) < DiagramController.minDistanceToSegment) {
                 return true;
             }
         }

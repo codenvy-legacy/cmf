@@ -50,7 +50,7 @@ public class StraightConnection extends AbstractConnection {
             p2 = pointList.get(i + 1);
 
             // source point
-            Segment prevSegment = new Segment(p0, p1);
+            Segment prevSegment = Segment.make().startPoint(p0).endPoint(p1);
             double prevAngle = prevSegment.getAngleWithTop();
             double srcx = p1.getLeft() - cubicMargin * Math.cos(prevAngle);
             double srcy = p1.getTop() - cubicMargin * Math.sin(prevAngle);
@@ -60,7 +60,7 @@ public class StraightConnection extends AbstractConnection {
             double cpy = p1.getTop();
 
             // destination point
-            Segment nextSegment = new Segment(p1, p2);
+            Segment nextSegment = Segment.make().startPoint(p1).endPoint(p2);
             double nextAngle = nextSegment.getAngleWithTop();
             double x = p1.getLeft() + cubicMargin * Math.cos(nextAngle);
             double y = p1.getTop() + cubicMargin * Math.sin(nextAngle);

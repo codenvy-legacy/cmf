@@ -9,19 +9,20 @@ public interface LinksClientBundle extends ClientBundle {
     interface LinksCssResource extends CssResource {
 
         @ClassName("links-connection-popup")
-        public String connectionPopup();
+        String connectionPopup();
 
         @ClassName("links-connection-popup-item")
-        public String connectionPopupItem();
+        String connectionPopupItem();
 
         @ClassName("links-highlight-widget")
-        public String highlightWidget();
+        String highlightWidget();
 
         @ClassName("links-translucide")
-        public String translucide();
+        String translucide();
 
         @ClassName("links-connection-canvas")
-        public String connectionCanvas();
+        String connectionCanvas();
+
     }
 
     static final LinksClientBundle INSTANCE = GWT.create(LinksClientBundle.class);
