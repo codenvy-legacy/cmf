@@ -31,13 +31,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import static com.codenvy.modeling.generator.builders.BuilderConstants.CLIENT_PART_FOLDER;
-import static com.codenvy.modeling.generator.builders.BuilderConstants.CURRENT_PACKAGE_MASK;
-import static com.codenvy.modeling.generator.builders.BuilderConstants.ELEMENTS_FOLDER;
-import static com.codenvy.modeling.generator.builders.BuilderConstants.JAVA_SOURCE_PATH;
-import static com.codenvy.modeling.generator.builders.BuilderConstants.MAIN_SOURCE_PATH;
-import static com.codenvy.modeling.generator.builders.BuilderConstants.OFFSET;
-import static com.codenvy.modeling.generator.builders.BuilderConstants.WORKSPACE_FOLDER;
+import static com.codenvy.modeling.generator.builders.FileExtensionConstants.JAVA;
+import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.CURRENT_PACKAGE_MARKER;
+import static com.codenvy.modeling.generator.builders.OffsetBuilderConstants.OFFSET;
+import static com.codenvy.modeling.generator.builders.PathConstants.CLIENT_PACKAGE;
+import static com.codenvy.modeling.generator.builders.PathConstants.ELEMENTS_PACKAGE;
+import static com.codenvy.modeling.generator.builders.PathConstants.JAVA_SOURCE_FOLDER;
+import static com.codenvy.modeling.generator.builders.PathConstants.MAIN_SOURCE_PATH;
+import static com.codenvy.modeling.generator.builders.PathConstants.WORKSPACE_PACKAGE;
 
 /**
  * @author Andrey Plotnikov
@@ -49,11 +50,11 @@ public class WorkspaceViewBuilder extends AbstractBuilder<WorkspaceViewBuilder> 
     private static final String ADD_CONNECTION_CODE_FORMAT =
             OFFSET + "public abstract void addconnectionName(@Nonnull String sourceElementID, @Nonnull String targetElementID);\n\n";
 
-    private static final String ELEMENT_NAME_MASK    = "elementName";
-    private static final String CONNECTION_NAME_MASK = "connectionName";
+    private static final String ELEMENT_NAME_MARKER    = "elementName";
+    private static final String CONNECTION_NAME_MARKER = "connectionName";
 
-    private static final String ELEMENT_IMPORTS_MASK = "element_imports";
-    private static final String METHODS_MASK         = "methods";
+    private static final String ELEMENT_IMPORTS_MARKER = "element_imports";
+    private static final String METHODS_MARKER         = "methods";
 
     private static final String WORKSPACE_VIEW_NAME = "WorkspaceView";
 
@@ -94,9 +95,9 @@ public class WorkspaceViewBuilder extends AbstractBuilder<WorkspaceViewBuilder> 
     /** {@inheritDoc} */
     @Override
     public void build() throws IOException {
-        String clientPackage = mainPackage + '.' + CLIENT_PART_FOLDER + '.';
-        String workspacePackage = clientPackage + WORKSPACE_FOLDER;
-        String elementsPackage = clientPackage + ELEMENTS_FOLDER + '.';
+        String clientPackage = mainPackage + '.' + CLIENT_PACKAGE + '.';
+        String workspacePackage = clientPackage + WORKSPACE_PACKAGE;
+        String elementsPackage = clientPackage + ELEMENTS_PACKAGE + '.';
 
         StringBuilder imports = new StringBuilder();
         StringBuilder methods = new StringBuilder();
@@ -116,21 +117,21 @@ public class WorkspaceViewBuilder extends AbstractBuilder<WorkspaceViewBuilder> 
 
         Path workspaceViewSource = Paths.get(sourcePath,
                                              MAIN_SOURCE_PATH,
-                                             JAVA_SOURCE_PATH,
-                                             WORKSPACE_FOLDER,
-                                             WORKSPACE_VIEW_NAME + ".java");
+                                             JAVA_SOURCE_FOLDER,
+                                             WORKSPACE_PACKAGE,
+                                             WORKSPACE_VIEW_NAME + JAVA);
         Path workspaceViewTarget = Paths.get(targetPath,
                                              MAIN_SOURCE_PATH,
-                                             JAVA_SOURCE_PATH,
+                                             JAVA_SOURCE_FOLDER,
                                              convertPathToPackageName(mainPackage),
-                                             CLIENT_PART_FOLDER,
-                                             WORKSPACE_FOLDER,
-                                             WORKSPACE_VIEW_NAME + ".java");
+                                             CLIENT_PACKAGE,
+                                             WORKSPACE_PACKAGE,
+                                             WORKSPACE_VIEW_NAME + JAVA);
 
         Map<String, String> replaceElements = new HashMap<>();
-        replaceElements.put(CURRENT_PACKAGE_MASK, workspacePackage);
-        replaceElements.put(ELEMENT_IMPORTS_MASK, imports.toString());
-        replaceElements.put(METHODS_MASK, methods.toString());
+        replaceElements.put(CURRENT_PACKAGE_MARKER, workspacePackage);
+        replaceElements.put(ELEMENT_IMPORTS_MARKER, imports.toString());
+        replaceElements.put(METHODS_MARKER, methods.toString());
 
         createFile(workspaceViewSource, workspaceViewTarget, replaceElements);
 
@@ -140,7 +141,7 @@ public class WorkspaceViewBuilder extends AbstractBuilder<WorkspaceViewBuilder> 
     @Nonnull
     private String createAddElementMethodCode(@Nonnull String elementName) {
         Map<String, String> masks = new HashMap<>();
-        masks.put(ELEMENT_NAME_MASK, elementName);
+        masks.put(ELEMENT_NAME_MARKER, elementName);
 
         return ContentReplacer.replace(ADD_ELEMENT_CODE_FORMAT, masks);
     }
@@ -148,7 +149,7 @@ public class WorkspaceViewBuilder extends AbstractBuilder<WorkspaceViewBuilder> 
     @Nonnull
     private String createAddConnectionMethodCode(@Nonnull String connectionName) {
         Map<String, String> masks = new HashMap<>();
-        masks.put(CONNECTION_NAME_MASK, connectionName);
+        masks.put(CONNECTION_NAME_MARKER, connectionName);
 
         return ContentReplacer.replace(ADD_CONNECTION_CODE_FORMAT, masks);
     }

@@ -32,22 +32,23 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import static com.codenvy.modeling.generator.builders.BuilderConstants.CLIENT_PART_FOLDER;
-import static com.codenvy.modeling.generator.builders.BuilderConstants.CREATE_CONNECTION_SOURCE_STATE_FORMAT;
-import static com.codenvy.modeling.generator.builders.BuilderConstants.CREATE_CONNECTION_TARGET_STATE_FORMAT;
-import static com.codenvy.modeling.generator.builders.BuilderConstants.CREATE_ELEMENT_STATE_FORMAT;
-import static com.codenvy.modeling.generator.builders.BuilderConstants.CREATE_NOTING_STATE;
-import static com.codenvy.modeling.generator.builders.BuilderConstants.CURRENT_PACKAGE_MASK;
-import static com.codenvy.modeling.generator.builders.BuilderConstants.EDITOR_STATE_NAME;
-import static com.codenvy.modeling.generator.builders.BuilderConstants.ELEMENTS_FOLDER;
-import static com.codenvy.modeling.generator.builders.BuilderConstants.FIVE_TABS;
-import static com.codenvy.modeling.generator.builders.BuilderConstants.FOUR_TABS;
-import static com.codenvy.modeling.generator.builders.BuilderConstants.JAVA_SOURCE_PATH;
-import static com.codenvy.modeling.generator.builders.BuilderConstants.MAIN_PACKAGE_MASK;
-import static com.codenvy.modeling.generator.builders.BuilderConstants.MAIN_SOURCE_PATH;
-import static com.codenvy.modeling.generator.builders.BuilderConstants.STATIC_IMPORT_MASK;
-import static com.codenvy.modeling.generator.builders.BuilderConstants.THREE_TABS;
-import static com.codenvy.modeling.generator.builders.BuilderConstants.WORKSPACE_FOLDER;
+import static com.codenvy.modeling.generator.builders.ClassNameConstants.EDITOR_STATE;
+import static com.codenvy.modeling.generator.builders.EditorStateConstants.CREATE_CONNECTION_SOURCE_STATE_FORMAT;
+import static com.codenvy.modeling.generator.builders.EditorStateConstants.CREATE_CONNECTION_TARGET_STATE_FORMAT;
+import static com.codenvy.modeling.generator.builders.EditorStateConstants.CREATE_ELEMENT_STATE_FORMAT;
+import static com.codenvy.modeling.generator.builders.EditorStateConstants.CREATE_NOTHING_STATE;
+import static com.codenvy.modeling.generator.builders.FileExtensionConstants.JAVA;
+import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.CURRENT_PACKAGE_MARKER;
+import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.MAIN_PACKAGE_MARKER;
+import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.STATIC_IMPORT_MARKER;
+import static com.codenvy.modeling.generator.builders.OffsetBuilderConstants.FIVE_TABS;
+import static com.codenvy.modeling.generator.builders.OffsetBuilderConstants.FOUR_TABS;
+import static com.codenvy.modeling.generator.builders.OffsetBuilderConstants.THREE_TABS;
+import static com.codenvy.modeling.generator.builders.PathConstants.CLIENT_PACKAGE;
+import static com.codenvy.modeling.generator.builders.PathConstants.ELEMENTS_PACKAGE;
+import static com.codenvy.modeling.generator.builders.PathConstants.JAVA_SOURCE_FOLDER;
+import static com.codenvy.modeling.generator.builders.PathConstants.MAIN_SOURCE_PATH;
+import static com.codenvy.modeling.generator.builders.PathConstants.WORKSPACE_PACKAGE;
 
 /**
  * @author Andrey Plotnikov
@@ -84,17 +85,17 @@ public class WorkspacePresenterBuilder extends AbstractBuilder<WorkspacePresente
             FOUR_TABS + "setState(CREATING_NOTING);\n" +
             FOUR_TABS + "break;\n";
 
-    private static final String ELEMENT_NAME_MASK          = "elementName";
-    private static final String ARGUMENT_NAME_MASK         = "argumentName";
-    private static final String CREATE_STATE_MASK          = "createState";
-    private static final String CONNECTION_NAME_MASK       = "connectionName";
-    private static final String CONNECTION_UPPER_NAME_MASK = "connectionUpperName";
+    private static final String ELEMENT_NAME_MARKER          = "elementName";
+    private static final String ARGUMENT_NAME_MARKER         = "argumentName";
+    private static final String CREATE_STATE_MARKER          = "createState";
+    private static final String CONNECTION_NAME_MARKER       = "connectionName";
+    private static final String CONNECTION_UPPER_NAME_MARKER = "connectionUpperName";
 
-    private static final String IMPORT_MASK                     = "import_elements";
-    private static final String MAIN_ELEMENT_NAME_MASK          = "main_element_name";
-    private static final String CREATE_GRAPHIC_ELEMENTS_MASK    = "create_graphic_elements";
-    private static final String CREATE_GRAPHIC_CONNECTIONS_MASK = "create_graphic_connections";
-    private static final String CREATE_GRAPHICAL_ELEMENTS_MASK  = "create_graphical_elements";
+    private static final String IMPORT_MARKER                     = "import_elements";
+    private static final String MAIN_ELEMENT_NAME_MARKER          = "main_element_name";
+    private static final String CREATE_GRAPHIC_ELEMENTS_MARKER    = "create_graphic_elements";
+    private static final String CREATE_GRAPHIC_CONNECTIONS_MARKER = "create_graphic_connections";
+    private static final String CREATE_GRAPHICAL_ELEMENTS_MARKER  = "create_graphical_elements";
 
     private static final String WORKSPACE_PRESENTER_NAME = "WorkspacePresenter";
 
@@ -135,10 +136,10 @@ public class WorkspacePresenterBuilder extends AbstractBuilder<WorkspacePresente
     /** {@inheritDoc} */
     @Override
     public void build() throws IOException {
-        String clientPackage = mainPackage + '.' + CLIENT_PART_FOLDER;
-        String workspacePackage = clientPackage + '.' + WORKSPACE_FOLDER;
-        String elementsPackage = clientPackage + '.' + ELEMENTS_FOLDER + '.';
-        String stateClassImport = "import static " + clientPackage + '.' + EDITOR_STATE_NAME + '.';
+        String clientPackage = mainPackage + '.' + CLIENT_PACKAGE;
+        String workspacePackage = clientPackage + '.' + WORKSPACE_PACKAGE;
+        String elementsPackage = clientPackage + '.' + ELEMENTS_PACKAGE + '.';
+        String stateClassImport = "import static " + clientPackage + '.' + EDITOR_STATE + '.';
 
         StringBuilder createElements = new StringBuilder();
         StringBuilder staticImports = new StringBuilder();
@@ -146,7 +147,7 @@ public class WorkspacePresenterBuilder extends AbstractBuilder<WorkspacePresente
         StringBuilder createConnections = new StringBuilder();
         StringBuilder createGraphicalElements = new StringBuilder();
 
-        staticImports.append(stateClassImport).append(CREATE_NOTING_STATE).append(";\n");
+        staticImports.append(stateClassImport).append(CREATE_NOTHING_STATE).append(";\n");
 
         for (Element element : elements) {
             String elementName = element.getName();
@@ -181,26 +182,26 @@ public class WorkspacePresenterBuilder extends AbstractBuilder<WorkspacePresente
 
         Path workspacePresenterSource = Paths.get(sourcePath,
                                                   MAIN_SOURCE_PATH,
-                                                  JAVA_SOURCE_PATH,
-                                                  WORKSPACE_FOLDER,
-                                                  WORKSPACE_PRESENTER_NAME + ".java");
+                                                  JAVA_SOURCE_FOLDER,
+                                                  WORKSPACE_PACKAGE,
+                                                  WORKSPACE_PRESENTER_NAME + JAVA);
         Path workspacePresenterTarget = Paths.get(targetPath,
                                                   MAIN_SOURCE_PATH,
-                                                  JAVA_SOURCE_PATH,
+                                                  JAVA_SOURCE_FOLDER,
                                                   convertPathToPackageName(mainPackage),
-                                                  CLIENT_PART_FOLDER,
-                                                  WORKSPACE_FOLDER,
-                                                  WORKSPACE_PRESENTER_NAME + ".java");
+                                                  CLIENT_PACKAGE,
+                                                  WORKSPACE_PACKAGE,
+                                                  WORKSPACE_PRESENTER_NAME + JAVA);
 
         Map<String, String> replaceElements = new LinkedHashMap<>();
-        replaceElements.put(MAIN_PACKAGE_MASK, mainPackage);
-        replaceElements.put(CURRENT_PACKAGE_MASK, workspacePackage);
-        replaceElements.put(STATIC_IMPORT_MASK, staticImports.toString());
-        replaceElements.put(IMPORT_MASK, imports.toString());
-        replaceElements.put(MAIN_ELEMENT_NAME_MASK, rootElement.getName());
-        replaceElements.put(CREATE_GRAPHIC_ELEMENTS_MASK, createElements.toString());
-        replaceElements.put(CREATE_GRAPHIC_CONNECTIONS_MASK, createConnections.toString());
-        replaceElements.put(CREATE_GRAPHICAL_ELEMENTS_MASK, createGraphicalElements.toString());
+        replaceElements.put(MAIN_PACKAGE_MARKER, mainPackage);
+        replaceElements.put(CURRENT_PACKAGE_MARKER, workspacePackage);
+        replaceElements.put(STATIC_IMPORT_MARKER, staticImports.toString());
+        replaceElements.put(IMPORT_MARKER, imports.toString());
+        replaceElements.put(MAIN_ELEMENT_NAME_MARKER, rootElement.getName());
+        replaceElements.put(CREATE_GRAPHIC_ELEMENTS_MARKER, createElements.toString());
+        replaceElements.put(CREATE_GRAPHIC_CONNECTIONS_MARKER, createConnections.toString());
+        replaceElements.put(CREATE_GRAPHICAL_ELEMENTS_MARKER, createGraphicalElements.toString());
 
         createFile(workspacePresenterSource, workspacePresenterTarget, replaceElements);
 
@@ -212,9 +213,9 @@ public class WorkspacePresenterBuilder extends AbstractBuilder<WorkspacePresente
         String argumentName = changeFirstSymbolToLowCase(elementName);
 
         Map<String, String> createElementMasks = new HashMap<>();
-        createElementMasks.put(ELEMENT_NAME_MASK, elementName);
-        createElementMasks.put(ARGUMENT_NAME_MASK, argumentName);
-        createElementMasks.put(CREATE_STATE_MASK, elementName.toUpperCase());
+        createElementMasks.put(ELEMENT_NAME_MARKER, elementName);
+        createElementMasks.put(ARGUMENT_NAME_MARKER, argumentName);
+        createElementMasks.put(CREATE_STATE_MARKER, elementName.toUpperCase());
 
         return ContentReplacer.replace(CREATE_ELEMENT_CODE_FORMAT, createElementMasks);
     }
@@ -222,7 +223,7 @@ public class WorkspacePresenterBuilder extends AbstractBuilder<WorkspacePresente
     @Nonnull
     private String createGraphicalElementCode(@Nonnull String elementName) {
         Map<String, String> createGraphicalElementMasks = new HashMap<>();
-        createGraphicalElementMasks.put(ELEMENT_NAME_MASK, elementName);
+        createGraphicalElementMasks.put(ELEMENT_NAME_MARKER, elementName);
 
         return ContentReplacer.replace(CREATE_GRAPHICAL_ELEMENT_CODE_FORMAT, createGraphicalElementMasks);
     }
@@ -232,9 +233,9 @@ public class WorkspacePresenterBuilder extends AbstractBuilder<WorkspacePresente
         String argumentName = changeFirstSymbolToLowCase(connectionName);
 
         Map<String, String> createConnectionMasks = new HashMap<>();
-        createConnectionMasks.put(CONNECTION_NAME_MASK, connectionName);
-        createConnectionMasks.put(CONNECTION_UPPER_NAME_MASK, connectionName.toUpperCase());
-        createConnectionMasks.put(ARGUMENT_NAME_MASK, argumentName);
+        createConnectionMasks.put(CONNECTION_NAME_MARKER, connectionName);
+        createConnectionMasks.put(CONNECTION_UPPER_NAME_MARKER, connectionName.toUpperCase());
+        createConnectionMasks.put(ARGUMENT_NAME_MARKER, argumentName);
 
         return ContentReplacer.replace(CREATE_CONNECTION_CODE_FORMAT, createConnectionMasks);
     }

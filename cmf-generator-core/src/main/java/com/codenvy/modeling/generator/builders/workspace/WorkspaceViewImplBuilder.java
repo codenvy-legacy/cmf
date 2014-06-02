@@ -35,15 +35,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import static com.codenvy.modeling.generator.builders.BuilderConstants.CLIENT_PART_FOLDER;
-import static com.codenvy.modeling.generator.builders.BuilderConstants.CURRENT_PACKAGE_MASK;
-import static com.codenvy.modeling.generator.builders.BuilderConstants.EDITOR_RESOURCES_NAME;
-import static com.codenvy.modeling.generator.builders.BuilderConstants.ELEMENTS_FOLDER;
-import static com.codenvy.modeling.generator.builders.BuilderConstants.JAVA_SOURCE_PATH;
-import static com.codenvy.modeling.generator.builders.BuilderConstants.MAIN_SOURCE_PATH;
-import static com.codenvy.modeling.generator.builders.BuilderConstants.OFFSET;
-import static com.codenvy.modeling.generator.builders.BuilderConstants.TWO_TABS;
-import static com.codenvy.modeling.generator.builders.BuilderConstants.WORKSPACE_FOLDER;
+import static com.codenvy.modeling.generator.builders.ClassNameConstants.EDITOR_RESOURCES;
+import static com.codenvy.modeling.generator.builders.FileExtensionConstants.JAVA;
+import static com.codenvy.modeling.generator.builders.FileExtensionConstants.UI_XML;
+import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.CURRENT_PACKAGE_MARKER;
+import static com.codenvy.modeling.generator.builders.OffsetBuilderConstants.OFFSET;
+import static com.codenvy.modeling.generator.builders.OffsetBuilderConstants.TWO_TABS;
+import static com.codenvy.modeling.generator.builders.PathConstants.CLIENT_PACKAGE;
+import static com.codenvy.modeling.generator.builders.PathConstants.ELEMENTS_PACKAGE;
+import static com.codenvy.modeling.generator.builders.PathConstants.JAVA_SOURCE_FOLDER;
+import static com.codenvy.modeling.generator.builders.PathConstants.MAIN_SOURCE_PATH;
+import static com.codenvy.modeling.generator.builders.PathConstants.WORKSPACE_PACKAGE;
 
 /**
  * @author Andrey Plotnikov
@@ -63,12 +65,12 @@ public class WorkspaceViewImplBuilder extends AbstractBuilder<WorkspaceViewImplB
             TWO_TABS + "controller.drawStraightArrowConnection(sourceWidget, targetWidget);\n" +
             OFFSET + "}\n\n";
 
-    private static final String ELEMENT_NAME_MASK    = "elementName";
-    private static final String ARGUMENT_NAME_MASK   = "argumentName";
-    private static final String CONNECTION_NAME_MASK = "connectionName";
+    private static final String ELEMENT_NAME_MARKER    = "elementName";
+    private static final String ARGUMENT_NAME_MARKER   = "argumentName";
+    private static final String CONNECTION_NAME_MARKER = "connectionName";
 
-    private static final String IMPORT_MASK           = "import_elements";
-    private static final String ACTION_DELEGATES_MASK = "action_delegates";
+    private static final String IMPORT_MARKER           = "import_elements";
+    private static final String ACTION_DELEGATES_MARKER = "action_delegates";
 
     private static final String WORKSPACE_VIEW_IMPL_NAME = "WorkspaceViewImpl";
 
@@ -121,9 +123,9 @@ public class WorkspaceViewImplBuilder extends AbstractBuilder<WorkspaceViewImplB
     /** {@inheritDoc} */
     @Override
     public void build() throws IOException {
-        String clientPackage = mainPackage + '.' + CLIENT_PART_FOLDER;
-        String workspacePackage = clientPackage + '.' + WORKSPACE_FOLDER;
-        String elementsPackage = clientPackage + '.' + ELEMENTS_FOLDER + '.';
+        String clientPackage = mainPackage + '.' + CLIENT_PACKAGE;
+        String workspacePackage = clientPackage + '.' + WORKSPACE_PACKAGE;
+        String elementsPackage = clientPackage + '.' + ELEMENTS_PACKAGE + '.';
 
         StringBuilder imports = new StringBuilder();
         StringBuilder actionDelegates = new StringBuilder();
@@ -146,28 +148,28 @@ public class WorkspaceViewImplBuilder extends AbstractBuilder<WorkspaceViewImplB
 
         Path workspaceViewImplSource = Paths.get(sourcePath,
                                                  MAIN_SOURCE_PATH,
-                                                 JAVA_SOURCE_PATH,
-                                                 WORKSPACE_FOLDER,
-                                                 WORKSPACE_VIEW_IMPL_NAME + ".java");
+                                                 JAVA_SOURCE_FOLDER,
+                                                 WORKSPACE_PACKAGE,
+                                                 WORKSPACE_VIEW_IMPL_NAME + JAVA);
         Path workspaceViewImplTarget = Paths.get(targetPath,
                                                  MAIN_SOURCE_PATH,
-                                                 JAVA_SOURCE_PATH,
+                                                 JAVA_SOURCE_FOLDER,
                                                  convertPathToPackageName(mainPackage),
-                                                 CLIENT_PART_FOLDER,
-                                                 WORKSPACE_FOLDER,
-                                                 WORKSPACE_VIEW_IMPL_NAME + ".java");
+                                                 CLIENT_PACKAGE,
+                                                 WORKSPACE_PACKAGE,
+                                                 WORKSPACE_VIEW_IMPL_NAME + JAVA);
 
         Map<String, String> replaceElements = new HashMap<>();
-        replaceElements.put(CURRENT_PACKAGE_MASK, workspacePackage);
-        replaceElements.put(IMPORT_MASK, imports.toString());
-        replaceElements.put(ACTION_DELEGATES_MASK, actionDelegates.toString());
+        replaceElements.put(CURRENT_PACKAGE_MARKER, workspacePackage);
+        replaceElements.put(IMPORT_MARKER, imports.toString());
+        replaceElements.put(ACTION_DELEGATES_MARKER, actionDelegates.toString());
 
         createFile(workspaceViewImplSource, workspaceViewImplTarget, replaceElements);
 
         Files.delete(workspaceViewImplSource);
 
         uiXmlBuilder.withXmlns("g", "urn:import:com.google.gwt.user.client.ui")
-                    .withField(fieldBuilder.withName("res").withType(clientPackage + '.' + EDITOR_RESOURCES_NAME))
+                    .withField(fieldBuilder.withName("res").withType(clientPackage + '.' + EDITOR_RESOURCES))
 
                     .setWidget(
                             scrollPanelBuilder.withPrefix("g")
@@ -181,11 +183,11 @@ public class WorkspaceViewImplBuilder extends AbstractBuilder<WorkspaceViewImplB
 
         Path workspaceUiXMLPath = Paths.get(targetPath,
                                             MAIN_SOURCE_PATH,
-                                            JAVA_SOURCE_PATH,
+                                            JAVA_SOURCE_FOLDER,
                                             convertPathToPackageName(mainPackage),
-                                            CLIENT_PART_FOLDER,
-                                            WORKSPACE_FOLDER,
-                                            WORKSPACE_VIEW_IMPL_NAME + ".ui.xml");
+                                            CLIENT_PACKAGE,
+                                            WORKSPACE_PACKAGE,
+                                            WORKSPACE_VIEW_IMPL_NAME + UI_XML);
         Files.write(workspaceUiXMLPath, uiXmlBuilder.build().getBytes());
     }
 
@@ -194,8 +196,8 @@ public class WorkspaceViewImplBuilder extends AbstractBuilder<WorkspaceViewImplB
         String argumentName = changeFirstSymbolToLowCase(elementName);
 
         Map<String, String> createElementMasks = new HashMap<>();
-        createElementMasks.put(ELEMENT_NAME_MASK, elementName);
-        createElementMasks.put(ARGUMENT_NAME_MASK, argumentName);
+        createElementMasks.put(ELEMENT_NAME_MARKER, elementName);
+        createElementMasks.put(ARGUMENT_NAME_MARKER, argumentName);
 
         return ContentReplacer.replace(ADD_ELEMENT_CODE_FORMAT, createElementMasks);
     }
@@ -203,7 +205,7 @@ public class WorkspaceViewImplBuilder extends AbstractBuilder<WorkspaceViewImplB
     @Nonnull
     private String createAddConnectionCode(@Nonnull String connectionName) {
         Map<String, String> createConnectionMasks = new HashMap<>();
-        createConnectionMasks.put(CONNECTION_NAME_MASK, connectionName);
+        createConnectionMasks.put(CONNECTION_NAME_MARKER, connectionName);
 
         return ContentReplacer.replace(ADD_CONNECTION_CODE_FORMAT, createConnectionMasks);
     }
