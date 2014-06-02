@@ -1,0 +1,156 @@
+/*
+ * Copyright 2014 Codenvy, S.A.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.codenvy.modeling.generator.builders.workspace;
+
+import com.codenvy.modeling.configuration.metamodel.diagram.Connection;
+import com.codenvy.modeling.configuration.metamodel.diagram.Element;
+import com.codenvy.modeling.generator.builders.AbstractBuilder;
+import com.codenvy.modeling.generator.builders.ContentReplacer;
+import com.google.inject.Inject;
+
+import javax.annotation.Nonnull;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import static com.codenvy.modeling.generator.builders.BuilderConstants.CLIENT_PART_FOLDER;
+import static com.codenvy.modeling.generator.builders.BuilderConstants.CURRENT_PACKAGE_MASK;
+import static com.codenvy.modeling.generator.builders.BuilderConstants.ELEMENTS_FOLDER;
+import static com.codenvy.modeling.generator.builders.BuilderConstants.JAVA_SOURCE_PATH;
+import static com.codenvy.modeling.generator.builders.BuilderConstants.MAIN_SOURCE_PATH;
+import static com.codenvy.modeling.generator.builders.BuilderConstants.OFFSET;
+import static com.codenvy.modeling.generator.builders.BuilderConstants.WORKSPACE_FOLDER;
+
+/**
+ * @author Andrey Plotnikov
+ */
+public class WorkspaceViewBuilder extends AbstractBuilder<WorkspaceViewBuilder> {
+
+    private static final String ADD_ELEMENT_CODE_FORMAT    =
+            OFFSET + "public abstract void addelementName(int x, int y, @Nonnull elementName element);\n\n";
+    private static final String ADD_CONNECTION_CODE_FORMAT =
+            OFFSET + "public abstract void addconnectionName(@Nonnull String sourceElementID, @Nonnull String targetElementID);\n\n";
+
+    private static final String ELEMENT_NAME_MASK    = "elementName";
+    private static final String CONNECTION_NAME_MASK = "connectionName";
+
+    private static final String ELEMENT_IMPORTS_MASK = "element_imports";
+    private static final String METHODS_MASK         = "methods";
+
+    private static final String WORKSPACE_VIEW_NAME = "WorkspaceView";
+
+    private String          mainPackage;
+    private Element         rootElement;
+    private Set<Element>    elements;
+    private Set<Connection> connections;
+
+    @Inject
+    public WorkspaceViewBuilder() {
+        builder = this;
+    }
+
+    @Nonnull
+    public WorkspaceViewBuilder mainPackage(@Nonnull String mainPackage) {
+        this.mainPackage = mainPackage;
+        return this;
+    }
+
+    @Nonnull
+    public WorkspaceViewBuilder elements(@Nonnull Set<Element> elements) {
+        this.elements = elements;
+        return this;
+    }
+
+    @Nonnull
+    public WorkspaceViewBuilder rootElement(@Nonnull Element rootElement) {
+        this.rootElement = rootElement;
+        return this;
+    }
+
+    @Nonnull
+    public WorkspaceViewBuilder connections(@Nonnull Set<Connection> connections) {
+        this.connections = connections;
+        return this;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void build() throws IOException {
+        String clientPackage = mainPackage + '.' + CLIENT_PART_FOLDER + '.';
+        String workspacePackage = clientPackage + WORKSPACE_FOLDER;
+        String elementsPackage = clientPackage + ELEMENTS_FOLDER + '.';
+
+        StringBuilder imports = new StringBuilder();
+        StringBuilder methods = new StringBuilder();
+
+        for (Element element : elements) {
+            if (!element.equals(rootElement)) {
+                String elementName = element.getName();
+
+                imports.append("import ").append(elementsPackage).append(elementName).append(";\n");
+                methods.append(createAddElementMethodCode(elementName));
+            }
+        }
+
+        for (Connection connection : connections) {
+            methods.append(createAddConnectionMethodCode(connection.getName()));
+        }
+
+        Path workspaceViewSource = Paths.get(sourcePath,
+                                             MAIN_SOURCE_PATH,
+                                             JAVA_SOURCE_PATH,
+                                             WORKSPACE_FOLDER,
+                                             WORKSPACE_VIEW_NAME + ".java");
+        Path workspaceViewTarget = Paths.get(targetPath,
+                                             MAIN_SOURCE_PATH,
+                                             JAVA_SOURCE_PATH,
+                                             convertPathToPackageName(mainPackage),
+                                             CLIENT_PART_FOLDER,
+                                             WORKSPACE_FOLDER,
+                                             WORKSPACE_VIEW_NAME + ".java");
+
+        Map<String, String> replaceElements = new HashMap<>();
+        replaceElements.put(CURRENT_PACKAGE_MASK, workspacePackage);
+        replaceElements.put(ELEMENT_IMPORTS_MASK, imports.toString());
+        replaceElements.put(METHODS_MASK, methods.toString());
+
+        createFile(workspaceViewSource, workspaceViewTarget, replaceElements);
+
+        Files.delete(workspaceViewSource);
+    }
+
+    @Nonnull
+    private String createAddElementMethodCode(@Nonnull String elementName) {
+        Map<String, String> masks = new HashMap<>();
+        masks.put(ELEMENT_NAME_MASK, elementName);
+
+        return ContentReplacer.replace(ADD_ELEMENT_CODE_FORMAT, masks);
+    }
+
+    @Nonnull
+    private String createAddConnectionMethodCode(@Nonnull String connectionName) {
+        Map<String, String> masks = new HashMap<>();
+        masks.put(CONNECTION_NAME_MASK, connectionName);
+
+        return ContentReplacer.replace(ADD_CONNECTION_CODE_FORMAT, masks);
+    }
+
+}

@@ -23,7 +23,6 @@ import com.codenvy.editor.api.editor.elements.AbstractShape;
 import com.codenvy.editor.api.editor.propertiespanel.AbstractPropertiesPanel;
 import com.codenvy.editor.api.editor.propertiespanel.PropertiesPanelManager;
 import com.codenvy.editor.api.editor.propertiespanel.empty.EmptyPropertiesPanelPresenter;
-import com.codenvy.editor.api.editor.workspace.AbstractWorkspaceView;
 import com.codenvy.editor.api.mvp.AbstractView;
 import com.codenvy.modeling.configuration.Configuration;
 import com.codenvy.modeling.configuration.ConfigurationFactory;
@@ -32,6 +31,9 @@ import com.codenvy.modeling.configuration.metamodel.diagram.Connection;
 import com.codenvy.modeling.configuration.metamodel.diagram.Element;
 import com.codenvy.modeling.configuration.metamodel.diagram.Property;
 import com.codenvy.modeling.generator.builders.java.SourceCodeBuilder;
+import com.codenvy.modeling.generator.builders.workspace.WorkspacePresenterBuilder;
+import com.codenvy.modeling.generator.builders.workspace.WorkspaceViewBuilder;
+import com.codenvy.modeling.generator.builders.workspace.WorkspaceViewImplBuilder;
 import com.codenvy.modeling.generator.builders.xml.api.GField;
 import com.codenvy.modeling.generator.builders.xml.api.GStyle;
 import com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder;
@@ -40,7 +42,6 @@ import com.codenvy.modeling.generator.builders.xml.api.widgets.GPushButton;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.GTextBox;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GDockLayoutPanel;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GFlowPanel;
-import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GScrollPanel;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.inject.client.AbstractGinModule;
@@ -114,16 +115,11 @@ public class SourceCodeGenerator {
     private static final String CURRENT_PACKAGE_MASK            = "current_package";
     private static final String MAIN_PACKAGE_MASK               = "main_package";
     private static final String STATIC_IMPORT_MASK              = "static_import_elements";
-    private static final String IMPORT_MASK                     = "import_elements";
-    private static final String CREATE_GRAPHIC_ELEMENTS_MASK    = "create_graphic_elements";
-    private static final String CREATE_GRAPHIC_CONNECTIONS_MASK = "create_graphic_connections";
     private static final String CHANGE_EDITOR_STATE_MASK        = "change_editor_states";
     private static final String UI_FIELDS_MASK                  = "ui_fields";
     private static final String FIELDS_INITIALIZE_MASK          = "fields_initialize";
     private static final String ACTION_DELEGATE_MASK            = "action_delegates";
     private static final String ELEMENT_NAME_MASK               = "element_name";
-    private static final String CREATE_GRAPHICAL_ELEMENTS_MASK  = "create_graphical_elements";
-    private static final String MAIN_ELEMENT_NAME_MASK          = "main_element_name";
     private static final String CONNECTION_NAME_MASK            = "connection_name";
 
     private static final String POM_FILE_FULL_NAME        = "pom.xml";
@@ -150,8 +146,6 @@ public class SourceCodeGenerator {
     private static final String TOOLBAR_VIEW_IMPL_NAME          = "ToolbarViewImpl";
     private static final String ACTION_DELEGATE_NAME            = "ActionDelegate";
     private static final String WORKSPACE_PRESENTER_NAME        = "WorkspacePresenter";
-    private static final String WORKSPACE_VIEW_NAME             = "WorkspaceView";
-    private static final String WORKSPACE_VIEW_IMPL_NAME        = "WorkspaceViewImpl";
     private static final String PROPERTIES_PANEL_PRESENTER_NAME = "PropertiesPanelPresenter";
     private static final String PROPERTIES_PANEL_VIEW_NAME      = "PropertiesPanelView";
     private static final String PROPERTIES_PANEL_VIEW_IMPL_NAME = "PropertiesPanelViewImpl";
@@ -171,13 +165,15 @@ public class SourceCodeGenerator {
     private final Provider<SourceCodeBuilder> sourceCodeBuilderProvider;
     private final Provider<UIXmlBuilder>      uiXmlBuilderProvider;
     private final Provider<GField>            fieldProvider;
-    private final Provider<GScrollPanel>      scrollPanelProvider;
     private final Provider<GFlowPanel>        flowPanelProvider;
     private final Provider<GStyle>            styleProvider;
     private final Provider<GDockLayoutPanel>  dockLayoutPanelProvider;
     private final Provider<GPushButton>       pushButtonProvider;
     private final Provider<GLabel>            labelProvider;
     private final Provider<GTextBox>          textBoxProvider;
+    private final WorkspacePresenterBuilder   workspacePresenterBuilder;
+    private final WorkspaceViewBuilder        workspaceViewBuilder;
+    private final WorkspaceViewImplBuilder    workspaceViewImplBuilder;
 
     private Element mainElement;
 
@@ -185,23 +181,30 @@ public class SourceCodeGenerator {
     public SourceCodeGenerator(Provider<SourceCodeBuilder> sourceCodeBuilderProvider,
                                Provider<UIXmlBuilder> uiXmlBuilderProvider,
                                Provider<GField> fieldProvider,
-                               Provider<GScrollPanel> scrollPanelProvider,
                                Provider<GFlowPanel> flowPanelProvider,
                                Provider<GStyle> styleProvider,
                                Provider<GDockLayoutPanel> dockLayoutPanelProvider,
                                Provider<GPushButton> pushButtonProvider,
                                Provider<GLabel> labelProvider,
-                               Provider<GTextBox> textBoxProvider) {
+                               Provider<GTextBox> textBoxProvider,
+
+                               WorkspacePresenterBuilder workspacePresenterBuilder,
+                               WorkspaceViewBuilder workspaceViewBuilder,
+                               WorkspaceViewImplBuilder workspaceViewImplBuilder) {
+// TODO need to clean fields
         this.sourceCodeBuilderProvider = sourceCodeBuilderProvider;
         this.uiXmlBuilderProvider = uiXmlBuilderProvider;
         this.fieldProvider = fieldProvider;
-        this.scrollPanelProvider = scrollPanelProvider;
         this.flowPanelProvider = flowPanelProvider;
         this.styleProvider = styleProvider;
         this.dockLayoutPanelProvider = dockLayoutPanelProvider;
         this.pushButtonProvider = pushButtonProvider;
         this.labelProvider = labelProvider;
         this.textBoxProvider = textBoxProvider;
+
+        this.workspacePresenterBuilder = workspacePresenterBuilder;
+        this.workspaceViewBuilder = workspaceViewBuilder;
+        this.workspaceViewImplBuilder = workspaceViewImplBuilder;
     }
 
     /**
@@ -309,7 +312,7 @@ public class SourceCodeGenerator {
         createInjectModule(clientFolder, packageName, editorName);
         createElements(javaFolder, clientFolder, packageName, configuration);
         createMainGWTElements(properties, clientFolder, configuration);
-        createWorkspace(javaFolder, clientFolder, packageName, configuration);
+        createWorkspace(targetPath, targetPath, packageName, configuration);
         createToolbar(javaFolder, clientFolder, packageName, configuration);
         createPropertiesPanel(javaFolder, clientFolder, packageName, configuration);
     }
@@ -786,201 +789,42 @@ public class SourceCodeGenerator {
         return name.substring(0, 1).toLowerCase() + name.substring(1);
     }
 
-    private void createWorkspace(@Nonnull String javaFolder,
-                                 @Nonnull String clientPackageFolder,
+    private void createWorkspace(@Nonnull String sourcePath,
+                                 @Nonnull String targetPath,
                                  @Nonnull String packageName,
                                  @Nonnull Configuration configuration) throws IOException {
-        String workspacePackage = packageName + '.' + CLIENT_PART_FOLDER + '.' + WORKSPACE_FOLDER;
+        Set<Element> elements = configuration.getDiagramConfiguration().getElements();
+        Set<Connection> connections = configuration.getDiagramConfiguration().getConnections();
 
-        Path workspacePresenterSource = Paths.get(javaFolder, WORKSPACE_PRESENTER_NAME + ".java");
-        Path workspaceViewImplSource = Paths.get(javaFolder, WORKSPACE_VIEW_IMPL_NAME + ".java");
-        SourceCodeBuilder workspaceViewBuilder = sourceCodeBuilderProvider
-                .get()
-                .newClass(workspacePackage + '.' + WORKSPACE_VIEW_NAME).withAbstractClassPrefix()
-                .baseClass(AbstractWorkspaceView.class).withClassAnnotation("@ImplementedBy(" + WORKSPACE_VIEW_IMPL_NAME + ".class)")
-                .addImport(ImplementedBy.class);
+        workspacePresenterBuilder.sourcePath(sourcePath)
+                                 .targetPath(targetPath)
 
-        String clientPackage = packageName + '.' + CLIENT_PART_FOLDER + '.';
-        String elementsPackage = clientPackage + ELEMENTS_FOLDER + '.';
-        String stateClassImport = "import static " + clientPackage + EDITOR_STATE_NAME + '.';
-        Argument argumentX = new Argument("int", "x");
-        Argument argumentY = new Argument("int", "y");
+                                 .mainPackage(packageName)
+                                 .rootElement(mainElement)
+                                 .elements(elements)
+                                 .connections(connections)
 
-        StringBuilder createElements = new StringBuilder();
-        StringBuilder staticImports = new StringBuilder();
-        StringBuilder imports = new StringBuilder();
-        StringBuilder actionDelegateMethods = new StringBuilder();
-        StringBuilder createGraphicalElements = new StringBuilder();
-        staticImports.append(stateClassImport).append(CREATE_NOTING_STATE).append(";\n");
-        imports.append("import ").append(elementsPackage).append(mainElement.getName()).append(";\n");
+                                 .build();
 
-        for (Element element : configuration.getDiagramConfiguration().getElements()) {
-            if (!element.equals(mainElement)) {
-                String elementName = element.getName();
+        workspaceViewBuilder.sourcePath(sourcePath)
+                            .targetPath(targetPath)
 
-                String upperCaseName = elementName.toUpperCase();
-                String argumentName = changeFirstSymbolToLowCase(elementName);
+                            .mainPackage(packageName)
+                            .rootElement(mainElement)
+                            .elements(elements)
+                            .connections(connections)
 
-                String createElementState = String.format(CREATE_ELEMENT_STATE_FORMAT, upperCaseName);
+                            .build();
 
-                String methodName = "add" + elementName;
-                String elementPackage = elementsPackage + elementName;
+        workspaceViewImplBuilder.sourcePath(sourcePath)
+                                .targetPath(targetPath)
 
-                Argument argumentElement = new Argument(elementName, "element");
+                                .mainPackage(packageName)
+                                .rootElement(mainElement)
+                                .elements(elements)
+                                .connections(connections)
 
-                workspaceViewBuilder.addImport(elementPackage)
-                                    .addMethod(methodName).withAbstractMethodPrefix()
-                                    .withMethodArguments(argumentX, argumentY, argumentElement);
-
-                actionDelegateMethods.append(OFFSET).append("@Override\n")
-                                     .append(OFFSET).append("public void ").append(methodName)
-                                     .append("(int x, int y,").append(elementName).append(" element").append(") {\n")
-                                     .append(OFFSET).append(OFFSET).append("addElement(x, y, element, resources.")
-                                     .append(changeFirstSymbolToLowCase(element.getName())).append("());\n")
-                                     .append(OFFSET).append("}\n\n");
-
-                createElements.append(OFFSET).append(OFFSET).append(OFFSET)
-                              .append("case ").append(createElementState).append(":\n")
-                              .append(OFFSET).append(OFFSET).append(OFFSET).append(OFFSET)
-                              .append(elementName).append(' ').append(argumentName).append(" = new ").append(elementName).append("();\n\n")
-                              .append(OFFSET).append(OFFSET).append(OFFSET).append(OFFSET)
-                              .append("((WorkspaceView)view).").append(methodName).append("(x, y, ").append(argumentName).append(");\n")
-                              .append(OFFSET).append(OFFSET).append(OFFSET).append(OFFSET)
-                              .append("addElement(").append(argumentName).append(");\n\n")
-                              .append(OFFSET).append(OFFSET).append(OFFSET).append(OFFSET)
-                              .append("setState(").append(CREATE_NOTING_STATE).append(");\n")
-                              .append(OFFSET).append(OFFSET).append(OFFSET).append(OFFSET)
-                              .append("break;\n");
-
-                staticImports.append(stateClassImport).append(String.format(CREATE_ELEMENT_STATE_FORMAT, upperCaseName)).append(";\n");
-                imports.append("import ").append(elementPackage).append(";\n");
-
-                createGraphicalElements
-                        .append(OFFSET).append(OFFSET).append(OFFSET)
-                        .append("if (element instanceof ").append(elementName).append(") {\n")
-                        .append(OFFSET).append(OFFSET).append(OFFSET).append(OFFSET)
-                        .append("((WorkspaceView)view).add").append(elementName).append("(x, y, (").append(elementName)
-                        .append(")element);\n")
-                        .append(OFFSET).append(OFFSET).append(OFFSET)
-                        .append("}\n");
-            }
-        }
-
-        StringBuilder createConnections = new StringBuilder();
-
-        Argument sourceElementIDArgument = new Argument(String.class.getSimpleName(), "sourceElementID");
-        Argument targetElementIDArgument = new Argument(String.class.getSimpleName(), "targetElementID");
-
-        for (Connection connection : configuration.getDiagramConfiguration().getConnections()) {
-            String connectionName = connection.getName();
-
-            String upperCaseName = connectionName.toUpperCase();
-            String argumentName = changeFirstSymbolToLowCase(connectionName);
-
-            String createConnectionSourceState = String.format(CREATE_CONNECTION_SOURCE_STATE_FORMAT, upperCaseName);
-            String createConnectionTargetState = String.format(CREATE_CONNECTION_TARGET_STATE_FORMAT, upperCaseName);
-
-            String methodName = "add" + connectionName;
-            String connectionPackage = elementsPackage + connectionName;
-
-            workspaceViewBuilder.addMethod(methodName).withAbstractMethodPrefix()
-                                .withMethodArguments(sourceElementIDArgument, targetElementIDArgument);
-
-            actionDelegateMethods.append(OFFSET).append("@Override\n")
-                                 .append(OFFSET).append("public void ").append(methodName)
-                                 .append("(String sourceElementID, String targetElementID) {\n")
-                                 .append(OFFSET).append(OFFSET).append("Widget sourceWidget = elements.get(sourceElementID);\n")
-                                 .append(OFFSET).append(OFFSET).append("Widget targetWidget = elements.get(targetElementID);\n")
-                                 .append(OFFSET).append(OFFSET)
-                                 .append("controller.drawStraightArrowConnection(sourceWidget, targetWidget);\n")
-                                 .append(OFFSET).append("}\n\n");
-
-            createConnections.append(OFFSET).append(OFFSET).append(OFFSET)
-                             .append("case ").append(createConnectionSourceState).append(":\n")
-                             .append(OFFSET).append(OFFSET).append(OFFSET).append(OFFSET)
-                             .append("setState(").append(createConnectionTargetState).append(");\n")
-                             .append(OFFSET).append(OFFSET).append(OFFSET).append(OFFSET)
-                             .append("break;\n")
-                             .append(OFFSET).append(OFFSET).append(OFFSET)
-                             .append("case ").append(createConnectionTargetState).append(":\n")
-                             .append(OFFSET).append(OFFSET).append(OFFSET).append(OFFSET)
-                             .append("((WorkspaceView)view).").append(methodName).append("(prevSelectedElement, selectedElement);\n")
-                             .append(OFFSET).append(OFFSET).append(OFFSET).append(OFFSET)
-                             .append("source = elements.get(prevSelectedElement);\n")
-                             .append(OFFSET).append(OFFSET).append(OFFSET).append(OFFSET)
-                             .append(connectionName).append(' ').append(argumentName).append(" = new ")
-                             .append(connectionName).append("((Shape)source, (Shape)element);\n")
-                             .append(OFFSET).append(OFFSET).append(OFFSET).append(OFFSET)
-                             .append("elements.put(element.getId(), element);\n\n")
-                             .append(OFFSET).append(OFFSET).append(OFFSET).append(OFFSET)
-                             .append("parent = source.getParent();\n")
-                             .append(OFFSET).append(OFFSET).append(OFFSET).append(OFFSET)
-                             .append("if (parent != null) {\n")
-                             .append(OFFSET).append(OFFSET).append(OFFSET).append(OFFSET).append(OFFSET)
-                             .append("parent.addElement(").append(argumentName).append(");\n")
-                             .append(OFFSET).append(OFFSET).append(OFFSET).append(OFFSET).append("}\n")
-                             .append(OFFSET).append(OFFSET).append(OFFSET).append(OFFSET)
-                             .append("setState(").append(CREATE_NOTING_STATE).append(");\n")
-                             .append(OFFSET).append(OFFSET).append(OFFSET).append(OFFSET)
-                             .append("break;\n");
-
-            staticImports.append(stateClassImport).append(String.format(CREATE_CONNECTION_SOURCE_STATE_FORMAT, upperCaseName))
-                         .append(";\n");
-            staticImports.append(stateClassImport).append(String.format(CREATE_CONNECTION_TARGET_STATE_FORMAT, upperCaseName))
-                         .append(";\n");
-
-            imports.append("import ").append(connectionPackage).append(";\n");
-        }
-
-        UIXmlBuilder uiXmlBuilder = uiXmlBuilderProvider
-                .get()
-                .withXmlns("g", "urn:import:com.google.gwt.user.client.ui")
-
-                .withField(fieldProvider.get().withName("res").withType(clientPackage + EDITOR_RESOURCES_NAME))
-
-                .setWidget(
-                        scrollPanelProvider.get()
-                                           .withPrefix("g")
-                                           .withAddStyle("res.editorCSS.fullSize")
-                                           .withWidget(
-                                                   flowPanelProvider
-                                                           .get()
-                                                           .withPrefix("g")
-                                                           .withName("mainPanel")
-                                                           .withAddStyle("res.editorCSS.fullSize")
-                                                      )
-                          );
-
-        String workspacePresenterContent = new String(Files.readAllBytes(workspacePresenterSource))
-                .replaceAll(MAIN_PACKAGE_MASK, packageName)
-                .replaceAll(CURRENT_PACKAGE_MASK, workspacePackage)
-                .replaceAll(STATIC_IMPORT_MASK, staticImports.toString())
-                .replaceAll(IMPORT_MASK, imports.toString())
-                .replaceAll(MAIN_ELEMENT_NAME_MASK, mainElement.getName())
-                .replaceAll(CREATE_GRAPHIC_ELEMENTS_MASK, createElements.toString())
-                .replaceAll(CREATE_GRAPHIC_CONNECTIONS_MASK, createConnections.toString())
-                .replaceAll(CREATE_GRAPHICAL_ELEMENTS_MASK, createGraphicalElements.toString());
-        Files.delete(workspacePresenterSource);
-
-        Files.createDirectories(Paths.get(clientPackageFolder, WORKSPACE_FOLDER));
-
-        Path workspacePresenterJavaClassPath = Paths.get(clientPackageFolder, WORKSPACE_FOLDER, WORKSPACE_PRESENTER_NAME + ".java");
-        Files.write(workspacePresenterJavaClassPath, workspacePresenterContent.getBytes());
-
-        Path workspaceViewJavaClassPath = Paths.get(clientPackageFolder, WORKSPACE_FOLDER, WORKSPACE_VIEW_NAME + ".java");
-        Files.write(workspaceViewJavaClassPath, workspaceViewBuilder.build().getBytes());
-
-        String workspaceViewImplContent = new String(Files.readAllBytes(workspaceViewImplSource))
-                .replaceAll(CURRENT_PACKAGE_MASK, workspacePackage)
-                .replaceAll(IMPORT_MASK, imports.toString())
-                .replaceAll(ACTION_DELEGATE_MASK, actionDelegateMethods.toString());
-        Files.delete(workspaceViewImplSource);
-
-        Path workspaceViewImplJavaClassPath = Paths.get(clientPackageFolder, WORKSPACE_FOLDER, WORKSPACE_VIEW_IMPL_NAME + ".java");
-        Files.write(workspaceViewImplJavaClassPath, workspaceViewImplContent.getBytes());
-
-        Path workspaceUiXMLPath = Paths.get(clientPackageFolder, WORKSPACE_FOLDER, WORKSPACE_VIEW_IMPL_NAME + ".ui.xml");
-        Files.write(workspaceUiXMLPath, uiXmlBuilder.build().getBytes());
+                                .build();
     }
 
     private void createToolbar(@Nonnull String javaFolder,

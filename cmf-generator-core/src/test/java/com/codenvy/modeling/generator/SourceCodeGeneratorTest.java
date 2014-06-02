@@ -24,6 +24,9 @@ import com.codenvy.modeling.configuration.metamodel.diagram.Element;
 import com.codenvy.modeling.configuration.metamodel.diagram.Property;
 import com.codenvy.modeling.generator.builders.java.SourceCodeBuilder;
 import com.codenvy.modeling.generator.builders.java.SourceCodeBuilderImpl;
+import com.codenvy.modeling.generator.builders.workspace.WorkspacePresenterBuilder;
+import com.codenvy.modeling.generator.builders.workspace.WorkspaceViewBuilder;
+import com.codenvy.modeling.generator.builders.workspace.WorkspaceViewImplBuilder;
 import com.codenvy.modeling.generator.builders.xml.api.GField;
 import com.codenvy.modeling.generator.builders.xml.api.GStyle;
 import com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder;
@@ -369,13 +372,18 @@ public class SourceCodeGeneratorTest {
             generator = new SourceCodeGenerator(sourceCodeBuilderProvider,
                                                 uiXmlBuilderProvider,
                                                 fieldProvider,
-                                                scrollPanelProvider,
                                                 flowPanelProvider,
                                                 styleProvider,
                                                 dockLayoutPanelProvider,
                                                 pushButtonProvider,
                                                 labelProvider,
-                                                textBoxProvider);
+                                                textBoxProvider,
+                                                new WorkspacePresenterBuilder(),
+                                                new WorkspaceViewBuilder(),
+                                                new WorkspaceViewImplBuilder(new UIXmlBuilderImpl(),
+                                                                             new GFieldImpl(),
+                                                                             new GScrollPanelImpl(),
+                                                                             new GFlowPanelImpl()));
 
             when(sourceCodeBuilderProvider.get()).thenAnswer(new Answer<SourceCodeBuilder>() {
                 @Override
