@@ -115,12 +115,12 @@ public class WorkspaceViewBuilder extends AbstractBuilder<WorkspaceViewBuilder> 
             methods.append(createAddConnectionMethodCode(connection.getName()));
         }
 
-        Path workspaceViewSource = Paths.get(sourcePath,
+        Path workspaceViewSource = Paths.get(path,
                                              MAIN_SOURCE_PATH,
                                              JAVA_SOURCE_FOLDER,
                                              WORKSPACE_PACKAGE,
                                              WORKSPACE_VIEW_NAME + JAVA);
-        Path workspaceViewTarget = Paths.get(targetPath,
+        Path workspaceViewTarget = Paths.get(path,
                                              MAIN_SOURCE_PATH,
                                              JAVA_SOURCE_FOLDER,
                                              convertPathToPackageName(mainPackage),

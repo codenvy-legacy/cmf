@@ -107,20 +107,20 @@ import static com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder.OFFSE
  */
 public class SourceCodeGenerator {
 
-    private static final String ARTIFACT_ID_MASK                = "artifact_id";
-    private static final String GROUP_ID_MASK                   = "group_id";
-    private static final String ARTIFACT_NAME_MASK              = "artifact_name";
-    private static final String EDITOR_NAME_MASK                = "editor_name";
-    private static final String ENTRY_POINT_CLASS_MASK          = "entry_point";
-    private static final String CURRENT_PACKAGE_MASK            = "current_package";
-    private static final String MAIN_PACKAGE_MASK               = "main_package";
-    private static final String STATIC_IMPORT_MASK              = "static_import_elements";
-    private static final String CHANGE_EDITOR_STATE_MASK        = "change_editor_states";
-    private static final String UI_FIELDS_MASK                  = "ui_fields";
-    private static final String FIELDS_INITIALIZE_MASK          = "fields_initialize";
-    private static final String ACTION_DELEGATE_MASK            = "action_delegates";
-    private static final String ELEMENT_NAME_MASK               = "element_name";
-    private static final String CONNECTION_NAME_MASK            = "connection_name";
+    private static final String ARTIFACT_ID_MASK         = "artifact_id";
+    private static final String GROUP_ID_MASK            = "group_id";
+    private static final String ARTIFACT_NAME_MASK       = "artifact_name";
+    private static final String EDITOR_NAME_MASK         = "editor_name";
+    private static final String ENTRY_POINT_CLASS_MASK   = "entry_point";
+    private static final String CURRENT_PACKAGE_MASK     = "current_package";
+    private static final String MAIN_PACKAGE_MASK        = "main_package";
+    private static final String STATIC_IMPORT_MASK       = "static_import_elements";
+    private static final String CHANGE_EDITOR_STATE_MASK = "change_editor_states";
+    private static final String UI_FIELDS_MASK           = "ui_fields";
+    private static final String FIELDS_INITIALIZE_MASK   = "fields_initialize";
+    private static final String ACTION_DELEGATE_MASK     = "action_delegates";
+    private static final String ELEMENT_NAME_MASK        = "element_name";
+    private static final String CONNECTION_NAME_MASK     = "connection_name";
 
     private static final String POM_FILE_FULL_NAME        = "pom.xml";
     private static final String MAIN_HTML_FILE_FULL_NAME  = "Editor.html";
@@ -312,7 +312,7 @@ public class SourceCodeGenerator {
         createInjectModule(clientFolder, packageName, editorName);
         createElements(javaFolder, clientFolder, packageName, configuration);
         createMainGWTElements(properties, clientFolder, configuration);
-        createWorkspace(targetPath, targetPath, packageName, configuration);
+        createWorkspace(targetPath, packageName, configuration);
         createToolbar(javaFolder, clientFolder, packageName, configuration);
         createPropertiesPanel(javaFolder, clientFolder, packageName, configuration);
     }
@@ -789,15 +789,13 @@ public class SourceCodeGenerator {
         return name.substring(0, 1).toLowerCase() + name.substring(1);
     }
 
-    private void createWorkspace(@Nonnull String sourcePath,
-                                 @Nonnull String targetPath,
+    private void createWorkspace(@Nonnull String projectPath,
                                  @Nonnull String packageName,
                                  @Nonnull Configuration configuration) throws IOException {
         Set<Element> elements = configuration.getDiagramConfiguration().getElements();
         Set<Connection> connections = configuration.getDiagramConfiguration().getConnections();
 
-        workspacePresenterBuilder.sourcePath(sourcePath)
-                                 .targetPath(targetPath)
+        workspacePresenterBuilder.path(projectPath)
 
                                  .mainPackage(packageName)
                                  .rootElement(mainElement)
@@ -806,8 +804,7 @@ public class SourceCodeGenerator {
 
                                  .build();
 
-        workspaceViewBuilder.sourcePath(sourcePath)
-                            .targetPath(targetPath)
+        workspaceViewBuilder.path(projectPath)
 
                             .mainPackage(packageName)
                             .rootElement(mainElement)
@@ -816,8 +813,7 @@ public class SourceCodeGenerator {
 
                             .build();
 
-        workspaceViewImplBuilder.sourcePath(sourcePath)
-                                .targetPath(targetPath)
+        workspaceViewImplBuilder.path(projectPath)
 
                                 .mainPackage(packageName)
                                 .rootElement(mainElement)

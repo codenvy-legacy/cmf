@@ -146,12 +146,12 @@ public class WorkspaceViewImplBuilder extends AbstractBuilder<WorkspaceViewImplB
             actionDelegates.append(createAddConnectionCode(connectionName));
         }
 
-        Path workspaceViewImplSource = Paths.get(sourcePath,
+        Path workspaceViewImplSource = Paths.get(path,
                                                  MAIN_SOURCE_PATH,
                                                  JAVA_SOURCE_FOLDER,
                                                  WORKSPACE_PACKAGE,
                                                  WORKSPACE_VIEW_IMPL_NAME + JAVA);
-        Path workspaceViewImplTarget = Paths.get(targetPath,
+        Path workspaceViewImplTarget = Paths.get(path,
                                                  MAIN_SOURCE_PATH,
                                                  JAVA_SOURCE_FOLDER,
                                                  convertPathToPackageName(mainPackage),
@@ -181,7 +181,7 @@ public class WorkspaceViewImplBuilder extends AbstractBuilder<WorkspaceViewImplB
                                                          )
                               );
 
-        Path workspaceUiXMLPath = Paths.get(targetPath,
+        Path workspaceUiXMLPath = Paths.get(path,
                                             MAIN_SOURCE_PATH,
                                             JAVA_SOURCE_FOLDER,
                                             convertPathToPackageName(mainPackage),

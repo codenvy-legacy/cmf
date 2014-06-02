@@ -27,19 +27,12 @@ import java.util.Map;
  */
 public abstract class AbstractBuilder<T> {
 
-    protected String sourcePath;
-    protected String targetPath;
+    protected String path;
     protected T      builder;
 
     @Nonnull
-    public T sourcePath(@Nonnull String sourcePath) {
-        this.sourcePath = sourcePath;
-        return builder;
-    }
-
-    @Nonnull
-    public T targetPath(@Nonnull String targetPath) {
-        this.targetPath = targetPath;
+    public T path(@Nonnull String path) {
+        this.path = path;
         return builder;
     }
 

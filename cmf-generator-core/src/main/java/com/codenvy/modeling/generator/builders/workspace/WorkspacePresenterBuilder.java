@@ -180,12 +180,12 @@ public class WorkspacePresenterBuilder extends AbstractBuilder<WorkspacePresente
             imports.append("import ").append(connectionPackage).append(";\n");
         }
 
-        Path workspacePresenterSource = Paths.get(sourcePath,
+        Path workspacePresenterSource = Paths.get(path,
                                                   MAIN_SOURCE_PATH,
                                                   JAVA_SOURCE_FOLDER,
                                                   WORKSPACE_PACKAGE,
                                                   WORKSPACE_PRESENTER_NAME + JAVA);
-        Path workspacePresenterTarget = Paths.get(targetPath,
+        Path workspacePresenterTarget = Paths.get(path,
                                                   MAIN_SOURCE_PATH,
                                                   JAVA_SOURCE_FOLDER,
                                                   convertPathToPackageName(mainPackage),
