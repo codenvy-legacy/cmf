@@ -24,7 +24,6 @@ import com.google.inject.Inject;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -32,7 +31,10 @@ import java.util.Map;
 import java.util.Set;
 
 import static com.codenvy.modeling.generator.builders.FileExtensionConstants.JAVA;
+import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.CONNECTION_NAME_MARKER;
 import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.CURRENT_PACKAGE_MARKER;
+import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.ELEMENT_NAME_MARKER;
+import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.IMPORT_MARKER;
 import static com.codenvy.modeling.generator.builders.OffsetBuilderConstants.OFFSET;
 import static com.codenvy.modeling.generator.builders.PathConstants.CLIENT_PACKAGE;
 import static com.codenvy.modeling.generator.builders.PathConstants.ELEMENTS_PACKAGE;
@@ -50,11 +52,7 @@ public class WorkspaceViewBuilder extends AbstractBuilder<WorkspaceViewBuilder> 
     private static final String ADD_CONNECTION_CODE_FORMAT =
             OFFSET + "public abstract void addconnectionName(@Nonnull String sourceElementID, @Nonnull String targetElementID);\n\n";
 
-    private static final String ELEMENT_NAME_MARKER    = "elementName";
-    private static final String CONNECTION_NAME_MARKER = "connectionName";
-
-    private static final String ELEMENT_IMPORTS_MARKER = "element_imports";
-    private static final String METHODS_MARKER         = "methods";
+    private static final String METHODS_MARKER = "methods";
 
     private static final String WORKSPACE_VIEW_NAME = "WorkspaceView";
 
@@ -65,6 +63,7 @@ public class WorkspaceViewBuilder extends AbstractBuilder<WorkspaceViewBuilder> 
 
     @Inject
     public WorkspaceViewBuilder() {
+        super();
         builder = this;
     }
 
@@ -130,12 +129,13 @@ public class WorkspaceViewBuilder extends AbstractBuilder<WorkspaceViewBuilder> 
 
         Map<String, String> replaceElements = new HashMap<>();
         replaceElements.put(CURRENT_PACKAGE_MARKER, workspacePackage);
-        replaceElements.put(ELEMENT_IMPORTS_MARKER, imports.toString());
+        replaceElements.put(IMPORT_MARKER, imports.toString());
         replaceElements.put(METHODS_MARKER, methods.toString());
 
         createFile(workspaceViewSource, workspaceViewTarget, replaceElements);
 
-        Files.delete(workspaceViewSource);
+        removeTemplate(workspaceViewSource);
+        removeTemplateParentFolder(workspaceViewSource.getParent());
     }
 
     @Nonnull

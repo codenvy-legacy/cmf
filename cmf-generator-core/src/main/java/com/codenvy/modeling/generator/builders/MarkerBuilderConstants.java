@@ -21,8 +21,16 @@ package com.codenvy.modeling.generator.builders;
  */
 public interface MarkerBuilderConstants {
 
-    String MAIN_PACKAGE_MARKER    = "main_package";
-    String CURRENT_PACKAGE_MARKER = "current_package";
-    String STATIC_IMPORT_MARKER   = "static_import_elements";
+    String MAIN_PACKAGE_MARKER     = "main_package";
+    String CURRENT_PACKAGE_MARKER  = "current_package";
+    String STATIC_IMPORT_MARKER    = "static_import_elements";
+    String ACTION_DELEGATES_MARKER = "action_delegates";
+    String IMPORT_MARKER           = "import_elements";
+
+    String ELEMENT_NAME_MARKER          = "elementName";
+    String CONNECTION_NAME_MARKER       = "connectionName";
+    String ARGUMENT_NAME_MARKER         = "argumentName";
+    String ELEMENT_UPPER_NAME_MARKER    = "elementUpperName";
+    String CONNECTION_UPPER_NAME_MARKER = "connectionUpperName";
 
 }

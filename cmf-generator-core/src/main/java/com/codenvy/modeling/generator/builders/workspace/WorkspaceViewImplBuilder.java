@@ -38,7 +38,12 @@ import java.util.Set;
 import static com.codenvy.modeling.generator.builders.ClassNameConstants.EDITOR_RESOURCES;
 import static com.codenvy.modeling.generator.builders.FileExtensionConstants.JAVA;
 import static com.codenvy.modeling.generator.builders.FileExtensionConstants.UI_XML;
+import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.ACTION_DELEGATES_MARKER;
+import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.ARGUMENT_NAME_MARKER;
+import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.CONNECTION_NAME_MARKER;
 import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.CURRENT_PACKAGE_MARKER;
+import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.ELEMENT_NAME_MARKER;
+import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.IMPORT_MARKER;
 import static com.codenvy.modeling.generator.builders.OffsetBuilderConstants.OFFSET;
 import static com.codenvy.modeling.generator.builders.OffsetBuilderConstants.TWO_TABS;
 import static com.codenvy.modeling.generator.builders.PathConstants.CLIENT_PACKAGE;
@@ -65,13 +70,6 @@ public class WorkspaceViewImplBuilder extends AbstractBuilder<WorkspaceViewImplB
             TWO_TABS + "controller.drawStraightArrowConnection(sourceWidget, targetWidget);\n" +
             OFFSET + "}\n\n";
 
-    private static final String ELEMENT_NAME_MARKER    = "elementName";
-    private static final String ARGUMENT_NAME_MARKER   = "argumentName";
-    private static final String CONNECTION_NAME_MARKER = "connectionName";
-
-    private static final String IMPORT_MARKER           = "import_elements";
-    private static final String ACTION_DELEGATES_MARKER = "action_delegates";
-
     private static final String WORKSPACE_VIEW_IMPL_NAME = "WorkspaceViewImpl";
 
     private final UIXmlBuilder    uiXmlBuilder;
@@ -88,6 +86,7 @@ public class WorkspaceViewImplBuilder extends AbstractBuilder<WorkspaceViewImplB
                                     GField fieldBuilder,
                                     GScrollPanel scrollPanelBuilder,
                                     GFlowPanel flowPanelBuilder) {
+        super();
         builder = this;
 
         this.uiXmlBuilder = uiXmlBuilder;
@@ -166,7 +165,8 @@ public class WorkspaceViewImplBuilder extends AbstractBuilder<WorkspaceViewImplB
 
         createFile(workspaceViewImplSource, workspaceViewImplTarget, replaceElements);
 
-        Files.delete(workspaceViewImplSource);
+        removeTemplate(workspaceViewImplSource);
+        removeTemplateParentFolder(workspaceViewImplSource.getParent());
 
         uiXmlBuilder.withXmlns("g", "urn:import:com.google.gwt.user.client.ui")
                     .withField(fieldBuilder.withName("res").withType(clientPackage + '.' + EDITOR_RESOURCES))

@@ -29,5 +29,6 @@ public interface PathConstants {
     String CLIENT_PACKAGE    = "client";
     String ELEMENTS_PACKAGE  = "elements";
     String WORKSPACE_PACKAGE = "workspace";
+    String TOOLBAR_PACKAGE   = "toolbar";
 
 }

@@ -24,7 +24,6 @@ import com.google.inject.Inject;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -38,7 +37,12 @@ import static com.codenvy.modeling.generator.builders.EditorStateConstants.CREAT
 import static com.codenvy.modeling.generator.builders.EditorStateConstants.CREATE_ELEMENT_STATE_FORMAT;
 import static com.codenvy.modeling.generator.builders.EditorStateConstants.CREATE_NOTHING_STATE;
 import static com.codenvy.modeling.generator.builders.FileExtensionConstants.JAVA;
+import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.ARGUMENT_NAME_MARKER;
+import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.CONNECTION_NAME_MARKER;
+import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.CONNECTION_UPPER_NAME_MARKER;
 import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.CURRENT_PACKAGE_MARKER;
+import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.ELEMENT_NAME_MARKER;
+import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.IMPORT_MARKER;
 import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.MAIN_PACKAGE_MARKER;
 import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.STATIC_IMPORT_MARKER;
 import static com.codenvy.modeling.generator.builders.OffsetBuilderConstants.FIVE_TABS;
@@ -61,7 +65,7 @@ public class WorkspacePresenterBuilder extends AbstractBuilder<WorkspacePresente
             FOUR_TABS +
             "((WorkspaceView)view).addelementName(x, y, argumentName);\n" +
             FOUR_TABS + "addElement(argumentName);\n\n" +
-            FOUR_TABS + "setState(CREATING_NOTING);\n" +
+            FOUR_TABS + "setState(CREATING_NOTHING);\n" +
             FOUR_TABS + "break;\n";
 
     private static final String CREATE_GRAPHICAL_ELEMENT_CODE_FORMAT =
@@ -82,16 +86,11 @@ public class WorkspacePresenterBuilder extends AbstractBuilder<WorkspacePresente
             FOUR_TABS + "if (parent != null) {\n" +
             FIVE_TABS + "parent.addElement(argumentName);\n" +
             FOUR_TABS + "}\n" +
-            FOUR_TABS + "setState(CREATING_NOTING);\n" +
+            FOUR_TABS + "setState(CREATING_NOTHING);\n" +
             FOUR_TABS + "break;\n";
 
-    private static final String ELEMENT_NAME_MARKER          = "elementName";
-    private static final String ARGUMENT_NAME_MARKER         = "argumentName";
-    private static final String CREATE_STATE_MARKER          = "createState";
-    private static final String CONNECTION_NAME_MARKER       = "connectionName";
-    private static final String CONNECTION_UPPER_NAME_MARKER = "connectionUpperName";
+    private static final String CREATE_STATE_MARKER = "createState";
 
-    private static final String IMPORT_MARKER                     = "import_elements";
     private static final String MAIN_ELEMENT_NAME_MARKER          = "main_element_name";
     private static final String CREATE_GRAPHIC_ELEMENTS_MARKER    = "create_graphic_elements";
     private static final String CREATE_GRAPHIC_CONNECTIONS_MARKER = "create_graphic_connections";
@@ -106,6 +105,7 @@ public class WorkspacePresenterBuilder extends AbstractBuilder<WorkspacePresente
 
     @Inject
     public WorkspacePresenterBuilder() {
+        super();
         builder = this;
     }
 
@@ -205,7 +205,8 @@ public class WorkspacePresenterBuilder extends AbstractBuilder<WorkspacePresente
 
         createFile(workspacePresenterSource, workspacePresenterTarget, replaceElements);
 
-        Files.delete(workspacePresenterSource);
+        removeTemplate(workspacePresenterSource);
+        removeTemplateParentFolder(workspacePresenterSource.getParent());
     }
 
     @Nonnull

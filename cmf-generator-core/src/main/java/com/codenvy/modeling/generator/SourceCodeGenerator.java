@@ -31,14 +31,15 @@ import com.codenvy.modeling.configuration.metamodel.diagram.Connection;
 import com.codenvy.modeling.configuration.metamodel.diagram.Element;
 import com.codenvy.modeling.configuration.metamodel.diagram.Property;
 import com.codenvy.modeling.generator.builders.java.SourceCodeBuilder;
+import com.codenvy.modeling.generator.builders.toolbar.ToolbarPresenterBuilder;
+import com.codenvy.modeling.generator.builders.toolbar.ToolbarViewBuilder;
+import com.codenvy.modeling.generator.builders.toolbar.ToolbarViewImplBuilder;
 import com.codenvy.modeling.generator.builders.workspace.WorkspacePresenterBuilder;
 import com.codenvy.modeling.generator.builders.workspace.WorkspaceViewBuilder;
 import com.codenvy.modeling.generator.builders.workspace.WorkspaceViewImplBuilder;
 import com.codenvy.modeling.generator.builders.xml.api.GField;
-import com.codenvy.modeling.generator.builders.xml.api.GStyle;
 import com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.GLabel;
-import com.codenvy.modeling.generator.builders.xml.api.widgets.GPushButton;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.GTextBox;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GDockLayoutPanel;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GFlowPanel;
@@ -52,7 +53,6 @@ import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
-import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -107,20 +107,16 @@ import static com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder.OFFSE
  */
 public class SourceCodeGenerator {
 
-    private static final String ARTIFACT_ID_MASK         = "artifact_id";
-    private static final String GROUP_ID_MASK            = "group_id";
-    private static final String ARTIFACT_NAME_MASK       = "artifact_name";
-    private static final String EDITOR_NAME_MASK         = "editor_name";
-    private static final String ENTRY_POINT_CLASS_MASK   = "entry_point";
-    private static final String CURRENT_PACKAGE_MASK     = "current_package";
-    private static final String MAIN_PACKAGE_MASK        = "main_package";
-    private static final String STATIC_IMPORT_MASK       = "static_import_elements";
-    private static final String CHANGE_EDITOR_STATE_MASK = "change_editor_states";
-    private static final String UI_FIELDS_MASK           = "ui_fields";
-    private static final String FIELDS_INITIALIZE_MASK   = "fields_initialize";
-    private static final String ACTION_DELEGATE_MASK     = "action_delegates";
-    private static final String ELEMENT_NAME_MASK        = "element_name";
-    private static final String CONNECTION_NAME_MASK     = "connection_name";
+    private static final String ARTIFACT_ID_MASK       = "artifact_id";
+    private static final String GROUP_ID_MASK          = "group_id";
+    private static final String ARTIFACT_NAME_MASK     = "artifact_name";
+    private static final String EDITOR_NAME_MASK       = "editor_name";
+    private static final String ENTRY_POINT_CLASS_MASK = "entry_point";
+    private static final String CURRENT_PACKAGE_MASK   = "current_package";
+    private static final String UI_FIELDS_MASK         = "ui_fields";
+    private static final String ACTION_DELEGATE_MASK   = "action_delegates";
+    private static final String ELEMENT_NAME_MASK      = "element_name";
+    private static final String CONNECTION_NAME_MASK   = "connection_name";
 
     private static final String POM_FILE_FULL_NAME        = "pom.xml";
     private static final String MAIN_HTML_FILE_FULL_NAME  = "Editor.html";
@@ -142,8 +138,6 @@ public class SourceCodeGenerator {
 
     private static final String ENTRY_POINT_NAME                = "EditorEntryPoint";
     private static final String TOOLBAR_PRESENTER_NAME          = "ToolbarPresenter";
-    private static final String TOOLBAR_VIEW_NAME               = "ToolbarView";
-    private static final String TOOLBAR_VIEW_IMPL_NAME          = "ToolbarViewImpl";
     private static final String ACTION_DELEGATE_NAME            = "ActionDelegate";
     private static final String WORKSPACE_PRESENTER_NAME        = "WorkspacePresenter";
     private static final String PROPERTIES_PANEL_PRESENTER_NAME = "PropertiesPanelPresenter";
@@ -157,7 +151,7 @@ public class SourceCodeGenerator {
     private static final String GIN_INJECTOR_NAME               = "Injector";
     private static final String EDITOR_FACTORY_NAME             = "EditorFactory";
 
-    private static final String CREATE_NOTING_STATE                   = "CREATING_NOTING";
+    private static final String CREATE_NOTHING_STATE                  = "CREATING_NOTHING";
     private static final String CREATE_ELEMENT_STATE_FORMAT           = "CREATING_%s";
     private static final String CREATE_CONNECTION_SOURCE_STATE_FORMAT = "CREATING_%s_SOURCE";
     private static final String CREATE_CONNECTION_TARGET_STATE_FORMAT = "CREATING_%s_TARGET";
@@ -166,14 +160,15 @@ public class SourceCodeGenerator {
     private final Provider<UIXmlBuilder>      uiXmlBuilderProvider;
     private final Provider<GField>            fieldProvider;
     private final Provider<GFlowPanel>        flowPanelProvider;
-    private final Provider<GStyle>            styleProvider;
     private final Provider<GDockLayoutPanel>  dockLayoutPanelProvider;
-    private final Provider<GPushButton>       pushButtonProvider;
     private final Provider<GLabel>            labelProvider;
     private final Provider<GTextBox>          textBoxProvider;
     private final WorkspacePresenterBuilder   workspacePresenterBuilder;
     private final WorkspaceViewBuilder        workspaceViewBuilder;
     private final WorkspaceViewImplBuilder    workspaceViewImplBuilder;
+    private final ToolbarPresenterBuilder     toolbarPresenterBuilder;
+    private final ToolbarViewBuilder          toolbarViewBuilder;
+    private final ToolbarViewImplBuilder      toolbarViewImplBuilder;
 
     private Element mainElement;
 
@@ -182,29 +177,31 @@ public class SourceCodeGenerator {
                                Provider<UIXmlBuilder> uiXmlBuilderProvider,
                                Provider<GField> fieldProvider,
                                Provider<GFlowPanel> flowPanelProvider,
-                               Provider<GStyle> styleProvider,
                                Provider<GDockLayoutPanel> dockLayoutPanelProvider,
-                               Provider<GPushButton> pushButtonProvider,
                                Provider<GLabel> labelProvider,
                                Provider<GTextBox> textBoxProvider,
 
                                WorkspacePresenterBuilder workspacePresenterBuilder,
                                WorkspaceViewBuilder workspaceViewBuilder,
-                               WorkspaceViewImplBuilder workspaceViewImplBuilder) {
+                               WorkspaceViewImplBuilder workspaceViewImplBuilder,
+                               ToolbarPresenterBuilder toolbarPresenterBuilder,
+                               ToolbarViewBuilder toolbarViewBuilder,
+                               ToolbarViewImplBuilder toolbarViewImplBuilder) {
 // TODO need to clean fields
         this.sourceCodeBuilderProvider = sourceCodeBuilderProvider;
         this.uiXmlBuilderProvider = uiXmlBuilderProvider;
         this.fieldProvider = fieldProvider;
         this.flowPanelProvider = flowPanelProvider;
-        this.styleProvider = styleProvider;
         this.dockLayoutPanelProvider = dockLayoutPanelProvider;
-        this.pushButtonProvider = pushButtonProvider;
         this.labelProvider = labelProvider;
         this.textBoxProvider = textBoxProvider;
 
         this.workspacePresenterBuilder = workspacePresenterBuilder;
         this.workspaceViewBuilder = workspaceViewBuilder;
         this.workspaceViewImplBuilder = workspaceViewImplBuilder;
+        this.toolbarPresenterBuilder = toolbarPresenterBuilder;
+        this.toolbarViewBuilder = toolbarViewBuilder;
+        this.toolbarViewImplBuilder = toolbarViewImplBuilder;
     }
 
     /**
@@ -313,7 +310,7 @@ public class SourceCodeGenerator {
         createElements(javaFolder, clientFolder, packageName, configuration);
         createMainGWTElements(properties, clientFolder, configuration);
         createWorkspace(targetPath, packageName, configuration);
-        createToolbar(javaFolder, clientFolder, packageName, configuration);
+        createToolbar(targetPath, packageName, configuration);
         createPropertiesPanel(javaFolder, clientFolder, packageName, configuration);
     }
 
@@ -612,7 +609,7 @@ public class SourceCodeGenerator {
         SourceCodeBuilder editorStateEnum = sourceCodeBuilderProvider
                 .get()
                 .newClass(clientPackage + EDITOR_STATE_NAME).makeEnum()
-                .withEnumValue(CREATE_NOTING_STATE);
+                .withEnumValue(CREATE_NOTHING_STATE);
 
         for (Element element : configuration.getDiagramConfiguration().getElements()) {
             if (!element.equals(mainElement)) {
@@ -717,7 +714,7 @@ public class SourceCodeGenerator {
         StringBuilder constructorBody = new StringBuilder(
                 "super(view);\n" +
                 "\n" +
-                "EditorState<State> state = new EditorState<>(State.CREATING_NOTING);\n" +
+                "EditorState<State> state = new EditorState<>(State.CREATING_NOTHING);\n" +
                 "\n" +
                 "this.workspace = editorFactory.createWorkspace(state, selectionManager);\n" +
                 "this.toolbar = editorFactory.createToolbar(state);\n" +
@@ -789,9 +786,8 @@ public class SourceCodeGenerator {
         return name.substring(0, 1).toLowerCase() + name.substring(1);
     }
 
-    private void createWorkspace(@Nonnull String projectPath,
-                                 @Nonnull String packageName,
-                                 @Nonnull Configuration configuration) throws IOException {
+    private void createWorkspace(@Nonnull String projectPath, @Nonnull String packageName, @Nonnull Configuration configuration)
+            throws IOException {
         Set<Element> elements = configuration.getDiagramConfiguration().getElements();
         Set<Connection> connections = configuration.getDiagramConfiguration().getConnections();
 
@@ -820,170 +816,42 @@ public class SourceCodeGenerator {
                                 .elements(elements)
                                 .connections(connections)
 
+                                .needRemoveTemplateParentFolder()
                                 .build();
     }
 
-    private void createToolbar(@Nonnull String javaFolder,
-                               @Nonnull String clientPackageFolder,
-                               @Nonnull String packageName,
-                               @Nonnull Configuration configuration) throws IOException {
-        String clientPackage = packageName + '.' + CLIENT_PART_FOLDER + '.';
-        String toolbarPackage = clientPackage + TOOLBAR_FOLDER;
-        String stateClassImport = "import static " + clientPackage + EDITOR_STATE_NAME + '.';
+    private void createToolbar(@Nonnull String projectPath, @Nonnull String packageName, @Nonnull Configuration configuration)
+            throws IOException {
+        Set<Element> elements = configuration.getDiagramConfiguration().getElements();
+        Set<Connection> connections = configuration.getDiagramConfiguration().getConnections();
 
-        Path toolbarPresenterSource = Paths.get(javaFolder, TOOLBAR_PRESENTER_NAME + ".java");
-        Path toolbarViewImplSource = Paths.get(javaFolder, TOOLBAR_VIEW_IMPL_NAME + ".java");
+        toolbarPresenterBuilder.path(projectPath)
 
-        SourceCodeBuilder toolbarViewBuilder = sourceCodeBuilderProvider
-                .get()
-                .newClass(toolbarPackage + '.' + TOOLBAR_VIEW_NAME).baseClass("AbstractView<" + ACTION_DELEGATE_NAME + ">")
-                .withAbstractClassPrefix().withClassAnnotation("@ImplementedBy(" + TOOLBAR_VIEW_IMPL_NAME + ".class)")
+                               .mainPackage(packageName)
+                               .rootElement(mainElement)
+                               .elements(elements)
+                               .connections(connections)
 
-                .addImport(ImplementedBy.class)
-                .addImport(AbstractView.class);
+                               .build();
 
-        SourceCodeBuilder actionDelegateBuilder = sourceCodeBuilderProvider
-                .get()
-                .newClass(toolbarPackage + '.' + ACTION_DELEGATE_NAME).makeInterface().baseClass("AbstractView.ActionDelegate")
-                .addImport(AbstractView.class);
+        toolbarViewBuilder.path(projectPath)
 
-        GDockLayoutPanel dockLayoutPanel = dockLayoutPanelProvider.get().withPrefix("g");
-        UIXmlBuilder uiXmlBuilder = uiXmlBuilderProvider.get()
-                                                        .withXmlns("g", "urn:import:com.google.gwt.user.client.ui")
-                                                        .withStyle(
-                                                                styleProvider.get()
-                                                                             .withStyle("fullSize", "width: 100%; height: 100%;")
-                                                                  )
-                                                        .setWidget(dockLayoutPanel);
+                          .mainPackage(packageName)
+                          .rootElement(mainElement)
+                          .elements(elements)
+                          .connections(connections)
 
-        StringBuilder staticImports = new StringBuilder();
-        StringBuilder changeStates = new StringBuilder();
-        StringBuilder fields = new StringBuilder();
-        StringBuilder fieldsInitialization = new StringBuilder();
-        StringBuilder actionDelegateMethods = new StringBuilder();
+                          .build();
 
-        boolean firstStep = true;
+        toolbarViewImplBuilder.path(projectPath)
 
-        for (Element element : configuration.getDiagramConfiguration().getElements()) {
-            if (!element.equals(mainElement)) {
-                String elementName = element.getName();
+                              .mainPackage(packageName)
+                              .rootElement(mainElement)
+                              .elements(elements)
+                              .connections(connections)
 
-                String upperCaseName = elementName.toUpperCase();
-                String argumentName = changeFirstSymbolToLowCase(elementName);
-
-                String createElementState = String.format(CREATE_ELEMENT_STATE_FORMAT, upperCaseName);
-                String methodName = "on" + elementName + "ButtonClicked";
-
-                if (!firstStep) {
-                    changeStates.append(OFFSET);
-                } else {
-                    firstStep = false;
-                }
-
-                changeStates.append(OFFSET).append("@Override\n")
-                            .append(OFFSET).append("public void ").append(methodName).append("() {\n")
-                            .append(OFFSET).append(OFFSET).append("setState(").append(createElementState).append(");\n")
-                            .append(OFFSET).append("}\n\n");
-
-                staticImports.append(stateClassImport).append(String.format(CREATE_ELEMENT_STATE_FORMAT, upperCaseName)).append(";\n");
-
-                actionDelegateBuilder.addMethod(methodName).withMethodAccessLevel(DEFAULT);
-
-                fields.append(OFFSET).append("@UiField(provided = true)\n")
-                      .append(OFFSET).append(PushButton.class.getSimpleName()).append(' ').append(argumentName).append(";\n");
-
-                fieldsInitialization.append(OFFSET).append(OFFSET).append(argumentName).append(" = new PushButton(new Image(resources.")
-                                    .append(argumentName).append("Toolbar").append("()));\n");
-
-                actionDelegateMethods.append(OFFSET).append("@UiHandler(\"").append(argumentName).append("\")\n")
-                                     .append(OFFSET).append("public void on").append(elementName)
-                                     .append("ButtonClicked(ClickEvent event) {\n")
-                                     .append(OFFSET).append(OFFSET).append("delegate.on").append(elementName).append("ButtonClicked();\n")
-                                     .append(OFFSET).append("}\n\n");
-
-                dockLayoutPanel.withNorth(32, pushButtonProvider.get()
-                                                                .withPrefix("g")
-                                                                .withName(argumentName)
-                                                                .withAddStyle("style.fullSize")
-                                         );
-            }
-        }
-
-        for (Connection connection : configuration.getDiagramConfiguration().getConnections()) {
-            String connectionName = connection.getName();
-
-            String upperCaseName = connectionName.toUpperCase();
-            String argumentName = changeFirstSymbolToLowCase(connectionName);
-
-            String createConnectionSourceState = String.format(CREATE_CONNECTION_SOURCE_STATE_FORMAT, upperCaseName);
-            String methodName = "on" + connectionName + "ButtonClicked";
-
-            if (!firstStep) {
-                changeStates.append(OFFSET);
-            } else {
-                firstStep = false;
-            }
-
-            changeStates.append("@Override\n")
-                        .append(OFFSET).append("public void ").append(methodName).append("() {\n")
-                        .append(OFFSET).append(OFFSET).append("setState(").append(createConnectionSourceState).append(");\n")
-                        .append(OFFSET).append("}\n\n");
-
-            staticImports.append(stateClassImport).append(String.format(CREATE_CONNECTION_SOURCE_STATE_FORMAT, upperCaseName))
-                         .append(";\n");
-
-            actionDelegateBuilder.addMethod(methodName).withMethodAccessLevel(DEFAULT);
-
-            fields.append(OFFSET).append("@UiField(provided = true)\n")
-                  .append(OFFSET).append(PushButton.class.getSimpleName()).append(' ').append(argumentName).append(";\n");
-
-            fieldsInitialization.append(OFFSET).append(OFFSET).append(argumentName).append(" = new PushButton(new Image(resources.")
-                                .append(argumentName).append("()));\n");
-
-            actionDelegateMethods.append(OFFSET).append("@UiHandler(\"").append(argumentName).append("\")\n")
-                                 .append(OFFSET).append("public void on").append(connectionName)
-                                 .append("ButtonClicked(ClickEvent event) {\n")
-                                 .append(OFFSET).append(OFFSET).append("delegate.on").append(connectionName).append("ButtonClicked();\n")
-                                 .append(OFFSET).append("}\n\n");
-
-            dockLayoutPanel.withNorth(32, pushButtonProvider.get()
-                                                            .withPrefix("g")
-                                                            .withName(argumentName)
-                                                            .withAddStyle("style.fullSize")
-                                     );
-        }
-
-        String toolbarPresenterContent = new String(Files.readAllBytes(toolbarPresenterSource))
-                .replaceAll(MAIN_PACKAGE_MASK, packageName)
-                .replaceAll(CURRENT_PACKAGE_MASK, toolbarPackage)
-                .replaceAll(STATIC_IMPORT_MASK, staticImports.toString())
-                .replaceAll(CHANGE_EDITOR_STATE_MASK, changeStates.toString());
-        Files.delete(toolbarPresenterSource);
-
-        Files.createDirectories(Paths.get(clientPackageFolder, TOOLBAR_FOLDER));
-
-        Path toolbarPresenterJavaClassPath = Paths.get(clientPackageFolder, TOOLBAR_FOLDER, TOOLBAR_PRESENTER_NAME + ".java");
-        Files.write(toolbarPresenterJavaClassPath, toolbarPresenterContent.getBytes());
-
-        Path toolbarViewJavaClassPath = Paths.get(clientPackageFolder, TOOLBAR_FOLDER, TOOLBAR_VIEW_NAME + ".java");
-        Files.write(toolbarViewJavaClassPath, toolbarViewBuilder.build().getBytes());
-
-        String toolbarViewImplContent = new String(Files.readAllBytes(toolbarViewImplSource))
-                .replaceAll(MAIN_PACKAGE_MASK, packageName)
-                .replaceAll(CURRENT_PACKAGE_MASK, toolbarPackage)
-                .replaceAll(UI_FIELDS_MASK, fields.toString())
-                .replaceAll(FIELDS_INITIALIZE_MASK, fieldsInitialization.toString())
-                .replaceAll(ACTION_DELEGATE_MASK, actionDelegateMethods.toString());
-        Files.delete(toolbarViewImplSource);
-
-        Path toolbarViewImplJavaClassPath = Paths.get(clientPackageFolder, TOOLBAR_FOLDER, TOOLBAR_VIEW_IMPL_NAME + ".java");
-        Files.write(toolbarViewImplJavaClassPath, toolbarViewImplContent.getBytes());
-
-        Path actionDelegateJavaClassPath = Paths.get(clientPackageFolder, TOOLBAR_FOLDER, ACTION_DELEGATE_NAME + ".java");
-        Files.write(actionDelegateJavaClassPath, actionDelegateBuilder.build().getBytes());
-
-        Path toolbarUiXMLPath = Paths.get(clientPackageFolder, TOOLBAR_FOLDER, TOOLBAR_VIEW_IMPL_NAME + ".ui.xml");
-        Files.write(toolbarUiXMLPath, uiXmlBuilder.build().getBytes());
+                              .needRemoveTemplateParentFolder()
+                              .build();
     }
 
     private void createPropertiesPanel(@Nonnull String javaFolder,

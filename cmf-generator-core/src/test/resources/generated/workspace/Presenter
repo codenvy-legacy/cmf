@@ -49,7 +49,7 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
                 ((WorkspaceView)view).addElement1(x, y, element1);
                 addElement(element1);
 
-                setState(CREATING_NOTING);
+                setState(CREATING_NOTHING);
                 break;
         }
         
@@ -95,7 +95,7 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
                 if (parent != null) {
                     parent.addElement(connection1);
                 }
-                setState(CREATING_NOTING);
+                setState(CREATING_NOTHING);
                 break;
         }
 

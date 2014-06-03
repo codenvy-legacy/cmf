@@ -25,14 +25,33 @@ import java.util.Map;
 /**
  * @author Andrey Plotnikov
  */
-public abstract class AbstractBuilder<T> {
+public abstract class AbstractBuilder<T extends AbstractBuilder> {
 
-    protected String path;
-    protected T      builder;
+    protected String  path;
+    protected T       builder;
+    protected boolean needRemoveTemplate;
+    protected boolean needRemoveTemplateParentFolder;
+
+    protected AbstractBuilder() {
+        needRemoveTemplate = true;
+        needRemoveTemplateParentFolder = false;
+    }
 
     @Nonnull
     public T path(@Nonnull String path) {
         this.path = path;
+        return builder;
+    }
+
+    @Nonnull
+    public T needRemoveTemplate(boolean needRemoveTemplate) {
+        this.needRemoveTemplate = needRemoveTemplate;
+        return builder;
+    }
+
+    @Nonnull
+    public T needRemoveTemplateParentFolder() {
+        needRemoveTemplateParentFolder = true;
         return builder;
     }
 
@@ -53,6 +72,18 @@ public abstract class AbstractBuilder<T> {
         Files.createDirectories(targetPath.getParent());
 
         Files.write(targetPath, content.getBytes());
+    }
+
+    protected void removeTemplate(@Nonnull Path templatePath) throws IOException {
+        if (needRemoveTemplate) {
+            Files.delete(templatePath);
+        }
+    }
+
+    protected void removeTemplateParentFolder(@Nonnull Path parentPath) throws IOException {
+        if (needRemoveTemplateParentFolder) {
+            Files.delete(parentPath);
+        }
     }
 
     public abstract void build() throws IOException;

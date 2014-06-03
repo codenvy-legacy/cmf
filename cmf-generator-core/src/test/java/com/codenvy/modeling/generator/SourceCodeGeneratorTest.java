@@ -24,6 +24,9 @@ import com.codenvy.modeling.configuration.metamodel.diagram.Element;
 import com.codenvy.modeling.configuration.metamodel.diagram.Property;
 import com.codenvy.modeling.generator.builders.java.SourceCodeBuilder;
 import com.codenvy.modeling.generator.builders.java.SourceCodeBuilderImpl;
+import com.codenvy.modeling.generator.builders.toolbar.ToolbarPresenterBuilder;
+import com.codenvy.modeling.generator.builders.toolbar.ToolbarViewBuilder;
+import com.codenvy.modeling.generator.builders.toolbar.ToolbarViewImplBuilder;
 import com.codenvy.modeling.generator.builders.workspace.WorkspacePresenterBuilder;
 import com.codenvy.modeling.generator.builders.workspace.WorkspaceViewBuilder;
 import com.codenvy.modeling.generator.builders.workspace.WorkspaceViewImplBuilder;
@@ -225,11 +228,6 @@ public class SourceCodeGeneratorTest {
     }
 
     @Test
-    public void actionDelegateShouldBeCreated() throws IOException {
-        assertContent("/toolbar/ActionDelegate", generatorRule.getClientFolder(), TOOLBAR_FOLDER, ACTION_DELEGATE_NAME);
-    }
-
-    @Test
     public void binderXMLShouldBeCreated() throws IOException {
         assertContent("/toolbar/BinderXML", generatorRule.getClientFolder(), TOOLBAR_FOLDER, TOOLBAR_VIEW_IMPL_BINDER_XML_NAME);
     }
@@ -373,17 +371,22 @@ public class SourceCodeGeneratorTest {
                                                 uiXmlBuilderProvider,
                                                 fieldProvider,
                                                 flowPanelProvider,
-                                                styleProvider,
                                                 dockLayoutPanelProvider,
-                                                pushButtonProvider,
                                                 labelProvider,
                                                 textBoxProvider,
+
                                                 new WorkspacePresenterBuilder(),
                                                 new WorkspaceViewBuilder(),
                                                 new WorkspaceViewImplBuilder(new UIXmlBuilderImpl(),
                                                                              new GFieldImpl(),
                                                                              new GScrollPanelImpl(),
-                                                                             new GFlowPanelImpl()));
+                                                                             new GFlowPanelImpl()),
+                                                new ToolbarPresenterBuilder(),
+                                                new ToolbarViewBuilder(),
+                                                new ToolbarViewImplBuilder(new UIXmlBuilderImpl(),
+                                                                           new GStyleImpl(),
+                                                                           new GDockLayoutPanelImpl(),
+                                                                           pushButtonProvider));
 
             when(sourceCodeBuilderProvider.get()).thenAnswer(new Answer<SourceCodeBuilder>() {
                 @Override
