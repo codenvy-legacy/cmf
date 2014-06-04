@@ -4,7 +4,12 @@ import com.codenvy.editor.api.mvp.AbstractView;
 import com.google.inject.ImplementedBy;
 
 @ImplementedBy(Element1PropertiesPanelViewImpl.class)
-public abstract class Element1PropertiesPanelView extends AbstractView<ActionDelegate> {
+public abstract class Element1PropertiesPanelView extends AbstractView<Element1PropertiesPanelView.ActionDelegate> {
+
+    public interface ActionDelegate extends AbstractView.ActionDelegate {
+
+        void onProperty1Changed();
+    }
 
     public abstract Integer getProperty1();
 

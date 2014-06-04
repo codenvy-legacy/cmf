@@ -16,6 +16,8 @@
 
 package com.codenvy.modeling.generator.builders;
 
+import com.codenvy.modeling.configuration.metamodel.diagram.Property;
+
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -50,8 +52,8 @@ public abstract class AbstractBuilder<T extends AbstractBuilder> {
     }
 
     @Nonnull
-    public T needRemoveTemplateParentFolder() {
-        needRemoveTemplateParentFolder = true;
+    public T needRemoveTemplateParentFolder(boolean needRemoveTemplateParentFolder) {
+        this.needRemoveTemplateParentFolder = needRemoveTemplateParentFolder;
         return builder;
     }
 
@@ -83,6 +85,24 @@ public abstract class AbstractBuilder<T extends AbstractBuilder> {
     protected void removeTemplateParentFolder(@Nonnull Path parentPath) throws IOException {
         if (needRemoveTemplateParentFolder) {
             Files.delete(parentPath);
+        }
+    }
+
+    @Nonnull
+    protected Class convertPropertyTypeToJavaClass(@Nonnull Property property) {
+        switch (property.getType()) {
+            case INTEGER:
+                return Integer.class;
+
+            case FLOAT:
+                return Double.class;
+
+            case BOOLEAN:
+                return Boolean.class;
+
+            case STRING:
+            default:
+                return String.class;
         }
     }
 

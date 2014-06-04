@@ -10,14 +10,14 @@ import com.google.inject.Inject;
 
 import javax.annotation.Nonnull;
 
-public class element_namePropertiesPanelViewImpl extends element_namePropertiesPanelView {
+public class elementNamePropertiesPanelViewImpl extends elementNamePropertiesPanelView {
 
-    interface element_namePropertiesPanelViewImplUiBinder extends UiBinder<Widget, element_namePropertiesPanelViewImpl> {
+    interface elementNamePropertiesPanelViewImplUiBinder extends UiBinder<Widget, elementNamePropertiesPanelViewImpl> {
     }
 
 ui_fields
     @Inject
-    public element_namePropertiesPanelViewImpl(element_namePropertiesPanelViewImplUiBinder ourUiBinder) {
+    public elementNamePropertiesPanelViewImpl(elementNamePropertiesPanelViewImplUiBinder ourUiBinder) {
         widget = ourUiBinder.createAndBindUi(this);
     }
 

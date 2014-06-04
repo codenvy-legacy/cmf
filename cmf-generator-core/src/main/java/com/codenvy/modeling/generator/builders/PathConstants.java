@@ -26,9 +26,10 @@ public interface PathConstants {
     String RESOURCES_SOURCE_FOLDER = "resources";
     String WEBAPP_FOLDER           = "webapp";
 
-    String CLIENT_PACKAGE    = "client";
-    String ELEMENTS_PACKAGE  = "elements";
-    String WORKSPACE_PACKAGE = "workspace";
-    String TOOLBAR_PACKAGE   = "toolbar";
+    String CLIENT_PACKAGE           = "client";
+    String ELEMENTS_PACKAGE         = "elements";
+    String WORKSPACE_PACKAGE        = "workspace";
+    String TOOLBAR_PACKAGE          = "toolbar";
+    String PROPERTIES_PANEL_PACKAGE = "propertiespanel";
 
 }

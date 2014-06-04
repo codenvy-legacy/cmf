@@ -44,6 +44,7 @@ import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.ARG
 import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.CURRENT_PACKAGE_MARKER;
 import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.ELEMENT_NAME_MARKER;
 import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.MAIN_PACKAGE_MARKER;
+import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.UI_FIELDS_MARKER;
 import static com.codenvy.modeling.generator.builders.OffsetBuilderConstants.OFFSET;
 import static com.codenvy.modeling.generator.builders.OffsetBuilderConstants.TWO_TABS;
 import static com.codenvy.modeling.generator.builders.PathConstants.CLIENT_PACKAGE;
@@ -70,8 +71,7 @@ public class ToolbarViewImplBuilder extends AbstractBuilder<ToolbarViewImplBuild
                                                            TWO_TABS + "delegate.onelementNameButtonClicked();\n" +
                                                            OFFSET + "}\n\n";
 
-    private static final String UI_FIELDS_MASK         = "ui_fields";
-    private static final String FIELDS_INITIALIZE_MASK = "fields_initialize";
+    private static final String FIELDS_INITIALIZE_MARKER = "fields_initialize";
 
     private static final String TOOLBAR_VIEW_IMPL_NAME = "ToolbarViewImpl";
 
@@ -172,8 +172,8 @@ public class ToolbarViewImplBuilder extends AbstractBuilder<ToolbarViewImplBuild
         Map<String, String> replaceElements = new LinkedHashMap<>();
         replaceElements.put(CURRENT_PACKAGE_MARKER, toolbarPackage);
         replaceElements.put(MAIN_PACKAGE_MARKER, mainPackage);
-        replaceElements.put(UI_FIELDS_MASK, uiFields.toString());
-        replaceElements.put(FIELDS_INITIALIZE_MASK, createFields.toString());
+        replaceElements.put(UI_FIELDS_MARKER, uiFields.toString());
+        replaceElements.put(FIELDS_INITIALIZE_MARKER, createFields.toString());
         replaceElements.put(ACTION_DELEGATES_MARKER, methods.toString());
 
         createFile(toolbarViewImplSource, toolbarViewImplTarget, replaceElements);

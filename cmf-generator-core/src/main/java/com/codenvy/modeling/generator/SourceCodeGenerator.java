@@ -20,10 +20,8 @@ import com.codenvy.editor.api.editor.EditorState;
 import com.codenvy.editor.api.editor.EditorView;
 import com.codenvy.editor.api.editor.SelectionManager;
 import com.codenvy.editor.api.editor.elements.AbstractShape;
-import com.codenvy.editor.api.editor.propertiespanel.AbstractPropertiesPanel;
 import com.codenvy.editor.api.editor.propertiespanel.PropertiesPanelManager;
 import com.codenvy.editor.api.editor.propertiespanel.empty.EmptyPropertiesPanelPresenter;
-import com.codenvy.editor.api.mvp.AbstractView;
 import com.codenvy.modeling.configuration.Configuration;
 import com.codenvy.modeling.configuration.ConfigurationFactory;
 import com.codenvy.modeling.configuration.metamodel.diagram.Component;
@@ -31,18 +29,15 @@ import com.codenvy.modeling.configuration.metamodel.diagram.Connection;
 import com.codenvy.modeling.configuration.metamodel.diagram.Element;
 import com.codenvy.modeling.configuration.metamodel.diagram.Property;
 import com.codenvy.modeling.generator.builders.java.SourceCodeBuilder;
+import com.codenvy.modeling.generator.builders.propertiespanel.PropertiesPanelPresenterBuilder;
+import com.codenvy.modeling.generator.builders.propertiespanel.PropertiesPanelViewBuilder;
+import com.codenvy.modeling.generator.builders.propertiespanel.PropertiesPanelViewImplBuilder;
 import com.codenvy.modeling.generator.builders.toolbar.ToolbarPresenterBuilder;
 import com.codenvy.modeling.generator.builders.toolbar.ToolbarViewBuilder;
 import com.codenvy.modeling.generator.builders.toolbar.ToolbarViewImplBuilder;
 import com.codenvy.modeling.generator.builders.workspace.WorkspacePresenterBuilder;
 import com.codenvy.modeling.generator.builders.workspace.WorkspaceViewBuilder;
 import com.codenvy.modeling.generator.builders.workspace.WorkspaceViewImplBuilder;
-import com.codenvy.modeling.generator.builders.xml.api.GField;
-import com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder;
-import com.codenvy.modeling.generator.builders.xml.api.widgets.GLabel;
-import com.codenvy.modeling.generator.builders.xml.api.widgets.GTextBox;
-import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GDockLayoutPanel;
-import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GFlowPanel;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.inject.client.AbstractGinModule;
@@ -55,10 +50,8 @@ import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
-import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.orange.links.client.utils.LinksClientBundle;
@@ -113,9 +106,6 @@ public class SourceCodeGenerator {
     private static final String EDITOR_NAME_MASK       = "editor_name";
     private static final String ENTRY_POINT_CLASS_MASK = "entry_point";
     private static final String CURRENT_PACKAGE_MASK   = "current_package";
-    private static final String UI_FIELDS_MASK         = "ui_fields";
-    private static final String ACTION_DELEGATE_MASK   = "action_delegates";
-    private static final String ELEMENT_NAME_MASK      = "element_name";
     private static final String CONNECTION_NAME_MASK   = "connection_name";
 
     private static final String POM_FILE_FULL_NAME        = "pom.xml";
@@ -138,11 +128,8 @@ public class SourceCodeGenerator {
 
     private static final String ENTRY_POINT_NAME                = "EditorEntryPoint";
     private static final String TOOLBAR_PRESENTER_NAME          = "ToolbarPresenter";
-    private static final String ACTION_DELEGATE_NAME            = "ActionDelegate";
     private static final String WORKSPACE_PRESENTER_NAME        = "WorkspacePresenter";
     private static final String PROPERTIES_PANEL_PRESENTER_NAME = "PropertiesPanelPresenter";
-    private static final String PROPERTIES_PANEL_VIEW_NAME      = "PropertiesPanelView";
-    private static final String PROPERTIES_PANEL_VIEW_IMPL_NAME = "PropertiesPanelViewImpl";
     private static final String EDITOR_STATE_NAME               = "State";
     private static final String EDITOR_RESOURCES_NAME           = "EditorResources";
     private static final String EDITOR_CSS_RESOURCE_NAME        = "EditorCSS";
@@ -156,45 +143,33 @@ public class SourceCodeGenerator {
     private static final String CREATE_CONNECTION_SOURCE_STATE_FORMAT = "CREATING_%s_SOURCE";
     private static final String CREATE_CONNECTION_TARGET_STATE_FORMAT = "CREATING_%s_TARGET";
 
-    private final Provider<SourceCodeBuilder> sourceCodeBuilderProvider;
-    private final Provider<UIXmlBuilder>      uiXmlBuilderProvider;
-    private final Provider<GField>            fieldProvider;
-    private final Provider<GFlowPanel>        flowPanelProvider;
-    private final Provider<GDockLayoutPanel>  dockLayoutPanelProvider;
-    private final Provider<GLabel>            labelProvider;
-    private final Provider<GTextBox>          textBoxProvider;
-    private final WorkspacePresenterBuilder   workspacePresenterBuilder;
-    private final WorkspaceViewBuilder        workspaceViewBuilder;
-    private final WorkspaceViewImplBuilder    workspaceViewImplBuilder;
-    private final ToolbarPresenterBuilder     toolbarPresenterBuilder;
-    private final ToolbarViewBuilder          toolbarViewBuilder;
-    private final ToolbarViewImplBuilder      toolbarViewImplBuilder;
+    private final Provider<SourceCodeBuilder>               sourceCodeBuilderProvider;
+    private final WorkspacePresenterBuilder                 workspacePresenterBuilder;
+    private final WorkspaceViewBuilder                      workspaceViewBuilder;
+    private final WorkspaceViewImplBuilder                  workspaceViewImplBuilder;
+    private final ToolbarPresenterBuilder                   toolbarPresenterBuilder;
+    private final ToolbarViewBuilder                        toolbarViewBuilder;
+    private final ToolbarViewImplBuilder                    toolbarViewImplBuilder;
+    private final Provider<PropertiesPanelPresenterBuilder> propertiesPanelPresenterBuilder;
+    private final Provider<PropertiesPanelViewBuilder>      propertiesPanelViewBuilder;
+    private final Provider<PropertiesPanelViewImplBuilder>  propertiesPanelViewImplBuilder;
 
     private Element mainElement;
 
     @Inject
     public SourceCodeGenerator(Provider<SourceCodeBuilder> sourceCodeBuilderProvider,
-                               Provider<UIXmlBuilder> uiXmlBuilderProvider,
-                               Provider<GField> fieldProvider,
-                               Provider<GFlowPanel> flowPanelProvider,
-                               Provider<GDockLayoutPanel> dockLayoutPanelProvider,
-                               Provider<GLabel> labelProvider,
-                               Provider<GTextBox> textBoxProvider,
 
                                WorkspacePresenterBuilder workspacePresenterBuilder,
                                WorkspaceViewBuilder workspaceViewBuilder,
                                WorkspaceViewImplBuilder workspaceViewImplBuilder,
                                ToolbarPresenterBuilder toolbarPresenterBuilder,
                                ToolbarViewBuilder toolbarViewBuilder,
-                               ToolbarViewImplBuilder toolbarViewImplBuilder) {
+                               ToolbarViewImplBuilder toolbarViewImplBuilder,
+                               Provider<PropertiesPanelPresenterBuilder> propertiesPanelPresenterBuilder,
+                               Provider<PropertiesPanelViewBuilder> propertiesPanelViewBuilder,
+                               Provider<PropertiesPanelViewImplBuilder> propertiesPanelViewImplBuilder) {
 // TODO need to clean fields
         this.sourceCodeBuilderProvider = sourceCodeBuilderProvider;
-        this.uiXmlBuilderProvider = uiXmlBuilderProvider;
-        this.fieldProvider = fieldProvider;
-        this.flowPanelProvider = flowPanelProvider;
-        this.dockLayoutPanelProvider = dockLayoutPanelProvider;
-        this.labelProvider = labelProvider;
-        this.textBoxProvider = textBoxProvider;
 
         this.workspacePresenterBuilder = workspacePresenterBuilder;
         this.workspaceViewBuilder = workspaceViewBuilder;
@@ -202,6 +177,9 @@ public class SourceCodeGenerator {
         this.toolbarPresenterBuilder = toolbarPresenterBuilder;
         this.toolbarViewBuilder = toolbarViewBuilder;
         this.toolbarViewImplBuilder = toolbarViewImplBuilder;
+        this.propertiesPanelPresenterBuilder = propertiesPanelPresenterBuilder;
+        this.propertiesPanelViewBuilder = propertiesPanelViewBuilder;
+        this.propertiesPanelViewImplBuilder = propertiesPanelViewImplBuilder;
     }
 
     /**
@@ -311,7 +289,7 @@ public class SourceCodeGenerator {
         createMainGWTElements(properties, clientFolder, configuration);
         createWorkspace(targetPath, packageName, configuration);
         createToolbar(targetPath, packageName, configuration);
-        createPropertiesPanel(javaFolder, clientFolder, packageName, configuration);
+        createPropertiesPanel(targetPath, packageName, configuration);
     }
 
     private void createInjectModule(@Nonnull String clientPackageFolder,
@@ -816,7 +794,7 @@ public class SourceCodeGenerator {
                                 .elements(elements)
                                 .connections(connections)
 
-                                .needRemoveTemplateParentFolder()
+                                .needRemoveTemplateParentFolder(true)
                                 .build();
     }
 
@@ -850,174 +828,57 @@ public class SourceCodeGenerator {
                               .elements(elements)
                               .connections(connections)
 
-                              .needRemoveTemplateParentFolder()
+                              .needRemoveTemplateParentFolder(true)
                               .build();
     }
 
-    private void createPropertiesPanel(@Nonnull String javaFolder,
-                                       @Nonnull String clientPackageFolder,
-                                       @Nonnull String packageName,
-                                       @Nonnull Configuration configuration) throws IOException {
-        String clientPackage = packageName + '.' + CLIENT_PART_FOLDER + '.';
-        String propertiesPanelPackage = clientPackage + PROPERTIES_PANEL_FOLDER + '.';
-        String elementsPackage = clientPackage + ELEMENTS_FOLDER + '.';
+    private void createPropertiesPanel(@Nonnull String projectPath, @Nonnull String packageName, @Nonnull Configuration configuration)
+            throws IOException {
+        Set<Element> elements = configuration.getDiagramConfiguration().getElements();
 
-        Path propertiesPanelViewImplSource = Paths.get(javaFolder, PROPERTIES_PANEL_VIEW_IMPL_NAME + ".java");
+        for (Iterator<Element> iterator = elements.iterator(); iterator.hasNext(); ) {
+            Element element = iterator.next();
+            Set<Property> properties = element.getProperties();
 
-        Files.createDirectories(Paths.get(clientPackageFolder, PROPERTIES_PANEL_FOLDER));
+            boolean hasNext = iterator.hasNext();
 
-        for (Element element : configuration.getDiagramConfiguration().getElements()) {
-            String elementName = element.getName();
-            String lowerCaseName = elementName.toLowerCase();
-            String propertiesPanelPresenterName = elementName + PROPERTIES_PANEL_PRESENTER_NAME;
-            String propertiesPanelViewName = elementName + PROPERTIES_PANEL_VIEW_NAME;
-            String propertiesPanelViewImplName = elementName + PROPERTIES_PANEL_VIEW_IMPL_NAME;
+            propertiesPanelPresenterBuilder.get()
 
-            SourceCodeBuilder propertiesPanelPresenter = sourceCodeBuilderProvider
-                    .get()
-                    .newClass(propertiesPanelPackage + lowerCaseName + '.' + propertiesPanelPresenterName)
-                    .baseClass("AbstractPropertiesPanel<" + elementName + ">").implementInterface(ACTION_DELEGATE_NAME)
+                                           .needRemoveTemplate(!hasNext)
 
-                    .addImport(Inject.class)
-                    .addImport(AbstractPropertiesPanel.class)
-                    .addImport(AcceptsOneWidget.class)
-                    .addImport(elementsPackage + elementName)
+                                           .path(projectPath)
 
-                    .addConstructor(new Argument(propertiesPanelViewName, "view"))
-                    .withConstructorAnnotation("@Inject").withConstructorBody("super(view);");
+                                           .mainPackage(packageName)
+                                           .element(element)
+                                           .properties(properties)
 
-            SourceCodeBuilder propertiesPanelView = sourceCodeBuilderProvider
-                    .get()
-                    .newClass(propertiesPanelPackage + lowerCaseName + '.' + propertiesPanelViewName)
-                    .withAbstractClassPrefix().baseClass("AbstractView<" + ACTION_DELEGATE_NAME + ">")
-                    .withClassAnnotation("@ImplementedBy(" + propertiesPanelViewImplName + ".class)")
+                                           .build();
 
-                    .addImport(ImplementedBy.class)
-                    .addImport(AbstractView.class);
+            propertiesPanelViewBuilder.get()
 
-            SourceCodeBuilder actionDelegate = sourceCodeBuilderProvider
-                    .get()
-                    .newClass(propertiesPanelPackage + lowerCaseName + '.' + ACTION_DELEGATE_NAME)
-                    .makeInterface().baseClass("AbstractView.ActionDelegate")
-                    .addImport(AbstractView.class);
+                                      .needRemoveTemplate(!hasNext)
 
-            GDockLayoutPanel dockLayoutPanel = dockLayoutPanelProvider.get().withPrefix("g");
-            UIXmlBuilder uiXmlBuilder = uiXmlBuilderProvider
-                    .get()
-                    .withXmlns("g", "urn:import:com.google.gwt.user.client.ui")
-                    .withField(
-                            fieldProvider.get()
-                                         .withName("res")
-                                         .withType(clientPackage + EDITOR_RESOURCES_NAME)
-                              )
-                    .setWidget(dockLayoutPanel);
+                                      .path(projectPath)
 
-            StringBuilder presenterGoMethodBody = new StringBuilder("super.go(container);\n");
+                                      .mainPackage(packageName)
+                                      .element(element)
+                                      .properties(properties)
 
-            StringBuilder fields = new StringBuilder();
-            StringBuilder actionDelegateMethods = new StringBuilder();
+                                      .build();
 
-            for (Property property : element.getProperties()) {
-                String propertyName = property.getName();
-                String argumentName = changeFirstSymbolToLowCase(propertyName);
-                Class javaClass = convertPropertyTypeToJavaClass(property);
+            propertiesPanelViewImplBuilder.get()
 
-                propertiesPanelPresenter
-                        .addMethod("on" + propertyName + "Changed").withMethodAnnotation("@Override")
-                        .withMethodBody(
-                                "element.set" + propertyName + "(((" + propertiesPanelViewName + ")view).get" + propertyName + "());\n" +
-                                "notifyListeners();"
-                                       );
+                                          .needRemoveTemplate(!hasNext)
+                                          .needRemoveTemplateParentFolder(!hasNext)
 
-                presenterGoMethodBody.append("((").append(propertiesPanelViewName).append(")view).set").append(propertyName)
-                                     .append("(element.get").append(propertyName).append("());\n");
+                                          .path(projectPath)
 
-                propertiesPanelView
-                        .addMethod("get" + propertyName)
-                        .withAbstractMethodPrefix().withReturnType(javaClass)
+                                          .mainPackage(packageName)
+                                          .element(element)
+                                          .properties(properties)
 
-                        .addMethod("set" + propertyName)
-                        .withAbstractMethodPrefix().withMethodArguments(new Argument(javaClass.getSimpleName(), argumentName));
-
-                fields.append(OFFSET).append("@UiField\n")
-                      .append(OFFSET).append(TextBox.class.getSimpleName()).append(' ').append(argumentName).append(";\n");
-
-                actionDelegateMethods.append(OFFSET).append("@Override\n")
-                                     .append(OFFSET).append("public ").append(javaClass.getSimpleName()).append(" get").append(propertyName)
-                                     .append("() {\n")
-                                     .append(OFFSET).append(OFFSET).append("return ").append(javaClass.getSimpleName()).append(".valueOf(")
-                                     .append(argumentName).append(".getText());\n")
-                                     .append(OFFSET).append("}\n\n")
-
-                                     .append(OFFSET).append("@Override\n")
-                                     .append(OFFSET).append("public void set").append(propertyName).append('(')
-                                     .append(javaClass.getSimpleName()).append(' ').append(argumentName).append(") {\n")
-                                     .append(OFFSET).append(OFFSET).append("this.").append(argumentName).append(".setText(")
-                                     .append(argumentName).append(".toString());\n")
-                                     .append(OFFSET).append("}\n\n")
-
-                                     .append(OFFSET).append("@UiHandler(\"").append(argumentName).append("\")\n")
-                                     .append(OFFSET).append("public void on").append(propertyName).append("Changed(KeyUpEvent event) {\n")
-                                     .append(OFFSET).append(OFFSET).append("delegate.on").append(propertyName).append("Changed();\n")
-                                     .append(OFFSET).append("}\n\n");
-
-                actionDelegate.addMethod("on" + propertyName + "Changed").withMethodAccessLevel(DEFAULT);
-
-                dockLayoutPanel.withNorth(50,
-                                          flowPanelProvider
-                                                  .get()
-                                                  .withPrefix("g")
-                                                  .withWidget(
-                                                          labelProvider
-                                                                  .get()
-                                                                  .withPrefix("g")
-                                                                  .withText(propertyName)
-                                                             )
-                                                  .withWidget(
-                                                          textBoxProvider
-                                                                  .get()
-                                                                  .withPrefix("g")
-                                                                  .withName(argumentName)
-                                                                  .withWidth("120px")
-                                                             )
-                                         );
-            }
-
-            propertiesPanelPresenter.addMethod("go").withMethodAnnotation("@Override")
-                                    .withMethodArguments(new Argument(AcceptsOneWidget.class.getSimpleName(), "container"))
-                                    .withMethodBody(presenterGoMethodBody.toString());
-
-            Files.createDirectories(Paths.get(clientPackageFolder, PROPERTIES_PANEL_FOLDER, lowerCaseName));
-
-            Path propertiesPanelPresenterJavaClassPath =
-                    Paths.get(clientPackageFolder, PROPERTIES_PANEL_FOLDER, lowerCaseName, propertiesPanelPresenterName + ".java");
-            Files.write(propertiesPanelPresenterJavaClassPath, propertiesPanelPresenter.build().getBytes());
-
-            Path propertiesPanelViewJavaClassPath =
-                    Paths.get(clientPackageFolder, PROPERTIES_PANEL_FOLDER, lowerCaseName, propertiesPanelViewName + ".java");
-            Files.write(propertiesPanelViewJavaClassPath, propertiesPanelView.build().getBytes());
-
-
-            String propertiesPanelViewImplContent = new String(Files.readAllBytes(propertiesPanelViewImplSource))
-                    .replaceAll(CURRENT_PACKAGE_MASK, propertiesPanelPackage + lowerCaseName)
-                    .replaceAll(ELEMENT_NAME_MASK, elementName)
-                    .replaceAll(UI_FIELDS_MASK, fields.toString())
-                    .replaceAll(ACTION_DELEGATE_MASK, actionDelegateMethods.toString());
-
-            Path propertiesPanelViewImplJavaClassPath =
-                    Paths.get(clientPackageFolder, PROPERTIES_PANEL_FOLDER, lowerCaseName, propertiesPanelViewImplName + ".java");
-            Files.write(propertiesPanelViewImplJavaClassPath, propertiesPanelViewImplContent.getBytes());
-
-            Path actionDelegateJavaClassPath =
-                    Paths.get(clientPackageFolder, PROPERTIES_PANEL_FOLDER, lowerCaseName, ACTION_DELEGATE_NAME + ".java");
-            Files.write(actionDelegateJavaClassPath, actionDelegate.build().getBytes());
-
-            Path propertiesPanelUiXMLPath =
-                    Paths.get(clientPackageFolder, PROPERTIES_PANEL_FOLDER, lowerCaseName, propertiesPanelViewImplName + ".ui.xml");
-            Files.write(propertiesPanelUiXMLPath, uiXmlBuilder.build().getBytes());
+                                          .build();
         }
-
-        Files.delete(propertiesPanelViewImplSource);
     }
 
     private void generateResourcesFolder(@Nonnull Properties properties) throws IOException {
