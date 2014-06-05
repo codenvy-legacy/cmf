@@ -1,16 +1,16 @@
 package my.package.client.elements;
 
-import com.codenvy.editor.api.editor.elements.AbstractShape;
-import com.codenvy.editor.api.editor.elements.Element;
 import com.google.gwt.xml.client.Node;
-import com.google.gwt.xml.client.NodeList;
 import java.util.ArrayList;
 import java.util.List;
+import com.codenvy.editor.api.editor.elements.AbstractShape;
+import com.google.gwt.xml.client.NodeList;
+import com.codenvy.editor.api.editor.elements.Element;
 
 public class MainElement extends AbstractShape {
 
-    public MainElement(String elementName, List<String> properties) {
-        super(elementName, properties);
+    public MainElement(String name, List<String> properties) {
+        super(name, properties);
     }
 
     public MainElement() {
@@ -45,8 +45,7 @@ public class MainElement extends AbstractShape {
 
     @Override
     protected String serializeProperties() {
-        StringBuilder properties = new StringBuilder();
-        return properties.toString();
+        return "";
     }
 
     @Override

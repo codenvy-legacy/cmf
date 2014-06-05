@@ -24,9 +24,7 @@ import com.google.inject.Inject;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -52,7 +50,6 @@ public class ToolbarViewBuilder extends AbstractBuilder<ToolbarViewBuilder> {
     private static final String TOOLBAR_VIEW_NAME = "ToolbarView";
 
     private String          mainPackage;
-    private Element         rootElement;
     private Set<Element>    elements;
     private Set<Connection> connections;
 
@@ -75,12 +72,6 @@ public class ToolbarViewBuilder extends AbstractBuilder<ToolbarViewBuilder> {
     }
 
     @Nonnull
-    public ToolbarViewBuilder rootElement(@Nonnull Element rootElement) {
-        this.rootElement = rootElement;
-        return this;
-    }
-
-    @Nonnull
     public ToolbarViewBuilder connections(@Nonnull Set<Connection> connections) {
         this.connections = connections;
         return this;
@@ -89,6 +80,9 @@ public class ToolbarViewBuilder extends AbstractBuilder<ToolbarViewBuilder> {
     /** {@inheritDoc} */
     @Override
     public void build() throws IOException {
+        // TODO need to add some behaviour when main element isn't found
+        Element rootElement = findRootElement(elements);
+
         String toolbarPackage = mainPackage + '.' + CLIENT_PACKAGE + '.' + TOOLBAR_PACKAGE;
 
         StringBuilder actionDelegates = new StringBuilder();
@@ -103,33 +97,29 @@ public class ToolbarViewBuilder extends AbstractBuilder<ToolbarViewBuilder> {
             actionDelegates.append(createOnElementButtonClickedCode(connection.getName()));
         }
 
-        Path toolbarViewSource = Paths.get(path,
-                                           MAIN_SOURCE_PATH,
-                                           JAVA_SOURCE_FOLDER,
-                                           TOOLBAR_PACKAGE,
-                                           TOOLBAR_VIEW_NAME + JAVA);
-        Path toolbarViewTarget = Paths.get(path,
-                                           MAIN_SOURCE_PATH,
-                                           JAVA_SOURCE_FOLDER,
-                                           convertPathToPackageName(mainPackage),
-                                           CLIENT_PACKAGE,
-                                           TOOLBAR_PACKAGE,
-                                           TOOLBAR_VIEW_NAME + JAVA);
+        source = Paths.get(path,
+                           MAIN_SOURCE_PATH,
+                           JAVA_SOURCE_FOLDER,
+                           TOOLBAR_PACKAGE,
+                           TOOLBAR_VIEW_NAME + JAVA);
+        target = Paths.get(path,
+                           MAIN_SOURCE_PATH,
+                           JAVA_SOURCE_FOLDER,
+                           convertPathToPackageName(mainPackage),
+                           CLIENT_PACKAGE,
+                           TOOLBAR_PACKAGE,
+                           TOOLBAR_VIEW_NAME + JAVA);
 
-        Map<String, String> replaceElements = new LinkedHashMap<>();
         replaceElements.put(CURRENT_PACKAGE_MARKER, toolbarPackage);
         replaceElements.put(MAIN_PACKAGE_MARKER, mainPackage);
         replaceElements.put(ACTION_DELEGATES_MARKER, actionDelegates.toString());
 
-        createFile(toolbarViewSource, toolbarViewTarget, replaceElements);
-
-        removeTemplate(toolbarViewSource);
-        removeTemplateParentFolder(toolbarViewSource.getParent());
+        super.build();
     }
 
     @Nonnull
     private String createOnElementButtonClickedCode(@Nonnull String elementName) {
-        Map<String, String> masks = new HashMap<>();
+        Map<String, String> masks = new LinkedHashMap<>(1);
         masks.put(ELEMENT_NAME_MARKER, elementName);
 
         return ContentReplacer.replace(CREATE_ON_ELEMENT_BUTTON_CLICKED_CODE_FORMAT, masks);

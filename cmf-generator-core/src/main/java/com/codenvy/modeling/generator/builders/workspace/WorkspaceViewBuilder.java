@@ -24,9 +24,8 @@ import com.google.inject.Inject;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -57,7 +56,6 @@ public class WorkspaceViewBuilder extends AbstractBuilder<WorkspaceViewBuilder> 
     private static final String WORKSPACE_VIEW_NAME = "WorkspaceView";
 
     private String          mainPackage;
-    private Element         rootElement;
     private Set<Element>    elements;
     private Set<Connection> connections;
 
@@ -80,12 +78,6 @@ public class WorkspaceViewBuilder extends AbstractBuilder<WorkspaceViewBuilder> 
     }
 
     @Nonnull
-    public WorkspaceViewBuilder rootElement(@Nonnull Element rootElement) {
-        this.rootElement = rootElement;
-        return this;
-    }
-
-    @Nonnull
     public WorkspaceViewBuilder connections(@Nonnull Set<Connection> connections) {
         this.connections = connections;
         return this;
@@ -94,6 +86,9 @@ public class WorkspaceViewBuilder extends AbstractBuilder<WorkspaceViewBuilder> 
     /** {@inheritDoc} */
     @Override
     public void build() throws IOException {
+        // TODO need to add some behaviour when main element isn't found
+        Element rootElement = findRootElement(elements);
+
         String clientPackage = mainPackage + '.' + CLIENT_PACKAGE + '.';
         String workspacePackage = clientPackage + WORKSPACE_PACKAGE;
         String elementsPackage = clientPackage + ELEMENTS_PACKAGE + '.';
@@ -114,33 +109,29 @@ public class WorkspaceViewBuilder extends AbstractBuilder<WorkspaceViewBuilder> 
             methods.append(createAddConnectionMethodCode(connection.getName()));
         }
 
-        Path workspaceViewSource = Paths.get(path,
-                                             MAIN_SOURCE_PATH,
-                                             JAVA_SOURCE_FOLDER,
-                                             WORKSPACE_PACKAGE,
-                                             WORKSPACE_VIEW_NAME + JAVA);
-        Path workspaceViewTarget = Paths.get(path,
-                                             MAIN_SOURCE_PATH,
-                                             JAVA_SOURCE_FOLDER,
-                                             convertPathToPackageName(mainPackage),
-                                             CLIENT_PACKAGE,
-                                             WORKSPACE_PACKAGE,
-                                             WORKSPACE_VIEW_NAME + JAVA);
+        source = Paths.get(path,
+                           MAIN_SOURCE_PATH,
+                           JAVA_SOURCE_FOLDER,
+                           WORKSPACE_PACKAGE,
+                           WORKSPACE_VIEW_NAME + JAVA);
+        target = Paths.get(path,
+                           MAIN_SOURCE_PATH,
+                           JAVA_SOURCE_FOLDER,
+                           convertPathToPackageName(mainPackage),
+                           CLIENT_PACKAGE,
+                           WORKSPACE_PACKAGE,
+                           WORKSPACE_VIEW_NAME + JAVA);
 
-        Map<String, String> replaceElements = new HashMap<>();
         replaceElements.put(CURRENT_PACKAGE_MARKER, workspacePackage);
         replaceElements.put(IMPORT_MARKER, imports.toString());
         replaceElements.put(METHODS_MARKER, methods.toString());
 
-        createFile(workspaceViewSource, workspaceViewTarget, replaceElements);
-
-        removeTemplate(workspaceViewSource);
-        removeTemplateParentFolder(workspaceViewSource.getParent());
+        super.build();
     }
 
     @Nonnull
     private String createAddElementMethodCode(@Nonnull String elementName) {
-        Map<String, String> masks = new HashMap<>();
+        Map<String, String> masks = new LinkedHashMap<>(1);
         masks.put(ELEMENT_NAME_MARKER, elementName);
 
         return ContentReplacer.replace(ADD_ELEMENT_CODE_FORMAT, masks);
@@ -148,7 +139,7 @@ public class WorkspaceViewBuilder extends AbstractBuilder<WorkspaceViewBuilder> 
 
     @Nonnull
     private String createAddConnectionMethodCode(@Nonnull String connectionName) {
-        Map<String, String> masks = new HashMap<>();
+        Map<String, String> masks = new LinkedHashMap<>(1);
         masks.put(CONNECTION_NAME_MARKER, connectionName);
 
         return ContentReplacer.replace(ADD_CONNECTION_CODE_FORMAT, masks);

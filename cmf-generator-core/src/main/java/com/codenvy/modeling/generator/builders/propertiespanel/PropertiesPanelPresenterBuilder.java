@@ -24,9 +24,7 @@ import com.google.inject.Inject;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -79,7 +77,7 @@ public class PropertiesPanelPresenterBuilder extends AbstractBuilder<PropertiesP
     }
 
     @Nonnull
-    public PropertiesPanelPresenterBuilder element(Element element) {
+    public PropertiesPanelPresenterBuilder element(@Nonnull Element element) {
         this.element = element;
         return this;
     }
@@ -107,37 +105,32 @@ public class PropertiesPanelPresenterBuilder extends AbstractBuilder<PropertiesP
             initializeProperties.append(createPropertyInitializeCode(elementName, propertyName));
         }
 
-        Path propertiesPanelPresenterSource = Paths.get(path,
-                                                        MAIN_SOURCE_PATH,
-                                                        JAVA_SOURCE_FOLDER,
-                                                        PROPERTIES_PANEL_PACKAGE,
-                                                        PROPERTIES_PANEL_PRESENTER_NAME + JAVA);
-        Path propertiesPanelPresenterTarget = Paths.get(path,
-                                                        MAIN_SOURCE_PATH,
-                                                        JAVA_SOURCE_FOLDER,
-                                                        convertPathToPackageName(mainPackage),
-                                                        CLIENT_PACKAGE,
-                                                        PROPERTIES_PANEL_PACKAGE,
-                                                        elementNameLowerCase,
-                                                        elementName + PROPERTIES_PANEL_PRESENTER_NAME + JAVA);
+        source = Paths.get(path,
+                           MAIN_SOURCE_PATH,
+                           JAVA_SOURCE_FOLDER,
+                           PROPERTIES_PANEL_PACKAGE,
+                           PROPERTIES_PANEL_PRESENTER_NAME + JAVA);
+        target = Paths.get(path,
+                           MAIN_SOURCE_PATH,
+                           JAVA_SOURCE_FOLDER,
+                           convertPathToPackageName(mainPackage),
+                           CLIENT_PACKAGE,
+                           PROPERTIES_PANEL_PACKAGE,
+                           elementNameLowerCase,
+                           elementName + PROPERTIES_PANEL_PRESENTER_NAME + JAVA);
 
-        Map<String, String> replaceElements = new LinkedHashMap<>();
         replaceElements.put(MAIN_PACKAGE_MARKER, mainPackage);
         replaceElements.put(CURRENT_PACKAGE_MARKER, propertiesPanelPackage);
         replaceElements.put(ELEMENT_NAME_MARKER, elementName);
         replaceElements.put(PROPERTY_CHANGE_METHODS_MARKER, methods.toString());
         replaceElements.put(INITIALIZE_PROPERTY_FIELDS_MARKER, initializeProperties.toString());
 
-        createFile(propertiesPanelPresenterSource, propertiesPanelPresenterTarget, replaceElements);
-
-        removeTemplate(propertiesPanelPresenterSource);
-        removeTemplateParentFolder(propertiesPanelPresenterSource.getParent());
-
+        super.build();
     }
 
     @Nonnull
     private String createPropertyChangedMethodCode(@Nonnull String elementName, @Nonnull String propertyName) {
-        Map<String, String> masks = new HashMap<>();
+        Map<String, String> masks = new LinkedHashMap<>(2);
         masks.put(ELEMENT_NAME_MARKER, elementName);
         masks.put(PROPERTY_NAME_MARKER, propertyName);
 
@@ -146,7 +139,7 @@ public class PropertiesPanelPresenterBuilder extends AbstractBuilder<PropertiesP
 
     @Nonnull
     private String createPropertyInitializeCode(@Nonnull String elementName, @Nonnull String propertyName) {
-        Map<String, String> masks = new HashMap<>();
+        Map<String, String> masks = new LinkedHashMap<>(2);
         masks.put(ELEMENT_NAME_MARKER, elementName);
         masks.put(PROPERTY_NAME_MARKER, propertyName);
 

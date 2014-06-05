@@ -24,9 +24,7 @@ import com.google.inject.Inject;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -70,7 +68,6 @@ public class ToolbarPresenterBuilder extends AbstractBuilder<ToolbarPresenterBui
     private static final String TOOLBAR_PRESENTER_NAME = "ToolbarPresenter";
 
     private String          mainPackage;
-    private Element         rootElement;
     private Set<Element>    elements;
     private Set<Connection> connections;
 
@@ -93,12 +90,6 @@ public class ToolbarPresenterBuilder extends AbstractBuilder<ToolbarPresenterBui
     }
 
     @Nonnull
-    public ToolbarPresenterBuilder rootElement(@Nonnull Element rootElement) {
-        this.rootElement = rootElement;
-        return this;
-    }
-
-    @Nonnull
     public ToolbarPresenterBuilder connections(@Nonnull Set<Connection> connections) {
         this.connections = connections;
         return this;
@@ -107,6 +98,9 @@ public class ToolbarPresenterBuilder extends AbstractBuilder<ToolbarPresenterBui
     /** {@inheritDoc} */
     @Override
     public void build() throws IOException {
+        // TODO need to add some behaviour when main element isn't found
+        Element rootElement = findRootElement(elements);
+
         String clientPackage = mainPackage + '.' + CLIENT_PACKAGE;
         String toolbarPackage = clientPackage + '.' + TOOLBAR_PACKAGE;
         String stateClassImport = "import static " + clientPackage + '.' + EDITOR_STATE + '.';
@@ -136,34 +130,30 @@ public class ToolbarPresenterBuilder extends AbstractBuilder<ToolbarPresenterBui
             methods.append(createOnConnectionButtonClickedCode(connectionName));
         }
 
-        Path toolbarPresenterSource = Paths.get(path,
-                                                MAIN_SOURCE_PATH,
-                                                JAVA_SOURCE_FOLDER,
-                                                TOOLBAR_PACKAGE,
-                                                TOOLBAR_PRESENTER_NAME + JAVA);
-        Path toolbarPresenterTarget = Paths.get(path,
-                                                MAIN_SOURCE_PATH,
-                                                JAVA_SOURCE_FOLDER,
-                                                convertPathToPackageName(mainPackage),
-                                                CLIENT_PACKAGE,
-                                                TOOLBAR_PACKAGE,
-                                                TOOLBAR_PRESENTER_NAME + JAVA);
+        source = Paths.get(path,
+                           MAIN_SOURCE_PATH,
+                           JAVA_SOURCE_FOLDER,
+                           TOOLBAR_PACKAGE,
+                           TOOLBAR_PRESENTER_NAME + JAVA);
+        target = Paths.get(path,
+                           MAIN_SOURCE_PATH,
+                           JAVA_SOURCE_FOLDER,
+                           convertPathToPackageName(mainPackage),
+                           CLIENT_PACKAGE,
+                           TOOLBAR_PACKAGE,
+                           TOOLBAR_PRESENTER_NAME + JAVA);
 
-        Map<String, String> replaceElements = new LinkedHashMap<>();
         replaceElements.put(MAIN_PACKAGE_MARKER, mainPackage);
         replaceElements.put(CURRENT_PACKAGE_MARKER, toolbarPackage);
         replaceElements.put(STATIC_IMPORT_MARKER, staticImports.toString());
         replaceElements.put(CHANGE_EDITOR_STATE_MASK, methods.toString());
 
-        createFile(toolbarPresenterSource, toolbarPresenterTarget, replaceElements);
-
-        removeTemplate(toolbarPresenterSource);
-        removeTemplateParentFolder(toolbarPresenterSource.getParent());
+        super.build();
     }
 
     @Nonnull
     private String createOnElementButtonClickedCode(@Nonnull String elementName) {
-        Map<String, String> masks = new HashMap<>();
+        Map<String, String> masks = new LinkedHashMap<>(2);
         masks.put(ELEMENT_NAME_MARKER, elementName);
         masks.put(ELEMENT_UPPER_NAME_MARKER, elementName.toUpperCase());
 
@@ -172,7 +162,7 @@ public class ToolbarPresenterBuilder extends AbstractBuilder<ToolbarPresenterBui
 
     @Nonnull
     private String createOnConnectionButtonClickedCode(@Nonnull String connectionName) {
-        Map<String, String> masks = new HashMap<>();
+        Map<String, String> masks = new LinkedHashMap<>(2);
         masks.put(CONNECTION_NAME_MARKER, connectionName);
         masks.put(CONNECTION_UPPER_NAME_MARKER, connectionName.toUpperCase());
 

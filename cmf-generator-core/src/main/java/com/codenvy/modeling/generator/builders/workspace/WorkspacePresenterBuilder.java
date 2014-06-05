@@ -24,9 +24,7 @@ import com.google.inject.Inject;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -99,7 +97,6 @@ public class WorkspacePresenterBuilder extends AbstractBuilder<WorkspacePresente
     private static final String WORKSPACE_PRESENTER_NAME = "WorkspacePresenter";
 
     private String          mainPackage;
-    private Element         rootElement;
     private Set<Element>    elements;
     private Set<Connection> connections;
 
@@ -122,12 +119,6 @@ public class WorkspacePresenterBuilder extends AbstractBuilder<WorkspacePresente
     }
 
     @Nonnull
-    public WorkspacePresenterBuilder rootElement(@Nonnull Element rootElement) {
-        this.rootElement = rootElement;
-        return this;
-    }
-
-    @Nonnull
     public WorkspacePresenterBuilder connections(@Nonnull Set<Connection> connections) {
         this.connections = connections;
         return this;
@@ -136,6 +127,9 @@ public class WorkspacePresenterBuilder extends AbstractBuilder<WorkspacePresente
     /** {@inheritDoc} */
     @Override
     public void build() throws IOException {
+        // TODO need to add some behaviour when main element isn't found
+        Element rootElement = findRootElement(elements);
+
         String clientPackage = mainPackage + '.' + CLIENT_PACKAGE;
         String workspacePackage = clientPackage + '.' + WORKSPACE_PACKAGE;
         String elementsPackage = clientPackage + '.' + ELEMENTS_PACKAGE + '.';
@@ -180,20 +174,19 @@ public class WorkspacePresenterBuilder extends AbstractBuilder<WorkspacePresente
             imports.append("import ").append(connectionPackage).append(";\n");
         }
 
-        Path workspacePresenterSource = Paths.get(path,
-                                                  MAIN_SOURCE_PATH,
-                                                  JAVA_SOURCE_FOLDER,
-                                                  WORKSPACE_PACKAGE,
-                                                  WORKSPACE_PRESENTER_NAME + JAVA);
-        Path workspacePresenterTarget = Paths.get(path,
-                                                  MAIN_SOURCE_PATH,
-                                                  JAVA_SOURCE_FOLDER,
-                                                  convertPathToPackageName(mainPackage),
-                                                  CLIENT_PACKAGE,
-                                                  WORKSPACE_PACKAGE,
-                                                  WORKSPACE_PRESENTER_NAME + JAVA);
+        source = Paths.get(path,
+                           MAIN_SOURCE_PATH,
+                           JAVA_SOURCE_FOLDER,
+                           WORKSPACE_PACKAGE,
+                           WORKSPACE_PRESENTER_NAME + JAVA);
+        target = Paths.get(path,
+                           MAIN_SOURCE_PATH,
+                           JAVA_SOURCE_FOLDER,
+                           convertPathToPackageName(mainPackage),
+                           CLIENT_PACKAGE,
+                           WORKSPACE_PACKAGE,
+                           WORKSPACE_PRESENTER_NAME + JAVA);
 
-        Map<String, String> replaceElements = new LinkedHashMap<>();
         replaceElements.put(MAIN_PACKAGE_MARKER, mainPackage);
         replaceElements.put(CURRENT_PACKAGE_MARKER, workspacePackage);
         replaceElements.put(STATIC_IMPORT_MARKER, staticImports.toString());
@@ -203,17 +196,14 @@ public class WorkspacePresenterBuilder extends AbstractBuilder<WorkspacePresente
         replaceElements.put(CREATE_GRAPHIC_CONNECTIONS_MARKER, createConnections.toString());
         replaceElements.put(CREATE_GRAPHICAL_ELEMENTS_MARKER, createGraphicalElements.toString());
 
-        createFile(workspacePresenterSource, workspacePresenterTarget, replaceElements);
-
-        removeTemplate(workspacePresenterSource);
-        removeTemplateParentFolder(workspacePresenterSource.getParent());
+        super.build();
     }
 
     @Nonnull
     private String createElementCode(@Nonnull String elementName) {
         String argumentName = changeFirstSymbolToLowCase(elementName);
 
-        Map<String, String> createElementMasks = new HashMap<>();
+        Map<String, String> createElementMasks = new LinkedHashMap<>(3);
         createElementMasks.put(ELEMENT_NAME_MARKER, elementName);
         createElementMasks.put(ARGUMENT_NAME_MARKER, argumentName);
         createElementMasks.put(CREATE_STATE_MARKER, elementName.toUpperCase());
@@ -223,7 +213,7 @@ public class WorkspacePresenterBuilder extends AbstractBuilder<WorkspacePresente
 
     @Nonnull
     private String createGraphicalElementCode(@Nonnull String elementName) {
-        Map<String, String> createGraphicalElementMasks = new HashMap<>();
+        Map<String, String> createGraphicalElementMasks = new LinkedHashMap<>(1);
         createGraphicalElementMasks.put(ELEMENT_NAME_MARKER, elementName);
 
         return ContentReplacer.replace(CREATE_GRAPHICAL_ELEMENT_CODE_FORMAT, createGraphicalElementMasks);
@@ -233,7 +223,7 @@ public class WorkspacePresenterBuilder extends AbstractBuilder<WorkspacePresente
     private String createConnectionCode(@Nonnull String connectionName) {
         String argumentName = changeFirstSymbolToLowCase(connectionName);
 
-        Map<String, String> createConnectionMasks = new HashMap<>();
+        Map<String, String> createConnectionMasks = new LinkedHashMap<>(3);
         createConnectionMasks.put(CONNECTION_NAME_MARKER, connectionName);
         createConnectionMasks.put(CONNECTION_UPPER_NAME_MARKER, connectionName.toUpperCase());
         createConnectionMasks.put(ARGUMENT_NAME_MARKER, argumentName);

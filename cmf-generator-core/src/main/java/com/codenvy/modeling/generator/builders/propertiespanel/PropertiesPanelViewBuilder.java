@@ -24,9 +24,7 @@ import com.google.inject.Inject;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -75,7 +73,7 @@ public class PropertiesPanelViewBuilder extends AbstractBuilder<PropertiesPanelV
     }
 
     @Nonnull
-    public PropertiesPanelViewBuilder element(Element element) {
+    public PropertiesPanelViewBuilder element(@Nonnull Element element) {
         this.element = element;
         return this;
     }
@@ -104,36 +102,32 @@ public class PropertiesPanelViewBuilder extends AbstractBuilder<PropertiesPanelV
             propertyGetterAndSetters.append(createPropertyGetterAndSetterMethodCode(propertyName, propertyType.getSimpleName()));
         }
 
-        Path propertiesPanelViewSource = Paths.get(path,
-                                                   MAIN_SOURCE_PATH,
-                                                   JAVA_SOURCE_FOLDER,
-                                                   PROPERTIES_PANEL_PACKAGE,
-                                                   PROPERTIES_PANEL_VIEW_NAME + JAVA);
-        Path propertiesPanelViewTarget = Paths.get(path,
-                                                   MAIN_SOURCE_PATH,
-                                                   JAVA_SOURCE_FOLDER,
-                                                   convertPathToPackageName(mainPackage),
-                                                   CLIENT_PACKAGE,
-                                                   PROPERTIES_PANEL_PACKAGE,
-                                                   elementNameLowerCase,
-                                                   elementName + PROPERTIES_PANEL_VIEW_NAME + JAVA);
+        source = Paths.get(path,
+                           MAIN_SOURCE_PATH,
+                           JAVA_SOURCE_FOLDER,
+                           PROPERTIES_PANEL_PACKAGE,
+                           PROPERTIES_PANEL_VIEW_NAME + JAVA);
+        target = Paths.get(path,
+                           MAIN_SOURCE_PATH,
+                           JAVA_SOURCE_FOLDER,
+                           convertPathToPackageName(mainPackage),
+                           CLIENT_PACKAGE,
+                           PROPERTIES_PANEL_PACKAGE,
+                           elementNameLowerCase,
+                           elementName + PROPERTIES_PANEL_VIEW_NAME + JAVA);
 
-        Map<String, String> replaceElements = new LinkedHashMap<>();
         replaceElements.put(MAIN_PACKAGE_MARKER, mainPackage);
         replaceElements.put(CURRENT_PACKAGE_MARKER, propertiesPanelPackage);
         replaceElements.put(ELEMENT_NAME_MARKER, elementName);
         replaceElements.put(PROPERTY_CHANGE_METHODS_MARKER, changedPropertiesMethods.toString());
         replaceElements.put(GETTER_AND_SETTER_PROPERTY_MARKER, propertyGetterAndSetters.toString());
 
-        createFile(propertiesPanelViewSource, propertiesPanelViewTarget, replaceElements);
-
-        removeTemplate(propertiesPanelViewSource);
-        removeTemplateParentFolder(propertiesPanelViewSource.getParent());
+        super.build();
     }
 
     @Nonnull
     private String createPropertyChangedMethodCode(@Nonnull String propertyName) {
-        Map<String, String> masks = new HashMap<>();
+        Map<String, String> masks = new LinkedHashMap<>(2);
         masks.put(PROPERTY_NAME_MARKER, propertyName);
         masks.put(ARGUMENT_NAME_MARKER, changeFirstSymbolToLowCase(propertyName));
 
@@ -142,7 +136,7 @@ public class PropertiesPanelViewBuilder extends AbstractBuilder<PropertiesPanelV
 
     @Nonnull
     private String createPropertyGetterAndSetterMethodCode(@Nonnull String propertyName, @Nonnull String propertyType) {
-        Map<String, String> masks = new HashMap<>();
+        Map<String, String> masks = new LinkedHashMap<>(3);
         masks.put(PROPERTY_NAME_MARKER, propertyName);
         masks.put(PROPERTY_TYPE_MARKER, propertyType);
         masks.put(ARGUMENT_NAME_MARKER, changeFirstSymbolToLowCase(propertyName));

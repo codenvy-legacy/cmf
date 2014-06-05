@@ -19,7 +19,6 @@ import com.codenvy.editor.api.editor.AbstractEditor;
 import com.codenvy.editor.api.editor.EditorState;
 import com.codenvy.editor.api.editor.EditorView;
 import com.codenvy.editor.api.editor.SelectionManager;
-import com.codenvy.editor.api.editor.elements.AbstractShape;
 import com.codenvy.editor.api.editor.propertiespanel.PropertiesPanelManager;
 import com.codenvy.editor.api.editor.propertiespanel.empty.EmptyPropertiesPanelPresenter;
 import com.codenvy.modeling.configuration.Configuration;
@@ -28,6 +27,8 @@ import com.codenvy.modeling.configuration.metamodel.diagram.Component;
 import com.codenvy.modeling.configuration.metamodel.diagram.Connection;
 import com.codenvy.modeling.configuration.metamodel.diagram.Element;
 import com.codenvy.modeling.configuration.metamodel.diagram.Property;
+import com.codenvy.modeling.generator.builders.elements.ConnectionBuilder;
+import com.codenvy.modeling.generator.builders.elements.ElementBuilder;
 import com.codenvy.modeling.generator.builders.java.SourceCodeBuilder;
 import com.codenvy.modeling.generator.builders.propertiespanel.PropertiesPanelPresenterBuilder;
 import com.codenvy.modeling.generator.builders.propertiespanel.PropertiesPanelViewBuilder;
@@ -50,8 +51,6 @@ import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
-import com.google.gwt.xml.client.Node;
-import com.google.gwt.xml.client.NodeList;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.orange.links.client.utils.LinksClientBundle;
@@ -68,7 +67,6 @@ import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -86,11 +84,8 @@ import static com.codenvy.modeling.generator.GenerationController.Param.MAVEN_GR
 import static com.codenvy.modeling.generator.GenerationController.Param.TARGET_PATH;
 import static com.codenvy.modeling.generator.GenerationController.Param.TEMPLATE_PATH;
 import static com.codenvy.modeling.generator.builders.java.SourceCodeBuilder.Access.DEFAULT;
-import static com.codenvy.modeling.generator.builders.java.SourceCodeBuilder.Access.PRIVATE;
 import static com.codenvy.modeling.generator.builders.java.SourceCodeBuilder.Access.PROTECTED;
-import static com.codenvy.modeling.generator.builders.java.SourceCodeBuilder.Access.PUBLIC;
 import static com.codenvy.modeling.generator.builders.java.SourceCodeBuilder.Argument;
-import static com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder.OFFSET;
 
 /**
  * The main class that provides an ability to generate java source code from given params.
@@ -105,26 +100,23 @@ public class SourceCodeGenerator {
     private static final String ARTIFACT_NAME_MASK     = "artifact_name";
     private static final String EDITOR_NAME_MASK       = "editor_name";
     private static final String ENTRY_POINT_CLASS_MASK = "entry_point";
-    private static final String CURRENT_PACKAGE_MASK   = "current_package";
-    private static final String CONNECTION_NAME_MASK   = "connection_name";
 
     private static final String POM_FILE_FULL_NAME        = "pom.xml";
     private static final String MAIN_HTML_FILE_FULL_NAME  = "Editor.html";
     private static final String MAIN_GWT_MODULE_FILE_NAME = "Editor.gwt.xml";
     private static final String MAIN_CSS_FILE_NAME        = "editor.css";
 
-    private static final String MAIN_SOURCE_PATH         = "/src/main";
-    private static final String JAVA_SOURCE_PATH         = "java";
-    private static final String RESOURCES_SOURCE_PATH    = "resources";
-    private static final String WEBAPP_SOURCE_PATH       = "webapp";
-    private static final String CLIENT_PART_FOLDER       = "client";
-    private static final String INJECT_FOLDER            = "inject";
-    private static final String TOOLBAR_FOLDER           = "toolbar";
-    private static final String ICONS_FOLDER             = "icons";
-    private static final String WORKSPACE_FOLDER         = "workspace";
-    private static final String PROPERTIES_PANEL_FOLDER  = "propertiespanel";
-    private static final String ELEMENTS_FOLDER          = "elements";
-    private static final String CONNECTION_TEMPLATE_NAME = "Connection";
+    private static final String MAIN_SOURCE_PATH        = "/src/main";
+    private static final String JAVA_SOURCE_PATH        = "java";
+    private static final String RESOURCES_SOURCE_PATH   = "resources";
+    private static final String WEBAPP_SOURCE_PATH      = "webapp";
+    private static final String CLIENT_PART_FOLDER      = "client";
+    private static final String INJECT_FOLDER           = "inject";
+    private static final String TOOLBAR_FOLDER          = "toolbar";
+    private static final String ICONS_FOLDER            = "icons";
+    private static final String WORKSPACE_FOLDER        = "workspace";
+    private static final String PROPERTIES_PANEL_FOLDER = "propertiespanel";
+    private static final String ELEMENTS_FOLDER         = "elements";
 
     private static final String ENTRY_POINT_NAME                = "EditorEntryPoint";
     private static final String TOOLBAR_PRESENTER_NAME          = "ToolbarPresenter";
@@ -153,6 +145,8 @@ public class SourceCodeGenerator {
     private final Provider<PropertiesPanelPresenterBuilder> propertiesPanelPresenterBuilder;
     private final Provider<PropertiesPanelViewBuilder>      propertiesPanelViewBuilder;
     private final Provider<PropertiesPanelViewImplBuilder>  propertiesPanelViewImplBuilder;
+    private final Provider<ElementBuilder>                  elementBuilderProvider;
+    private final Provider<ConnectionBuilder>               connectionBuilderProvider;
 
     private Element mainElement;
 
@@ -167,7 +161,9 @@ public class SourceCodeGenerator {
                                ToolbarViewImplBuilder toolbarViewImplBuilder,
                                Provider<PropertiesPanelPresenterBuilder> propertiesPanelPresenterBuilder,
                                Provider<PropertiesPanelViewBuilder> propertiesPanelViewBuilder,
-                               Provider<PropertiesPanelViewImplBuilder> propertiesPanelViewImplBuilder) {
+                               Provider<PropertiesPanelViewImplBuilder> propertiesPanelViewImplBuilder,
+                               Provider<ElementBuilder> elementBuilderProvider,
+                               Provider<ConnectionBuilder> connectionBuilderProvider) {
 // TODO need to clean fields
         this.sourceCodeBuilderProvider = sourceCodeBuilderProvider;
 
@@ -180,6 +176,8 @@ public class SourceCodeGenerator {
         this.propertiesPanelPresenterBuilder = propertiesPanelPresenterBuilder;
         this.propertiesPanelViewBuilder = propertiesPanelViewBuilder;
         this.propertiesPanelViewImplBuilder = propertiesPanelViewImplBuilder;
+        this.elementBuilderProvider = elementBuilderProvider;
+        this.connectionBuilderProvider = connectionBuilderProvider;
     }
 
     /**
@@ -285,7 +283,7 @@ public class SourceCodeGenerator {
         String clientFolder = javaFolder + File.separator + clientPackageFolder;
 
         createInjectModule(clientFolder, packageName, editorName);
-        createElements(javaFolder, clientFolder, packageName, configuration);
+        createElements(targetPath, packageName, configuration);
         createMainGWTElements(properties, clientFolder, configuration);
         createWorkspace(targetPath, packageName, configuration);
         createToolbar(targetPath, packageName, configuration);
@@ -378,201 +376,46 @@ public class SourceCodeGenerator {
         }
     }
 
-    private String createFindElementMethod(@Nonnull Configuration configuration) {
-        StringBuilder result = new StringBuilder("switch (elementName) {\n");
-
-
-        for (Iterator<Element> iterator = configuration.getDiagramConfiguration().getElements().iterator(); iterator.hasNext(); ) {
-            Element element = iterator.next();
-
-            if (!element.equals(mainElement)) {
-                String elementName = element.getName();
-
-                result.append(OFFSET).append("case \"").append(elementName).append("\":\n");
-                if (!iterator.hasNext()) {
-                    result.append(OFFSET).append("default:\n");
-                }
-
-                result.append(OFFSET).append(OFFSET).append("return new ").append(elementName).append("();\n");
-            }
-        }
-
-        result.append("}\n");
-
-        return result.toString();
-    }
-
-    private void createElements(@Nonnull String javaFolder,
-                                @Nonnull String clientPackageFolder,
-                                @Nonnull String packageName,
-                                @Nonnull Configuration configuration) throws IOException {
+    private void createElements(@Nonnull String projectPath, @Nonnull String packageName, @Nonnull Configuration configuration)
+            throws IOException {
         findMainElement(configuration);
 
-        Path elementsFolder = Paths.get(clientPackageFolder, ELEMENTS_FOLDER);
-        Files.createDirectories(elementsFolder);
+        Set<Element> elements = configuration.getDiagramConfiguration().getElements();
 
-        String elementsPackageName = packageName + '.' + CLIENT_PART_FOLDER + '.' + ELEMENTS_FOLDER;
-        String mainElementName = mainElement.getName();
+        for (Iterator<Element> iterator = elements.iterator(); iterator.hasNext(); ) {
+            Element element = iterator.next();
 
-        for (Element element : configuration.getDiagramConfiguration().getElements()) {
-            String elementName = element.getName();
-            SourceCodeBuilder elementClassBuilder = sourceCodeBuilderProvider
-                    .get()
-                    .newClass(elementsPackageName + '.' + elementName);
+            elementBuilderProvider.get()
 
-            StringBuilder constructor;
+                                  .path(projectPath)
 
-            if (!element.equals(mainElement)) {
-                elementClassBuilder.baseClass(mainElementName);
+                                  .needRemoveTemplate(!iterator.hasNext())
 
-                constructor = new StringBuilder("super(\"" + elementName + "\", ");
-            } else {
-                elementClassBuilder.baseClass(AbstractShape.class)
+                                  .mainPackage(packageName)
+                                  .elements(elements)
 
-                                   .addImport(List.class)
+                                  .currentElement(element)
 
-                                   .addConstructor(new Argument(String.class.getSimpleName(), "elementName"),
-                                                   new Argument("List<String>", "properties"))
-                                   .withConstructorBody("super(elementName, properties);\n")
-
-                                   .addImport(NodeList.class)
-                                   .addMethod("deserialize").withMethodAnnotation("@Override")
-                                   .withMethodArguments(new Argument(Node.class.getSimpleName(), "node"))
-                                   .withMethodBody("NodeList childNodes = node.getChildNodes();\n" +
-                                                   "\n" +
-                                                   "for (int i = 0; i < childNodes.getLength(); i++) {\n" +
-                                                   "    Node item = childNodes.item(i);\n" +
-                                                   "    String name = item.getNodeName();\n" +
-                                                   "\n" +
-                                                   "    if (isProperty(name)) {\n" +
-                                                   "        applyProperty(item);\n" +
-                                                   "    } else {\n" +
-                                                   "        Element element = findElement(name);\n" +
-                                                   "        element.deserialize(item);\n" +
-                                                   "        addElement(element);\n" +
-                                                   "    }\n" +
-                                                   "}")
-
-                                   .addMethod("findElement").withMethodAccessLevel(PRIVATE)
-                                   .withReturnType(com.codenvy.editor.api.editor.elements.Element.class)
-                                   .withMethodArguments(new Argument(String.class.getSimpleName(), "elementName"))
-                                   .withMethodBody(createFindElementMethod(configuration));
-
-                constructor = new StringBuilder("this(\"" + elementName + "\", ");
-            }
-
-            StringBuilder serializePropertiesMethodBody = new StringBuilder("StringBuilder properties = new StringBuilder();\n");
-            StringBuilder properties = new StringBuilder();
-            StringBuilder initializeFields = new StringBuilder();
-            StringBuilder applyPropertyMethod = new StringBuilder("String nodeName = node.getNodeName();\n" +
-                                                                  "String nodeValue = node.getChildNodes().item(0).getNodeValue();\n" +
-                                                                  "\n" +
-                                                                  "switch (nodeName) {\n");
-            Set<Property> elementProperties = element.getProperties();
-
-            for (Iterator<Property> iterator = elementProperties.iterator(); iterator.hasNext(); ) {
-                Property property = iterator.next();
-
-                Class javaClass = convertPropertyTypeToJavaClass(property);
-                String name = property.getName();
-                String argumentName = changeFirstSymbolToLowCase(name);
-
-                properties.append('"').append(name).append('"');
-                if (iterator.hasNext()) {
-                    properties.append(", ");
-                }
-
-                applyPropertyMethod.append(OFFSET).append("case \"").append(name).append("\":\n")
-                                   .append(OFFSET).append(OFFSET)
-                                   .append(argumentName).append(" = ").append(javaClass.getSimpleName()).append(".valueOf(nodeValue);\n")
-                                   .append(OFFSET).append("break;\n");
-
-                initializeFields.append(argumentName).append(" = ");
-                if (javaClass.equals(String.class)) {
-                    initializeFields.append('"').append(property.getValue()).append('"');
-                } else {
-                    initializeFields.append(property.getValue());
-                }
-                initializeFields.append(";\n");
-
-                elementClassBuilder
-                        .addField(argumentName, javaClass).withFieldAccessLevel(PRIVATE)
-
-                        .addMethod("get" + name)
-                        .withMethodAccessLevel(PUBLIC).withReturnType(javaClass).withMethodBody("return " + argumentName + ";")
-
-                        .addMethod("set" + name)
-                        .withMethodAccessLevel(PUBLIC).withMethodArguments(new Argument(javaClass.getSimpleName(), argumentName))
-                        .withMethodBody("this." + argumentName + " = " + argumentName + ';');
-
-                serializePropertiesMethodBody.append("properties.append('<').append(\"").append(name).append("\").append(\">\\n\")\n")
-                                             .append(".append(").append(argumentName).append(").append('\\n')\n")
-                                             .append(".append(\"</\").append(\"").append(name).append("\").append(\">\\n\");\n");
-            }
-
-            applyPropertyMethod.append("}\n");
-
-            if (elementProperties.isEmpty()) {
-                constructor.append("new ArrayList<String>());\n");
-                elementClassBuilder.addImport(ArrayList.class);
-            } else {
-                constructor.append("Arrays.asList(").append(properties).append("));\n");
-                elementClassBuilder.addImport(Arrays.class);
-            }
-            constructor.append(initializeFields);
-
-            serializePropertiesMethodBody.append("return properties.toString();\n");
-
-            elementClassBuilder
-                    .addMethod("serializeProperties")
-                    .withReturnType(String.class).withMethodAccessLevel(PROTECTED).withMethodAnnotation("@Override")
-                    .withMethodBody(serializePropertiesMethodBody.toString())
-
-                    .addImport(Node.class)
-                    .addMethod("applyProperty").withMethodAnnotation("@Override")
-                    .withMethodArguments(new Argument(Node.class.getSimpleName(), "node"));
-
-            if (!elementProperties.isEmpty()) {
-                elementClassBuilder.withMethodBody(applyPropertyMethod.toString());
-            }
-
-            elementClassBuilder.addConstructor().withConstructorBody(constructor.toString());
-
-            Path elementJavaClassPath = Paths.get(clientPackageFolder, ELEMENTS_FOLDER, elementName + ".java");
-            Files.write(elementJavaClassPath, elementClassBuilder.build().getBytes());
+                                  .build();
         }
 
-        Path connectionSource = Paths.get(javaFolder, CONNECTION_TEMPLATE_NAME + ".java");
+        Set<Connection> connections = configuration.getDiagramConfiguration().getConnections();
 
-        for (Connection connection : configuration.getDiagramConfiguration().getConnections()) {
-            String connectionName = connection.getName();
+        for (Iterator<Connection> iterator = connections.iterator(); iterator.hasNext(); ) {
+            Connection connection = iterator.next();
 
-            String connectionContent = new String(Files.readAllBytes(connectionSource))
-                    .replaceAll(CURRENT_PACKAGE_MASK, elementsPackageName)
-                    .replaceAll(CONNECTION_NAME_MASK, connectionName);
+            connectionBuilderProvider.get()
 
-            Path connectionJavaClassPath = Paths.get(clientPackageFolder, ELEMENTS_FOLDER, connectionName + ".java");
-            Files.write(connectionJavaClassPath, connectionContent.getBytes());
-        }
+                                     .path(projectPath)
 
-        Files.delete(connectionSource);
-    }
+                                     .needRemoveTemplate(!iterator.hasNext())
+                                     .needRemoveTemplateParentFolder(!iterator.hasNext())
 
-    @Nonnull
-    private Class convertPropertyTypeToJavaClass(@Nonnull Property property) {
-        switch (property.getType()) {
-            case INTEGER:
-                return Integer.class;
+                                     .mainPackage(packageName)
 
-            case FLOAT:
-                return Double.class;
+                                     .connection(connection)
 
-            case BOOLEAN:
-                return Boolean.class;
-
-            case STRING:
-            default:
-                return String.class;
+                                     .build();
         }
     }
 
@@ -772,7 +615,6 @@ public class SourceCodeGenerator {
         workspacePresenterBuilder.path(projectPath)
 
                                  .mainPackage(packageName)
-                                 .rootElement(mainElement)
                                  .elements(elements)
                                  .connections(connections)
 
@@ -781,7 +623,6 @@ public class SourceCodeGenerator {
         workspaceViewBuilder.path(projectPath)
 
                             .mainPackage(packageName)
-                            .rootElement(mainElement)
                             .elements(elements)
                             .connections(connections)
 
@@ -790,7 +631,6 @@ public class SourceCodeGenerator {
         workspaceViewImplBuilder.path(projectPath)
 
                                 .mainPackage(packageName)
-                                .rootElement(mainElement)
                                 .elements(elements)
                                 .connections(connections)
 
@@ -806,7 +646,6 @@ public class SourceCodeGenerator {
         toolbarPresenterBuilder.path(projectPath)
 
                                .mainPackage(packageName)
-                               .rootElement(mainElement)
                                .elements(elements)
                                .connections(connections)
 
@@ -815,7 +654,6 @@ public class SourceCodeGenerator {
         toolbarViewBuilder.path(projectPath)
 
                           .mainPackage(packageName)
-                          .rootElement(mainElement)
                           .elements(elements)
                           .connections(connections)
 
@@ -824,7 +662,6 @@ public class SourceCodeGenerator {
         toolbarViewImplBuilder.path(projectPath)
 
                               .mainPackage(packageName)
-                              .rootElement(mainElement)
                               .elements(elements)
                               .connections(connections)
 

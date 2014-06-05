@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -80,7 +79,6 @@ public class ToolbarViewImplBuilder extends AbstractBuilder<ToolbarViewImplBuild
     private final GDockLayoutPanel      dockLayoutPanelBuilder;
     private final Provider<GPushButton> pushButtonProvider;
     private       String                mainPackage;
-    private       Element               rootElement;
     private       Set<Element>          elements;
     private       Set<Connection>       connections;
 
@@ -111,12 +109,6 @@ public class ToolbarViewImplBuilder extends AbstractBuilder<ToolbarViewImplBuild
     }
 
     @Nonnull
-    public ToolbarViewImplBuilder rootElement(@Nonnull Element rootElement) {
-        this.rootElement = rootElement;
-        return this;
-    }
-
-    @Nonnull
     public ToolbarViewImplBuilder connections(@Nonnull Set<Connection> connections) {
         this.connections = connections;
         return this;
@@ -125,6 +117,9 @@ public class ToolbarViewImplBuilder extends AbstractBuilder<ToolbarViewImplBuild
     /** {@inheritDoc} */
     @Override
     public void build() throws IOException {
+        // TODO need to add some behaviour when main element isn't found
+        Element rootElement = findRootElement(elements);
+
         String toolbarPackage = mainPackage + '.' + CLIENT_PACKAGE + '.' + TOOLBAR_PACKAGE;
 
         GDockLayoutPanel dockLayoutPanel = dockLayoutPanelBuilder.withPrefix("g");
@@ -156,31 +151,6 @@ public class ToolbarViewImplBuilder extends AbstractBuilder<ToolbarViewImplBuild
             addButtonOnPanel(connectionName);
         }
 
-        Path toolbarViewImplSource = Paths.get(path,
-                                               MAIN_SOURCE_PATH,
-                                               JAVA_SOURCE_FOLDER,
-                                               TOOLBAR_PACKAGE,
-                                               TOOLBAR_VIEW_IMPL_NAME + JAVA);
-        Path toolbarViewImplTarget = Paths.get(path,
-                                               MAIN_SOURCE_PATH,
-                                               JAVA_SOURCE_FOLDER,
-                                               convertPathToPackageName(mainPackage),
-                                               CLIENT_PACKAGE,
-                                               TOOLBAR_PACKAGE,
-                                               TOOLBAR_VIEW_IMPL_NAME + JAVA);
-
-        Map<String, String> replaceElements = new LinkedHashMap<>();
-        replaceElements.put(CURRENT_PACKAGE_MARKER, toolbarPackage);
-        replaceElements.put(MAIN_PACKAGE_MARKER, mainPackage);
-        replaceElements.put(UI_FIELDS_MARKER, uiFields.toString());
-        replaceElements.put(FIELDS_INITIALIZE_MARKER, createFields.toString());
-        replaceElements.put(ACTION_DELEGATES_MARKER, methods.toString());
-
-        createFile(toolbarViewImplSource, toolbarViewImplTarget, replaceElements);
-
-        removeTemplate(toolbarViewImplSource);
-        removeTemplateParentFolder(toolbarViewImplSource.getParent());
-
         Path toolbarUiXMLPath = Paths.get(path,
                                           MAIN_SOURCE_PATH,
                                           JAVA_SOURCE_FOLDER,
@@ -189,11 +159,32 @@ public class ToolbarViewImplBuilder extends AbstractBuilder<ToolbarViewImplBuild
                                           TOOLBAR_PACKAGE,
                                           TOOLBAR_VIEW_IMPL_NAME + UI_XML);
         Files.write(toolbarUiXMLPath, uiXmlBuilder.build().getBytes());
+
+        source = Paths.get(path,
+                           MAIN_SOURCE_PATH,
+                           JAVA_SOURCE_FOLDER,
+                           TOOLBAR_PACKAGE,
+                           TOOLBAR_VIEW_IMPL_NAME + JAVA);
+        target = Paths.get(path,
+                           MAIN_SOURCE_PATH,
+                           JAVA_SOURCE_FOLDER,
+                           convertPathToPackageName(mainPackage),
+                           CLIENT_PACKAGE,
+                           TOOLBAR_PACKAGE,
+                           TOOLBAR_VIEW_IMPL_NAME + JAVA);
+
+        replaceElements.put(CURRENT_PACKAGE_MARKER, toolbarPackage);
+        replaceElements.put(MAIN_PACKAGE_MARKER, mainPackage);
+        replaceElements.put(UI_FIELDS_MARKER, uiFields.toString());
+        replaceElements.put(FIELDS_INITIALIZE_MARKER, createFields.toString());
+        replaceElements.put(ACTION_DELEGATES_MARKER, methods.toString());
+
+        super.build();
     }
 
     @Nonnull
     private String createFieldCode(@Nonnull String elementName) {
-        Map<String, String> masks = new HashMap<>();
+        Map<String, String> masks = new LinkedHashMap<>(1);
         masks.put(ARGUMENT_NAME_MARKER, changeFirstSymbolToLowCase(elementName));
 
         return ContentReplacer.replace(ELEMENT_FIELD, masks);
@@ -201,7 +192,7 @@ public class ToolbarViewImplBuilder extends AbstractBuilder<ToolbarViewImplBuild
 
     @Nonnull
     private String createElementFieldInitializeCode(@Nonnull String elementName) {
-        Map<String, String> masks = new HashMap<>();
+        Map<String, String> masks = new LinkedHashMap<>(1);
         masks.put(ARGUMENT_NAME_MARKER, changeFirstSymbolToLowCase(elementName));
 
         return ContentReplacer.replace(INITIALIZE_ELEMENT_FIELD, masks);
@@ -209,7 +200,7 @@ public class ToolbarViewImplBuilder extends AbstractBuilder<ToolbarViewImplBuild
 
     @Nonnull
     private String createConnectionFieldInitializeCode(@Nonnull String connectionName) {
-        Map<String, String> masks = new HashMap<>();
+        Map<String, String> masks = new LinkedHashMap<>(1);
         masks.put(ARGUMENT_NAME_MARKER, changeFirstSymbolToLowCase(connectionName));
 
         return ContentReplacer.replace(INITIALIZE_CONNECTION_FIELD, masks);
@@ -217,7 +208,7 @@ public class ToolbarViewImplBuilder extends AbstractBuilder<ToolbarViewImplBuild
 
     @Nonnull
     private String createOnElementButtonClickedCode(@Nonnull String elementName) {
-        Map<String, String> masks = new HashMap<>();
+        Map<String, String> masks = new LinkedHashMap<>(2);
         masks.put(ELEMENT_NAME_MARKER, elementName);
         masks.put(ARGUMENT_NAME_MARKER, changeFirstSymbolToLowCase(elementName));
 

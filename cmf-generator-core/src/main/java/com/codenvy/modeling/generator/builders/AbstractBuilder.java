@@ -16,27 +16,37 @@
 
 package com.codenvy.modeling.generator.builders;
 
+import com.codenvy.modeling.configuration.metamodel.diagram.Component;
+import com.codenvy.modeling.configuration.metamodel.diagram.Element;
 import com.codenvy.modeling.configuration.metamodel.diagram.Property;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Andrey Plotnikov
  */
 public abstract class AbstractBuilder<T extends AbstractBuilder> {
 
-    protected String  path;
-    protected T       builder;
-    protected boolean needRemoveTemplate;
-    protected boolean needRemoveTemplateParentFolder;
+    protected String              path;
+    protected T                   builder;
+    protected boolean             needRemoveTemplate;
+    protected boolean             needRemoveTemplateParentFolder;
+    protected Map<String, String> replaceElements;
+    protected Path                source;
+    protected Path                target;
 
     protected AbstractBuilder() {
         needRemoveTemplate = true;
         needRemoveTemplateParentFolder = false;
+        replaceElements = new LinkedHashMap<>();
     }
 
     @Nonnull
@@ -76,18 +86,6 @@ public abstract class AbstractBuilder<T extends AbstractBuilder> {
         Files.write(targetPath, content.getBytes());
     }
 
-    protected void removeTemplate(@Nonnull Path templatePath) throws IOException {
-        if (needRemoveTemplate) {
-            Files.delete(templatePath);
-        }
-    }
-
-    protected void removeTemplateParentFolder(@Nonnull Path parentPath) throws IOException {
-        if (needRemoveTemplateParentFolder) {
-            Files.delete(parentPath);
-        }
-    }
-
     @Nonnull
     protected Class convertPropertyTypeToJavaClass(@Nonnull Property property) {
         switch (property.getType()) {
@@ -106,6 +104,42 @@ public abstract class AbstractBuilder<T extends AbstractBuilder> {
         }
     }
 
-    public abstract void build() throws IOException;
+    @Nullable
+    protected Element findRootElement(@Nonnull Set<Element> elements) {
+        Set<String> subElements = new HashSet<>();
+
+        for (Element element : elements) {
+            for (Component component : element.getComponents()) {
+                subElements.add(component.getName());
+            }
+        }
+
+        for (Element element : elements) {
+            if (!subElements.contains(element.getName())) {
+                return element;
+            }
+        }
+
+        return null;
+    }
+
+    public void build() throws IOException {
+        createFile(source, target, replaceElements);
+
+        removeTemplate(source);
+        removeTemplateParentFolder(source.getParent());
+    }
+
+    private void removeTemplate(@Nonnull Path templatePath) throws IOException {
+        if (needRemoveTemplate) {
+            Files.delete(templatePath);
+        }
+    }
+
+    private void removeTemplateParentFolder(@Nonnull Path parentPath) throws IOException {
+        if (needRemoveTemplateParentFolder) {
+            Files.delete(parentPath);
+        }
+    }
 
 }

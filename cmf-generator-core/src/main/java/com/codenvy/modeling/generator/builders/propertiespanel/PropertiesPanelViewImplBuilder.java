@@ -34,7 +34,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -114,7 +113,7 @@ public class PropertiesPanelViewImplBuilder extends AbstractBuilder<PropertiesPa
     }
 
     @Nonnull
-    public PropertiesPanelViewImplBuilder element(Element element) {
+    public PropertiesPanelViewImplBuilder element(@Nonnull Element element) {
         this.element = element;
         return this;
     }
@@ -133,13 +132,13 @@ public class PropertiesPanelViewImplBuilder extends AbstractBuilder<PropertiesPa
         String elementNameLowerCase = elementName.toLowerCase();
         String propertiesPanelPackage = mainPackage + '.' + CLIENT_PACKAGE + '.' + PROPERTIES_PANEL_PACKAGE + '.' + elementNameLowerCase;
 
-        GDockLayoutPanel dockLayoutPanel = dockLayoutPanelBuilder.withPrefix("g");
+        dockLayoutPanelBuilder.withPrefix("g");
         uiXmlBuilder.withXmlns("g", "urn:import:com.google.gwt.user.client.ui")
                     .withField(
                             fieldBuilder.withName("res")
                                         .withType(clientPackage + EDITOR_RESOURCES)
                               )
-                    .setWidget(dockLayoutPanel);
+                    .setWidget(dockLayoutPanelBuilder);
 
         StringBuilder propertyFields = new StringBuilder();
         StringBuilder changePropertyMethods = new StringBuilder();
@@ -151,33 +150,8 @@ public class PropertiesPanelViewImplBuilder extends AbstractBuilder<PropertiesPa
             propertyFields.append(createPropertyFieldCode(propertyName));
             changePropertyMethods.append(createChangePropertyMethodsCode(propertyName, propertyType.getSimpleName(), elementName));
 
-            addPropertyGraphicalElements(propertyName, dockLayoutPanel);
+            addPropertyGraphicalElements(propertyName, dockLayoutPanelBuilder);
         }
-
-        Path propertiesPanelViewImplSource = Paths.get(path,
-                                                       MAIN_SOURCE_PATH,
-                                                       JAVA_SOURCE_FOLDER,
-                                                       PROPERTIES_PANEL_PACKAGE,
-                                                       PROPERTIES_PANEL_VIEW_IMPL_NAME + JAVA);
-        Path propertiesPanelViewImplTarget = Paths.get(path,
-                                                       MAIN_SOURCE_PATH,
-                                                       JAVA_SOURCE_FOLDER,
-                                                       convertPathToPackageName(mainPackage),
-                                                       CLIENT_PACKAGE,
-                                                       PROPERTIES_PANEL_PACKAGE,
-                                                       elementNameLowerCase,
-                                                       elementName + PROPERTIES_PANEL_VIEW_IMPL_NAME + JAVA);
-
-        Map<String, String> replaceElements = new LinkedHashMap<>();
-        replaceElements.put(CURRENT_PACKAGE_MARKER, propertiesPanelPackage);
-        replaceElements.put(UI_FIELDS_MARKER, propertyFields.toString());
-        replaceElements.put(ACTION_DELEGATES_MARKER, changePropertyMethods.toString());
-        replaceElements.put(ELEMENT_NAME_MARKER, elementName);
-
-        createFile(propertiesPanelViewImplSource, propertiesPanelViewImplTarget, replaceElements);
-
-        removeTemplate(propertiesPanelViewImplSource);
-        removeTemplateParentFolder(propertiesPanelViewImplSource.getParent());
 
         Path propertiesPanelUiXMLPath = Paths.get(path,
                                                   MAIN_SOURCE_PATH,
@@ -188,11 +162,32 @@ public class PropertiesPanelViewImplBuilder extends AbstractBuilder<PropertiesPa
                                                   elementNameLowerCase,
                                                   elementName + PROPERTIES_PANEL_VIEW_IMPL_NAME + UI_XML);
         Files.write(propertiesPanelUiXMLPath, uiXmlBuilder.build().getBytes());
+
+        source = Paths.get(path,
+                           MAIN_SOURCE_PATH,
+                           JAVA_SOURCE_FOLDER,
+                           PROPERTIES_PANEL_PACKAGE,
+                           PROPERTIES_PANEL_VIEW_IMPL_NAME + JAVA);
+        target = Paths.get(path,
+                           MAIN_SOURCE_PATH,
+                           JAVA_SOURCE_FOLDER,
+                           convertPathToPackageName(mainPackage),
+                           CLIENT_PACKAGE,
+                           PROPERTIES_PANEL_PACKAGE,
+                           elementNameLowerCase,
+                           elementName + PROPERTIES_PANEL_VIEW_IMPL_NAME + JAVA);
+
+        replaceElements.put(CURRENT_PACKAGE_MARKER, propertiesPanelPackage);
+        replaceElements.put(UI_FIELDS_MARKER, propertyFields.toString());
+        replaceElements.put(ACTION_DELEGATES_MARKER, changePropertyMethods.toString());
+        replaceElements.put(ELEMENT_NAME_MARKER, elementName);
+
+        super.build();
     }
 
     @Nonnull
     private String createPropertyFieldCode(@Nonnull String propertyName) {
-        Map<String, String> masks = new HashMap<>();
+        Map<String, String> masks = new LinkedHashMap<>(1);
         masks.put(ARGUMENT_NAME_MARKER, changeFirstSymbolToLowCase(propertyName));
 
         return ContentReplacer.replace(PROPERTY_FIELD, masks);
@@ -202,7 +197,7 @@ public class PropertiesPanelViewImplBuilder extends AbstractBuilder<PropertiesPa
     private String createChangePropertyMethodsCode(@Nonnull String propertyName,
                                                    @Nonnull String propertyType,
                                                    @Nonnull String elementName) {
-        Map<String, String> masks = new HashMap<>();
+        Map<String, String> masks = new LinkedHashMap<>(4);
         masks.put(PROPERTY_NAME_MARKER, propertyName);
         masks.put(ARGUMENT_NAME_MARKER, changeFirstSymbolToLowCase(propertyName));
         masks.put(PROPERTY_TYPE_MARKER, propertyType);

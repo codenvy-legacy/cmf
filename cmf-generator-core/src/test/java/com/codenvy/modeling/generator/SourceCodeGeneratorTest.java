@@ -22,6 +22,8 @@ import com.codenvy.modeling.configuration.metamodel.diagram.Component;
 import com.codenvy.modeling.configuration.metamodel.diagram.Connection;
 import com.codenvy.modeling.configuration.metamodel.diagram.Element;
 import com.codenvy.modeling.configuration.metamodel.diagram.Property;
+import com.codenvy.modeling.generator.builders.elements.ConnectionBuilder;
+import com.codenvy.modeling.generator.builders.elements.ElementBuilder;
 import com.codenvy.modeling.generator.builders.java.SourceCodeBuilder;
 import com.codenvy.modeling.generator.builders.java.SourceCodeBuilderImpl;
 import com.codenvy.modeling.generator.builders.propertiespanel.PropertiesPanelPresenterBuilder;
@@ -159,6 +161,10 @@ public class SourceCodeGeneratorTest {
     private Provider<PropertiesPanelViewBuilder>      propertiesPanelViewBuilderProvider;
     @Mock
     private Provider<PropertiesPanelViewImplBuilder>  propertiesPanelViewImplBuilderProvider;
+    @Mock
+    private Provider<ElementBuilder>                  elementBuilderProvider;
+    @Mock
+    private Provider<ConnectionBuilder>               connectionBuilderProvider;
 
     @Mock
     private ConfigurationFactory configurationFactory;
@@ -170,7 +176,6 @@ public class SourceCodeGeneratorTest {
     public TestRule        chainGenerator  = RuleChain
             .outerRule(temporaryFolder)
             .around(generatorRule);
-
 
     private void assertContent(String expectedFilePath, String rootFolderPath, String... actualFilePath) throws IOException {
         String actualContent = new String(Files.readAllBytes(Paths.get(rootFolderPath, actualFilePath)));
@@ -386,7 +391,9 @@ public class SourceCodeGeneratorTest {
                                                                            pushButtonProvider),
                                                 propertiesPanelPresenterBuilderProvider,
                                                 propertiesPanelViewBuilderProvider,
-                                                propertiesPanelViewImplBuilderProvider
+                                                propertiesPanelViewImplBuilderProvider,
+                                                elementBuilderProvider,
+                                                connectionBuilderProvider
             );
 
             when(sourceCodeBuilderProvider.get()).thenAnswer(new Answer<SourceCodeBuilder>() {
@@ -470,6 +477,18 @@ public class SourceCodeGeneratorTest {
                                                               flowPanelProvider,
                                                               labelProvider,
                                                               textBoxProvider);
+                }
+            });
+            when(elementBuilderProvider.get()).thenAnswer(new Answer<ElementBuilder>() {
+                @Override
+                public ElementBuilder answer(InvocationOnMock invocation) throws Throwable {
+                    return new ElementBuilder();
+                }
+            });
+            when(connectionBuilderProvider.get()).thenAnswer(new Answer<ConnectionBuilder>() {
+                @Override
+                public ConnectionBuilder answer(InvocationOnMock invocation) throws Throwable {
+                    return new ConnectionBuilder();
                 }
             });
 

@@ -31,7 +31,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -77,7 +77,6 @@ public class WorkspaceViewImplBuilder extends AbstractBuilder<WorkspaceViewImplB
     private final GScrollPanel    scrollPanelBuilder;
     private final GFlowPanel      flowPanelBuilder;
     private       String          mainPackage;
-    private       Element         rootElement;
     private       Set<Element>    elements;
     private       Set<Connection> connections;
 
@@ -108,12 +107,6 @@ public class WorkspaceViewImplBuilder extends AbstractBuilder<WorkspaceViewImplB
     }
 
     @Nonnull
-    public WorkspaceViewImplBuilder rootElement(@Nonnull Element rootElement) {
-        this.rootElement = rootElement;
-        return this;
-    }
-
-    @Nonnull
     public WorkspaceViewImplBuilder connections(@Nonnull Set<Connection> connections) {
         this.connections = connections;
         return this;
@@ -122,6 +115,9 @@ public class WorkspaceViewImplBuilder extends AbstractBuilder<WorkspaceViewImplB
     /** {@inheritDoc} */
     @Override
     public void build() throws IOException {
+        // TODO need to add some behaviour when main element isn't found
+        Element rootElement = findRootElement(elements);
+
         String clientPackage = mainPackage + '.' + CLIENT_PACKAGE;
         String workspacePackage = clientPackage + '.' + WORKSPACE_PACKAGE;
         String elementsPackage = clientPackage + '.' + ELEMENTS_PACKAGE + '.';
@@ -145,29 +141,6 @@ public class WorkspaceViewImplBuilder extends AbstractBuilder<WorkspaceViewImplB
             actionDelegates.append(createAddConnectionCode(connectionName));
         }
 
-        Path workspaceViewImplSource = Paths.get(path,
-                                                 MAIN_SOURCE_PATH,
-                                                 JAVA_SOURCE_FOLDER,
-                                                 WORKSPACE_PACKAGE,
-                                                 WORKSPACE_VIEW_IMPL_NAME + JAVA);
-        Path workspaceViewImplTarget = Paths.get(path,
-                                                 MAIN_SOURCE_PATH,
-                                                 JAVA_SOURCE_FOLDER,
-                                                 convertPathToPackageName(mainPackage),
-                                                 CLIENT_PACKAGE,
-                                                 WORKSPACE_PACKAGE,
-                                                 WORKSPACE_VIEW_IMPL_NAME + JAVA);
-
-        Map<String, String> replaceElements = new HashMap<>();
-        replaceElements.put(CURRENT_PACKAGE_MARKER, workspacePackage);
-        replaceElements.put(IMPORT_MARKER, imports.toString());
-        replaceElements.put(ACTION_DELEGATES_MARKER, actionDelegates.toString());
-
-        createFile(workspaceViewImplSource, workspaceViewImplTarget, replaceElements);
-
-        removeTemplate(workspaceViewImplSource);
-        removeTemplateParentFolder(workspaceViewImplSource.getParent());
-
         uiXmlBuilder.withXmlns("g", "urn:import:com.google.gwt.user.client.ui")
                     .withField(fieldBuilder.withName("res").withType(clientPackage + '.' + EDITOR_RESOURCES))
 
@@ -189,13 +162,32 @@ public class WorkspaceViewImplBuilder extends AbstractBuilder<WorkspaceViewImplB
                                             WORKSPACE_PACKAGE,
                                             WORKSPACE_VIEW_IMPL_NAME + UI_XML);
         Files.write(workspaceUiXMLPath, uiXmlBuilder.build().getBytes());
+
+        source = Paths.get(path,
+                           MAIN_SOURCE_PATH,
+                           JAVA_SOURCE_FOLDER,
+                           WORKSPACE_PACKAGE,
+                           WORKSPACE_VIEW_IMPL_NAME + JAVA);
+        target = Paths.get(path,
+                           MAIN_SOURCE_PATH,
+                           JAVA_SOURCE_FOLDER,
+                           convertPathToPackageName(mainPackage),
+                           CLIENT_PACKAGE,
+                           WORKSPACE_PACKAGE,
+                           WORKSPACE_VIEW_IMPL_NAME + JAVA);
+
+        replaceElements.put(CURRENT_PACKAGE_MARKER, workspacePackage);
+        replaceElements.put(IMPORT_MARKER, imports.toString());
+        replaceElements.put(ACTION_DELEGATES_MARKER, actionDelegates.toString());
+
+        super.build();
     }
 
     @Nonnull
     private String createAddElementCode(@Nonnull String elementName) {
         String argumentName = changeFirstSymbolToLowCase(elementName);
 
-        Map<String, String> createElementMasks = new HashMap<>();
+        Map<String, String> createElementMasks = new LinkedHashMap<>(2);
         createElementMasks.put(ELEMENT_NAME_MARKER, elementName);
         createElementMasks.put(ARGUMENT_NAME_MARKER, argumentName);
 
@@ -204,7 +196,7 @@ public class WorkspaceViewImplBuilder extends AbstractBuilder<WorkspaceViewImplB
 
     @Nonnull
     private String createAddConnectionCode(@Nonnull String connectionName) {
-        Map<String, String> createConnectionMasks = new HashMap<>();
+        Map<String, String> createConnectionMasks = new LinkedHashMap<>(1);
         createConnectionMasks.put(CONNECTION_NAME_MARKER, connectionName);
 
         return ContentReplacer.replace(ADD_CONNECTION_CODE_FORMAT, createConnectionMasks);
