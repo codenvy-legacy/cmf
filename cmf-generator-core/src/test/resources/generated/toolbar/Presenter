@@ -10,8 +10,7 @@ import com.google.inject.assistedinject.Assisted;
 import static my.package.client.State.CREATING_ELEMENT1;
 import static my.package.client.State.CREATING_CONNECTION1_SOURCE;
 
-
-public class ToolbarPresenter extends AbstractToolbarPresenter<State> implements ActionDelegate {
+public class ToolbarPresenter extends AbstractToolbarPresenter<State> implements ToolbarView.ActionDelegate {
 
     @Inject
     public ToolbarPresenter(ToolbarView view, @Assisted EditorState<State> editorState) {

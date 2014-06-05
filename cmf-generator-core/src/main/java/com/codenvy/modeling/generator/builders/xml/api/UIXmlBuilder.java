@@ -61,6 +61,7 @@ public interface UIXmlBuilder extends Builder {
                            "%s" +
                            "</ui:UiBinder>";
     String XMLNS_FORMAT  = "%n             xmlns:%s='%s'";
+    // TODO remove it
     /** Default offset for UI XML */
     String OFFSET        = "    ";
 

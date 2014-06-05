@@ -17,7 +17,7 @@ public class EditorName extends AbstractEditor implements EditorView.ActionDeleg
     public EditorName(EditorView view, EditorFactory editorFactory, SelectionManager selectionManager, EmptyPropertiesPanelPresenter emptyPropertiesPanelPresenter, Element1PropertiesPanelPresenter element1PropertiesPanelPresenter) {
         super(view);
 
-        EditorState<State> state = new EditorState<>(State.CREATING_NOTING);
+        EditorState<State> state = new EditorState<>(State.CREATING_NOTHING);
 
         this.workspace = editorFactory.createWorkspace(state, selectionManager);
         this.toolbar = editorFactory.createToolbar(state);

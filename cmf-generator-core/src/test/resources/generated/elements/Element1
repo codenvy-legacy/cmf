@@ -4,7 +4,6 @@ import com.google.gwt.xml.client.Node;
 import java.util.Arrays;
 
 public class Element1 extends MainElement {
-
     private Integer property1;
 
     public Element1() {
@@ -22,11 +21,9 @@ public class Element1 extends MainElement {
 
     @Override
     protected String serializeProperties() {
-        StringBuilder properties = new StringBuilder();
-        properties.append("<").append("Property1").append(">\n")
-        .append(property1).append("\n")
-        .append("</").append("Property1").append(">\n");
-        return properties.toString();
+        return "<Property1>" +
+                   property1 +
+               "</Property1>";
     }
 
     @Override

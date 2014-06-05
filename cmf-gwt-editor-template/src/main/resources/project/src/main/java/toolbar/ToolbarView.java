@@ -1,4 +1,4 @@
-package my.package.client.toolbar;
+package current_package;
 
 import com.codenvy.editor.api.mvp.AbstractView;
 import com.google.inject.ImplementedBy;
@@ -8,10 +8,6 @@ public abstract class ToolbarView extends AbstractView<ToolbarView.ActionDelegat
 
     public interface ActionDelegate extends AbstractView.ActionDelegate {
 
-        void onElement1ButtonClicked();
-
-        void onConnection1ButtonClicked();
-
-    }
+action_delegates    }
 
 }

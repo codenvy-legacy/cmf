@@ -22,8 +22,19 @@ import com.codenvy.modeling.configuration.metamodel.diagram.Component;
 import com.codenvy.modeling.configuration.metamodel.diagram.Connection;
 import com.codenvy.modeling.configuration.metamodel.diagram.Element;
 import com.codenvy.modeling.configuration.metamodel.diagram.Property;
+import com.codenvy.modeling.generator.builders.elements.ConnectionBuilder;
+import com.codenvy.modeling.generator.builders.elements.ElementBuilder;
 import com.codenvy.modeling.generator.builders.java.SourceCodeBuilder;
 import com.codenvy.modeling.generator.builders.java.SourceCodeBuilderImpl;
+import com.codenvy.modeling.generator.builders.propertiespanel.PropertiesPanelPresenterBuilder;
+import com.codenvy.modeling.generator.builders.propertiespanel.PropertiesPanelViewBuilder;
+import com.codenvy.modeling.generator.builders.propertiespanel.PropertiesPanelViewImplBuilder;
+import com.codenvy.modeling.generator.builders.toolbar.ToolbarPresenterBuilder;
+import com.codenvy.modeling.generator.builders.toolbar.ToolbarViewBuilder;
+import com.codenvy.modeling.generator.builders.toolbar.ToolbarViewImplBuilder;
+import com.codenvy.modeling.generator.builders.workspace.WorkspacePresenterBuilder;
+import com.codenvy.modeling.generator.builders.workspace.WorkspaceViewBuilder;
+import com.codenvy.modeling.generator.builders.workspace.WorkspaceViewImplBuilder;
 import com.codenvy.modeling.generator.builders.xml.api.GField;
 import com.codenvy.modeling.generator.builders.xml.api.GStyle;
 import com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder;
@@ -108,7 +119,6 @@ public class SourceCodeGeneratorTest {
     private static final String TOOLBAR_VIEW_NAME                          = "ToolbarView.java";
     private static final String TOOLBAR_VIEW_IMPL_BINDER_XML_NAME          = "ToolbarViewImpl.ui.xml";
     private static final String TOOLBAR_VIEW_IMPL_NAME                     = "ToolbarViewImpl.java";
-    private static final String ACTION_DELEGATE_NAME                       = "ActionDelegate.java";
     private static final String WORKSPACE_PRESENTER_NAME                   = "WorkspacePresenter.java";
     private static final String WORKSPACE_VIEW_NAME                        = "WorkspaceView.java";
     private static final String WORKSPACE_VIEW_IMPL_NAME                   = "WorkspaceViewImpl.java";
@@ -126,36 +136,46 @@ public class SourceCodeGeneratorTest {
     private static final String EDITOR_FACTORY_NAME                        = "EditorFactory.java";
 
     @Mock
-    private Provider<SourceCodeBuilder> sourceCodeBuilderProvider;
+    private Provider<SourceCodeBuilder>               sourceCodeBuilderProvider;
     @Mock
-    private Provider<UIXmlBuilder>      uiXmlBuilderProvider;
+    private Provider<UIXmlBuilder>                    uiXmlBuilderProvider;
     @Mock
-    private Provider<GField>            fieldProvider;
+    private Provider<GField>                          fieldProvider;
     @Mock
-    private Provider<GScrollPanel>      scrollPanelProvider;
+    private Provider<GScrollPanel>                    scrollPanelProvider;
     @Mock
-    private Provider<GFlowPanel>        flowPanelProvider;
+    private Provider<GFlowPanel>                      flowPanelProvider;
     @Mock
-    private Provider<GStyle>            styleProvider;
+    private Provider<GStyle>                          styleProvider;
     @Mock
-    private Provider<GDockLayoutPanel>  dockLayoutPanelProvider;
+    private Provider<GDockLayoutPanel>                dockLayoutPanelProvider;
     @Mock
-    private Provider<GPushButton>       pushButtonProvider;
+    private Provider<GPushButton>                     pushButtonProvider;
     @Mock
-    private Provider<GLabel>            labelProvider;
+    private Provider<GLabel>                          labelProvider;
     @Mock
-    private Provider<GTextBox>          textBoxProvider;
+    private Provider<GTextBox>                        textBoxProvider;
     @Mock
-    private ConfigurationFactory        configurationFactory;
+    private Provider<PropertiesPanelPresenterBuilder> propertiesPanelPresenterBuilderProvider;
+    @Mock
+    private Provider<PropertiesPanelViewBuilder>      propertiesPanelViewBuilderProvider;
+    @Mock
+    private Provider<PropertiesPanelViewImplBuilder>  propertiesPanelViewImplBuilderProvider;
+    @Mock
+    private Provider<ElementBuilder>                  elementBuilderProvider;
+    @Mock
+    private Provider<ConnectionBuilder>               connectionBuilderProvider;
+
+    @Mock
+    private ConfigurationFactory configurationFactory;
     @Mock(answer = RETURNS_DEEP_STUBS)
-    private Configuration               configuration;
+    private Configuration        configuration;
     public GeneratorRule   generatorRule   = new GeneratorRule();
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
     @Rule
     public TestRule        chainGenerator  = RuleChain
             .outerRule(temporaryFolder)
             .around(generatorRule);
-
 
     private void assertContent(String expectedFilePath, String rootFolderPath, String... actualFilePath) throws IOException {
         String actualContent = new String(Files.readAllBytes(Paths.get(rootFolderPath, actualFilePath)));
@@ -222,11 +242,6 @@ public class SourceCodeGeneratorTest {
     }
 
     @Test
-    public void actionDelegateShouldBeCreated() throws IOException {
-        assertContent("/toolbar/ActionDelegate", generatorRule.getClientFolder(), TOOLBAR_FOLDER, ACTION_DELEGATE_NAME);
-    }
-
-    @Test
     public void binderXMLShouldBeCreated() throws IOException {
         assertContent("/toolbar/BinderXML", generatorRule.getClientFolder(), TOOLBAR_FOLDER, TOOLBAR_VIEW_IMPL_BINDER_XML_NAME);
     }
@@ -265,12 +280,6 @@ public class SourceCodeGeneratorTest {
     @Test
     public void workspaceViewImplShouldBeCreated() throws IOException {
         assertContent("/workspace/ViewImpl", generatorRule.getClientFolder(), WORKSPACE_FOLDER, WORKSPACE_VIEW_IMPL_NAME);
-    }
-
-    @Test
-    public void actionDelegatePanelShouldBeCreated() throws IOException {
-        assertContent("/propertiespanel/ActionDelegate", generatorRule.getClientFolder(), PROPERTIES_PANEL_FOLDER, "element1",
-                      ACTION_DELEGATE_NAME);
     }
 
     @Test
@@ -367,15 +376,25 @@ public class SourceCodeGeneratorTest {
         @Override
         protected void before() throws Throwable {
             generator = new SourceCodeGenerator(sourceCodeBuilderProvider,
-                                                uiXmlBuilderProvider,
-                                                fieldProvider,
-                                                scrollPanelProvider,
-                                                flowPanelProvider,
-                                                styleProvider,
-                                                dockLayoutPanelProvider,
-                                                pushButtonProvider,
-                                                labelProvider,
-                                                textBoxProvider);
+
+                                                new WorkspacePresenterBuilder(),
+                                                new WorkspaceViewBuilder(),
+                                                new WorkspaceViewImplBuilder(new UIXmlBuilderImpl(),
+                                                                             new GFieldImpl(),
+                                                                             new GScrollPanelImpl(),
+                                                                             new GFlowPanelImpl()),
+                                                new ToolbarPresenterBuilder(),
+                                                new ToolbarViewBuilder(),
+                                                new ToolbarViewImplBuilder(new UIXmlBuilderImpl(),
+                                                                           new GStyleImpl(),
+                                                                           new GDockLayoutPanelImpl(),
+                                                                           pushButtonProvider),
+                                                propertiesPanelPresenterBuilderProvider,
+                                                propertiesPanelViewBuilderProvider,
+                                                propertiesPanelViewImplBuilderProvider,
+                                                elementBuilderProvider,
+                                                connectionBuilderProvider
+            );
 
             when(sourceCodeBuilderProvider.get()).thenAnswer(new Answer<SourceCodeBuilder>() {
                 @Override
@@ -435,6 +454,41 @@ public class SourceCodeGeneratorTest {
                 @Override
                 public GTextBox answer(InvocationOnMock invocation) throws Throwable {
                     return new GTextBoxImpl();
+                }
+            });
+            when(propertiesPanelPresenterBuilderProvider.get()).thenAnswer(new Answer<PropertiesPanelPresenterBuilder>() {
+                @Override
+                public PropertiesPanelPresenterBuilder answer(InvocationOnMock invocation) throws Throwable {
+                    return new PropertiesPanelPresenterBuilder();
+                }
+            });
+            when(propertiesPanelViewBuilderProvider.get()).thenAnswer(new Answer<PropertiesPanelViewBuilder>() {
+                @Override
+                public PropertiesPanelViewBuilder answer(InvocationOnMock invocation) throws Throwable {
+                    return new PropertiesPanelViewBuilder();
+                }
+            });
+            when(propertiesPanelViewImplBuilderProvider.get()).thenAnswer(new Answer<PropertiesPanelViewImplBuilder>() {
+                @Override
+                public PropertiesPanelViewImplBuilder answer(InvocationOnMock invocation) throws Throwable {
+                    return new PropertiesPanelViewImplBuilder(new UIXmlBuilderImpl(),
+                                                              new GDockLayoutPanelImpl(),
+                                                              new GFieldImpl(),
+                                                              flowPanelProvider,
+                                                              labelProvider,
+                                                              textBoxProvider);
+                }
+            });
+            when(elementBuilderProvider.get()).thenAnswer(new Answer<ElementBuilder>() {
+                @Override
+                public ElementBuilder answer(InvocationOnMock invocation) throws Throwable {
+                    return new ElementBuilder();
+                }
+            });
+            when(connectionBuilderProvider.get()).thenAnswer(new Answer<ConnectionBuilder>() {
+                @Override
+                public ConnectionBuilder answer(InvocationOnMock invocation) throws Throwable {
+                    return new ConnectionBuilder();
                 }
             });
 

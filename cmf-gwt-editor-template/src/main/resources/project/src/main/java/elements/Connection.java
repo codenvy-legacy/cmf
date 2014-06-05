@@ -7,10 +7,10 @@ import com.google.gwt.xml.client.Node;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 
-public class connection_name extends AbstractLink {
+public class connectionName extends AbstractLink {
 
-    public connection_name(Shape source, Shape target) {
-        super(source, target, "connection_name", new ArrayList<String>());
+    public connectionName(Shape source, Shape target) {
+        super(source, target, "connectionName", new ArrayList<String>());
     }
 
     @Override

@@ -5,7 +5,8 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import my.package.client.elements.Element1;
 
-public class Element1PropertiesPanelPresenter extends AbstractPropertiesPanel<Element1> implements ActionDelegate {
+public class Element1PropertiesPanelPresenter extends AbstractPropertiesPanel<Element1>
+        implements Element1PropertiesPanelView.ActionDelegate {
 
     @Inject
     public Element1PropertiesPanelPresenter(Element1PropertiesPanelView view) {
@@ -21,6 +22,7 @@ public class Element1PropertiesPanelPresenter extends AbstractPropertiesPanel<El
     @Override
     public void go(AcceptsOneWidget container) {
         super.go(container);
+
         ((Element1PropertiesPanelView)view).setProperty1(element.getProperty1());
     }
 

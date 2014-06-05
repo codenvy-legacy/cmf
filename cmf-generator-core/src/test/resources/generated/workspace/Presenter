@@ -16,7 +16,7 @@ import my.package.client.elements.MainElement;
 import my.package.client.elements.Element1;
 import my.package.client.elements.Connection1;
 
-import static my.package.client.State.CREATING_NOTING;
+import static my.package.client.State.CREATING_NOTHING;
 import static my.package.client.State.CREATING_ELEMENT1;
 import static my.package.client.State.CREATING_CONNECTION1_SOURCE;
 import static my.package.client.State.CREATING_CONNECTION1_TARGET;
@@ -49,7 +49,7 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
                 ((WorkspaceView)view).addElement1(x, y, element1);
                 addElement(element1);
 
-                setState(CREATING_NOTING);
+                setState(CREATING_NOTHING);
                 break;
         }
         
@@ -95,7 +95,7 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
                 if (parent != null) {
                     parent.addElement(connection1);
                 }
-                setState(CREATING_NOTING);
+                setState(CREATING_NOTHING);
                 break;
         }
 

@@ -8,8 +8,7 @@ import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
 static_import_elements
-
-public class ToolbarPresenter extends AbstractToolbarPresenter<State> implements ActionDelegate {
+public class ToolbarPresenter extends AbstractToolbarPresenter<State> implements ToolbarView.ActionDelegate {
 
     @Inject
     public ToolbarPresenter(ToolbarView view, @Assisted EditorState<State> editorState) {
