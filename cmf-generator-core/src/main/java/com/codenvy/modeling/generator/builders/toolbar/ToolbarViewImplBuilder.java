@@ -124,7 +124,7 @@ public class ToolbarViewImplBuilder extends AbstractBuilder<ToolbarViewImplBuild
 
         GDockLayoutPanel dockLayoutPanel = dockLayoutPanelBuilder.withPrefix("g");
         uiXmlBuilder.withXmlns("g", "urn:import:com.google.gwt.user.client.ui")
-                    .withStyle(styleBuilder.withStyle("fullSize", "width: 100%; height: 100%;"))
+                    .withStyle(styleBuilder.withStyle("buttonStyle", "width: 65%; height: 76%;"))
                     .setWidget(dockLayoutPanel);
 
         StringBuilder uiFields = new StringBuilder();
@@ -219,7 +219,7 @@ public class ToolbarViewImplBuilder extends AbstractBuilder<ToolbarViewImplBuild
         dockLayoutPanelBuilder.withNorth(32, pushButtonProvider.get()
                                                                .withPrefix("g")
                                                                .withName(changeFirstSymbolToLowCase(elementName))
-                                                               .withAddStyle("style.fullSize")
+                                                               .withAddStyle("style.buttonStyle")
                                         );
     }
 
