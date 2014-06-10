@@ -67,4 +67,7 @@ public abstract class AbstractWorkspaceView extends AbstractView<AbstractWorkspa
         void onDiagramElementClicked(@Nonnull String elementId);
     }
 
+    /** Clear diagram content. */
+    public abstract void clearDiagram();
+
 }

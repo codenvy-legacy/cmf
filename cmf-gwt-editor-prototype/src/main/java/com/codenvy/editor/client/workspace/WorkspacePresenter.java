@@ -42,9 +42,6 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
     @Inject
     public WorkspacePresenter(WorkspaceView view, @Assisted EditorState<State> state, @Assisted SelectionManager selectionManager) {
         super(view, state, new MainElement(), selectionManager);
-
-        selectedElement = mainElement.getId();
-        elements.put(selectedElement, mainElement);
     }
 
     /** {@inheritDoc} */
@@ -78,15 +75,18 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
                 setState(CREATING_NOTING);
                 break;
         }
-
-        notifyListeners();
     }
 
     private void addElement(Element element) {
         elements.put(element.getId(), element);
 
         Shape parent = (Shape)elements.get(selectedElement);
+        if (parent == null) {
+            parent = mainElement;
+        }
         parent.addElement(element);
+
+        notifyListeners();
     }
 
     /** {@inheritDoc} */

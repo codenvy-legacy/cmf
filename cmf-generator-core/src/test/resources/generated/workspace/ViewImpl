@@ -84,6 +84,11 @@ public class WorkspaceViewImpl extends WorkspaceView {
         }, MouseMoveEvent.getType());
     }
 
+    @Override
+    public void clearDiagram() {
+        controller.clearDiagram();
+    }
+
     private void addElement(int x, int y, @Nonnull final Shape element, @Nonnull ImageResource resource) {
         ShapeWidget elementWidget = widgetProvider.get();
 

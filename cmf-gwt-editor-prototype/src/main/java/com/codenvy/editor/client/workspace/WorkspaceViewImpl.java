@@ -100,6 +100,12 @@ public class WorkspaceViewImpl extends WorkspaceView {
 
     /** {@inheritDoc} */
     @Override
+    public void clearDiagram() {
+        controller.clearDiagram();
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public void addShape1(int x, int y, @Nonnull Shape1 shape) {
         addElement(x, y, shape);
     }

@@ -26,8 +26,6 @@ import java.util.List;
  */
 public abstract class AbstractElement implements Element {
 
-    private static int INDEX = 0;
-
     private final String       id;
     private       Shape        parent;
     private       String       title;
@@ -37,7 +35,7 @@ public abstract class AbstractElement implements Element {
     protected AbstractElement(@Nonnull String elementName, @Nonnull List<String> properties) {
         this.elementName = elementName;
         this.properties = properties;
-        this.title = elementName + '_' + INDEX++;
+        this.title = elementName;
         id = UUID.get();
     }
 

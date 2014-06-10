@@ -52,15 +52,18 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
                 setState(CREATING_NOTHING);
                 break;
         }
-        
-        notifyListeners();
     }
 
     private void addElement(Element element) {
         elements.put(element.getId(), element);
 
         Shape parent = (Shape)elements.get(selectedElement);
+        if (parent == null) {
+            parent = mainElement;
+        }
         parent.addElement(element);
+
+        notifyListeners();
     }
 
     /** {@inheritDoc} */

@@ -56,6 +56,9 @@ public abstract class AbstractWorkspacePresenter<T> extends AbstractPresenter im
         this.mainElement = mainElement;
         this.elements = new HashMap<>();
         this.listeners = new ArrayList<>();
+
+        this.selectionManager.setElement(mainElement);
+        this.selectedElement = mainElement.getId();
     }
 
     /** {@inheritDoc} */
@@ -91,6 +94,12 @@ public abstract class AbstractWorkspacePresenter<T> extends AbstractPresenter im
     }
 
     public void deserialize(@Nonnull String content) {
+        ((AbstractWorkspaceView)view).clearDiagram();
+        elements.clear();
+
+        selectionManager.setElement(null);
+        selectedElement = null;
+
         mainElement.deserialize(ContentFormatter.trimXML(content));
     }
 
