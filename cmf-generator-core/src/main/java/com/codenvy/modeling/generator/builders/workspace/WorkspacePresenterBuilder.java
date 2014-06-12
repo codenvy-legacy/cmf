@@ -62,13 +62,13 @@ public class WorkspacePresenterBuilder extends AbstractBuilder<WorkspacePresente
             FOUR_TABS + "elementName argumentName = new elementName();\n\n" +
             FOUR_TABS +
             "((WorkspaceView)view).addelementName(x, y, argumentName);\n" +
-            FOUR_TABS + "addElement(argumentName);\n\n" +
+            FOUR_TABS + "addShape(argumentName, x, y);\n\n" +
             FOUR_TABS + "setState(CREATING_NOTHING);\n" +
             FOUR_TABS + "break;\n";
 
     private static final String CREATE_GRAPHICAL_ELEMENT_CODE_FORMAT =
-            THREE_TABS + "if (element instanceof elementName) {\n" +
-            FOUR_TABS + "((WorkspaceView)view).addelementName(x, y, (elementName)element);\n" +
+            THREE_TABS + "if (shape instanceof elementName) {\n" +
+            FOUR_TABS + "((WorkspaceView)view).addelementName(x, y, (elementName)shape);\n" +
             THREE_TABS + "}\n";
 
     private static final String CREATE_CONNECTION_CODE_FORMAT =
@@ -82,9 +82,10 @@ public class WorkspacePresenterBuilder extends AbstractBuilder<WorkspacePresente
             FOUR_TABS + "elements.put(element.getId(), element);\n\n" +
             FOUR_TABS + "parent = source.getParent();\n" +
             FOUR_TABS + "if (parent != null) {\n" +
-            FIVE_TABS + "parent.addElement(argumentName);\n" +
+            FIVE_TABS + "parent.addLink(argumentName);\n" +
             FOUR_TABS + "}\n" +
-            FOUR_TABS + "setState(CREATING_NOTHING);\n" +
+            FOUR_TABS + "setState(CREATING_NOTHING);\n\n" +
+            FOUR_TABS + "notifyListeners();\n" +
             FOUR_TABS + "break;\n";
 
     private static final String CREATE_STATE_MARKER = "createState";

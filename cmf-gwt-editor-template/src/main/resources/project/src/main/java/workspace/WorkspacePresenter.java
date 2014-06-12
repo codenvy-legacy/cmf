@@ -39,14 +39,17 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
 create_graphic_elements        }
     }
 
-    private void addElement(Element element) {
-        elements.put(element.getId(), element);
+    private void addShape(@Nonnull Shape shape, int x, int y) {
+        elements.put(shape.getId(), shape);
+
+        shape.setX(x);
+        shape.setY(y);
 
         Shape parent = (Shape)elements.get(selectedElement);
         if (parent == null) {
             parent = mainElement;
         }
-        parent.addElement(element);
+        parent.addShape(shape);
 
         notifyListeners();
     }
@@ -55,6 +58,16 @@ create_graphic_elements        }
     @Override
     public void onMouseMoved(int x, int y) {
 
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onDiagramElementMoved(@Nonnull String elementId, int x, int y) {
+        Shape shape = (Shape)elements.get(elementId);
+        shape.setX(x);
+        shape.setY(y);
+
+        notifyListeners();
     }
 
     /** {@inheritDoc} */
@@ -71,8 +84,6 @@ create_graphic_elements        }
 
         switch (getState()) {
 create_graphic_connections        }
-
-        notifyListeners();
     }
 
     /** {@inheritDoc} */
@@ -83,10 +94,12 @@ create_graphic_connections        }
         int x = 100;
         int y = 100;
 
-        for (Element element : mainElement.getElements()) {
+        for (Shape shape : mainElement.getShapes()) {
 create_graphical_elements
+            shape.setX(x);
+            shape.setY(y);
 
-            elements.put(element.getId(), element);
+            elements.put(shape.getId(), shape);
 
             x += 100;
         }

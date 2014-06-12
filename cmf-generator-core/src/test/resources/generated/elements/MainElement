@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import com.codenvy.editor.api.editor.elements.AbstractShape;
 import com.google.gwt.xml.client.NodeList;
-import com.codenvy.editor.api.editor.elements.Element;
+import com.codenvy.editor.api.editor.elements.Shape;
 
 public class MainElement extends AbstractShape {
 
@@ -28,14 +28,14 @@ public class MainElement extends AbstractShape {
             if (isProperty(name)) {
                 applyProperty(item);
             } else {
-                Element element = findElement(name);
-                element.deserialize(item);
-                addElement(element);
+                Shape shape = findElement(name);
+                shape.deserialize(item);
+                addShape(shape);
             }
         }
     }
 
-    private Element findElement(String elementName) {
+    private Shape findElement(String elementName) {
         switch (elementName) {
             case "Element1":
             default:

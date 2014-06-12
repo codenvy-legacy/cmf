@@ -17,7 +17,7 @@
 package com.codenvy.editor.client.elements;
 
 import com.codenvy.editor.api.editor.elements.AbstractShape;
-import com.codenvy.editor.api.editor.elements.Element;
+import com.codenvy.editor.api.editor.elements.Shape;
 import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
 
@@ -50,14 +50,14 @@ public class MainElement extends AbstractShape {
             if (isProperty(name)) {
                 applyProperty(item);
             } else {
-                Element element = findElement(name);
-                element.deserialize(item);
-                addElement(element);
+                Shape shape = findElement(name);
+                shape.deserialize(item);
+                addShape(shape);
             }
         }
     }
 
-    private Element findElement(@Nonnull String elementName) {
+    private Shape findElement(@Nonnull String elementName) {
         switch (elementName) {
             case "Shape1":
                 return new Shape1();

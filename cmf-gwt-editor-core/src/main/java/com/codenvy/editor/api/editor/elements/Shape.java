@@ -27,26 +27,71 @@ import java.util.List;
 public interface Shape extends Element {
 
     /**
-     * Add an inner diagram element into this one element.
+     * Add an inner shape into this one shape.
      *
-     * @param element
-     *         element that need to be added
+     * @param shape
+     *         shape that need to be added
      */
-    void addElement(@Nonnull Element element);
+    void addShape(@Nonnull Shape shape);
 
     /**
-     * Remove a inner diagram element from this one element.
+     * Remove a inner shape from this one shape.
      *
-     * @param element
-     *         element that need to be removed
+     * @param shape
+     *         shape that need to be removed
      */
-    void removeElement(@Nonnull Element element);
+    void removeShape(@Nonnull Shape shape);
 
-    /** @return a list of inner diagram elements */
+    /** @return a list of inner shapes */
     @Nonnull
-    List<Element> getElements();
+    List<Shape> getShapes();
 
-    /** @return <code>true</code> if this element has inner diagram elements, <code>false</code> it doesn't */
-    boolean hasElements();
+    /** @return <code>true</code> if this shape has inner shapes, <code>false</code> it doesn't */
+    boolean hasShapes();
+
+    /**
+     * Add an inner link into this one shape.
+     *
+     * @param link
+     *         link that need to be added
+     */
+    void addLink(@Nonnull Link link);
+
+    /**
+     * Remove a inner link from this one shape.
+     *
+     * @param link
+     *         link that need to be removed
+     */
+    void removeLink(@Nonnull Link link);
+
+    /** @return a list of inner links */
+    @Nonnull
+    List<Link> getLinks();
+
+    /** @return <code>true</code> if this shape has inner links, <code>false</code> it doesn't */
+    boolean hasLinks();
+
+    /** @return the x-position of shape in workspace */
+    int getX();
+
+    /**
+     * Set the x-position of shape in workspace.
+     *
+     * @param x
+     *         x-position
+     */
+    void setX(int x);
+
+    /** @return the y-position of shape in workspace */
+    int getY();
+
+    /**
+     * Set y-position of shape in workspace.
+     *
+     * @param y
+     *         y-position
+     */
+    void setY(int y);
 
 }

@@ -65,6 +65,14 @@ public abstract class AbstractWorkspaceView extends AbstractView<AbstractWorkspa
          *         the identifier of clicked diagram element
          */
         void onDiagramElementClicked(@Nonnull String elementId);
+
+        /**
+         * Performs some actions in response to a user's moving on diagram element.
+         *
+         * @param elementId
+         *         the identifier of moved diagram element
+         */
+        void onDiagramElementMoved(@Nonnull String elementId, int x, int y);
     }
 
     /** Clear diagram content. */

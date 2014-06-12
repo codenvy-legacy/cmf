@@ -18,6 +18,7 @@ package com.codenvy.editor.client.workspace;
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.codenvy.editor.api.editor.elements.Shape;
 import com.codenvy.editor.api.editor.elements.widgets.shape.ShapeWidget;
+import com.codenvy.editor.client.EditorResources;
 import com.codenvy.editor.client.elements.Shape1;
 import com.codenvy.editor.client.elements.Shape2;
 import com.google.gwt.dom.client.NativeEvent;
@@ -29,6 +30,9 @@ import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
 import com.google.gwt.event.dom.client.MouseMoveHandler;
+import com.google.gwt.event.dom.client.MouseUpEvent;
+import com.google.gwt.event.dom.client.MouseUpHandler;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -53,14 +57,16 @@ public class WorkspaceViewImpl extends WorkspaceView {
     @UiField
     FlowPanel mainPanel;
 
-    private DiagramController     controller;
-    private PickupDragController  dragController;
-    private Provider<ShapeWidget> widgetProvider;
-    private Map<String, Widget>   elements;
+    private final DiagramController     controller;
+    private final PickupDragController  dragController;
+    private final Provider<ShapeWidget> widgetProvider;
+    private final EditorResources       resources;
+    private final Map<String, Widget>   elements;
 
     @Inject
-    public WorkspaceViewImpl(WorkspaceViewImplUiBinder ourUiBinder, Provider<ShapeWidget> widgetProvider) {
+    public WorkspaceViewImpl(WorkspaceViewImplUiBinder ourUiBinder, Provider<ShapeWidget> widgetProvider, EditorResources resources) {
         this.widgetProvider = widgetProvider;
+        this.resources = resources;
         this.elements = new HashMap<>();
 
         widget = ourUiBinder.createAndBindUi(this);
@@ -107,30 +113,39 @@ public class WorkspaceViewImpl extends WorkspaceView {
     /** {@inheritDoc} */
     @Override
     public void addShape1(int x, int y, @Nonnull Shape1 shape) {
-        addElement(x, y, shape);
+        addShape(x, y, shape, resources.shape1());
     }
 
     /** {@inheritDoc} */
     @Override
     public void addShape2(int x, int y, @Nonnull Shape2 shape) {
-        addElement(x, y, shape);
+        addShape(x, y, shape, resources.shape2());
     }
 
-    private void addElement(int x, int y, @Nonnull final Shape element) {
-        ShapeWidget elementWidget = widgetProvider.get();
+    private void addShape(int x, int y, @Nonnull final Shape shape, @Nonnull ImageResource resource) {
+        final ShapeWidget elementWidget = widgetProvider.get();
 
-        elementWidget.setTitle(element.getTitle());
+        elementWidget.setTitle(shape.getTitle());
+        elementWidget.setIcon(resource);
         elementWidget.addDomHandler(new MouseDownHandler() {
             @Override
             public void onMouseDown(MouseDownEvent event) {
-                delegate.onDiagramElementClicked(element.getId());
+                delegate.onDiagramElementClicked(shape.getId());
             }
         }, MouseDownEvent.getType());
+        elementWidget.addDomHandler(new MouseUpHandler() {
+            @Override
+            public void onMouseUp(MouseUpEvent event) {
+                delegate.onDiagramElementMoved(shape.getId(),
+                                               elementWidget.getAbsoluteLeft() - mainPanel.getAbsoluteLeft(),
+                                               elementWidget.getAbsoluteTop() - mainPanel.getAbsoluteTop());
+            }
+        }, MouseUpEvent.getType());
 
         controller.addWidget(elementWidget, x, y);
         dragController.makeDraggable(elementWidget);
 
-        elements.put(element.getId(), elementWidget);
+        elements.put(shape.getId(), elementWidget);
     }
 
     /** {@inheritDoc} */

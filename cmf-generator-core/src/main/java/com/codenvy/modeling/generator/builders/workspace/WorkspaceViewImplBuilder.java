@@ -59,8 +59,8 @@ public class WorkspaceViewImplBuilder extends AbstractBuilder<WorkspaceViewImplB
 
     private static final String ADD_ELEMENT_CODE_FORMAT    =
             OFFSET + "@Override\n" +
-            OFFSET + "public void addelementName(int x, int y,elementName element) {\n" +
-            TWO_TABS + "addElement(x, y, element, resources.argumentName());\n" +
+            OFFSET + "public void addelementName(int x, int y, elementName element) {\n" +
+            TWO_TABS + "addShape(x, y, element, resources.argumentName());\n" +
             OFFSET + "}\n\n";
     private static final String ADD_CONNECTION_CODE_FORMAT =
             OFFSET + "@Override\n" +

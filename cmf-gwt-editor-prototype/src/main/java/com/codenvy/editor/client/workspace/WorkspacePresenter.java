@@ -61,7 +61,7 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
                 Shape1 shape1 = new Shape1();
 
                 ((WorkspaceView)view).addShape1(x, y, shape1);
-                addElement(shape1);
+                addShape(shape1, x, y);
 
                 setState(CREATING_NOTING);
                 break;
@@ -70,21 +70,24 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
                 Shape2 shape2 = new Shape2();
 
                 ((WorkspaceView)view).addShape2(x, y, shape2);
-                addElement(shape2);
+                addShape(shape2, x, y);
 
                 setState(CREATING_NOTING);
                 break;
         }
     }
 
-    private void addElement(Element element) {
-        elements.put(element.getId(), element);
+    private void addShape(@Nonnull Shape shape, int x, int y) {
+        elements.put(shape.getId(), shape);
+
+        shape.setX(x);
+        shape.setY(y);
 
         Shape parent = (Shape)elements.get(selectedElement);
         if (parent == null) {
             parent = mainElement;
         }
-        parent.addElement(element);
+        parent.addShape(shape);
 
         notifyListeners();
     }
@@ -121,12 +124,22 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
 
                 Shape parent = source.getParent();
                 if (parent != null) {
-                    parent.addElement(link);
+                    parent.addLink(link);
                 }
 
                 setState(CREATING_NOTING);
+
+                notifyListeners();
                 break;
         }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onDiagramElementMoved(@Nonnull String elementId, int x, int y) {
+        Shape shape = (Shape)elements.get(elementId);
+        shape.setX(x);
+        shape.setY(y);
 
         notifyListeners();
     }
@@ -140,14 +153,17 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
         int y = 100;
 
         // TODO create element just from main element w/o inner elements
-        for (Element element : mainElement.getElements()) {
-            if (element instanceof Shape1) {
-                ((WorkspaceView)view).addShape1(x, y, (Shape1)element);
-            } else if (element instanceof Shape2) {
-                ((WorkspaceView)view).addShape2(x, y, (Shape2)element);
+        for (Shape shape : mainElement.getShapes()) {
+            if (shape instanceof Shape1) {
+                ((WorkspaceView)view).addShape1(x, y, (Shape1)shape);
+            } else if (shape instanceof Shape2) {
+                ((WorkspaceView)view).addShape2(x, y, (Shape2)shape);
             }
 
-            elements.put(element.getId(), element);
+            shape.setX(x);
+            shape.setY(y);
+
+            elements.put(shape.getId(), shape);
 
             x += 100;
         }

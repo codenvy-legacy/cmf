@@ -47,21 +47,24 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
                 Element1 element1 = new Element1();
 
                 ((WorkspaceView)view).addElement1(x, y, element1);
-                addElement(element1);
+                addShape(element1, x, y);
 
                 setState(CREATING_NOTHING);
                 break;
         }
     }
 
-    private void addElement(Element element) {
-        elements.put(element.getId(), element);
+    private void addShape(@Nonnull Shape shape, int x, int y) {
+        elements.put(shape.getId(), shape);
+
+        shape.setX(x);
+        shape.setY(y);
 
         Shape parent = (Shape)elements.get(selectedElement);
         if (parent == null) {
             parent = mainElement;
         }
-        parent.addElement(element);
+        parent.addShape(shape);
 
         notifyListeners();
     }
@@ -70,6 +73,16 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
     @Override
     public void onMouseMoved(int x, int y) {
 
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onDiagramElementMoved(@Nonnull String elementId, int x, int y) {
+        Shape shape = (Shape)elements.get(elementId);
+        shape.setX(x);
+        shape.setY(y);
+
+        notifyListeners();
     }
 
     /** {@inheritDoc} */
@@ -96,13 +109,13 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
 
                 parent = source.getParent();
                 if (parent != null) {
-                    parent.addElement(connection1);
+                    parent.addLink(connection1);
                 }
                 setState(CREATING_NOTHING);
+
+                notifyListeners();
                 break;
         }
-
-        notifyListeners();
     }
 
     /** {@inheritDoc} */
@@ -113,13 +126,15 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
         int x = 100;
         int y = 100;
 
-        for (Element element : mainElement.getElements()) {
-            if (element instanceof Element1) {
-                ((WorkspaceView)view).addElement1(x, y, (Element1)element);
+        for (Shape shape : mainElement.getShapes()) {
+            if (shape instanceof Element1) {
+                ((WorkspaceView)view).addElement1(x, y, (Element1)shape);
             }
 
+            shape.setX(x);
+            shape.setY(y);
 
-            elements.put(element.getId(), element);
+            elements.put(shape.getId(), shape);
 
             x += 100;
         }

@@ -20,6 +20,7 @@ import com.google.gwt.xml.client.XMLParser;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -27,41 +28,111 @@ import java.util.List;
  *
  * @author Andrey Plotnikov
  */
-public abstract class AbstractShape extends AbstractElement implements Shape {
+public abstract class AbstractShape extends AbstractElement implements Shape, Comparable<AbstractShape> {
 
-    private final List<Element> elements;
+    private final List<AbstractShape> shapes;
+    private final List<Link>          links;
+    private       int                 x;
+    private       int                 y;
 
     protected AbstractShape(String elementName, List<String> properties) {
         super(elementName, properties);
 
-        this.elements = new ArrayList<>();
+        this.shapes = new ArrayList<>();
+        this.links = new ArrayList<>();
     }
 
     /** {@inheritDoc} */
     @Override
-    public void addElement(@Nonnull Element element) {
-        element.setParent(this);
-        elements.add(element);
+    public void addShape(@Nonnull Shape shape) {
+        shape.setParent(this);
+        shapes.add((AbstractShape)shape);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void removeElement(@Nonnull Element element) {
-        element.setParent(null);
-        elements.remove(element);
+    public void removeShape(@Nonnull Shape shape) {
+        shape.setParent(null);
+        shapes.remove(shape);
     }
 
     /** {@inheritDoc} */
     @Nonnull
     @Override
-    public List<Element> getElements() {
-        return elements;
+    public List<Shape> getShapes() {
+        ArrayList<Shape> list = new ArrayList<>();
+        list.addAll(shapes);
+
+        return list;
     }
 
     /** {@inheritDoc} */
     @Override
-    public boolean hasElements() {
-        return !elements.isEmpty();
+    public boolean hasShapes() {
+        return !shapes.isEmpty();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void addLink(@Nonnull Link link) {
+        link.setParent(this);
+        links.add(link);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void removeLink(@Nonnull Link link) {
+        link.setParent(null);
+        links.remove(link);
+    }
+
+    /** {@inheritDoc} */
+    @Nonnull
+    @Override
+    public List<Link> getLinks() {
+        return links;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasLinks() {
+        return !links.isEmpty();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public int getX() {
+        return x;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public int getY() {
+        return y;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public int compareTo(AbstractShape shape) {
+        if (x < shape.getX() || (x == shape.getX() && y < shape.getY())) {
+            return -1;
+        } else if (x > shape.getX() || (x == shape.getX() && y > shape.getY())) {
+            return 1;
+        }
+
+        return 0;
     }
 
     @Nonnull
@@ -70,8 +141,10 @@ public abstract class AbstractShape extends AbstractElement implements Shape {
         StringBuilder content = new StringBuilder("<" + getElementName() + ">\n");
         content.append(serializeProperties());
 
-        for (Element element : elements) {
-            content.append(element.serialize());
+        Collections.sort(shapes);
+
+        for (Shape shape : shapes) {
+            content.append(shape.serialize());
         }
 
         content.append("</").append(getElementName()).append(">\n");
@@ -87,7 +160,8 @@ public abstract class AbstractShape extends AbstractElement implements Shape {
     /** {@inheritDoc} */
     @Override
     public void deserialize(@Nonnull String content) {
-        elements.clear();
+        shapes.clear();
+        links.clear();
 
         Document xml = XMLParser.parse(content);
 

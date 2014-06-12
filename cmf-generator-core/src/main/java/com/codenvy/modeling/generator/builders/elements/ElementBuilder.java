@@ -17,6 +17,7 @@
 package com.codenvy.modeling.generator.builders.elements;
 
 import com.codenvy.editor.api.editor.elements.AbstractShape;
+import com.codenvy.editor.api.editor.elements.Shape;
 import com.codenvy.modeling.configuration.metamodel.diagram.Element;
 import com.codenvy.modeling.configuration.metamodel.diagram.Property;
 import com.codenvy.modeling.generator.builders.AbstractBuilder;
@@ -83,9 +84,9 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
                                                      THREE_TABS + "if (isProperty(name)) {\n" +
                                                      FOUR_TABS + "applyProperty(item);\n" +
                                                      THREE_TABS + "} else {\n" +
-                                                     FOUR_TABS + "Element element = findElement(name);\n" +
-                                                     FOUR_TABS + "element.deserialize(item);\n" +
-                                                     FOUR_TABS + "addElement(element);\n" +
+                                                     FOUR_TABS + "Shape shape = findElement(name);\n" +
+                                                     FOUR_TABS + "shape.deserialize(item);\n" +
+                                                     FOUR_TABS + "addShape(shape);\n" +
                                                      THREE_TABS + "}\n" +
                                                      TWO_TABS + "}\n" +
                                                      OFFSET + "}\n\n";
@@ -101,7 +102,7 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
                                                           THREE_TABS + SEVEN_WHITE_SPACE + "argumentName +\n" +
                                                           TWO_TABS + SEVEN_WHITE_SPACE + "\"</propertyName>\"";
 
-    private static final String FIND_ELEMENT_METHOD = OFFSET + "private Element findElement(String elementName) {\n" +
+    private static final String FIND_ELEMENT_METHOD = OFFSET + "private Shape findElement(String elementName) {\n" +
                                                       TWO_TABS + "switch (elementName) {\n" +
                                                       "findElements" +
                                                       TWO_TABS + "}\n" +
@@ -277,7 +278,7 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
 
             deserializeCode = DESERIALIZE_METHOD + createFindElementMethodCode(code.toString());
             imports.append("import ").append(NodeList.class.getName()).append(";\n");
-            imports.append("import ").append(com.codenvy.editor.api.editor.elements.Element.class.getName()).append(";\n");
+            imports.append("import ").append(Shape.class.getName()).append(";\n");
         } else {
             constructor = createElementConstructorCode(elementName,
                                                        "super",
