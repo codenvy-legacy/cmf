@@ -18,6 +18,7 @@ package com.codenvy.modeling.generator.builders;
 
 /**
  * @author Andrey Plotnikov
+ * @author Valeriy Svydenko
  */
 public interface PathConstants {
 
@@ -25,11 +26,14 @@ public interface PathConstants {
     String JAVA_SOURCE_FOLDER      = "java";
     String RESOURCES_SOURCE_FOLDER = "resources";
     String WEBAPP_FOLDER           = "webapp";
+    String ICONS_FOLDER            = "icons";
 
     String CLIENT_PACKAGE           = "client";
     String ELEMENTS_PACKAGE         = "elements";
     String WORKSPACE_PACKAGE        = "workspace";
+    String MY_GWT_PACKAGE           = "maingwt";
     String TOOLBAR_PACKAGE          = "toolbar";
+    String INJECT_PACKAGE           = "inject";
     String PROPERTIES_PANEL_PACKAGE = "propertiespanel";
 
 }

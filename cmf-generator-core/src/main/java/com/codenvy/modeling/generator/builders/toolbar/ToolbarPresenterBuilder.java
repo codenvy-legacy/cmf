@@ -29,7 +29,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import static com.codenvy.modeling.generator.builders.ClassNameConstants.EDITOR_STATE;
+import static com.codenvy.modeling.generator.builders.ResourceNameConstants.EDITOR_STATE;
+import static com.codenvy.modeling.generator.builders.ResourceNameConstants.TOOLBAR_PRESENTER;
 import static com.codenvy.modeling.generator.builders.EditorStateConstants.CREATE_CONNECTION_SOURCE_STATE_FORMAT;
 import static com.codenvy.modeling.generator.builders.EditorStateConstants.CREATE_ELEMENT_STATE_FORMAT;
 import static com.codenvy.modeling.generator.builders.FileExtensionConstants.JAVA;
@@ -49,6 +50,7 @@ import static com.codenvy.modeling.generator.builders.PathConstants.TOOLBAR_PACK
 
 /**
  * @author Andrey Plotnikov
+ * @author Valeriy Svydenko
  */
 public class ToolbarPresenterBuilder extends AbstractBuilder<ToolbarPresenterBuilder> {
 
@@ -64,8 +66,6 @@ public class ToolbarPresenterBuilder extends AbstractBuilder<ToolbarPresenterBui
             OFFSET + "}\n\n";
 
     private static final String CHANGE_EDITOR_STATE_MASK = "change_editor_states";
-
-    private static final String TOOLBAR_PRESENTER_NAME = "ToolbarPresenter";
 
     private String          mainPackage;
     private Set<Element>    elements;
@@ -134,14 +134,14 @@ public class ToolbarPresenterBuilder extends AbstractBuilder<ToolbarPresenterBui
                            MAIN_SOURCE_PATH,
                            JAVA_SOURCE_FOLDER,
                            TOOLBAR_PACKAGE,
-                           TOOLBAR_PRESENTER_NAME + JAVA);
+                           TOOLBAR_PRESENTER + JAVA);
         target = Paths.get(path,
                            MAIN_SOURCE_PATH,
                            JAVA_SOURCE_FOLDER,
                            convertPathToPackageName(mainPackage),
                            CLIENT_PACKAGE,
                            TOOLBAR_PACKAGE,
-                           TOOLBAR_PRESENTER_NAME + JAVA);
+                           TOOLBAR_PRESENTER + JAVA);
 
         replaceElements.put(MAIN_PACKAGE_MARKER, mainPackage);
         replaceElements.put(CURRENT_PACKAGE_MARKER, toolbarPackage);

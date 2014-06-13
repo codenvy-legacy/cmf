@@ -26,5 +26,6 @@ public interface OffsetBuilderConstants {
     String THREE_TABS = TWO_TABS + OFFSET;
     String FOUR_TABS  = THREE_TABS + OFFSET;
     String FIVE_TABS  = FOUR_TABS + OFFSET;
+    String SIX_TABS   = FIVE_TABS + OFFSET;
 
 }

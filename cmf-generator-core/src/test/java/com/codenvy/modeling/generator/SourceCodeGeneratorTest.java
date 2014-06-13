@@ -24,11 +24,17 @@ import com.codenvy.modeling.configuration.metamodel.diagram.Element;
 import com.codenvy.modeling.configuration.metamodel.diagram.Property;
 import com.codenvy.modeling.generator.builders.elements.ConnectionBuilder;
 import com.codenvy.modeling.generator.builders.elements.ElementBuilder;
-import com.codenvy.modeling.generator.builders.java.SourceCodeBuilder;
-import com.codenvy.modeling.generator.builders.java.SourceCodeBuilderImpl;
+import com.codenvy.modeling.generator.builders.inject.EditorFactoryBuilder;
+import com.codenvy.modeling.generator.builders.inject.GinModuleBuilder;
+import com.codenvy.modeling.generator.builders.inject.InjectorBuilder;
+import com.codenvy.modeling.generator.builders.maingwt.EditorEntryPointBuilder;
+import com.codenvy.modeling.generator.builders.maingwt.EditorPresenterBuilder;
+import com.codenvy.modeling.generator.builders.maingwt.EditorResourcesBuilder;
+import com.codenvy.modeling.generator.builders.maingwt.StateBuilder;
 import com.codenvy.modeling.generator.builders.propertiespanel.PropertiesPanelPresenterBuilder;
 import com.codenvy.modeling.generator.builders.propertiespanel.PropertiesPanelViewBuilder;
 import com.codenvy.modeling.generator.builders.propertiespanel.PropertiesPanelViewImplBuilder;
+import com.codenvy.modeling.generator.builders.resource.ResourcesBuilder;
 import com.codenvy.modeling.generator.builders.toolbar.ToolbarPresenterBuilder;
 import com.codenvy.modeling.generator.builders.toolbar.ToolbarViewBuilder;
 import com.codenvy.modeling.generator.builders.toolbar.ToolbarViewImplBuilder;
@@ -130,13 +136,10 @@ public class SourceCodeGeneratorTest {
     private static final String EDITOR_STATE_NAME                          = "State.java";
     private static final String EDITOR_RESOURCES_NAME                      = "EditorResources.java";
     private static final String GIN_MODULE_NAME                            = "GinModule.java";
-    private static final String EDITOR_CSS_RESOURCE_NAME                   = "EditorCSS.java";
     private static final String EDITOR_NAME_CLASS                          = "EditorName.java";
     private static final String GIN_INJECTOR_NAME                          = "Injector.java";
     private static final String EDITOR_FACTORY_NAME                        = "EditorFactory.java";
 
-    @Mock
-    private Provider<SourceCodeBuilder>               sourceCodeBuilderProvider;
     @Mock
     private Provider<UIXmlBuilder>                    uiXmlBuilderProvider;
     @Mock
@@ -199,11 +202,6 @@ public class SourceCodeGeneratorTest {
     @Test
     public void stateShouldBeCreated() throws IOException {
         assertContent("/State", generatorRule.getClientFolder(), EDITOR_STATE_NAME);
-    }
-
-    @Test
-    public void editorCSSShouldBeCreated() throws IOException {
-        assertContent("/EditorCSS", generatorRule.getClientFolder(), EDITOR_CSS_RESOURCE_NAME);
     }
 
     @Test
@@ -375,9 +373,7 @@ public class SourceCodeGeneratorTest {
 
         @Override
         protected void before() throws Throwable {
-            generator = new SourceCodeGenerator(sourceCodeBuilderProvider,
-
-                                                new WorkspacePresenterBuilder(),
+            generator = new SourceCodeGenerator(new WorkspacePresenterBuilder(),
                                                 new WorkspaceViewBuilder(),
                                                 new WorkspaceViewImplBuilder(new UIXmlBuilderImpl(),
                                                                              new GFieldImpl(),
@@ -393,15 +389,17 @@ public class SourceCodeGeneratorTest {
                                                 propertiesPanelViewBuilderProvider,
                                                 propertiesPanelViewImplBuilderProvider,
                                                 elementBuilderProvider,
-                                                connectionBuilderProvider
+                                                connectionBuilderProvider,
+                                                new EditorFactoryBuilder(),
+                                                new GinModuleBuilder(),
+                                                new InjectorBuilder(),
+                                                new ResourcesBuilder(),
+                                                new EditorEntryPointBuilder(),
+                                                new EditorPresenterBuilder(),
+                                                new EditorResourcesBuilder(),
+                                                new StateBuilder()
             );
 
-            when(sourceCodeBuilderProvider.get()).thenAnswer(new Answer<SourceCodeBuilder>() {
-                @Override
-                public SourceCodeBuilder answer(InvocationOnMock invocation) throws Throwable {
-                    return new SourceCodeBuilderImpl();
-                }
-            });
             when(uiXmlBuilderProvider.get()).thenAnswer(new Answer<UIXmlBuilder>() {
                 @Override
                 public UIXmlBuilder answer(InvocationOnMock invocation) throws Throwable {

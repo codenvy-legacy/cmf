@@ -1,4 +1,4 @@
-package my.package.client;
+package current_package;
 
 import com.codenvy.editor.api.editor.AbstractEditor;
 import com.codenvy.editor.api.editor.EditorState;
@@ -6,22 +6,21 @@ import com.codenvy.editor.api.editor.EditorView;
 import com.codenvy.editor.api.editor.SelectionManager;
 import com.codenvy.editor.api.editor.propertiespanel.PropertiesPanelManager;
 import com.codenvy.editor.api.editor.propertiespanel.empty.EmptyPropertiesPanelPresenter;
-import my.package.client.elements.Element1;
-import my.package.client.inject.EditorFactory;
-import my.package.client.propertiespanel.element1.Element1PropertiesPanelPresenter;
-
+import_elements
+import main_package.client.inject.EditorFactory;
+import_properties_panel_elements
 import com.google.inject.Inject;
 
 import javax.annotation.Nonnull;
 
-public class EditorName extends AbstractEditor implements EditorView.ActionDelegate {
+public class editor_name extends AbstractEditor implements EditorView.ActionDelegate {
 
     @Inject
-    public EditorName ( EditorView view,
+    public editor_name ( EditorView view,
                         EditorFactory editorFactory,
                         SelectionManager selectionManager,
                         EmptyPropertiesPanelPresenter emptyPropertiesPanelPresenter,
-                        Element1PropertiesPanelPresenter element1PropertiesPanelPresenter) {
+constructor_arguments) {
         super(view);
 
         EditorState<State> state = new EditorState<>(State.CREATING_NOTHING);
@@ -30,9 +29,7 @@ public class EditorName extends AbstractEditor implements EditorView.ActionDeleg
         this.toolbar = editorFactory.createToolbar(state);
 
         PropertiesPanelManager propertiesPanelManager = editorFactory.createPropertiesPanelManager(view.getPropertiesPanel());
-
-        propertiesPanelManager.register(Element1.class, element1PropertiesPanelPresenter);
-        element1PropertiesPanelPresenter.addListener(this);
+constructor_body
 
         propertiesPanelManager.register(null, emptyPropertiesPanelPresenter);
         emptyPropertiesPanelPresenter.addListener(this);

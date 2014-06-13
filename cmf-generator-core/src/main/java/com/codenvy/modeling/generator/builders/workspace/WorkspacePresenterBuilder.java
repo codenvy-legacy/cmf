@@ -29,7 +29,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import static com.codenvy.modeling.generator.builders.ClassNameConstants.EDITOR_STATE;
+import static com.codenvy.modeling.generator.builders.ResourceNameConstants.EDITOR_STATE;
+import static com.codenvy.modeling.generator.builders.ResourceNameConstants.WORKSPACE_PRESENTER;
 import static com.codenvy.modeling.generator.builders.EditorStateConstants.CREATE_CONNECTION_SOURCE_STATE_FORMAT;
 import static com.codenvy.modeling.generator.builders.EditorStateConstants.CREATE_CONNECTION_TARGET_STATE_FORMAT;
 import static com.codenvy.modeling.generator.builders.EditorStateConstants.CREATE_ELEMENT_STATE_FORMAT;
@@ -54,6 +55,7 @@ import static com.codenvy.modeling.generator.builders.PathConstants.WORKSPACE_PA
 
 /**
  * @author Andrey Plotnikov
+ * @author Valeriy Svydenko
  */
 public class WorkspacePresenterBuilder extends AbstractBuilder<WorkspacePresenterBuilder> {
 
@@ -94,8 +96,6 @@ public class WorkspacePresenterBuilder extends AbstractBuilder<WorkspacePresente
     private static final String CREATE_GRAPHIC_ELEMENTS_MARKER    = "create_graphic_elements";
     private static final String CREATE_GRAPHIC_CONNECTIONS_MARKER = "create_graphic_connections";
     private static final String CREATE_GRAPHICAL_ELEMENTS_MARKER  = "create_graphical_elements";
-
-    private static final String WORKSPACE_PRESENTER_NAME = "WorkspacePresenter";
 
     private String          mainPackage;
     private Set<Element>    elements;
@@ -179,14 +179,14 @@ public class WorkspacePresenterBuilder extends AbstractBuilder<WorkspacePresente
                            MAIN_SOURCE_PATH,
                            JAVA_SOURCE_FOLDER,
                            WORKSPACE_PACKAGE,
-                           WORKSPACE_PRESENTER_NAME + JAVA);
+                           WORKSPACE_PRESENTER + JAVA);
         target = Paths.get(path,
                            MAIN_SOURCE_PATH,
                            JAVA_SOURCE_FOLDER,
                            convertPathToPackageName(mainPackage),
                            CLIENT_PACKAGE,
                            WORKSPACE_PACKAGE,
-                           WORKSPACE_PRESENTER_NAME + JAVA);
+                           WORKSPACE_PRESENTER + JAVA);
 
         replaceElements.put(MAIN_PACKAGE_MARKER, mainPackage);
         replaceElements.put(CURRENT_PACKAGE_MARKER, workspacePackage);

@@ -1,4 +1,4 @@
-package my.package.client;
+package current_package;
 
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
@@ -8,14 +8,12 @@ public interface EditorResources extends ClientBundle {
 
     interface EditorCSS extends CssResource {
 
-        String fullSize();
+        custom_style
 
     }
 
     @Source("editor.css")
     EditorCSS editorCSS();
 
-    @Source("icons/element1.png")
-    ImageResource element1();
-
+image_resources
 }

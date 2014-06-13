@@ -1,12 +1,12 @@
-package my.package.client.inject;
+package current_package;
 
 import com.codenvy.editor.api.editor.EditorState;
 import com.codenvy.editor.api.editor.SelectionManager;
 import com.codenvy.editor.api.editor.propertiespanel.PropertiesPanelManager;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
-import my.package.client.State;
-import my.package.client.toolbar.ToolbarPresenter;
-import my.package.client.workspace.WorkspacePresenter;
+import main_package.client.State;
+import main_package.client.toolbar.ToolbarPresenter;
+import main_package.client.workspace.WorkspacePresenter;
 
 import javax.annotation.Nonnull;
 

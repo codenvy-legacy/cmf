@@ -1,4 +1,4 @@
-package my.package.client.inject;
+package current_package;
 
 import com.google.gwt.inject.client.AbstractGinModule;
 import com.google.gwt.inject.client.assistedinject.GinFactoryModuleBuilder;

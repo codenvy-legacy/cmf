@@ -15,62 +15,42 @@
  */
 package com.codenvy.modeling.generator;
 
-import com.codenvy.editor.api.editor.AbstractEditor;
-import com.codenvy.editor.api.editor.EditorState;
-import com.codenvy.editor.api.editor.EditorView;
-import com.codenvy.editor.api.editor.SelectionManager;
-import com.codenvy.editor.api.editor.propertiespanel.PropertiesPanelManager;
-import com.codenvy.editor.api.editor.propertiespanel.empty.EmptyPropertiesPanelPresenter;
 import com.codenvy.modeling.configuration.Configuration;
 import com.codenvy.modeling.configuration.ConfigurationFactory;
-import com.codenvy.modeling.configuration.metamodel.diagram.Component;
 import com.codenvy.modeling.configuration.metamodel.diagram.Connection;
 import com.codenvy.modeling.configuration.metamodel.diagram.Element;
 import com.codenvy.modeling.configuration.metamodel.diagram.Property;
 import com.codenvy.modeling.generator.builders.elements.ConnectionBuilder;
 import com.codenvy.modeling.generator.builders.elements.ElementBuilder;
-import com.codenvy.modeling.generator.builders.java.SourceCodeBuilder;
+import com.codenvy.modeling.generator.builders.inject.EditorFactoryBuilder;
+import com.codenvy.modeling.generator.builders.inject.GinModuleBuilder;
+import com.codenvy.modeling.generator.builders.inject.InjectorBuilder;
+import com.codenvy.modeling.generator.builders.maingwt.EditorEntryPointBuilder;
+import com.codenvy.modeling.generator.builders.maingwt.EditorPresenterBuilder;
+import com.codenvy.modeling.generator.builders.maingwt.EditorResourcesBuilder;
+import com.codenvy.modeling.generator.builders.maingwt.StateBuilder;
 import com.codenvy.modeling.generator.builders.propertiespanel.PropertiesPanelPresenterBuilder;
 import com.codenvy.modeling.generator.builders.propertiespanel.PropertiesPanelViewBuilder;
 import com.codenvy.modeling.generator.builders.propertiespanel.PropertiesPanelViewImplBuilder;
+import com.codenvy.modeling.generator.builders.resource.ResourcesBuilder;
 import com.codenvy.modeling.generator.builders.toolbar.ToolbarPresenterBuilder;
 import com.codenvy.modeling.generator.builders.toolbar.ToolbarViewBuilder;
 import com.codenvy.modeling.generator.builders.toolbar.ToolbarViewImplBuilder;
 import com.codenvy.modeling.generator.builders.workspace.WorkspacePresenterBuilder;
 import com.codenvy.modeling.generator.builders.workspace.WorkspaceViewBuilder;
 import com.codenvy.modeling.generator.builders.workspace.WorkspaceViewImplBuilder;
-import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.inject.client.AbstractGinModule;
-import com.google.gwt.inject.client.GinModules;
-import com.google.gwt.inject.client.Ginjector;
-import com.google.gwt.inject.client.assistedinject.GinFactoryModuleBuilder;
-import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.CssResource;
-import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.ui.AcceptsOneWidget;
-import com.google.gwt.user.client.ui.RootLayoutPanel;
-import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.orange.links.client.utils.LinksClientBundle;
 
 import javax.annotation.Nonnull;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.zip.ZipEntry;
@@ -83,9 +63,14 @@ import static com.codenvy.modeling.generator.GenerationController.Param.MAVEN_AR
 import static com.codenvy.modeling.generator.GenerationController.Param.MAVEN_GROUP_ID;
 import static com.codenvy.modeling.generator.GenerationController.Param.TARGET_PATH;
 import static com.codenvy.modeling.generator.GenerationController.Param.TEMPLATE_PATH;
-import static com.codenvy.modeling.generator.builders.java.SourceCodeBuilder.Access.DEFAULT;
-import static com.codenvy.modeling.generator.builders.java.SourceCodeBuilder.Access.PROTECTED;
-import static com.codenvy.modeling.generator.builders.java.SourceCodeBuilder.Argument;
+import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.ARTIFACT_ID_MASK;
+import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.ARTIFACT_NAME_MASK;
+import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.EDITOR_NAME_MARKER;
+import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.GROUP_ID_MASK;
+import static com.codenvy.modeling.generator.builders.PathConstants.MAIN_SOURCE_PATH;
+import static com.codenvy.modeling.generator.builders.PathConstants.WEBAPP_FOLDER;
+import static com.codenvy.modeling.generator.builders.ResourceNameConstants.MAIN_HTML_FILE_FULL_NAME;
+import static com.codenvy.modeling.generator.builders.ResourceNameConstants.POM_FILE_FULL_NAME;
 
 /**
  * The main class that provides an ability to generate java source code from given params.
@@ -94,48 +79,6 @@ import static com.codenvy.modeling.generator.builders.java.SourceCodeBuilder.Arg
  * @author Valeriy Svydenko
  */
 public class SourceCodeGenerator {
-
-    private static final String ARTIFACT_ID_MASK       = "artifact_id";
-    private static final String GROUP_ID_MASK          = "group_id";
-    private static final String ARTIFACT_NAME_MASK     = "artifact_name";
-    private static final String EDITOR_NAME_MASK       = "editor_name";
-    private static final String ENTRY_POINT_CLASS_MASK = "entry_point";
-
-    private static final String POM_FILE_FULL_NAME        = "pom.xml";
-    private static final String MAIN_HTML_FILE_FULL_NAME  = "Editor.html";
-    private static final String MAIN_GWT_MODULE_FILE_NAME = "Editor.gwt.xml";
-    private static final String MAIN_CSS_FILE_NAME        = "editor.css";
-
-    private static final String MAIN_SOURCE_PATH        = "/src/main";
-    private static final String JAVA_SOURCE_PATH        = "java";
-    private static final String RESOURCES_SOURCE_PATH   = "resources";
-    private static final String WEBAPP_SOURCE_PATH      = "webapp";
-    private static final String CLIENT_PART_FOLDER      = "client";
-    private static final String INJECT_FOLDER           = "inject";
-    private static final String TOOLBAR_FOLDER          = "toolbar";
-    private static final String ICONS_FOLDER            = "icons";
-    private static final String WORKSPACE_FOLDER        = "workspace";
-    private static final String PROPERTIES_PANEL_FOLDER = "propertiespanel";
-    private static final String ELEMENTS_FOLDER         = "elements";
-
-    private static final String ENTRY_POINT_NAME                = "EditorEntryPoint";
-    private static final String TOOLBAR_PRESENTER_NAME          = "ToolbarPresenter";
-    private static final String WORKSPACE_PRESENTER_NAME        = "WorkspacePresenter";
-    private static final String PROPERTIES_PANEL_PRESENTER_NAME = "PropertiesPanelPresenter";
-    private static final String EDITOR_STATE_NAME               = "State";
-    private static final String EDITOR_RESOURCES_NAME           = "EditorResources";
-    private static final String EDITOR_CSS_RESOURCE_NAME        = "EditorCSS";
-    private static final String EDITOR_IMAGE_RESOURCE           = "ImageResource";
-    private static final String GIN_MODULE_NAME                 = "GinModule";
-    private static final String GIN_INJECTOR_NAME               = "Injector";
-    private static final String EDITOR_FACTORY_NAME             = "EditorFactory";
-
-    private static final String CREATE_NOTHING_STATE                  = "CREATING_NOTHING";
-    private static final String CREATE_ELEMENT_STATE_FORMAT           = "CREATING_%s";
-    private static final String CREATE_CONNECTION_SOURCE_STATE_FORMAT = "CREATING_%s_SOURCE";
-    private static final String CREATE_CONNECTION_TARGET_STATE_FORMAT = "CREATING_%s_TARGET";
-
-    private final Provider<SourceCodeBuilder>               sourceCodeBuilderProvider;
     private final WorkspacePresenterBuilder                 workspacePresenterBuilder;
     private final WorkspaceViewBuilder                      workspaceViewBuilder;
     private final WorkspaceViewImplBuilder                  workspaceViewImplBuilder;
@@ -147,13 +90,18 @@ public class SourceCodeGenerator {
     private final Provider<PropertiesPanelViewImplBuilder>  propertiesPanelViewImplBuilder;
     private final Provider<ElementBuilder>                  elementBuilderProvider;
     private final Provider<ConnectionBuilder>               connectionBuilderProvider;
+    private final EditorFactoryBuilder                      editorFactoryBuilder;
+    private final GinModuleBuilder                          ginModuleBuilder;
+    private final InjectorBuilder                           injectorBuilder;
+    private final ResourcesBuilder                          resourcesBuilder;
+    private final EditorEntryPointBuilder                   editorEntryPointBuilder;
+    private final EditorPresenterBuilder                    editorPresenterBuilder;
+    private final EditorResourcesBuilder                    editorResourcesBuilder;
+    private final StateBuilder                              stateBuilder;
 
-    private Element mainElement;
 
     @Inject
-    public SourceCodeGenerator(Provider<SourceCodeBuilder> sourceCodeBuilderProvider,
-
-                               WorkspacePresenterBuilder workspacePresenterBuilder,
+    public SourceCodeGenerator(WorkspacePresenterBuilder workspacePresenterBuilder,
                                WorkspaceViewBuilder workspaceViewBuilder,
                                WorkspaceViewImplBuilder workspaceViewImplBuilder,
                                ToolbarPresenterBuilder toolbarPresenterBuilder,
@@ -163,10 +111,15 @@ public class SourceCodeGenerator {
                                Provider<PropertiesPanelViewBuilder> propertiesPanelViewBuilder,
                                Provider<PropertiesPanelViewImplBuilder> propertiesPanelViewImplBuilder,
                                Provider<ElementBuilder> elementBuilderProvider,
-                               Provider<ConnectionBuilder> connectionBuilderProvider) {
-// TODO need to clean fields
-        this.sourceCodeBuilderProvider = sourceCodeBuilderProvider;
-
+                               Provider<ConnectionBuilder> connectionBuilderProvider,
+                               EditorFactoryBuilder editorFactoryBuilder,
+                               GinModuleBuilder ginModuleBuilder,
+                               InjectorBuilder injectorBuilder,
+                               ResourcesBuilder resourcesBuilder,
+                               EditorEntryPointBuilder editorEntryPointBuilder,
+                               EditorPresenterBuilder editorPresenterBuilder,
+                               EditorResourcesBuilder editorResourcesBuilder,
+                               StateBuilder stateBuilder) {
         this.workspacePresenterBuilder = workspacePresenterBuilder;
         this.workspaceViewBuilder = workspaceViewBuilder;
         this.workspaceViewImplBuilder = workspaceViewImplBuilder;
@@ -178,6 +131,14 @@ public class SourceCodeGenerator {
         this.propertiesPanelViewImplBuilder = propertiesPanelViewImplBuilder;
         this.elementBuilderProvider = elementBuilderProvider;
         this.connectionBuilderProvider = connectionBuilderProvider;
+        this.editorFactoryBuilder = editorFactoryBuilder;
+        this.ginModuleBuilder = ginModuleBuilder;
+        this.injectorBuilder = injectorBuilder;
+        this.resourcesBuilder = resourcesBuilder;
+        this.editorEntryPointBuilder = editorEntryPointBuilder;
+        this.editorPresenterBuilder = editorPresenterBuilder;
+        this.editorResourcesBuilder = editorResourcesBuilder;
+        this.stateBuilder = stateBuilder;
     }
 
     /**
@@ -258,17 +219,13 @@ public class SourceCodeGenerator {
         String targetPath = properties.getProperty(TARGET_PATH.name());
         String editorName = properties.getProperty(EDITOR_NAME.name());
 
-        Path mainHtmlFilePath = Paths.get(targetPath, MAIN_SOURCE_PATH, WEBAPP_SOURCE_PATH, MAIN_HTML_FILE_FULL_NAME);
+        Path mainHtmlFilePath =
+                Paths.get(targetPath, MAIN_SOURCE_PATH, WEBAPP_FOLDER, MAIN_HTML_FILE_FULL_NAME);
 
         String content = new String(Files.readAllBytes(mainHtmlFilePath));
-        String newContent = content.replaceAll(EDITOR_NAME_MASK, editorName);
+        String newContent = content.replaceAll(EDITOR_NAME_MARKER, editorName);
 
         Files.write(mainHtmlFilePath, newContent.getBytes());
-    }
-
-    @Nonnull
-    private String convertPathToPackageName(@Nonnull String packagePath) {
-        return packagePath.replace('.', '/');
     }
 
     private void generateJavaFolder(@Nonnull Properties properties, @Nonnull Configuration configuration) throws IOException {
@@ -276,109 +233,42 @@ public class SourceCodeGenerator {
         String targetPath = properties.getProperty(TARGET_PATH.name());
         String editorName = properties.getProperty(EDITOR_NAME.name());
 
-        String mainPackageFolder = convertPathToPackageName(packageName);
-
-        String javaFolder = targetPath + MAIN_SOURCE_PATH + File.separator + JAVA_SOURCE_PATH;
-        String clientPackageFolder = mainPackageFolder + File.separator + CLIENT_PART_FOLDER;
-        String clientFolder = javaFolder + File.separator + clientPackageFolder;
-
-        createInjectModule(clientFolder, packageName, editorName);
+        createInjectModule(targetPath, packageName, editorName);
         createElements(targetPath, packageName, configuration);
-        createMainGWTElements(properties, clientFolder, configuration);
+        createMainGWTElements(properties, configuration);
         createWorkspace(targetPath, packageName, configuration);
         createToolbar(targetPath, packageName, configuration);
         createPropertiesPanel(targetPath, packageName, configuration);
     }
 
-    private void createInjectModule(@Nonnull String clientPackageFolder,
+    private void createInjectModule(@Nonnull String projectPath,
                                     @Nonnull String packageName,
                                     @Nonnull String editorName) throws IOException {
-        Path injectFolder = Paths.get(clientPackageFolder, INJECT_FOLDER);
-        Files.createDirectories(injectFolder);
 
-        String clientPackageName = packageName + '.' + CLIENT_PART_FOLDER + '.';
-        String injectPackageName = clientPackageName + INJECT_FOLDER + '.';
+        editorFactoryBuilder.path(projectPath)
 
-        String editorFactory = sourceCodeBuilderProvider
-                .get()
-                .newClass(injectPackageName + EDITOR_FACTORY_NAME).makeInterface()
+                            .mainPackage(packageName)
 
-                .addImport(clientPackageName + TOOLBAR_FOLDER + '.' + TOOLBAR_PRESENTER_NAME)
-                .addImport(clientPackageName + WORKSPACE_FOLDER + '.' + WORKSPACE_PRESENTER_NAME)
-                .addImport(clientPackageName + EDITOR_STATE_NAME)
-                .addImport(SelectionManager.class)
-                .addImport(EditorState.class)
-                .addImport(AcceptsOneWidget.class)
+                            .build();
 
-                .addMethod("createToolbar")
-                .withReturnType(TOOLBAR_PRESENTER_NAME).withMethodArguments(new Argument("EditorState<State>", "editorState"))
-                .withMethodAccessLevel(DEFAULT)
+        ginModuleBuilder.path(projectPath)
 
-                .addMethod("createWorkspace")
-                .withReturnType(WORKSPACE_PRESENTER_NAME).withMethodAccessLevel(DEFAULT)
-                .withMethodArguments(new Argument("EditorState<State>", "editorState"),
-                                     new Argument(SelectionManager.class.getSimpleName(), "selectionManager"))
+                        .mainPackage(packageName)
 
-                .addMethod("createPropertiesPanelManager")
-                .withReturnType(PropertiesPanelManager.class).withMethodAccessLevel(DEFAULT)
-                .withMethodArguments(new Argument(AcceptsOneWidget.class.getSimpleName(), "container"))
+                        .build();
 
-                .build();
+        injectorBuilder.path(projectPath)
 
-        Path editorFactoryPath = Paths.get(clientPackageFolder, INJECT_FOLDER, EDITOR_FACTORY_NAME + ".java");
-        Files.write(editorFactoryPath, editorFactory.getBytes());
+                       .mainPackage(packageName)
+                       .editorName(editorName)
 
-        String ginModule = sourceCodeBuilderProvider
-                .get()
-                .newClass(injectPackageName + GIN_MODULE_NAME).baseClass(AbstractGinModule.class)
-
-                .addImport(GinFactoryModuleBuilder.class)
-
-                .addMethod("configure")
-                .withMethodAccessLevel(PROTECTED).withMethodAnnotation("@Override")
-                .withMethodBody("install(new GinFactoryModuleBuilder().build(EditorFactory.class));")
-
-                .build();
-
-        Path ginModulePath = Paths.get(clientPackageFolder, INJECT_FOLDER, GIN_MODULE_NAME + ".java");
-        Files.write(ginModulePath, ginModule.getBytes());
-
-        String ginInjector = sourceCodeBuilderProvider
-                .get()
-                .newClass(injectPackageName + GIN_INJECTOR_NAME).makeInterface()
-                .withClassAnnotation("@GinModules(GinModule.class)").baseClass(Ginjector.class)
-
-                .addImport(GinModules.class)
-                .addImport(clientPackageName + editorName)
-
-                .addMethod("getEditor").withMethodAccessLevel(DEFAULT).withReturnType(editorName)
-
-                .build();
-
-        Path ginInjectorPath = Paths.get(clientPackageFolder, INJECT_FOLDER, GIN_INJECTOR_NAME + ".java");
-        Files.write(ginInjectorPath, ginInjector.getBytes());
+                       .needRemoveTemplateParentFolder(true)
+                       .build();
     }
 
-    private void findMainElement(@Nonnull Configuration configuration) {
-        Set<Element> elements = configuration.getDiagramConfiguration().getElements();
-        Set<String> subElements = new HashSet<>();
-
-        for (Element element : elements) {
-            for (Component component : element.getComponents()) {
-                subElements.add(component.getName());
-            }
-        }
-
-        for (Element element : elements) {
-            if (!subElements.contains(element.getName())) {
-                mainElement = element;
-            }
-        }
-    }
-
-    private void createElements(@Nonnull String projectPath, @Nonnull String packageName, @Nonnull Configuration configuration)
-            throws IOException {
-        findMainElement(configuration);
+    private void createElements(@Nonnull String projectPath,
+                                @Nonnull String packageName,
+                                @Nonnull Configuration configuration) throws IOException {
 
         Set<Element> elements = configuration.getDiagramConfiguration().getElements();
 
@@ -420,195 +310,44 @@ public class SourceCodeGenerator {
     }
 
     private void createMainGWTElements(@Nonnull Properties properties,
-                                       @Nonnull String clientPackageFolder,
                                        @Nonnull Configuration configuration) throws IOException {
-        String packageName = properties.getProperty(MAIN_PACKAGE.name());
-        String editorName = properties.getProperty(EDITOR_NAME.name());
-
-        String clientPackage = packageName + '.' + CLIENT_PART_FOLDER + '.';
-
-        SourceCodeBuilder editorStateEnum = sourceCodeBuilderProvider
-                .get()
-                .newClass(clientPackage + EDITOR_STATE_NAME).makeEnum()
-                .withEnumValue(CREATE_NOTHING_STATE);
-
-        for (Element element : configuration.getDiagramConfiguration().getElements()) {
-            if (!element.equals(mainElement)) {
-                editorStateEnum.withEnumValue(String.format(CREATE_ELEMENT_STATE_FORMAT, element.getName().toUpperCase()));
-            }
-        }
-
-        for (Connection connection : configuration.getDiagramConfiguration().getConnections()) {
-            String connectionName = connection.getName().toUpperCase();
-            editorStateEnum.withEnumValue(String.format(CREATE_CONNECTION_SOURCE_STATE_FORMAT, connectionName));
-            editorStateEnum.withEnumValue(String.format(CREATE_CONNECTION_TARGET_STATE_FORMAT, connectionName));
-        }
-
-        Path editorStateJavaClassPath = Paths.get(clientPackageFolder, EDITOR_STATE_NAME + ".java");
-        Files.write(editorStateJavaClassPath, editorStateEnum.build().getBytes());
-
-        String cssResource = sourceCodeBuilderProvider
-                .get()
-                .newClass(clientPackage + EDITOR_CSS_RESOURCE_NAME).makeInterface().baseClass(CssResource.class)
-
-                .addMethod("fullSize")
-                .withReturnType(String.class).withMethodAccessLevel(DEFAULT)
-                        // TODO It is the place for adding custom style into client bundle
-
-                .build();
-
-        Path editorCSSResourceJavaClassPath = Paths.get(clientPackageFolder, EDITOR_CSS_RESOURCE_NAME + ".java");
-        Files.write(editorCSSResourceJavaClassPath, cssResource.getBytes());
-
-        SourceCodeBuilder editorResources = sourceCodeBuilderProvider
-                .get()
-                .newClass(clientPackage + EDITOR_RESOURCES_NAME).makeInterface().baseClass(ClientBundle.class)
-                .addImport(ImageResource.class)
-                .addMethod("editorCSS")
-                .withReturnType(EDITOR_CSS_RESOURCE_NAME).withMethodAnnotation("@Source(\"editor.css\")").withMethodAccessLevel(DEFAULT);
 
         String targetPath = properties.getProperty(TARGET_PATH.name());
-        String resourceFolder = targetPath + File.separator + MAIN_SOURCE_PATH + File.separator + RESOURCES_SOURCE_PATH;
-        String mainPackageFolder = resourceFolder + File.separator + convertPathToPackageName(packageName);
+        Set<Element> elements = configuration.getDiagramConfiguration().getElements();
 
-        File iconsFolder = Paths.get(mainPackageFolder, CLIENT_PART_FOLDER, ICONS_FOLDER).toFile();
+        stateBuilder.path(targetPath)
 
-        File[] icons = iconsFolder.listFiles();
-        if (null != icons) {
-            for (File icon : icons) {
-                editorResources.addMethod(changeFirstSymbolToLowCase(icon.getName().substring(0, icon.getName().indexOf('.'))))
-                               .withMethodAccessLevel(DEFAULT)
-                               .withReturnType(EDITOR_IMAGE_RESOURCE)
-                               .withMethodAnnotation("@Source(\"" + ICONS_FOLDER + File.separator + icon.getName() + "\")");
-            }
-        }
+                    .properties(properties)
+                    .connections(configuration.getDiagramConfiguration().getConnections())
+                    .elements(elements)
 
-        Path editorResourcesJavaClassPath = Paths.get(clientPackageFolder, EDITOR_RESOURCES_NAME + ".java");
-        Files.write(editorResourcesJavaClassPath, editorResources.build().getBytes());
+                    .build();
 
-        String entryPointJavaClass = sourceCodeBuilderProvider
-                .get()
-                .newClass(clientPackage + ENTRY_POINT_NAME).implementInterface(EntryPoint.class)
+        editorResourcesBuilder.path(targetPath)
 
-                .addImport(GWT.class)
-                .addImport(RootLayoutPanel.class)
-                .addImport(SimpleLayoutPanel.class)
-                .addImport(LinksClientBundle.class)
-                .addImport(clientPackage + INJECT_FOLDER + '.' + GIN_INJECTOR_NAME)
+                              .properties(properties)
 
-                .addMethod("onModuleLoad")
-                .withMethodAnnotation("@Override")
-                .withMethodBody("LinksClientBundle.INSTANCE.css().ensureInjected();\n" +
-                                "\n" +
-                                "Injector injector = GWT.create(Injector.class);\n" +
-                                editorName + " editor = injector.getEditor();\n" +
-                                "\n" +
-                                "SimpleLayoutPanel mainPanel = new SimpleLayoutPanel();\n" +
-                                "editor.go(mainPanel);\n" +
-                                "\n" +
-                                "RootLayoutPanel.get().add(mainPanel);\n")
+                              .build();
 
-                .build();
+        editorEntryPointBuilder.path(targetPath)
 
-        Path entryPointJavaClassPath = Paths.get(clientPackageFolder, ENTRY_POINT_NAME + ".java");
-        Files.write(entryPointJavaClassPath, entryPointJavaClass.getBytes());
+                               .properties(properties)
 
-        SourceCodeBuilder editorPresenterBuilder = sourceCodeBuilderProvider
-                .get()
-                .newClass(clientPackage + editorName).baseClass(AbstractEditor.class)
-                .implementInterface(EditorView.class.getSimpleName() + '.' + EditorView.ActionDelegate.class.getSimpleName())
+                               .build();
 
-                .addImport(EditorView.class)
-                .addImport(clientPackage + INJECT_FOLDER + '.' + EDITOR_FACTORY_NAME)
-                .addImport(SelectionManager.class)
-                .addImport(EmptyPropertiesPanelPresenter.class)
-                .addImport(EditorState.class)
-                .addImport(PropertiesPanelManager.class)
-                .addImport(Inject.class);
+        editorPresenterBuilder.path(targetPath)
 
-        List<Argument> arguments = new ArrayList<>();
-        arguments.add(new Argument(EditorView.class.getSimpleName(), "view"));
-        arguments.add(new Argument("EditorFactory", "editorFactory"));
-        arguments.add(new Argument(SelectionManager.class.getSimpleName(), "selectionManager"));
-        arguments.add(new Argument(EmptyPropertiesPanelPresenter.class.getSimpleName(), "emptyPropertiesPanelPresenter"));
+                              .properties(properties)
+                              .elements(elements)
 
-        StringBuilder constructorBody = new StringBuilder(
-                "super(view);\n" +
-                "\n" +
-                "EditorState<State> state = new EditorState<>(State.CREATING_NOTHING);\n" +
-                "\n" +
-                "this.workspace = editorFactory.createWorkspace(state, selectionManager);\n" +
-                "this.toolbar = editorFactory.createToolbar(state);\n" +
-                "PropertiesPanelManager propertiesPanelManager = editorFactory.createPropertiesPanelManager(view.getPropertiesPanel());\n" +
-                "propertiesPanelManager.register(null, emptyPropertiesPanelPresenter);\n" +
-                "emptyPropertiesPanelPresenter.addListener(this);\n"
-        );
+                              .needRemoveTemplateParentFolder(true)
 
-        String propertiesPanelPackage = clientPackage + PROPERTIES_PANEL_FOLDER + '.';
-        String elementsPackage = clientPackage + ELEMENTS_FOLDER + '.';
-
-        for (Element element : configuration.getDiagramConfiguration().getElements()) {
-            if (!element.equals(mainElement)) {
-                String elementName = element.getName();
-                String elementPropertiesPanelName = elementName + PROPERTIES_PANEL_PRESENTER_NAME;
-                String elementPropertiesPanelArgument = changeFirstSymbolToLowCase(elementPropertiesPanelName);
-
-                editorPresenterBuilder.addImport(propertiesPanelPackage + elementName.toLowerCase() + '.' + elementPropertiesPanelName);
-                editorPresenterBuilder.addImport(elementsPackage + elementName);
-
-                arguments.add(new Argument(elementPropertiesPanelName, elementPropertiesPanelArgument));
-
-                constructorBody
-                        .append("propertiesPanelManager.register(").append(elementName).append(".class, ")
-                        .append(elementPropertiesPanelArgument).append(");\n")
-                        .append(elementPropertiesPanelArgument).append(".addListener(this);\n");
-            }
-        }
-
-        // TODO We don't have connection properties for now
-//        for (Connection connection : configurationKeeper.getDiagramConfiguration().getConnections()) {
-//            String connectionName = connection.getName();
-//            String connectionPropertiesPanelName = connectionName + PROPERTIES_PANEL_PRESENTER_NAME;
-//            String connectionPropertiesPanelArgument = changeFirstSymbolToLowCase(connectionPropertiesPanelName);
-//
-//            editorPresenterBuilder.addImport(propertiesPanelPackage + connectionName.toLowerCase() + '.' + connectionName);
-//
-//            arguments.add(new Argument(connectionPropertiesPanelName, connectionPropertiesPanelArgument));
-//
-//            constructorBody.append("propertiesPanelManager.register(")
-//                           .append(connectionName).append(".class, ")
-//                           .append(connectionPropertiesPanelArgument)
-//                           .append(");\n");
-//        }
-
-        constructorBody.append("selectionManager.addListener(propertiesPanelManager);\n")
-                       .append("workspace.addListener(this);\n");
-
-        String editorPresenter = editorPresenterBuilder
-                .addConstructor((Argument[])arguments.toArray(new Argument[arguments.size()]))
-                .withConstructorAnnotation("@Inject")
-                .withConstructorBody(constructorBody.toString())
-
-                .addMethod("serialize").withReturnType(String.class).withMethodAnnotation("@Override")
-                .withMethodBody("return workspace.serialize();")
-
-                .addMethod("deserialize").withMethodAnnotation("@Override")
-                .withMethodArguments(new Argument(String.class.getSimpleName(), "content"))
-                .withMethodBody("workspace.deserialize(content);")
-
-                .build();
-
-        Path editorPresenterJavaClassPath = Paths.get(clientPackageFolder, editorName + ".java");
-        Files.write(editorPresenterJavaClassPath, editorPresenter.getBytes());
+                              .build();
     }
 
-    @Nonnull
-    private String changeFirstSymbolToLowCase(@Nonnull String name) {
-        return name.substring(0, 1).toLowerCase() + name.substring(1);
-    }
-
-    private void createWorkspace(@Nonnull String projectPath, @Nonnull String packageName, @Nonnull Configuration configuration)
-            throws IOException {
+    private void createWorkspace(@Nonnull String projectPath,
+                                 @Nonnull String packageName,
+                                 @Nonnull Configuration configuration) throws IOException {
         Set<Element> elements = configuration.getDiagramConfiguration().getElements();
         Set<Connection> connections = configuration.getDiagramConfiguration().getConnections();
 
@@ -638,8 +377,9 @@ public class SourceCodeGenerator {
                                 .build();
     }
 
-    private void createToolbar(@Nonnull String projectPath, @Nonnull String packageName, @Nonnull Configuration configuration)
-            throws IOException {
+    private void createToolbar(@Nonnull String projectPath,
+                               @Nonnull String packageName,
+                               @Nonnull Configuration configuration) throws IOException {
         Set<Element> elements = configuration.getDiagramConfiguration().getElements();
         Set<Connection> connections = configuration.getDiagramConfiguration().getConnections();
 
@@ -669,8 +409,9 @@ public class SourceCodeGenerator {
                               .build();
     }
 
-    private void createPropertiesPanel(@Nonnull String projectPath, @Nonnull String packageName, @Nonnull Configuration configuration)
-            throws IOException {
+    private void createPropertiesPanel(@Nonnull String projectPath,
+                                       @Nonnull String packageName,
+                                       @Nonnull Configuration configuration) throws IOException {
         Set<Element> elements = configuration.getDiagramConfiguration().getElements();
 
         for (Iterator<Element> iterator = elements.iterator(); iterator.hasNext(); ) {
@@ -719,44 +460,10 @@ public class SourceCodeGenerator {
     }
 
     private void generateResourcesFolder(@Nonnull Properties properties) throws IOException {
-        String targetPath = properties.getProperty(TARGET_PATH.name());
-        String packageName = properties.getProperty(MAIN_PACKAGE.name());
-        String editorName = properties.getProperty(EDITOR_NAME.name());
-        final String iconsName = properties.getProperty(ConfigurationFactory.PathParameter.STYLE.name());
+        resourcesBuilder.properties(properties)
 
-        String resourceFolder = targetPath + File.separator + MAIN_SOURCE_PATH + File.separator + RESOURCES_SOURCE_PATH;
-        final String mainPackageFolder = resourceFolder + File.separator + convertPathToPackageName(packageName);
+                        .needRemoveTemplate(true)
 
-        Path gwtModuleSource = Paths.get(resourceFolder, MAIN_GWT_MODULE_FILE_NAME);
-        Path gwtModuleTarget = Paths.get(mainPackageFolder, MAIN_GWT_MODULE_FILE_NAME);
-        Files.createDirectories(Paths.get(mainPackageFolder));
-
-        String gwtModuleContent = new String(Files.readAllBytes(gwtModuleSource));
-        String newGwtModuleContent = gwtModuleContent.replaceAll(EDITOR_NAME_MASK, editorName)
-                                                     .replaceAll(ENTRY_POINT_CLASS_MASK,
-                                                                 packageName + '.' + CLIENT_PART_FOLDER + '.' + ENTRY_POINT_NAME);
-
-        Files.write(gwtModuleTarget, newGwtModuleContent.getBytes());
-        Files.delete(gwtModuleSource);
-
-        Files.createDirectories(Paths.get(mainPackageFolder, CLIENT_PART_FOLDER, ICONS_FOLDER));
-
-        Files.walkFileTree(Paths.get(iconsName, ICONS_FOLDER), new SimpleFileVisitor<Path>() {
-            @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                Path iconsDirectory = Paths.get(mainPackageFolder, CLIENT_PART_FOLDER, ICONS_FOLDER, file.getFileName().toString());
-                if (!Files.exists(Paths.get(mainPackageFolder, CLIENT_PART_FOLDER, ICONS_FOLDER, file.getFileName().toString()))) {
-                    Files.copy(Paths.get(iconsName, ICONS_FOLDER, file.getFileName().toString()), iconsDirectory);
-                }
-
-                return FileVisitResult.CONTINUE;
-            }
-        });
-
-        Path mainCssFileSource = Paths.get(resourceFolder, MAIN_CSS_FILE_NAME);
-        Path mainCssFileTarget = Paths.get(mainPackageFolder, CLIENT_PART_FOLDER, MAIN_CSS_FILE_NAME);
-        // TODO It is the best place for adding custom styles
-        Files.move(mainCssFileSource, mainCssFileTarget);
+                        .build();
     }
-
 }

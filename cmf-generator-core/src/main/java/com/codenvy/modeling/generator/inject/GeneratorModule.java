@@ -26,8 +26,6 @@ import com.codenvy.modeling.configuration.DiagramConfigurationAdapter;
 import com.codenvy.modeling.configuration.EditorConfigurationAdapter;
 import com.codenvy.modeling.configuration.SerializationConfigurationAdapter;
 import com.codenvy.modeling.configuration.StyleConfigurationAdapter;
-import com.codenvy.modeling.generator.builders.java.SourceCodeBuilder;
-import com.codenvy.modeling.generator.builders.java.SourceCodeBuilderImpl;
 import com.codenvy.modeling.generator.builders.xml.api.GField;
 import com.codenvy.modeling.generator.builders.xml.api.GStyle;
 import com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder;
@@ -77,9 +75,6 @@ public class GeneratorModule extends AbstractModule {
                         .implement(SerializationConfigurationAdapter.class, SerializationConfigurationAdapterImpl.class)
                         .implement(StyleConfigurationAdapter.class, StyleConfigurationAdapterImpl.class)
                         .build(ConfigurationAdapterFactory.class));
-
-        // Java code builder configuration
-        bind(SourceCodeBuilder.class).to(SourceCodeBuilderImpl.class);
 
         // UI XML builder configuration
         bind(UIXmlBuilder.class).to(UIXmlBuilderImpl.class);
