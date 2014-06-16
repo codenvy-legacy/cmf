@@ -16,7 +16,7 @@
 
 package com.codenvy.modeling.generator.builders.xml.api.widgets;
 
-import com.codenvy.modeling.generator.builders.Builder;
+import com.codenvy.modeling.generator.builders.xml.api.Builder;
 
 import javax.annotation.Nonnull;
 
@@ -33,7 +33,9 @@ import javax.annotation.Nonnull;
  *
  * @param <T>
  *         type of builder that implemented this interface
+ *
  * @author Andrey Plotnikov
+ * @author Valeriy Svydenko
  */
 public interface GWidget<T> extends Builder {
 

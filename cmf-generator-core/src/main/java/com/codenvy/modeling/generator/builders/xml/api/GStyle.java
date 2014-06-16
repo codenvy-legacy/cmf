@@ -16,11 +16,9 @@
 
 package com.codenvy.modeling.generator.builders.xml.api;
 
-import com.codenvy.modeling.generator.builders.Builder;
-
 import javax.annotation.Nonnull;
 
-import static com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder.OFFSET;
+import static com.codenvy.modeling.generator.builders.OffsetBuilderConstants.OFFSET;
 
 /**
  * The builder for a style into GWT ui xml. It provides an ability to generate ui xml style from given configuration.
@@ -40,14 +38,13 @@ import static com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder.OFFSE
  * </pre>
  *
  * @author Andrey Plotnikov
+ * @author Valeriy Svydenko
  */
 public interface GStyle extends Builder {
 
     String STYLE_OPEN_TAG  = "<ui:style>";
     String STYLE_CLOSE_TAG = "</ui:style>";
-    String STYLE_FORMAT    = OFFSET + OFFSET + ".%s{%n" +
-                             "%s" +
-                             OFFSET + OFFSET + "}%n";
+    String STYLE_FORMAT    = OFFSET + OFFSET + ".%s{%n" + "%s" + OFFSET + OFFSET + "}%n";
 
     /**
      * Add a new style.

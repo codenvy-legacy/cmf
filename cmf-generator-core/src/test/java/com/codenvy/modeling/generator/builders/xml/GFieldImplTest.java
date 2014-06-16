@@ -22,13 +22,14 @@ import com.codenvy.modeling.generator.builders.xml.impl.GFieldImpl;
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder.OFFSET;
+import static com.codenvy.modeling.generator.builders.OffsetBuilderConstants.OFFSET;
 import static org.junit.Assert.assertEquals;
 
 /**
  * Here we're testing {@link GFieldImpl}.
  *
  * @author Andrey Plotnikov
+ * @author Valeriy Svydenko
  */
 public class GFieldImplTest extends AbstractXmlBuilderTest {
 

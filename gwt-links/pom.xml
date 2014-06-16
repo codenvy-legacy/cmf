@@ -15,7 +15,7 @@
     <version>${version.gwt.links}</version>
 
     <packaging>jar</packaging>
-    <name>GWT Links Library</name>
+    <name>↳ GWT Links Library</name>
 
     <dependencies>
         <dependency>

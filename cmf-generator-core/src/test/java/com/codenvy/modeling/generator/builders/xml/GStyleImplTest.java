@@ -22,13 +22,14 @@ import com.codenvy.modeling.generator.builders.xml.impl.GStyleImpl;
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder.OFFSET;
+import static com.codenvy.modeling.generator.builders.OffsetBuilderConstants.OFFSET;
 import static org.junit.Assert.assertEquals;
 
 /**
  * Here we're testing {@link GStyle}.
  *
  * @author Andrey Plotnikov
+ * @author Valeriy Svydenko
  */
 public class GStyleImplTest extends AbstractXmlBuilderTest {
 

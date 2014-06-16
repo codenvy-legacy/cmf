@@ -16,11 +16,9 @@
 
 package com.codenvy.modeling.generator.builders.xml.api;
 
-import com.codenvy.modeling.generator.builders.Builder;
-
 import javax.annotation.Nonnull;
 
-import static com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder.OFFSET;
+import static com.codenvy.modeling.generator.builders.OffsetBuilderConstants.OFFSET;
 
 /**
  * The builder for a field into GWT ui xml. It provides an ability to generate ui xml field from given configuration.
@@ -33,6 +31,7 @@ import static com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder.OFFSE
  * </pre>
  *
  * @author Andrey Plotnikov
+ * @author Valeriy Svydenko
  */
 public interface GField extends Builder {
 

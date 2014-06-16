@@ -24,7 +24,7 @@ import com.codenvy.modeling.generator.builders.xml.impl.widgets.containers.GSpli
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder.OFFSET;
+import static com.codenvy.modeling.generator.builders.OffsetBuilderConstants.OFFSET;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
@@ -33,6 +33,7 @@ import static org.mockito.Mockito.verify;
  * Here we're testing {@link GSplitLayoutPanelImpl}.
  *
  * @author Andrey Plotnikov
+ * @author Valeriy Svydenko
  */
 public class GSplitLayoutPanelImplTest extends AbstractXmlBuilderTest {
 
@@ -258,7 +259,8 @@ public class GSplitLayoutPanelImplTest extends AbstractXmlBuilderTest {
                                       .build();
 
         String expectedContent = String.format("<g:SplitLayoutPanel title=\"title\" ui:field=\"name\" height=\"10px\" width=\"10px\" " +
-                                               "debugId=\"debugId\" styleName=\"{style1} {style2}\" addStyleNames=\"{style1} {style2}\">%n" +
+                                               "debugId=\"debugId\" styleName=\"{style1} {style2}\" addStyleNames=\"{style1} " +
+                                               "{style2}\">%n" +
                                                OFFSET + "<g:north size=\"%.2f\">%n" +
                                                TWO_OFFSETS + "widget 1%n" +
                                                OFFSET + "</g:north>%n" +

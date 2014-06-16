@@ -24,7 +24,7 @@ import com.codenvy.modeling.generator.builders.xml.impl.widgets.containers.GSimp
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder.OFFSET;
+import static com.codenvy.modeling.generator.builders.OffsetBuilderConstants.OFFSET;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
@@ -34,6 +34,7 @@ import static org.mockito.Mockito.verify;
  * Here we're testing {@link GSimpleLayoutPanelImpl}.
  *
  * @author Andrey Plotnikov
+ * @author Valeriy Svydenko
  */
 public class GSimpleLayoutPanelImplTest extends AbstractXmlBuilderTest {
 

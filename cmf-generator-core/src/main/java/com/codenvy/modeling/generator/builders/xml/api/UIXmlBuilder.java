@@ -16,7 +16,6 @@
 
 package com.codenvy.modeling.generator.builders.xml.api;
 
-import com.codenvy.modeling.generator.builders.Builder;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.GWidget;
 
 import javax.annotation.Nonnull;
@@ -51,6 +50,7 @@ import javax.annotation.Nonnull;
  * </pre>
  *
  * @author Andrey Plotnikov
+ * @author Valeriy Svydenko
  */
 public interface UIXmlBuilder extends Builder {
 
@@ -63,7 +63,6 @@ public interface UIXmlBuilder extends Builder {
     String XMLNS_FORMAT  = "%n             xmlns:%s='%s'";
     // TODO remove it
     /** Default offset for UI XML */
-    String OFFSET        = "    ";
 
     /**
      * Add a new xmlns into 'UiBinder' tag.

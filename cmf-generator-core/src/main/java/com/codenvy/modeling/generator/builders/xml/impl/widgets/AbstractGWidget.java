@@ -30,7 +30,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder.OFFSET;
+import static com.codenvy.modeling.generator.builders.OffsetBuilderConstants.OFFSET;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
@@ -39,6 +39,7 @@ import static java.lang.Boolean.TRUE;
  * The main idea of this class is to simplify creating an implementation of GWT widget builders.
  *
  * @author Andrey Plotnikov
+ * @author Valeriy Svydenko
  */
 public abstract class AbstractGWidget<T> implements GWidget<T>, HasEnable<T>, HasText<T>, HasFocus<T>, HasReadOnly<T> {
 

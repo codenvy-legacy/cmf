@@ -23,13 +23,14 @@ import javax.annotation.Nonnull;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder.OFFSET;
+import static com.codenvy.modeling.generator.builders.OffsetBuilderConstants.OFFSET;
 import static java.util.Map.Entry;
 
 /**
  * The implementation of {@link GStyle}.
  *
  * @author Andrey Plotnikov
+ * @author Valeriy Svydenko
  */
 public class GStyleImpl implements GStyle {
 

@@ -22,7 +22,7 @@ import com.codenvy.modeling.generator.builders.xml.api.widgets.GWidget;
 
 import org.mockito.Mockito;
 
-import static com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder.OFFSET;
+import static com.codenvy.modeling.generator.builders.OffsetBuilderConstants.OFFSET;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -31,6 +31,7 @@ import static org.mockito.Mockito.when;
  * The abstract test for UI XML builders. It contains general methods for all UI XML builders.
  *
  * @author Andrey Plotnikov
+ * @author Valeriy Svydenko
  */
 public abstract class AbstractXmlBuilderTest {
 

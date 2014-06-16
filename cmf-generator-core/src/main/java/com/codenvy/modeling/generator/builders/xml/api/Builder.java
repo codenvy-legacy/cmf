@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.codenvy.modeling.generator.builders;
+package com.codenvy.modeling.generator.builders.xml.api;
 
 import javax.annotation.Nonnull;
 
@@ -22,6 +22,7 @@ import javax.annotation.Nonnull;
  * The general presentation of builders. It contains main method for any builder.
  *
  * @author Andrey Plotnikov
+ * @author Valeriy Svydenko
  */
 public interface Builder {
     /**

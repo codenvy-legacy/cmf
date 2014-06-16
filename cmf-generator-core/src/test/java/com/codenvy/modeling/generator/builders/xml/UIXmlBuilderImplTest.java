@@ -32,7 +32,7 @@ import com.codenvy.modeling.generator.builders.xml.impl.widgets.containers.GFlow
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder.OFFSET;
+import static com.codenvy.modeling.generator.builders.OffsetBuilderConstants.OFFSET;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 
@@ -40,6 +40,7 @@ import static org.mockito.Mockito.verify;
  * Here we're testing {@link UIXmlBuilderImpl}.
  *
  * @author Andrey Plotnikov
+ * @author Valeriy Svydenko
  */
 public class UIXmlBuilderImplTest extends AbstractXmlBuilderTest {
 
