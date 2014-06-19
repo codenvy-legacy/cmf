@@ -25,12 +25,19 @@ public interface ResourceNameConstants {
     String EDITOR_STATE               = "State";
     String EDITOR_RESOURCES           = "EditorResources";
     String PROPERTIES_PANEL_PRESENTER = "PropertiesPanelPresenter";
+    String PROPERTIES_PANEL_VIEW      = "PropertiesPanelView";
+    String PROPERTIES_PANEL_VIEW_IMPL = "PropertiesPanelViewImpl";
     String ENTRY_POINT                = "EditorEntryPoint";
     String EDITOR_PRESENTER           = "EditorPresenter";
     String TOOLBAR_PRESENTER          = "ToolbarPresenter";
+    String TOOLBAR_VIEW               = "ToolbarView";
+    String TOOLBAR_VIEW_IMPL          = "ToolbarViewImpl";
     String WORKSPACE_PRESENTER        = "WorkspacePresenter";
+    String WORKSPACE_VIEW             = "WorkspaceView";
+    String WORKSPACE_VIEW_IMPL        = "WorkspaceViewImpl";
     String GIN_MODULE                 = "GinModule";
     String INJECTOR                   = "Injector";
+    String EDITOR_FACTORY_NAME        = "EditorFactory";
 
     String POM_FILE_FULL_NAME        = "pom.xml";
     String MAIN_HTML_FILE_FULL_NAME  = "Editor.html";

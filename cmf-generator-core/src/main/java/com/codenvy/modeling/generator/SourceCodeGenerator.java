@@ -249,11 +249,15 @@ public class SourceCodeGenerator {
 
                             .mainPackage(packageName)
 
+                            .needRemoveTemplate(true)
+
                             .build();
 
         ginModuleBuilder.path(projectPath)
 
                         .mainPackage(packageName)
+
+                        .needRemoveTemplate(true)
 
                         .build();
 
@@ -262,7 +266,9 @@ public class SourceCodeGenerator {
                        .mainPackage(packageName)
                        .editorName(editorName)
 
+                       .needRemoveTemplate(true)
                        .needRemoveTemplateParentFolder(true)
+
                        .build();
     }
 
@@ -321,17 +327,23 @@ public class SourceCodeGenerator {
                     .connections(configuration.getDiagramConfiguration().getConnections())
                     .elements(elements)
 
+                    .needRemoveTemplate(true)
+
                     .build();
 
         editorResourcesBuilder.path(targetPath)
 
                               .properties(properties)
 
+                              .needRemoveTemplate(true)
+
                               .build();
 
         editorEntryPointBuilder.path(targetPath)
 
                                .properties(properties)
+
+                               .needRemoveTemplate(true)
 
                                .build();
 
@@ -340,6 +352,7 @@ public class SourceCodeGenerator {
                               .properties(properties)
                               .elements(elements)
 
+                              .needRemoveTemplate(true)
                               .needRemoveTemplateParentFolder(true)
 
                               .build();

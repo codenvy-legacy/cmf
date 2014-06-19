@@ -29,6 +29,7 @@ import static com.codenvy.modeling.generator.builders.PathConstants.CLIENT_PACKA
 import static com.codenvy.modeling.generator.builders.PathConstants.INJECT_PACKAGE;
 import static com.codenvy.modeling.generator.builders.PathConstants.JAVA_SOURCE_FOLDER;
 import static com.codenvy.modeling.generator.builders.PathConstants.MAIN_SOURCE_PATH;
+import static com.codenvy.modeling.generator.builders.ResourceNameConstants.EDITOR_FACTORY_NAME;
 
 /**
  * @author Valeriy Svydenko
@@ -36,8 +37,6 @@ import static com.codenvy.modeling.generator.builders.PathConstants.MAIN_SOURCE_
 public class EditorFactoryBuilder extends AbstractBuilder<EditorFactoryBuilder> {
 
     private String mainPackage;
-
-    private static final String EDITOR_FACTORY_NAME = "EditorFactory";
 
     @Inject
     public EditorFactoryBuilder() {

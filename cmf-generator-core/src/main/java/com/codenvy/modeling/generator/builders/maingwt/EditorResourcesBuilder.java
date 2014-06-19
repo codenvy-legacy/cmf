@@ -26,7 +26,6 @@ import java.util.Properties;
 
 import static com.codenvy.modeling.generator.GenerationController.Param.MAIN_PACKAGE;
 import static com.codenvy.modeling.generator.GenerationController.Param.TARGET_PATH;
-import static com.codenvy.modeling.generator.builders.ResourceNameConstants.EDITOR_RESOURCES;
 import static com.codenvy.modeling.generator.builders.FileExtensionConstants.JAVA;
 import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.CURRENT_PACKAGE_MARKER;
 import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.CUSTOM_STYLE;
@@ -38,6 +37,7 @@ import static com.codenvy.modeling.generator.builders.PathConstants.JAVA_SOURCE_
 import static com.codenvy.modeling.generator.builders.PathConstants.MAIN_SOURCE_PATH;
 import static com.codenvy.modeling.generator.builders.PathConstants.MY_GWT_PACKAGE;
 import static com.codenvy.modeling.generator.builders.PathConstants.RESOURCES_SOURCE_FOLDER;
+import static com.codenvy.modeling.generator.builders.ResourceNameConstants.EDITOR_RESOURCES;
 
 /**
  * @author Valeriy Svydenko
@@ -108,7 +108,9 @@ public class EditorResourcesBuilder extends AbstractBuilder<EditorResourcesBuild
             }
         }
 
-        imageResources.deleteCharAt(imageResources.lastIndexOf("\n"));
+        if (imageResources.lastIndexOf("\n") > 0) {
+            imageResources.deleteCharAt(imageResources.lastIndexOf("\n"));
+        }
 
         return imageResources.toString();
     }
