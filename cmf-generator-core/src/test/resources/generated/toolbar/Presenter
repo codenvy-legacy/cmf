@@ -8,6 +8,7 @@ import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
 import static my.package.client.State.CREATING_ELEMENT1;
+import static my.package.client.State.CREATING_ELEMENT2;
 import static my.package.client.State.CREATING_CONNECTION1_SOURCE;
 
 public class ToolbarPresenter extends AbstractToolbarPresenter<State> implements ToolbarView.ActionDelegate {
@@ -20,6 +21,11 @@ public class ToolbarPresenter extends AbstractToolbarPresenter<State> implements
     @Override
     public void onElement1ButtonClicked() {
         setState(CREATING_ELEMENT1);
+    }
+
+    @Override
+    public void onElement2ButtonClicked() {
+        setState(CREATING_ELEMENT2);
     }
 
     @Override

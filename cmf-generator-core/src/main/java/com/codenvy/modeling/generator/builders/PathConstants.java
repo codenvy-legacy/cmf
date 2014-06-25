@@ -23,7 +23,6 @@ package com.codenvy.modeling.generator.builders;
 public interface PathConstants {
 
     String MAIN_SOURCE_PATH        = "/src/main";
-    String GENERATED_FOLDER        = "/generated";
     String JAVA_SOURCE_FOLDER      = "java";
     String RESOURCES_SOURCE_FOLDER = "resources";
     String WEBAPP_FOLDER           = "webapp";

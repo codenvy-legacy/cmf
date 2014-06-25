@@ -15,7 +15,7 @@
  */
 package com.codenvy.modeling.generator.builders.inject;
 
-import com.codenvy.modeling.generator.builders.AbstractBuilderHelper;
+import com.codenvy.modeling.generator.AbstractBuilderTest;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +26,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static com.codenvy.modeling.generator.GenerationController.Param.MAIN_PACKAGE;
 import static com.codenvy.modeling.generator.GenerationController.Param.TARGET_PATH;
 import static com.codenvy.modeling.generator.builders.FileExtensionConstants.JAVA;
 import static com.codenvy.modeling.generator.builders.PathConstants.INJECT_PACKAGE;
@@ -38,19 +37,15 @@ import static org.junit.Assert.assertFalse;
 /**
  * @author Valeriy Svydenko
  */
-public class EditorFactoryBuilderTest extends AbstractBuilderHelper {
-
+public class EditorFactoryBuilderTest extends AbstractBuilderTest {
+    @Override
     @Before
-    public void setUp() throws IOException {
-        EditorFactoryBuilder builder = new EditorFactoryBuilder();
+    public void setUp() throws Exception {
+        super.setUp();
 
-        builder.path(properties.getProperty(TARGET_PATH.name()))
+        editorFactoryBuilder = new EditorFactoryBuilder();
 
-               .mainPackage(properties.getProperty(MAIN_PACKAGE.name()))
-               .needRemoveTemplate(true)
-
-               .build();
-
+        generateSources();
     }
 
     @Test

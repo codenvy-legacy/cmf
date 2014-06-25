@@ -15,9 +15,7 @@
  */
 package com.codenvy.modeling.generator.builders.workspace;
 
-import com.codenvy.modeling.configuration.metamodel.diagram.Connection;
-import com.codenvy.modeling.configuration.metamodel.diagram.Element;
-import com.codenvy.modeling.generator.builders.AbstractBuilderHelper;
+import com.codenvy.modeling.generator.AbstractBuilderTest;
 import com.codenvy.modeling.generator.builders.xml.impl.GFieldImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.UIXmlBuilderImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.containers.GFlowPanelImpl;
@@ -31,9 +29,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Set;
 
-import static com.codenvy.modeling.generator.GenerationController.Param.MAIN_PACKAGE;
 import static com.codenvy.modeling.generator.GenerationController.Param.TARGET_PATH;
 import static com.codenvy.modeling.generator.builders.FileExtensionConstants.JAVA;
 import static com.codenvy.modeling.generator.builders.FileExtensionConstants.UI_XML;
@@ -46,37 +42,18 @@ import static org.junit.Assert.assertFalse;
 /**
  * @author Valeriy Svydenko
  */
-public class WorkspaceViewImplBuilderTest extends AbstractBuilderHelper {
-
+public class WorkspaceViewImplBuilderTest extends AbstractBuilderTest {
+    @Override
     @Before
     public void setUp() throws Exception {
-        WorkspaceViewImplBuilder builder = new WorkspaceViewImplBuilder(new UIXmlBuilderImpl(),
-                                                                        new GFieldImpl(),
-                                                                        new GScrollPanelImpl(),
-                                                                        new GFlowPanelImpl());
+        super.setUp();
 
-        WorkspacePresenterBuilder builderPresenter = new WorkspacePresenterBuilder();
+        workspaceViewImplBuilder = new WorkspaceViewImplBuilder(new UIXmlBuilderImpl(),
+                                                                new GFieldImpl(),
+                                                                new GScrollPanelImpl(),
+                                                                new GFlowPanelImpl());
 
-        Set<Element> elements = configuration.getDiagramConfiguration().getElements();
-        Set<Connection> connections = configuration.getDiagramConfiguration().getConnections();
-
-        builderPresenter.path(properties.getProperty(TARGET_PATH.name()))
-
-                        .mainPackage(properties.getProperty(MAIN_PACKAGE.name()))
-                        .elements(elements)
-                        .connections(connections)
-
-                        .build();
-
-        builder.path(properties.getProperty(TARGET_PATH.name()))
-
-               .needRemoveTemplate(true)
-               .mainPackage(properties.getProperty(MAIN_PACKAGE.name()))
-               .elements(elements)
-               .connections(connections)
-
-               .build();
-
+        generateSources();
     }
 
     @Test

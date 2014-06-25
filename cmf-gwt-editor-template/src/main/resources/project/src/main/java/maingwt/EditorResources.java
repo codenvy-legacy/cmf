@@ -14,6 +14,5 @@ public interface EditorResources extends ClientBundle {
 
     @Source("editor.css")
     EditorCSS editorCSS();
-
 image_resources
 }

@@ -15,7 +15,7 @@
  */
 package com.codenvy.modeling.generator.builders.maingwt;
 
-import com.codenvy.modeling.generator.builders.AbstractBuilderHelper;
+import com.codenvy.modeling.generator.AbstractBuilderTest;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -36,21 +36,15 @@ import static org.junit.Assert.assertFalse;
 /**
  * @author Valeriy Svydenko
  */
-public class EditorPresenterBuilderTest extends AbstractBuilderHelper {
-
+public class EditorPresenterBuilderTest extends AbstractBuilderTest {
+    @Override
     @Before
     public void setUp() throws Exception {
-        EditorPresenterBuilder builder = new EditorPresenterBuilder();
+        super.setUp();
 
-        builder.path(properties.getProperty(TARGET_PATH.name()))
+        editorPresenterBuilder = new EditorPresenterBuilder();
 
-               .properties(properties)
-               .elements(configuration.getDiagramConfiguration().getElements())
-
-               .needRemoveTemplate(true)
-
-               .build();
-
+        generateSources();
     }
 
     @Test

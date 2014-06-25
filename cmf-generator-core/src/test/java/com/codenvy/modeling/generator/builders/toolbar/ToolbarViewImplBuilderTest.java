@@ -15,24 +15,26 @@
  */
 package com.codenvy.modeling.generator.builders.toolbar;
 
-import com.codenvy.modeling.configuration.metamodel.diagram.Connection;
-import com.codenvy.modeling.configuration.metamodel.diagram.Element;
-import com.codenvy.modeling.generator.builders.AbstractBuilderHelper;
+import com.codenvy.modeling.generator.AbstractBuilderTest;
+import com.codenvy.modeling.generator.builders.xml.api.widgets.GPushButton;
 import com.codenvy.modeling.generator.builders.xml.impl.GStyleImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.UIXmlBuilderImpl;
+import com.codenvy.modeling.generator.builders.xml.impl.widgets.GPushButtonImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.containers.GDockLayoutPanelImpl;
+import com.google.inject.Provider;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Set;
 
-import static com.codenvy.modeling.generator.GenerationController.Param.MAIN_PACKAGE;
 import static com.codenvy.modeling.generator.GenerationController.Param.TARGET_PATH;
 import static com.codenvy.modeling.generator.builders.FileExtensionConstants.JAVA;
 import static com.codenvy.modeling.generator.builders.FileExtensionConstants.UI_XML;
@@ -41,42 +43,33 @@ import static com.codenvy.modeling.generator.builders.PathConstants.MAIN_SOURCE_
 import static com.codenvy.modeling.generator.builders.PathConstants.TOOLBAR_PACKAGE;
 import static com.codenvy.modeling.generator.builders.ResourceNameConstants.TOOLBAR_VIEW_IMPL;
 import static org.junit.Assert.assertFalse;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Valeriy Svydenko
  */
-public class ToolbarViewImplBuilderTest extends AbstractBuilderHelper {
+public class ToolbarViewImplBuilderTest extends AbstractBuilderTest {
+    @Mock
+    private Provider<GPushButton> pushButtonProvider;
 
+    @Override
     @Before
     public void setUp() throws Exception {
-        ToolbarViewImplBuilder builder = new ToolbarViewImplBuilder(new UIXmlBuilderImpl(),
-                                                                    new GStyleImpl(),
-                                                                    new GDockLayoutPanelImpl(),
-                                                                    pushButtonProvider);
+        super.setUp();
 
-        ToolbarPresenterBuilder builderPresenter = new ToolbarPresenterBuilder();
+        when(pushButtonProvider.get()).thenAnswer(new Answer<GPushButton>() {
+            @Override
+            public GPushButton answer(InvocationOnMock invocation) throws Throwable {
+                return new GPushButtonImpl();
+            }
+        });
 
-        Set<Element> elements = configuration.getDiagramConfiguration().getElements();
-        Set<Connection> connections = configuration.getDiagramConfiguration().getConnections();
+        toolbarViewImplBuilder = new ToolbarViewImplBuilder(new UIXmlBuilderImpl(),
+                                                            new GStyleImpl(),
+                                                            new GDockLayoutPanelImpl(),
+                                                            pushButtonProvider);
 
-        builderPresenter.path(properties.getProperty(TARGET_PATH.name()))
-
-                        .needRemoveTemplate(true)
-                        .mainPackage(properties.getProperty(MAIN_PACKAGE.name()))
-                        .elements(elements)
-                        .connections(connections)
-
-                        .build();
-
-        builder.path(properties.getProperty(TARGET_PATH.name()))
-
-               .needRemoveTemplate(true)
-               .mainPackage(properties.getProperty(MAIN_PACKAGE.name()))
-               .elements(elements)
-               .connections(connections)
-
-               .build();
-
+        generateSources();
     }
 
     @Test

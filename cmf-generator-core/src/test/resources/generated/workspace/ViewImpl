@@ -5,6 +5,7 @@ import com.codenvy.editor.api.editor.elements.Shape;
 import com.codenvy.editor.api.editor.elements.widgets.shape.ShapeWidget;
 import com.codenvy.ide.client.EditorResources;
 import my.package.client.elements.Element1;
+import my.package.client.elements.Element2;
 import my.package.client.elements.Connection1;
 
 import com.google.gwt.dom.client.NativeEvent;
@@ -121,6 +122,11 @@ public class WorkspaceViewImpl extends WorkspaceView {
     @Override
     public void addElement1(int x, int y, Element1 element) {
         addShape(x, y, element, resources.element1());
+    }
+
+    @Override
+    public void addElement2(int x, int y, Element2 element) {
+        addShape(x, y, element, resources.element2());
     }
 
     @Override

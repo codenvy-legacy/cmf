@@ -38,8 +38,10 @@ public class MainElement extends AbstractShape {
     private Shape findElement(String elementName) {
         switch (elementName) {
             case "Element1":
-            default:
                 return new Element1();
+            case "Element2":
+            default:
+                return new Element2();
         }
     }
 

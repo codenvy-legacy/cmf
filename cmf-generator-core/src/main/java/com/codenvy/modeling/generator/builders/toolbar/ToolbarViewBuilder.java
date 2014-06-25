@@ -43,7 +43,8 @@ import static com.codenvy.modeling.generator.builders.PathConstants.TOOLBAR_PACK
 /**
  * @author Andrey Plotnikov
  */
-public class ToolbarViewBuilder extends AbstractBuilder<ToolbarViewBuilder> {
+public class
+        ToolbarViewBuilder extends AbstractBuilder<ToolbarViewBuilder> {
 
     private static final String CREATE_ON_ELEMENT_BUTTON_CLICKED_CODE_FORMAT = TWO_TABS + "void onelementNameButtonClicked();\n\n";
 

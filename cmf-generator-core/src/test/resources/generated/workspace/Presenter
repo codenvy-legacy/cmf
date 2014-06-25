@@ -14,10 +14,12 @@ import javax.annotation.Nonnull;
 
 import my.package.client.elements.MainElement;
 import my.package.client.elements.Element1;
+import my.package.client.elements.Element2;
 import my.package.client.elements.Connection1;
 
 import static my.package.client.State.CREATING_NOTHING;
 import static my.package.client.State.CREATING_ELEMENT1;
+import static my.package.client.State.CREATING_ELEMENT2;
 import static my.package.client.State.CREATING_CONNECTION1_SOURCE;
 import static my.package.client.State.CREATING_CONNECTION1_TARGET;
 
@@ -48,6 +50,14 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
 
                 ((WorkspaceView)view).addElement1(x, y, element1);
                 addShape(element1, x, y);
+
+                setState(CREATING_NOTHING);
+                break;
+            case CREATING_ELEMENT2:
+                Element2 element2 = new Element2();
+
+                ((WorkspaceView)view).addElement2(x, y, element2);
+                addShape(element2, x, y);
 
                 setState(CREATING_NOTHING);
                 break;
@@ -129,6 +139,9 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
         for (Shape shape : mainElement.getShapes()) {
             if (shape instanceof Element1) {
                 ((WorkspaceView)view).addElement1(x, y, (Element1)shape);
+            }
+            if (shape instanceof Element2) {
+                ((WorkspaceView)view).addElement2(x, y, (Element2)shape);
             }
 
             shape.setX(x);

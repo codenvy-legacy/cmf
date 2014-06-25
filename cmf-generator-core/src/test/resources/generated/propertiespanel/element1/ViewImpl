@@ -1,0 +1,92 @@
+package my.package.client.propertiespanel.element1;
+
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
+
+import javax.annotation.Nonnull;
+
+public class Element1PropertiesPanelViewImpl extends Element1PropertiesPanelView {
+
+    interface Element1PropertiesPanelViewImplUiBinder extends UiBinder<Widget, Element1PropertiesPanelViewImpl> {
+    }
+
+    @UiField
+    TextBox property1;
+    @UiField
+    TextBox property2;
+    @UiField
+    TextBox property3;
+    @UiField
+    TextBox property4;
+
+    @Inject
+    public Element1PropertiesPanelViewImpl(Element1PropertiesPanelViewImplUiBinder ourUiBinder) {
+        widget = ourUiBinder.createAndBindUi(this);
+    }
+
+    @Override
+    public Integer getProperty1() {
+        return Integer.valueOf(property1.getText());
+    }
+
+    @Override
+    public void setProperty1(Integer property1) {
+        this.property1.setText(property1.toString());
+    }
+
+    @UiHandler("property1")
+    public void onProperty1Changed(KeyUpEvent event) {
+        delegate.onProperty1Changed();
+    }
+
+    @Override
+    public Boolean getProperty2() {
+        return Boolean.valueOf(property2.getText());
+    }
+
+    @Override
+    public void setProperty2(Boolean property2) {
+        this.property2.setText(property2.toString());
+    }
+
+    @UiHandler("property2")
+    public void onProperty2Changed(KeyUpEvent event) {
+        delegate.onProperty2Changed();
+    }
+
+    @Override
+    public String getProperty3() {
+        return String.valueOf(property3.getText());
+    }
+
+    @Override
+    public void setProperty3(String property3) {
+        this.property3.setText(property3.toString());
+    }
+
+    @UiHandler("property3")
+    public void onProperty3Changed(KeyUpEvent event) {
+        delegate.onProperty3Changed();
+    }
+
+    @Override
+    public Double getProperty4() {
+        return Double.valueOf(property4.getText());
+    }
+
+    @Override
+    public void setProperty4(Double property4) {
+        this.property4.setText(property4.toString());
+    }
+
+    @UiHandler("property4")
+    public void onProperty4Changed(KeyUpEvent event) {
+        delegate.onProperty4Changed();
+    }
+
+}

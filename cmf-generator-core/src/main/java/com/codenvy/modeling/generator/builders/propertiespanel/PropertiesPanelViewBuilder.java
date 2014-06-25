@@ -52,7 +52,7 @@ public class PropertiesPanelViewBuilder extends AbstractBuilder<PropertiesPanelV
 
     private static final String GET_AND_SET_PROPERTY    = OFFSET + "public abstract propertyType getpropertyName();\n\n" +
                                                           OFFSET + "public abstract void setpropertyName(propertyType argumentName);\n\n";
-    private static final String PROPERTY_CHANGED_METHOD = TWO_TABS + "void onpropertyNameChanged();\n";
+    private static final String PROPERTY_CHANGED_METHOD = TWO_TABS + "void onpropertyNameChanged();\n\n";
 
     private static final String PROPERTIES_PANEL_VIEW_NAME = "PropertiesPanelView";
 

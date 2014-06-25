@@ -151,15 +151,6 @@ public class ToolbarViewImplBuilder extends AbstractBuilder<ToolbarViewImplBuild
             addButtonOnPanel(connectionName);
         }
 
-        Path toolbarUiXMLPath = Paths.get(path,
-                                          MAIN_SOURCE_PATH,
-                                          JAVA_SOURCE_FOLDER,
-                                          convertPathToPackageName(mainPackage),
-                                          CLIENT_PACKAGE,
-                                          TOOLBAR_PACKAGE,
-                                          TOOLBAR_VIEW_IMPL_NAME + UI_XML);
-        Files.write(toolbarUiXMLPath, uiXmlBuilder.build().getBytes());
-
         source = Paths.get(path,
                            MAIN_SOURCE_PATH,
                            JAVA_SOURCE_FOLDER,
@@ -180,6 +171,15 @@ public class ToolbarViewImplBuilder extends AbstractBuilder<ToolbarViewImplBuild
         replaceElements.put(ACTION_DELEGATES_MARKER, methods.toString());
 
         super.build();
+
+        Path toolbarUiXMLPath = Paths.get(path,
+                                          MAIN_SOURCE_PATH,
+                                          JAVA_SOURCE_FOLDER,
+                                          convertPathToPackageName(mainPackage),
+                                          CLIENT_PACKAGE,
+                                          TOOLBAR_PACKAGE,
+                                          TOOLBAR_VIEW_IMPL_NAME + UI_XML);
+        Files.write(toolbarUiXMLPath, uiXmlBuilder.build().getBytes());
     }
 
     @Nonnull

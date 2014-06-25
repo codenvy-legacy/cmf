@@ -2,6 +2,7 @@ package my.package.client;
 
 public enum State {
     CREATING_ELEMENT1,
+    CREATING_ELEMENT2,
     CREATING_CONNECTION1_SOURCE,
     CREATING_CONNECTION1_TARGET,
     CREATING_NOTHING

@@ -1,0 +1,50 @@
+package my.package.client.propertiespanel.element2;
+
+import com.codenvy.editor.api.editor.propertiespanel.AbstractPropertiesPanel;
+import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import com.google.inject.Inject;
+import my.package.client.elements.Element2;
+
+public class Element2PropertiesPanelPresenter extends AbstractPropertiesPanel<Element2>
+        implements Element2PropertiesPanelView.ActionDelegate {
+
+    @Inject
+    public Element2PropertiesPanelPresenter(Element2PropertiesPanelView view) {
+        super(view);
+    }
+
+    @Override
+    public void onProperty1Changed() {
+        element.setProperty1(((Element2PropertiesPanelView)view).getProperty1());
+        notifyListeners();
+    }
+
+    @Override
+    public void onProperty2Changed() {
+        element.setProperty2(((Element2PropertiesPanelView)view).getProperty2());
+        notifyListeners();
+    }
+
+    @Override
+    public void onProperty3Changed() {
+        element.setProperty3(((Element2PropertiesPanelView)view).getProperty3());
+        notifyListeners();
+    }
+
+    @Override
+    public void onProperty4Changed() {
+        element.setProperty4(((Element2PropertiesPanelView)view).getProperty4());
+        notifyListeners();
+    }
+
+    @Override
+    public void go(AcceptsOneWidget container) {
+        super.go(container);
+
+        ((Element2PropertiesPanelView)view).setProperty1(element.getProperty1());
+        ((Element2PropertiesPanelView)view).setProperty2(element.getProperty2());
+        ((Element2PropertiesPanelView)view).setProperty3(element.getProperty3());
+        ((Element2PropertiesPanelView)view).setProperty4(element.getProperty4());
+    }
+
+}

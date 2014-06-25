@@ -15,86 +15,117 @@
  */
 package com.codenvy.modeling.generator.builders.propertiespanel;
 
-import com.codenvy.modeling.configuration.metamodel.diagram.Element;
-import com.codenvy.modeling.configuration.metamodel.diagram.Property;
-import com.codenvy.modeling.generator.builders.AbstractBuilderHelper;
+import com.codenvy.modeling.generator.AbstractBuilderTest;
+import com.codenvy.modeling.generator.builders.xml.api.widgets.GLabel;
+import com.codenvy.modeling.generator.builders.xml.api.widgets.GTextBox;
+import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GFlowPanel;
+import com.codenvy.modeling.generator.builders.xml.impl.GFieldImpl;
+import com.codenvy.modeling.generator.builders.xml.impl.UIXmlBuilderImpl;
+import com.codenvy.modeling.generator.builders.xml.impl.widgets.GLabelImpl;
+import com.codenvy.modeling.generator.builders.xml.impl.widgets.GTextBoxImpl;
+import com.codenvy.modeling.generator.builders.xml.impl.widgets.containers.GDockLayoutPanelImpl;
+import com.codenvy.modeling.generator.builders.xml.impl.widgets.containers.GFlowPanelImpl;
+import com.google.inject.Provider;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Iterator;
-import java.util.Set;
 
-import static com.codenvy.modeling.generator.GenerationController.Param.MAIN_PACKAGE;
 import static com.codenvy.modeling.generator.GenerationController.Param.TARGET_PATH;
 import static com.codenvy.modeling.generator.builders.FileExtensionConstants.JAVA;
+import static com.codenvy.modeling.generator.builders.FileExtensionConstants.UI_XML;
 import static com.codenvy.modeling.generator.builders.PathConstants.JAVA_SOURCE_FOLDER;
 import static com.codenvy.modeling.generator.builders.PathConstants.MAIN_SOURCE_PATH;
 import static com.codenvy.modeling.generator.builders.PathConstants.PROPERTIES_PANEL_PACKAGE;
 import static com.codenvy.modeling.generator.builders.ResourceNameConstants.PROPERTIES_PANEL_VIEW_IMPL;
 import static org.junit.Assert.assertFalse;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Valeriy Svydenko
  */
-public class PropertiesPanelViewImplBuilderTest extends AbstractBuilderHelper {
-    private static final String ELEMENT1                                   = "element1";
-    private static final String VIEW_IMPL_NAME                             = "Element1PropertiesPanelViewImpl.java";
-    private static final String PROPERTIES_PANEL_VIEW_IMPL_BINDER_XML_NAME = "Element1PropertiesPanelViewImpl.ui.xml";
+public class PropertiesPanelViewImplBuilderTest extends AbstractBuilderTest {
+    private static final String ELEMENT1        = "element1";
+    private static final String ELEMENT2        = "element2";
+    private static final String VIEW_IMPL_NAME  = "Element1PropertiesPanelViewImpl";
+    private static final String VIEW_IMPL_NAME2 = "Element2PropertiesPanelViewImpl";
 
+    @Mock
+    private Provider<GFlowPanel> flowPanelProvider;
+    @Mock
+    private Provider<GLabel>     labelProvider;
+    @Mock
+    private Provider<GTextBox>   textBoxProvider;
+
+    @Override
     @Before
     public void setUp() throws Exception {
-        Set<Element> elements = configuration.getDiagramConfiguration().getElements();
+        super.setUp();
 
-        for (Iterator<Element> iterator = elements.iterator(); iterator.hasNext(); ) {
-            Element element = iterator.next();
-            Set<Property> prop = element.getProperties();
+        when(flowPanelProvider.get()).thenAnswer(new Answer<GFlowPanel>() {
+            @Override
+            public GFlowPanel answer(InvocationOnMock invocation) throws Throwable {
+                return new GFlowPanelImpl();
+            }
+        });
+        when(labelProvider.get()).thenAnswer(new Answer<GLabel>() {
+            @Override
+            public GLabel answer(InvocationOnMock invocation) throws Throwable {
+                return new GLabelImpl();
+            }
+        });
+        when(textBoxProvider.get()).thenAnswer(new Answer<GTextBox>() {
+            @Override
+            public GTextBox answer(InvocationOnMock invocation) throws Throwable {
+                return new GTextBoxImpl();
+            }
+        });
 
-            boolean hasNext = iterator.hasNext();
+        when(propertiesPanelViewImplBuilderProvider.get()).thenAnswer(new Answer<PropertiesPanelViewImplBuilder>() {
+            @Override
+            public PropertiesPanelViewImplBuilder answer(InvocationOnMock invocation) throws Throwable {
+                return new PropertiesPanelViewImplBuilder(new UIXmlBuilderImpl(),
+                                                          new GDockLayoutPanelImpl(),
+                                                          new GFieldImpl(),
+                                                          flowPanelProvider,
+                                                          labelProvider,
+                                                          textBoxProvider);
+            }
+        });
 
-            propertiesPanelPresenterBuilderProvider.get()
-
-                                                   .path(properties.getProperty(TARGET_PATH.name()))
-
-                                                   .needRemoveTemplate(!hasNext)
-
-                                                   .mainPackage(properties.getProperty(MAIN_PACKAGE.name()))
-                                                   .properties(prop)
-                                                   .element(element)
-
-                                                   .build();
-
-            propertiesPanelViewImplBuilderProvider.get()
-
-                                                  .needRemoveTemplate(!hasNext)
-
-                                                  .path(properties.getProperty(TARGET_PATH.name()))
-
-                                                  .mainPackage(properties.getProperty(MAIN_PACKAGE.name()))
-                                                  .element(element)
-                                                  .properties(prop)
-
-                                                  .build();
-
-        }
-
+        generateSources();
     }
 
     @Test
-    public void propertiesViewImplShouldBeGenerated() throws IOException {
-        assertContent(File.separator + PROPERTIES_PANEL_PACKAGE + File.separator + VIEW_IMPL, clientFolder, PROPERTIES_PANEL_PACKAGE,
-                      ELEMENT1, VIEW_IMPL_NAME);
+    public void propertiesPanelViewImplShouldBeGenerated() throws IOException {
+        assertContent(File.separator + PROPERTIES_PANEL_PACKAGE + File.separator + ELEMENT1 + File.separator + VIEW_IMPL, clientFolder,
+                      PROPERTIES_PANEL_PACKAGE, ELEMENT1, VIEW_IMPL_NAME + JAVA);
     }
 
     @Test
-    public void propertiesViewImplBinderShouldBeGenerated() throws IOException {
-        assertContent(File.separator + PROPERTIES_PANEL_PACKAGE + File.separator + VIEW_BINDER_IMPL, clientFolder, PROPERTIES_PANEL_PACKAGE,
-                      ELEMENT1, PROPERTIES_PANEL_VIEW_IMPL_BINDER_XML_NAME);
+    public void propertiesPanelViewImplBinderShouldBeGenerated() throws IOException {
+        assertContent(File.separator + PROPERTIES_PANEL_PACKAGE + File.separator + ELEMENT1 + File.separator + VIEW_BINDER_IMPL,
+                      clientFolder, PROPERTIES_PANEL_PACKAGE, ELEMENT1, VIEW_IMPL_NAME + UI_XML);
+    }
+
+    @Test
+    public void element2PropertiesPanelViewImplShouldBeGenerated() throws IOException {
+        assertContent(File.separator + PROPERTIES_PANEL_PACKAGE + File.separator + ELEMENT2 + File.separator + VIEW_IMPL, clientFolder,
+                      PROPERTIES_PANEL_PACKAGE, ELEMENT2, VIEW_IMPL_NAME2 + JAVA);
+    }
+
+    @Test
+    public void element2PropertiesPanelViewImplBinderShouldBeGenerated() throws IOException {
+        assertContent(File.separator + PROPERTIES_PANEL_PACKAGE + File.separator + ELEMENT1 + File.separator + VIEW_BINDER_IMPL,
+                      clientFolder, PROPERTIES_PANEL_PACKAGE, ELEMENT2, VIEW_IMPL_NAME2 + UI_XML);
     }
 
     @Test

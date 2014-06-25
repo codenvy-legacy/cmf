@@ -5,10 +5,16 @@ import java.util.Arrays;
 
 public class Element1 extends MainElement {
     private Integer property1;
+    private Boolean property2;
+    private String property3;
+    private Double property4;
 
     public Element1() {
-        super("Element1", Arrays.asList("Property1"));
+        super("Element1", Arrays.asList("Property1", "Property2", "Property3", "Property4"));
         property1 = 10;
+        property2 = true;
+        property3 = "some string";
+        property4 = 12.3f;
     }
 
     public Integer getProperty1() {
@@ -19,11 +25,44 @@ public class Element1 extends MainElement {
         this.property1 = property1;
     }
 
+    public Boolean getProperty2() {
+        return property2;
+    }
+
+    public void setProperty2(Boolean property2) {
+        this.property2 = property2;
+    }
+
+    public String getProperty3() {
+        return property3;
+    }
+
+    public void setProperty3(String property3) {
+        this.property3 = property3;
+    }
+
+    public Double getProperty4() {
+        return property4;
+    }
+
+    public void setProperty4(Double property4) {
+        this.property4 = property4;
+    }
+
     @Override
     protected String serializeProperties() {
         return "<Property1>" +
                    property1 +
-               "</Property1>";
+               "</Property1>" +
+               "<Property2>" +
+                   property2 +
+               "</Property2>" +
+               "<Property3>" +
+                   property3 +
+               "</Property3>" +
+               "<Property4>" +
+                   property4 +
+               "</Property4>";
     }
 
     @Override
@@ -34,6 +73,15 @@ public class Element1 extends MainElement {
         switch (nodeName) {
             case "Property1":
                 property1 = Integer.valueOf(nodeValue);
+            break;
+            case "Property2":
+                property2 = Boolean.valueOf(nodeValue);
+            break;
+            case "Property3":
+                property3 = String.valueOf(nodeValue);
+            break;
+            case "Property4":
+                property4 = Double.valueOf(nodeValue);
             break;
         }
     }

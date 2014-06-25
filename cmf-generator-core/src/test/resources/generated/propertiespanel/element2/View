@@ -1,0 +1,37 @@
+package my.package.client.propertiespanel.element2;
+
+import com.codenvy.editor.api.mvp.AbstractView;
+import com.google.inject.ImplementedBy;
+
+@ImplementedBy(Element2PropertiesPanelViewImpl.class)
+public abstract class Element2PropertiesPanelView extends AbstractView<Element2PropertiesPanelView.ActionDelegate> {
+
+    public interface ActionDelegate extends AbstractView.ActionDelegate {
+
+        void onProperty1Changed();
+
+        void onProperty2Changed();
+
+        void onProperty3Changed();
+
+        void onProperty4Changed();
+
+    }
+
+    public abstract Integer getProperty1();
+
+    public abstract void setProperty1(Integer property1);
+
+    public abstract Boolean getProperty2();
+
+    public abstract void setProperty2(Boolean property2);
+
+    public abstract String getProperty3();
+
+    public abstract void setProperty3(String property3);
+
+    public abstract Double getProperty4();
+
+    public abstract void setProperty4(Double property4);
+
+}

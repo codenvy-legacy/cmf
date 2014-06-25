@@ -38,7 +38,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import static com.codenvy.modeling.generator.builders.ResourceNameConstants.EDITOR_RESOURCES;
 import static com.codenvy.modeling.generator.builders.FileExtensionConstants.JAVA;
 import static com.codenvy.modeling.generator.builders.FileExtensionConstants.UI_XML;
 import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.ACTION_DELEGATES_MARKER;
@@ -54,6 +53,7 @@ import static com.codenvy.modeling.generator.builders.PathConstants.CLIENT_PACKA
 import static com.codenvy.modeling.generator.builders.PathConstants.JAVA_SOURCE_FOLDER;
 import static com.codenvy.modeling.generator.builders.PathConstants.MAIN_SOURCE_PATH;
 import static com.codenvy.modeling.generator.builders.PathConstants.PROPERTIES_PANEL_PACKAGE;
+import static com.codenvy.modeling.generator.builders.ResourceNameConstants.EDITOR_RESOURCES;
 
 /**
  * @author Andrey Plotnikov
@@ -78,12 +78,12 @@ public class PropertiesPanelViewImplBuilder extends AbstractBuilder<PropertiesPa
 
     private static final String PROPERTIES_PANEL_VIEW_IMPL_NAME = "PropertiesPanelViewImpl";
 
-    private final UIXmlBuilder         uiXmlBuilder;
     private final GDockLayoutPanel     dockLayoutPanelBuilder;
     private final GField               fieldBuilder;
     private final Provider<GFlowPanel> flowPanelProvider;
     private final Provider<GLabel>     labelProvider;
     private final Provider<GTextBox>   textBoxProvider;
+    private       UIXmlBuilder         uiXmlBuilder;
     private       String               mainPackage;
     private       Set<Property>        properties;
     private       Element              element;
@@ -153,16 +153,6 @@ public class PropertiesPanelViewImplBuilder extends AbstractBuilder<PropertiesPa
             addPropertyGraphicalElements(propertyName, dockLayoutPanelBuilder);
         }
 
-        Path propertiesPanelUiXMLPath = Paths.get(path,
-                                                  MAIN_SOURCE_PATH,
-                                                  JAVA_SOURCE_FOLDER,
-                                                  convertPathToPackageName(mainPackage),
-                                                  CLIENT_PACKAGE,
-                                                  PROPERTIES_PANEL_PACKAGE,
-                                                  elementNameLowerCase,
-                                                  elementName + PROPERTIES_PANEL_VIEW_IMPL_NAME + UI_XML);
-        Files.write(propertiesPanelUiXMLPath, uiXmlBuilder.build().getBytes());
-
         source = Paths.get(path,
                            MAIN_SOURCE_PATH,
                            JAVA_SOURCE_FOLDER,
@@ -183,6 +173,16 @@ public class PropertiesPanelViewImplBuilder extends AbstractBuilder<PropertiesPa
         replaceElements.put(ELEMENT_NAME_MARKER, elementName);
 
         super.build();
+
+        Path propertiesPanelUiXMLPath = Paths.get(path,
+                                                  MAIN_SOURCE_PATH,
+                                                  JAVA_SOURCE_FOLDER,
+                                                  convertPathToPackageName(mainPackage),
+                                                  CLIENT_PACKAGE,
+                                                  PROPERTIES_PANEL_PACKAGE,
+                                                  elementNameLowerCase,
+                                                  elementName + PROPERTIES_PANEL_VIEW_IMPL_NAME + UI_XML);
+        Files.write(propertiesPanelUiXMLPath, uiXmlBuilder.build().getBytes());
     }
 
     @Nonnull

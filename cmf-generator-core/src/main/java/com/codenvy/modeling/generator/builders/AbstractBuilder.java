@@ -23,8 +23,11 @@ import com.codenvy.modeling.configuration.metamodel.diagram.Property;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -32,6 +35,7 @@ import java.util.Set;
 
 /**
  * @author Andrey Plotnikov
+ * @author Valeriy Svydenko
  */
 public abstract class AbstractBuilder<T extends AbstractBuilder> {
 
@@ -138,8 +142,16 @@ public abstract class AbstractBuilder<T extends AbstractBuilder> {
 
     private void removeTemplateParentFolder(@Nonnull Path parentPath) throws IOException {
         if (needRemoveTemplateParentFolder) {
+            Files.walkFileTree(parentPath, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    Files.delete(file);
+
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+
             Files.delete(parentPath);
         }
     }
-
 }

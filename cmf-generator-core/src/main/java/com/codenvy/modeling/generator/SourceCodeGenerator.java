@@ -99,7 +99,6 @@ public class SourceCodeGenerator {
     private final EditorResourcesBuilder                    editorResourcesBuilder;
     private final StateBuilder                              stateBuilder;
 
-
     @Inject
     public SourceCodeGenerator(WorkspacePresenterBuilder workspacePresenterBuilder,
                                WorkspaceViewBuilder workspaceViewBuilder,

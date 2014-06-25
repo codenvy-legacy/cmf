@@ -18,11 +18,14 @@ public class ToolbarViewImpl extends ToolbarView {
     @UiField(provided = true)
     PushButton element1;
     @UiField(provided = true)
+    PushButton element2;
+    @UiField(provided = true)
     PushButton connection1;
 
     @Inject
     public ToolbarViewImpl(ToolbarViewImplUiBinder ourUiBinder, EditorResources resources) {
         element1 = new PushButton(new Image(resources.element1Toolbar()));
+        element2 = new PushButton(new Image(resources.element2Toolbar()));
         connection1 = new PushButton(new Image(resources.connection1()));
 
         widget = ourUiBinder.createAndBindUi(this);
@@ -31,6 +34,11 @@ public class ToolbarViewImpl extends ToolbarView {
     @UiHandler("element1")
     public void onElement1ButtonClicked(ClickEvent event) {
         delegate.onElement1ButtonClicked();
+    }
+
+    @UiHandler("element2")
+    public void onElement2ButtonClicked(ClickEvent event) {
+        delegate.onElement2ButtonClicked();
     }
 
     @UiHandler("connection1")

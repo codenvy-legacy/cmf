@@ -29,8 +29,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import static com.codenvy.modeling.generator.builders.ResourceNameConstants.EDITOR_STATE;
-import static com.codenvy.modeling.generator.builders.ResourceNameConstants.WORKSPACE_PRESENTER;
 import static com.codenvy.modeling.generator.builders.EditorStateConstants.CREATE_CONNECTION_SOURCE_STATE_FORMAT;
 import static com.codenvy.modeling.generator.builders.EditorStateConstants.CREATE_CONNECTION_TARGET_STATE_FORMAT;
 import static com.codenvy.modeling.generator.builders.EditorStateConstants.CREATE_ELEMENT_STATE_FORMAT;
@@ -52,6 +50,8 @@ import static com.codenvy.modeling.generator.builders.PathConstants.ELEMENTS_PAC
 import static com.codenvy.modeling.generator.builders.PathConstants.JAVA_SOURCE_FOLDER;
 import static com.codenvy.modeling.generator.builders.PathConstants.MAIN_SOURCE_PATH;
 import static com.codenvy.modeling.generator.builders.PathConstants.WORKSPACE_PACKAGE;
+import static com.codenvy.modeling.generator.builders.ResourceNameConstants.EDITOR_STATE;
+import static com.codenvy.modeling.generator.builders.ResourceNameConstants.WORKSPACE_PRESENTER;
 
 /**
  * @author Andrey Plotnikov

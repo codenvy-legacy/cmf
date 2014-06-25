@@ -113,7 +113,7 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
                                                          FOUR_TABS + "return new elementName();\n";
 
     private static final String FIND_ELEMENT_CODE = THREE_TABS + "case \"elementName\":\n" +
-                                                    FOUR_TABS + "return new elementName();";
+                                                    FOUR_TABS + "return new elementName();\n";
 
     private static final String APPLY_PROPERTIES_METHOD = OFFSET + "@Override\n" +
                                                           OFFSET + "public void applyProperty(Node node) {\napplyProperties" +
@@ -213,7 +213,7 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
 
             propertyNames.append('"').append(propertyName).append('"');
             if (iterator.hasNext()) {
-                propertyNames.append(',');
+                propertyNames.append(", ");
             }
 
             propertiesGetterAndSetters.append(createPropertyGetterAndSetterCode(propertyName, propertyType));
@@ -227,7 +227,7 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
             serializationCode.append(createSerializePropertyCode(propertyName));
 
             if (iterator.hasNext()) {
-                serializationCode.append(" +\n");
+                serializationCode.append(" +\n" + TWO_TABS);
             }
         }
 

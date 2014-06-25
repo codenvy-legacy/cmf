@@ -14,6 +14,9 @@
             <g:PushButton ui:field="element1" addStyleNames="{style.buttonStyle}"/>
         </g:north>
         <g:north size="32.00">
+            <g:PushButton ui:field="element2" addStyleNames="{style.buttonStyle}"/>
+        </g:north>
+        <g:north size="32.00">
             <g:PushButton ui:field="connection1" addStyleNames="{style.buttonStyle}"/>
         </g:north>
     </g:DockLayoutPanel>

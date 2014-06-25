@@ -35,7 +35,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import static com.codenvy.modeling.generator.builders.ResourceNameConstants.EDITOR_RESOURCES;
 import static com.codenvy.modeling.generator.builders.FileExtensionConstants.JAVA;
 import static com.codenvy.modeling.generator.builders.FileExtensionConstants.UI_XML;
 import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.ACTION_DELEGATES_MARKER;
@@ -51,6 +50,7 @@ import static com.codenvy.modeling.generator.builders.PathConstants.ELEMENTS_PAC
 import static com.codenvy.modeling.generator.builders.PathConstants.JAVA_SOURCE_FOLDER;
 import static com.codenvy.modeling.generator.builders.PathConstants.MAIN_SOURCE_PATH;
 import static com.codenvy.modeling.generator.builders.PathConstants.WORKSPACE_PACKAGE;
+import static com.codenvy.modeling.generator.builders.ResourceNameConstants.EDITOR_RESOURCES;
 
 /**
  * @author Andrey Plotnikov
@@ -154,15 +154,6 @@ public class WorkspaceViewImplBuilder extends AbstractBuilder<WorkspaceViewImplB
                                                          )
                               );
 
-        Path workspaceUiXMLPath = Paths.get(path,
-                                            MAIN_SOURCE_PATH,
-                                            JAVA_SOURCE_FOLDER,
-                                            convertPathToPackageName(mainPackage),
-                                            CLIENT_PACKAGE,
-                                            WORKSPACE_PACKAGE,
-                                            WORKSPACE_VIEW_IMPL_NAME + UI_XML);
-        Files.write(workspaceUiXMLPath, uiXmlBuilder.build().getBytes());
-
         source = Paths.get(path,
                            MAIN_SOURCE_PATH,
                            JAVA_SOURCE_FOLDER,
@@ -181,6 +172,15 @@ public class WorkspaceViewImplBuilder extends AbstractBuilder<WorkspaceViewImplB
         replaceElements.put(ACTION_DELEGATES_MARKER, actionDelegates.toString());
 
         super.build();
+
+        Path workspaceUiXMLPath = Paths.get(path,
+                                            MAIN_SOURCE_PATH,
+                                            JAVA_SOURCE_FOLDER,
+                                            convertPathToPackageName(mainPackage),
+                                            CLIENT_PACKAGE,
+                                            WORKSPACE_PACKAGE,
+                                            WORKSPACE_VIEW_IMPL_NAME + UI_XML);
+        Files.write(workspaceUiXMLPath, uiXmlBuilder.build().getBytes());
     }
 
     @Nonnull

@@ -20,10 +20,31 @@ public class Element1PropertiesPanelPresenter extends AbstractPropertiesPanel<El
     }
 
     @Override
+    public void onProperty2Changed() {
+        element.setProperty2(((Element1PropertiesPanelView)view).getProperty2());
+        notifyListeners();
+    }
+
+    @Override
+    public void onProperty3Changed() {
+        element.setProperty3(((Element1PropertiesPanelView)view).getProperty3());
+        notifyListeners();
+    }
+
+    @Override
+    public void onProperty4Changed() {
+        element.setProperty4(((Element1PropertiesPanelView)view).getProperty4());
+        notifyListeners();
+    }
+
+    @Override
     public void go(AcceptsOneWidget container) {
         super.go(container);
 
         ((Element1PropertiesPanelView)view).setProperty1(element.getProperty1());
+        ((Element1PropertiesPanelView)view).setProperty2(element.getProperty2());
+        ((Element1PropertiesPanelView)view).setProperty3(element.getProperty3());
+        ((Element1PropertiesPanelView)view).setProperty4(element.getProperty4());
     }
 
 }

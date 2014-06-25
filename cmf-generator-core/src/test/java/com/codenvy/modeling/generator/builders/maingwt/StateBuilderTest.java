@@ -15,7 +15,7 @@
  */
 package com.codenvy.modeling.generator.builders.maingwt;
 
-import com.codenvy.modeling.generator.builders.AbstractBuilderHelper;
+import com.codenvy.modeling.generator.AbstractBuilderTest;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -36,19 +36,15 @@ import static org.junit.Assert.assertFalse;
 /**
  * @author Valeriy Svydenko
  */
-public class StateBuilderTest extends AbstractBuilderHelper {
-
+public class StateBuilderTest extends AbstractBuilderTest {
+    @Override
     @Before
-    public void setUp() throws IOException {
-        StateBuilder builder = new StateBuilder();
+    public void setUp() throws Exception {
+        super.setUp();
 
-        builder.path(properties.getProperty(TARGET_PATH.name()))
+        stateBuilder = new StateBuilder();
 
-               .properties(properties)
-               .connections(configuration.getDiagramConfiguration().getConnections())
-               .elements(configuration.getDiagramConfiguration().getElements())
-
-               .build();
+        generateSources();
     }
 
     @Test

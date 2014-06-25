@@ -98,18 +98,15 @@ public class EditorResourcesBuilder extends AbstractBuilder<EditorResourcesBuild
         File[] icons = iconsFolder.listFiles();
         if (icons != null) {
             for (File icon : icons) {
-                imageResources.append(OFFSET)
+                imageResources.append("\n")
+                              .append(OFFSET)
                               .append("@Source(\"")
                               .append(ICONS_FOLDER).append(File.separator).append(icon.getName()).append("\")\n")
                               .append(OFFSET)
                               .append("ImageResource ")
                               .append(changeFirstSymbolToLowCase(icon.getName().substring(0, icon.getName().indexOf('.'))))
-                              .append("();\n\n");
+                              .append("();\n");
             }
-        }
-
-        if (imageResources.lastIndexOf("\n") > 0) {
-            imageResources.deleteCharAt(imageResources.lastIndexOf("\n"));
         }
 
         return imageResources.toString();

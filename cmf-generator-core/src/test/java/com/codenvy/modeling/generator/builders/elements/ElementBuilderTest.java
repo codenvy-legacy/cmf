@@ -15,63 +15,57 @@
  */
 package com.codenvy.modeling.generator.builders.elements;
 
-import com.codenvy.modeling.configuration.metamodel.diagram.Element;
-import com.codenvy.modeling.generator.builders.AbstractBuilderHelper;
+import com.codenvy.modeling.generator.AbstractBuilderTest;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Iterator;
-import java.util.Set;
 
-import static com.codenvy.modeling.generator.GenerationController.Param.MAIN_PACKAGE;
 import static com.codenvy.modeling.generator.GenerationController.Param.TARGET_PATH;
 import static com.codenvy.modeling.generator.builders.FileExtensionConstants.JAVA;
 import static com.codenvy.modeling.generator.builders.PathConstants.ELEMENTS_PACKAGE;
 import static com.codenvy.modeling.generator.builders.PathConstants.JAVA_SOURCE_FOLDER;
 import static com.codenvy.modeling.generator.builders.PathConstants.MAIN_SOURCE_PATH;
 import static org.junit.Assert.assertFalse;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Valeriy Svydenko
  */
-public class ElementBuilderTest extends AbstractBuilderHelper {
+public class ElementBuilderTest extends AbstractBuilderTest {
+    private static final String ELEMENT1 = "Element1";
 
+    @Override
     @Before
     public void setUp() throws Exception {
-        Set<Element> elements = configuration.getDiagramConfiguration().getElements();
+        super.setUp();
 
-        for (Iterator<Element> iterator = elements.iterator(); iterator.hasNext(); ) {
-            Element element = iterator.next();
+        elementBuilder = new ElementBuilder();
 
-            elementBuilderProvider.get()
+        when(elementBuilderProvider.get()).thenAnswer(new Answer<ElementBuilder>() {
+            @Override
+            public ElementBuilder answer(InvocationOnMock invocation) throws Throwable {
+                return elementBuilder;
+            }
+        });
 
-                                  .path(properties.getProperty(TARGET_PATH.name()))
-
-                                  .needRemoveTemplate(!iterator.hasNext())
-
-                                  .mainPackage(properties.getProperty(MAIN_PACKAGE.name()))
-                                  .elements(elements)
-
-                                  .currentElement(element)
-
-                                  .build();
-        }
-
+        generateSources();
     }
 
     @Test
-    public void connectionShouldBeGenerated() throws IOException {
+    public void elementShouldBeGenerated() throws IOException {
         assertContent(File.separator + ELEMENTS_PACKAGE + File.separator + ELEMENT1, clientFolder, ELEMENTS_PACKAGE, ELEMENT1 + JAVA);
     }
 
     @Test
-    public void editorPresenterTemplateShouldBeRemoved() {
+    public void elementShouldBeRemoved() {
         Path path = Paths.get(properties.getProperty(TARGET_PATH.name()),
                               MAIN_SOURCE_PATH,
                               JAVA_SOURCE_FOLDER,

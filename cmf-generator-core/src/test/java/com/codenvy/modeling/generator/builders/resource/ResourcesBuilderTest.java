@@ -15,7 +15,7 @@
  */
 package com.codenvy.modeling.generator.builders.resource;
 
-import com.codenvy.modeling.generator.builders.AbstractBuilderHelper;
+import com.codenvy.modeling.generator.AbstractBuilderTest;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -39,7 +39,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * @author Valeriy Svydenko
  */
-public class ResourcesBuilderTest extends AbstractBuilderHelper {
+public class ResourcesBuilderTest extends AbstractBuilderTest {
     public static final String EDITOR_RESOURCES = "/EditorResourcesCss";
     public static final String EDITOR_GWT_XML   = "/EditorGwtXml";
     public static final String IMAGE_NAME       = "element1.png";
@@ -48,16 +48,14 @@ public class ResourcesBuilderTest extends AbstractBuilderHelper {
 
     @Before
     public void setUp() throws Exception {
+        super.setUp();
+
         String targetPath = properties.getProperty(TARGET_PATH.name());
         resourceFolder = targetPath + File.separator + MAIN_SOURCE_PATH + File.separator + RESOURCES_SOURCE_FOLDER;
 
-        ResourcesBuilder builder = new ResourcesBuilder();
-        builder.properties(properties)
+        resourcesBuilder = new ResourcesBuilder();
 
-               .needRemoveTemplate(true)
-
-               .build();
-
+        generateSources();
     }
 
     @Test

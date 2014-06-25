@@ -15,22 +15,19 @@
  */
 package com.codenvy.modeling.generator.builders.propertiespanel;
 
-import com.codenvy.modeling.configuration.metamodel.diagram.Element;
-import com.codenvy.modeling.configuration.metamodel.diagram.Property;
-import com.codenvy.modeling.generator.builders.AbstractBuilderHelper;
+import com.codenvy.modeling.generator.AbstractBuilderTest;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Iterator;
-import java.util.Set;
 
-import static com.codenvy.modeling.generator.GenerationController.Param.MAIN_PACKAGE;
 import static com.codenvy.modeling.generator.GenerationController.Param.TARGET_PATH;
 import static com.codenvy.modeling.generator.builders.FileExtensionConstants.JAVA;
 import static com.codenvy.modeling.generator.builders.PathConstants.JAVA_SOURCE_FOLDER;
@@ -38,43 +35,45 @@ import static com.codenvy.modeling.generator.builders.PathConstants.MAIN_SOURCE_
 import static com.codenvy.modeling.generator.builders.PathConstants.PROPERTIES_PANEL_PACKAGE;
 import static com.codenvy.modeling.generator.builders.ResourceNameConstants.PROPERTIES_PANEL_PRESENTER;
 import static org.junit.Assert.assertFalse;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Valeriy Svydenko
  */
-public class PropertiesPanelPresenterBuilderTest extends AbstractBuilderHelper {
-    private static final String ELEMENT1                        = "element1";
-    private static final String PROPERTIES_PANEL_PRESENTER_NAME = "Element1PropertiesPanelPresenter.java";
+public class PropertiesPanelPresenterBuilderTest extends AbstractBuilderTest {
+    private static final String ELEMENT1                         = "element1";
+    private static final String ELEMENT2                         = "element2";
+    private static final String PROPERTIES_PANEL_PRESENTER_NAME  = "Element1PropertiesPanelPresenter.java";
+    private static final String PROPERTIES_PANEL_PRESENTER_NAME2 = "Element2PropertiesPanelPresenter.java";
 
+    @Override
     @Before
     public void setUp() throws Exception {
-        Set<Element> elements = configuration.getDiagramConfiguration().getElements();
+        super.setUp();
 
-        for (Iterator<Element> iterator = elements.iterator(); iterator.hasNext(); ) {
-            Element element = iterator.next();
-            Set<Property> prop = element.getProperties();
+        propertiesPanelPresenterBuilder = new PropertiesPanelPresenterBuilder();
 
-            boolean hasNext = iterator.hasNext();
+        when(propertiesPanelPresenterBuilderProvider.get()).thenAnswer(new Answer<PropertiesPanelPresenterBuilder>() {
+            @Override
+            public PropertiesPanelPresenterBuilder answer(InvocationOnMock invocation) throws Throwable {
+                return propertiesPanelPresenterBuilder;
+            }
+        });
 
-            propertiesPanelPresenterBuilderProvider.get()
-
-                                                   .path(properties.getProperty(TARGET_PATH.name()))
-
-                                                   .needRemoveTemplate(!hasNext)
-
-                                                   .mainPackage(properties.getProperty(MAIN_PACKAGE.name()))
-                                                   .properties(prop)
-                                                   .element(element)
-
-                                                   .build();
-
-        }
+        generateSources();
     }
 
     @Test
-    public void propertiesPanelPresenterShouldBeGenerated() throws IOException {
-        assertContent(File.separator + PROPERTIES_PANEL_PACKAGE + File.separator + PRESENTER, clientFolder, PROPERTIES_PANEL_PACKAGE,
+    public void element1PropertiesPanelPresenterShouldBeGenerated() throws IOException {
+        assertContent(File.separator + PROPERTIES_PANEL_PACKAGE + File.separator + ELEMENT1 + File.separator + PRESENTER, clientFolder,
+                      PROPERTIES_PANEL_PACKAGE,
                       ELEMENT1, PROPERTIES_PANEL_PRESENTER_NAME);
+    }
+
+    @Test
+    public void element2propertiesPanelPresenterShouldBeGenerated() throws IOException {
+        assertContent(File.separator + PROPERTIES_PANEL_PACKAGE + File.separator + ELEMENT2 + File.separator + PRESENTER, clientFolder,
+                      PROPERTIES_PANEL_PACKAGE, ELEMENT2, PROPERTIES_PANEL_PRESENTER_NAME2);
     }
 
     @Test

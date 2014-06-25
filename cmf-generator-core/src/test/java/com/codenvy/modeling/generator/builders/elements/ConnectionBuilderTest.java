@@ -15,48 +15,48 @@
  */
 package com.codenvy.modeling.generator.builders.elements;
 
-import com.codenvy.modeling.configuration.metamodel.diagram.Connection;
-import com.codenvy.modeling.generator.builders.AbstractBuilderHelper;
+import com.codenvy.modeling.generator.AbstractBuilderTest;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Set;
 
-import static com.codenvy.modeling.generator.GenerationController.Param.MAIN_PACKAGE;
 import static com.codenvy.modeling.generator.GenerationController.Param.TARGET_PATH;
 import static com.codenvy.modeling.generator.builders.FileExtensionConstants.JAVA;
 import static com.codenvy.modeling.generator.builders.PathConstants.ELEMENTS_PACKAGE;
 import static com.codenvy.modeling.generator.builders.PathConstants.JAVA_SOURCE_FOLDER;
 import static com.codenvy.modeling.generator.builders.PathConstants.MAIN_SOURCE_PATH;
 import static org.junit.Assert.assertFalse;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Valeriy Svydenko
  */
-public class ConnectionBuilderTest extends AbstractBuilderHelper {
+public class ConnectionBuilderTest extends AbstractBuilderTest {
+    private static final String CONNECTION1 = "Connection1";
+
+    @Override
     @Before
     public void setUp() throws Exception {
-        Set<Connection> connections = configuration.getDiagramConfiguration().getConnections();
+        super.setUp();
 
-        for (Connection connection : connections) {
-            connectionBuilderProvider.get()
+        connectionBuilder = new ConnectionBuilder();
 
-                                     .path(properties.getProperty(TARGET_PATH.name()))
+        when(connectionBuilderProvider.get()).thenAnswer(new Answer<ConnectionBuilder>() {
+            @Override
+            public ConnectionBuilder answer(InvocationOnMock invocation) throws Throwable {
+                return connectionBuilder;
+            }
+        });
 
-                                     .needRemoveTemplate(true)
-
-                                     .mainPackage(properties.getProperty(MAIN_PACKAGE.name()))
-
-                                     .connection(connection)
-
-                                     .build();
-        }
+        generateSources();
     }
 
     @Test

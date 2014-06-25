@@ -9,10 +9,29 @@ public abstract class Element1PropertiesPanelView extends AbstractView<Element1P
     public interface ActionDelegate extends AbstractView.ActionDelegate {
 
         void onProperty1Changed();
+
+        void onProperty2Changed();
+
+        void onProperty3Changed();
+
+        void onProperty4Changed();
+
     }
 
     public abstract Integer getProperty1();
 
     public abstract void setProperty1(Integer property1);
+
+    public abstract Boolean getProperty2();
+
+    public abstract void setProperty2(Boolean property2);
+
+    public abstract String getProperty3();
+
+    public abstract void setProperty3(String property3);
+
+    public abstract Double getProperty4();
+
+    public abstract void setProperty4(Double property4);
 
 }
