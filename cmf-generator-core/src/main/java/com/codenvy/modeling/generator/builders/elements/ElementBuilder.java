@@ -18,6 +18,7 @@ package com.codenvy.modeling.generator.builders.elements;
 
 import com.codenvy.editor.api.editor.elements.AbstractShape;
 import com.codenvy.editor.api.editor.elements.Shape;
+import com.codenvy.modeling.configuration.metamodel.diagram.Component;
 import com.codenvy.modeling.configuration.metamodel.diagram.Element;
 import com.codenvy.modeling.configuration.metamodel.diagram.Property;
 import com.codenvy.modeling.generator.builders.AbstractBuilder;
@@ -64,8 +65,9 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
             OFFSET + "}\n\n";
 
     private static final String ELEMENT_CONSTRUCTOR = OFFSET + "public elementName() {\n" +
-                                                      TWO_TABS + "generalConstructor(\"elementName\", propertiesList);\n" +
+                                                      TWO_TABS + "generalConstructor(\"elementName\", propertiesList);\n\n" +
                                                       "propertiesInitialization" +
+                                                      "components" +
                                                       OFFSET + "}\n\n";
 
     private static final String PROPERTY_SETTER_AND_GETTER = OFFSET + "public propertyType getpropertyName() {\n" +
@@ -124,6 +126,8 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
                                                         TWO_TABS + "switch (nodeName) {\nfindProperty" +
                                                         TWO_TABS + "}\n";
 
+    private static final String ADD_COMPONENT_CODE = TWO_TABS + "components.add(\"elementName\");\n";
+
     private static final String SET_PROPERTY_VALUE = THREE_TABS + "case \"propertyName\":\n" +
                                                      FOUR_TABS + "argumentName = propertyType.valueOf(nodeValue);\n" +
                                                      THREE_TABS + "break;\n";
@@ -144,6 +148,7 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
     private static final String DESERIALIZE_CODE_MARKER          = "deserialize_method";
     private static final String APPLY_PROPERTIES_METHOD_MARKER   = "apply_property_method";
     private static final String EXTEND_ELEMENT_MARKER            = "extend_element";
+    private static final String COMPONENTS_MARKER                = "components";
 
     private static final String ELEMENT_CLASS_NAME = "Element";
 
@@ -251,6 +256,12 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
             serializeProperties = createSerializePropertiesMethodCode(serializationCode.toString());
         }
 
+        StringBuilder components = new StringBuilder();
+
+        for (Component component : element.getComponents()) {
+            components.append(createAddComponentCode(component.getName()));
+        }
+
         String constructor;
         String extendClass;
         String deserializeCode = "";
@@ -260,7 +271,8 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
                           createElementConstructorCode(elementName,
                                                        "this",
                                                        propertiesList,
-                                                       propertiesInitialization.toString());
+                                                       propertiesInitialization.toString(),
+                                                       components.toString());
             imports.append("import ").append(List.class.getName()).append(";\n");
 
             extendClass = AbstractShape.class.getSimpleName();
@@ -283,7 +295,8 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
             constructor = createElementConstructorCode(elementName,
                                                        "super",
                                                        propertiesList,
-                                                       propertiesInitialization.toString());
+                                                       propertiesInitialization.toString(),
+                                                       components.toString());
 
             extendClass = rootElement.getName();
         }
@@ -327,12 +340,14 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
     private String createElementConstructorCode(@Nonnull String elementName,
                                                 @Nonnull String generalConstructor,
                                                 @Nonnull String properties,
-                                                @Nonnull String propertiesInitialization) {
-        Map<String, String> masks = new LinkedHashMap<>(4);
+                                                @Nonnull String propertiesInitialization,
+                                                @Nonnull String components) {
+        Map<String, String> masks = new LinkedHashMap<>(5);
         masks.put(ELEMENT_NAME_MARKER, elementName);
         masks.put(GENERAL_CONSTRUCTOR_MARKER, generalConstructor);
         masks.put(PROPERTIES_INITIALIZATION_MARKER, propertiesInitialization);
         masks.put(PROPERTIES_MARKER, properties);
+        masks.put(COMPONENTS_MARKER, components);
 
         return ContentReplacer.replace(ELEMENT_CONSTRUCTOR, masks);
     }
@@ -422,6 +437,14 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
         masks.put(ARGUMENT_NAME_MARKER, changeFirstSymbolToLowCase(propertyName));
 
         return ContentReplacer.replace(PROPERTY_SETTER_AND_GETTER, masks);
+    }
+
+    @Nonnull
+    private String createAddComponentCode(@Nonnull String elementName) {
+        Map<String, String> masks = new LinkedHashMap<>(1);
+        masks.put(ELEMENT_NAME_MARKER, elementName);
+
+        return ContentReplacer.replace(ADD_COMPONENT_CODE, masks);
     }
 
 }

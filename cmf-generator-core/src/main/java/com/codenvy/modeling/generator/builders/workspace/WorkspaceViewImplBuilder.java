@@ -21,10 +21,13 @@ import com.codenvy.modeling.configuration.metamodel.diagram.Element;
 import com.codenvy.modeling.generator.builders.AbstractBuilder;
 import com.codenvy.modeling.generator.builders.ContentReplacer;
 import com.codenvy.modeling.generator.builders.xml.api.GField;
+import com.codenvy.modeling.generator.builders.xml.api.GStyle;
 import com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder;
+import com.codenvy.modeling.generator.builders.xml.api.widgets.GButton;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GFlowPanel;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GScrollPanel;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -72,26 +75,32 @@ public class WorkspaceViewImplBuilder extends AbstractBuilder<WorkspaceViewImplB
 
     private static final String WORKSPACE_VIEW_IMPL_NAME = "WorkspaceViewImpl";
 
-    private final UIXmlBuilder    uiXmlBuilder;
-    private final GField          fieldBuilder;
-    private final GScrollPanel    scrollPanelBuilder;
-    private final GFlowPanel      flowPanelBuilder;
-    private       String          mainPackage;
-    private       Set<Element>    elements;
-    private       Set<Connection> connections;
+    private final UIXmlBuilder         uiXmlBuilder;
+    private final GField               fieldBuilder;
+    private final GScrollPanel         scrollPanelBuilder;
+    private final Provider<GFlowPanel> flowPanelBuilderProvider;
+    private final GStyle               styleBuilder;
+    private final Provider<GButton>    buttonBuilderProvider;
+    private       String               mainPackage;
+    private       Set<Element>         elements;
+    private       Set<Connection>      connections;
 
     @Inject
     public WorkspaceViewImplBuilder(UIXmlBuilder uiXmlBuilder,
                                     GField fieldBuilder,
                                     GScrollPanel scrollPanelBuilder,
-                                    GFlowPanel flowPanelBuilder) {
+                                    Provider<GFlowPanel> flowPanelBuilderProvider,
+                                    Provider<GButton> buttonBuilderProvider,
+                                    GStyle styleBuilder) {
         super();
         builder = this;
 
         this.uiXmlBuilder = uiXmlBuilder;
         this.fieldBuilder = fieldBuilder;
         this.scrollPanelBuilder = scrollPanelBuilder;
-        this.flowPanelBuilder = flowPanelBuilder;
+        this.flowPanelBuilderProvider = flowPanelBuilderProvider;
+        this.buttonBuilderProvider = buttonBuilderProvider;
+        this.styleBuilder = styleBuilder;
     }
 
     @Nonnull
@@ -144,14 +153,54 @@ public class WorkspaceViewImplBuilder extends AbstractBuilder<WorkspaceViewImplB
         uiXmlBuilder.withXmlns("g", "urn:import:com.google.gwt.user.client.ui")
                     .withField(fieldBuilder.withName("res").withType(clientPackage + '.' + EDITOR_RESOURCES))
 
+                    .withStyle(
+                            styleBuilder.withStyle("button", "float: left; margin-left: 6px;")
+                                        .withStyle("rightFixedPosition", "position: fixed; z-index: 3; right: 30px;")
+                              )
+
                     .setWidget(
-                            scrollPanelBuilder.withPrefix("g")
-                                              .withAddStyle("res.editorCSS.fullSize")
-                                              .withWidget(
-                                                      flowPanelBuilder.withPrefix("g")
-                                                                      .withName("mainPanel")
-                                                                      .withAddStyle("res.editorCSS.fullSize")
-                                                         )
+                            scrollPanelBuilder
+                                    .withPrefix("g")
+                                    .withAddStyle("res.editorCSS.fullSize")
+
+                                    .withWidget(
+                                            flowPanelBuilderProvider
+                                                    .get()
+
+                                                    .withPrefix("g")
+                                                    .withName("mainPanel")
+                                                    .withAddStyle("res.editorCSS.fullSize")
+
+                                                    .withWidget(
+                                                            flowPanelBuilderProvider
+                                                                    .get()
+
+                                                                    .withPrefix("g")
+                                                                    .withAddStyle("style.rightFixedPosition")
+
+                                                                    .withWidget(
+                                                                            buttonBuilderProvider
+                                                                                    .get()
+
+                                                                                    .withPrefix("g")
+                                                                                    .withName("zoomIn")
+                                                                                    .withText("Zoom In")
+                                                                                    .withWidth("90px")
+                                                                                    .withAddStyle("style.button")
+                                                                               )
+                                                                    .withWidget(
+                                                                            buttonBuilderProvider
+                                                                                    .get()
+
+                                                                                    .withPrefix("g")
+                                                                                    .withName("zoomOut")
+                                                                                    .withText("Zoom Out")
+                                                                                    .withWidth("90px")
+                                                                                    .withAddStyle("style.button")
+                                                                               )
+                                                               )
+                                               )
+
                               );
 
         source = Paths.get(path,

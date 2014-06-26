@@ -4,19 +4,25 @@
              xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:g='urn:import:com.google.gwt.user.client.ui'>
     <ui:style>
+        .fullSize{
+            width: 100%;
+            height: 100%;
+        }
         .buttonStyle{
-            width: 65%;
-            height: 76%;
+            width: 25px;
+            height: 27px;
+            position: relative !important;
+            left: 3px !important;
         }
     </ui:style>
-    <g:DockLayoutPanel>
-        <g:north size="32.00">
+    <g:DockLayoutPanel ui:field="mainPanel" addStyleNames="{style.fullSize}">
+        <g:north size="37.00">
             <g:PushButton ui:field="element1" addStyleNames="{style.buttonStyle}"/>
         </g:north>
-        <g:north size="32.00">
+        <g:north size="37.00">
             <g:PushButton ui:field="element2" addStyleNames="{style.buttonStyle}"/>
         </g:north>
-        <g:north size="32.00">
+        <g:north size="37.00">
             <g:PushButton ui:field="connection1" addStyleNames="{style.buttonStyle}"/>
         </g:north>
     </g:DockLayoutPanel>

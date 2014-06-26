@@ -18,6 +18,9 @@ package com.codenvy.editor.client.toolbar;
 import com.codenvy.editor.api.mvp.AbstractView;
 import com.google.inject.ImplementedBy;
 
+import javax.annotation.Nonnull;
+import java.util.Set;
+
 /**
  * @author Andrey Plotnikov
  */
@@ -33,5 +36,7 @@ public abstract class ToolbarView extends AbstractView<ToolbarView.ActionDelegat
         void onLink1ButtonClicked();
 
     }
+
+    public abstract void showButtons(@Nonnull Set<String> components);
 
 }

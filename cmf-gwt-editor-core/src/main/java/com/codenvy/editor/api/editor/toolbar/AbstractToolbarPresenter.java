@@ -17,6 +17,7 @@ package com.codenvy.editor.api.editor.toolbar;
 
 import com.codenvy.editor.api.editor.EditorState;
 import com.codenvy.editor.api.editor.HasState;
+import com.codenvy.editor.api.editor.workspace.AbstractWorkspacePresenter;
 import com.codenvy.editor.api.mvp.AbstractPresenter;
 import com.codenvy.editor.api.mvp.AbstractView;
 
@@ -27,7 +28,8 @@ import javax.annotation.Nonnull;
  *
  * @author Andrey Plotnikov
  */
-public abstract class AbstractToolbarPresenter<T> extends AbstractPresenter implements HasState<T> {
+public abstract class AbstractToolbarPresenter<T> extends AbstractPresenter
+        implements HasState<T>, AbstractWorkspacePresenter.MainElementChangeListener {
 
     private EditorState<T> state;
 

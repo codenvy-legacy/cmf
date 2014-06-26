@@ -22,6 +22,7 @@ import com.codenvy.editor.api.editor.common.ContentFormatter;
 import com.codenvy.editor.api.editor.elements.Element;
 import com.codenvy.editor.api.editor.elements.Shape;
 import com.codenvy.editor.api.mvp.AbstractPresenter;
+import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -39,11 +40,13 @@ public abstract class AbstractWorkspacePresenter<T> extends AbstractPresenter im
 
     private EditorState<T> state;
 
-    protected       String                      selectedElement;
-    protected final Shape                       mainElement;
-    protected       SelectionManager            selectionManager;
-    protected final Map<String, Element>        elements;
-    private final   List<DiagramChangeListener> listeners;
+    protected       String                          selectedElement;
+    protected final Shape                           mainElement;
+    protected       SelectionManager                selectionManager;
+    protected final Map<String, Element>            elements;
+    private final   List<DiagramChangeListener>     diagramChangeListeners;
+    private final   List<MainElementChangeListener> mainElementChangeListeners;
+    protected       Shape                           nodeElement;
 
     protected AbstractWorkspacePresenter(@Nonnull AbstractWorkspaceView view,
                                          @Nonnull EditorState<T> state,
@@ -54,11 +57,15 @@ public abstract class AbstractWorkspacePresenter<T> extends AbstractPresenter im
         this.state = state;
         this.selectionManager = selectionManager;
         this.mainElement = mainElement;
+        this.nodeElement = mainElement;
         this.elements = new HashMap<>();
-        this.listeners = new ArrayList<>();
+        this.diagramChangeListeners = new ArrayList<>();
+        this.mainElementChangeListeners = new ArrayList<>();
 
         this.selectionManager.setElement(mainElement);
         this.selectedElement = mainElement.getId();
+
+        this.elements.put(selectedElement, mainElement);
     }
 
     /** {@inheritDoc} */
@@ -74,17 +81,31 @@ public abstract class AbstractWorkspacePresenter<T> extends AbstractPresenter im
         this.state.setState(state);
     }
 
-    public void addListener(@Nonnull DiagramChangeListener listener) {
-        listeners.add(listener);
+    public void addDiagramChangeListener(@Nonnull DiagramChangeListener listener) {
+        diagramChangeListeners.add(listener);
     }
 
-    public void removeListener(@Nonnull DiagramChangeListener listener) {
-        listeners.remove(listener);
+    public void removeDiagramChangeListener(@Nonnull DiagramChangeListener listener) {
+        diagramChangeListeners.remove(listener);
     }
 
-    public void notifyListeners() {
-        for (DiagramChangeListener listener : listeners) {
+    public void notifyDiagramChangeListeners() {
+        for (DiagramChangeListener listener : diagramChangeListeners) {
             listener.onChanged();
+        }
+    }
+
+    public void addMainElementChangeListener(@Nonnull MainElementChangeListener listener) {
+        mainElementChangeListeners.add(listener);
+    }
+
+    public void removeMainElementChangeListener(@Nonnull MainElementChangeListener listener) {
+        mainElementChangeListeners.remove(listener);
+    }
+
+    public void notifyMainElementChangeListeners() {
+        for (MainElementChangeListener listener : mainElementChangeListeners) {
+            listener.onMainElementChanged(nodeElement);
         }
     }
 
@@ -94,18 +115,71 @@ public abstract class AbstractWorkspacePresenter<T> extends AbstractPresenter im
     }
 
     public void deserialize(@Nonnull String content) {
-        ((AbstractWorkspaceView)view).clearDiagram();
-        elements.clear();
-
-        selectionManager.setElement(null);
-        selectedElement = null;
-
         mainElement.deserialize(ContentFormatter.trimXML(content));
+        showElements(mainElement);
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onZoomInButtonClicked() {
+        Shape element = (Shape)elements.get(selectedElement);
+
+        if (element != null) {
+            showElements(element);
+            nodeElement = element;
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onZoomOutButtonClicked() {
+        Shape nodeElementParent = nodeElement.getParent();
+
+        if (nodeElementParent != null) {
+            showElements(nodeElementParent);
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onDiagramElementMoved(@Nonnull String elementId, int x, int y) {
+        Shape shape = (Shape)elements.get(elementId);
+        shape.setX(x);
+        shape.setY(y);
+
+        notifyDiagramChangeListeners();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void go(@Nonnull AcceptsOneWidget container) {
+        super.go(container);
+
+        ((AbstractWorkspaceView)view).setZoomInButtonEnable(false);
+    }
+
+    protected void addShape(@Nonnull Shape shape, int x, int y) {
+        elements.put(shape.getId(), shape);
+
+        shape.setX(x);
+        shape.setY(y);
+
+        nodeElement.addShape(shape);
+
+        notifyDiagramChangeListeners();
+    }
+
+    protected abstract void showElements(@Nonnull Shape mainElement);
 
     public interface DiagramChangeListener {
 
         void onChanged();
+
+    }
+
+    public interface MainElementChangeListener {
+
+        void onMainElementChanged(@Nonnull Shape element);
 
     }
 

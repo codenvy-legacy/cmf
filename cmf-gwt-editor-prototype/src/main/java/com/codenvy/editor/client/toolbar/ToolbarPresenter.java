@@ -16,10 +16,13 @@
 package com.codenvy.editor.client.toolbar;
 
 import com.codenvy.editor.api.editor.EditorState;
+import com.codenvy.editor.api.editor.elements.Shape;
 import com.codenvy.editor.api.editor.toolbar.AbstractToolbarPresenter;
 import com.codenvy.editor.client.State;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
+
+import javax.annotation.Nonnull;
 
 import static com.codenvy.editor.client.State.CREATING_LINK1_SOURCE;
 import static com.codenvy.editor.client.State.CREATING_SHAPE1;
@@ -33,6 +36,12 @@ public class ToolbarPresenter extends AbstractToolbarPresenter<State> implements
     @Inject
     public ToolbarPresenter(ToolbarView view, @Assisted EditorState<State> editorState) {
         super(view, editorState);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onMainElementChanged(@Nonnull Shape element) {
+        ((ToolbarView)view).showButtons(element.getComponents());
     }
 
     /** {@inheritDoc} */

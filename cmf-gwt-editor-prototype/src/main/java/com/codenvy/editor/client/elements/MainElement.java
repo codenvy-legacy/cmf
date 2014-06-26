@@ -32,6 +32,9 @@ public class MainElement extends AbstractShape {
 
     public MainElement() {
         this("MainElement", new ArrayList<String>());
+
+        components.add("Shape1");
+        components.add("Shape2");
     }
 
     public MainElement(String elementName, List<String> properties) {

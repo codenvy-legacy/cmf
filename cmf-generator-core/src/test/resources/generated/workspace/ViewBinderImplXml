@@ -4,8 +4,23 @@
              xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:g='urn:import:com.google.gwt.user.client.ui'>
     <ui:with field='res' type='my.package.client.EditorResources'/>
+    <ui:style>
+        .button{
+            float: left;
+            margin-left: 6px;
+        }
+        .rightFixedPosition{
+            position: fixed;
+            z-index: 3;
+            right: 30px;
+        }
+    </ui:style>
     <g:ScrollPanel addStyleNames="{res.editorCSS.fullSize}">
         <g:FlowPanel ui:field="mainPanel" addStyleNames="{res.editorCSS.fullSize}">
+            <g:FlowPanel addStyleNames="{style.rightFixedPosition}">
+                <g:Button ui:field="zoomIn" text="Zoom In" width="90px" addStyleNames="{style.button}"/>
+                <g:Button ui:field="zoomOut" text="Zoom Out" width="90px" addStyleNames="{style.button}"/>
+            </g:FlowPanel>
         </g:FlowPanel>
     </g:ScrollPanel>
 </ui:UiBinder>

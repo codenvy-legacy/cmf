@@ -17,9 +17,9 @@ package com.codenvy.editor.client.workspace;
 
 import com.codenvy.editor.api.editor.EditorState;
 import com.codenvy.editor.api.editor.SelectionManager;
-import com.codenvy.editor.api.editor.elements.Element;
 import com.codenvy.editor.api.editor.elements.Shape;
 import com.codenvy.editor.api.editor.workspace.AbstractWorkspacePresenter;
+import com.codenvy.editor.api.editor.workspace.AbstractWorkspaceView;
 import com.codenvy.editor.client.State;
 import com.codenvy.editor.client.elements.Link1;
 import com.codenvy.editor.client.elements.MainElement;
@@ -77,21 +77,6 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
         }
     }
 
-    private void addShape(@Nonnull Shape shape, int x, int y) {
-        elements.put(shape.getId(), shape);
-
-        shape.setX(x);
-        shape.setY(y);
-
-        Shape parent = (Shape)elements.get(selectedElement);
-        if (parent == null) {
-            parent = mainElement;
-        }
-        parent.addShape(shape);
-
-        notifyListeners();
-    }
-
     /** {@inheritDoc} */
     @Override
     public void onMouseMoved(int x, int y) {
@@ -105,8 +90,13 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
         String prevSelectedElement = selectedElement;
         selectedElement = elementId;
 
-        Element element = elements.get(elementId);
+        Shape element = (Shape)elements.get(elementId);
         selectionManager.setElement(element);
+
+        ((AbstractWorkspaceView)view).setZoomInButtonEnable(element.isContainer());
+
+        Shape source;
+        Shape parent;
 
         switch (getState()) {
             case CREATING_LINK1_SOURCE:
@@ -116,43 +106,38 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
             case CREATING_LINK1_TARGET:
                 ((WorkspaceView)view).addLink(prevSelectedElement, selectedElement);
 
-                Element source = elements.get(prevSelectedElement);
+                source = (Shape)elements.get(prevSelectedElement);
 
-                Link1 link = new Link1((Shape)source, (Shape)element);
+                Link1 link = new Link1(source, element);
 
                 elements.put(element.getId(), element);
 
-                Shape parent = source.getParent();
+                parent = source.getParent();
                 if (parent != null) {
                     parent.addLink(link);
                 }
 
                 setState(CREATING_NOTING);
 
-                notifyListeners();
+                notifyDiagramChangeListeners();
                 break;
         }
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public void onDiagramElementMoved(@Nonnull String elementId, int x, int y) {
-        Shape shape = (Shape)elements.get(elementId);
-        shape.setX(x);
-        shape.setY(y);
+    protected void showElements(@Nonnull Shape mainElement) {
+        ((AbstractWorkspaceView)view).clearDiagram();
+        elements.clear();
 
-        notifyListeners();
-    }
+        nodeElement = mainElement;
+        selectionManager.setElement(null);
+        selectedElement = null;
 
-    /** {@inheritDoc} */
-    @Override
-    public void deserialize(@Nonnull String content) {
-        super.deserialize(content);
+        ((AbstractWorkspaceView)view).setZoomInButtonEnable(false);
+        ((AbstractWorkspaceView)view).setZoomOutButtonEnable(nodeElement.getParent() != null);
 
         int x = 100;
         int y = 100;
 
-        // TODO create element just from main element w/o inner elements
         for (Shape shape : mainElement.getShapes()) {
             if (shape instanceof Shape1) {
                 ((WorkspaceView)view).addShape1(x, y, (Shape1)shape);
@@ -167,6 +152,8 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
 
             x += 100;
         }
+
+        notifyMainElementChangeListeners();
     }
 
 }

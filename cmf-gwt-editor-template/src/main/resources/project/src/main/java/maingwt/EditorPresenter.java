@@ -35,7 +35,8 @@ constructor_body
         emptyPropertiesPanelPresenter.addListener(this);
 
         selectionManager.addListener(propertiesPanelManager);
-        workspace.addListener(this);
+        workspace.addDiagramChangeListener(this);
+        workspace.addMainElementChangeListener(toolbar);
     }
 
     /** {@inheritDoc} */

@@ -15,6 +15,9 @@ public class MainElement extends AbstractShape {
 
     public MainElement() {
         this("MainElement", new ArrayList<String>());
+
+        components.add("Element1");
+        components.add("Element2");
     }
 
     @Override

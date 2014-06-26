@@ -38,9 +38,11 @@ import static org.mockito.Mockito.when;
 
 /**
  * @author Valeriy Svydenko
+ * @author Andrey Plotnikov
  */
 public class ElementBuilderTest extends AbstractBuilderTest {
     private static final String ELEMENT1 = "Element1";
+    private static final String ELEMENT2 = "Element2";
 
     @Override
     @Before
@@ -60,17 +62,33 @@ public class ElementBuilderTest extends AbstractBuilderTest {
     }
 
     @Test
-    public void elementShouldBeGenerated() throws IOException {
+    public void element1ShouldBeGenerated() throws IOException {
         assertContent(File.separator + ELEMENTS_PACKAGE + File.separator + ELEMENT1, clientFolder, ELEMENTS_PACKAGE, ELEMENT1 + JAVA);
     }
 
     @Test
-    public void elementShouldBeRemoved() {
+    public void element1ShouldBeRemoved() {
         Path path = Paths.get(properties.getProperty(TARGET_PATH.name()),
                               MAIN_SOURCE_PATH,
                               JAVA_SOURCE_FOLDER,
                               ELEMENTS_PACKAGE,
                               ELEMENT1 + JAVA);
+
+        assertFalse(Files.exists(path));
+    }
+
+    @Test
+    public void element2ShouldBeGenerated() throws IOException {
+        assertContent(File.separator + ELEMENTS_PACKAGE + File.separator + ELEMENT2, clientFolder, ELEMENTS_PACKAGE, ELEMENT2 + JAVA);
+    }
+
+    @Test
+    public void element2ShouldBeRemoved() {
+        Path path = Paths.get(properties.getProperty(TARGET_PATH.name()),
+                              MAIN_SOURCE_PATH,
+                              JAVA_SOURCE_FOLDER,
+                              ELEMENTS_PACKAGE,
+                              ELEMENT2 + JAVA);
 
         assertFalse(Files.exists(path));
     }

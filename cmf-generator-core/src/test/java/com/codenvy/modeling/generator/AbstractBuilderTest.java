@@ -88,6 +88,7 @@ import static org.mockito.Mockito.when;
 
 /**
  * @author Valeriy Svydenko
+ * @author Andrey Plotnikov
  */
 @RunWith(MockitoJUnitRunner.class)
 public abstract class AbstractBuilderTest {
@@ -186,19 +187,20 @@ public abstract class AbstractBuilderTest {
         property4.setType(FLOAT);
         property4.setValue("12.3f");
 
-        Element element1 = new Element();
-        element1.setName("Element1");
-        element1.setProperties(new LinkedHashSet<>(Arrays.asList(property1, property2, property3, property4)));
-
-        Element element2 = new Element();
-        element2.setName("Element2");
-        element2.setProperties(new LinkedHashSet<>(Arrays.asList(property1, property2, property3, property4)));
-
         Component component1 = new Component();
         component1.setName("Element1");
 
         Component component2 = new Component();
         component2.setName("Element2");
+
+        Element element1 = new Element();
+        element1.setName("Element1");
+        element1.setProperties(new LinkedHashSet<>(Arrays.asList(property1, property2, property3, property4)));
+        element1.setComponents(new LinkedHashSet<>(Arrays.asList(component2)));
+
+        Element element2 = new Element();
+        element2.setName("Element2");
+        element2.setProperties(new LinkedHashSet<>(Arrays.asList(property1, property2, property3, property4)));
 
         Element mainElement = new Element();
         mainElement.setName("MainElement");

@@ -17,6 +17,7 @@ package com.codenvy.editor.api.editor.elements;
 
 import javax.annotation.Nonnull;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The main presentation of shape diagram element. It can contain and manage inner diagram elements. Inner diagram elements mean that this
@@ -93,5 +94,11 @@ public interface Shape extends Element {
      *         y-position
      */
     void setY(int y);
+
+    /** @return the list of available inner components */
+    Set<String> getComponents();
+
+    /** @return <code>true</code> if this shape has an ability to have inner components, <code>false</code> it doesn't */
+    boolean isContainer();
 
 }

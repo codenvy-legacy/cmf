@@ -3,20 +3,19 @@ package my.package.client.elements;
 import com.google.gwt.xml.client.Node;
 import java.util.Arrays;
 
-public class Element1 extends MainElement {
+public class Element2 extends MainElement {
     private Integer property1;
     private Boolean property2;
     private String property3;
     private Double property4;
 
-    public Element1() {
-        super("Element1", Arrays.asList("Property1", "Property2", "Property3", "Property4"));
+    public Element2() {
+        super("Element2", Arrays.asList("Property1", "Property2", "Property3", "Property4"));
 
         property1 = 10;
         property2 = true;
         property3 = "some string";
         property4 = 12.3f;
-        components.add("Element2");
     }
 
     public Integer getProperty1() {

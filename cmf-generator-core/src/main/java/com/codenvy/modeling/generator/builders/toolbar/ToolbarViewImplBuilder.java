@@ -65,12 +65,17 @@ public class ToolbarViewImplBuilder extends AbstractBuilder<ToolbarViewImplBuild
     private static final String INITIALIZE_CONNECTION_FIELD =
             TWO_TABS + "argumentName = new PushButton(new Image(resources.argumentName()));\n";
 
+    private static final String BIND_ELEMENT_BUTTONS_FIELD   = TWO_TABS + "buttons.put(\"elementName\", argumentName);\n";
+    private static final String ADD_CONNECTION_BUTTONS_FIELD = TWO_TABS + "mainPanel.addNorth(argumentName, ITEM_HEIGHT);\n";
+
     private static final String ON_BUTTON_CLICKED_METHOD = OFFSET + "@UiHandler(\"argumentName\")\n" +
                                                            OFFSET + "public void onelementNameButtonClicked(ClickEvent event) {\n" +
                                                            TWO_TABS + "delegate.onelementNameButtonClicked();\n" +
                                                            OFFSET + "}\n\n";
 
-    private static final String FIELDS_INITIALIZE_MARKER = "fields_initialize";
+    private static final String FIELDS_INITIALIZE_MARKER      = "fields_initialize";
+    private static final String BIND_ELEMENT_BUTTONS_MARKER   = "bind_element_buttons";
+    private static final String ADD_CONNECTION_BUTTONS_MARKER = "add_connection_button";
 
     private static final String TOOLBAR_VIEW_IMPL_NAME = "ToolbarViewImpl";
 
@@ -122,14 +127,22 @@ public class ToolbarViewImplBuilder extends AbstractBuilder<ToolbarViewImplBuild
 
         String toolbarPackage = mainPackage + '.' + CLIENT_PACKAGE + '.' + TOOLBAR_PACKAGE;
 
-        GDockLayoutPanel dockLayoutPanel = dockLayoutPanelBuilder.withPrefix("g");
+        GDockLayoutPanel dockLayoutPanel = dockLayoutPanelBuilder.withPrefix("g")
+                                                                 .withName("mainPanel")
+                                                                 .withAddStyle("style.fullSize");
         uiXmlBuilder.withXmlns("g", "urn:import:com.google.gwt.user.client.ui")
-                    .withStyle(styleBuilder.withStyle("buttonStyle", "width: 65%; height: 76%;"))
+                    .withStyle(
+                            styleBuilder.withStyle("fullSize", "width: 100%; height: 100%;")
+                                        .withStyle("buttonStyle",
+                                                   "width: 25px; height: 27px; position: relative !important; left: 3px !important;")
+                              )
                     .setWidget(dockLayoutPanel);
 
         StringBuilder uiFields = new StringBuilder();
         StringBuilder createFields = new StringBuilder();
+        StringBuilder bindElementButtons = new StringBuilder();
         StringBuilder methods = new StringBuilder();
+        StringBuilder addConnectionButtons = new StringBuilder();
 
         for (Element element : elements) {
             if (!element.equals(rootElement)) {
@@ -138,6 +151,7 @@ public class ToolbarViewImplBuilder extends AbstractBuilder<ToolbarViewImplBuild
                 uiFields.append(createFieldCode(elementName));
                 createFields.append(createElementFieldInitializeCode(elementName));
                 methods.append(createOnElementButtonClickedCode(elementName));
+                bindElementButtons.append(createBindElementButtonCode(elementName));
                 addButtonOnPanel(elementName);
             }
         }
@@ -149,6 +163,7 @@ public class ToolbarViewImplBuilder extends AbstractBuilder<ToolbarViewImplBuild
             createFields.append(createConnectionFieldInitializeCode(connectionName));
             methods.append(createOnElementButtonClickedCode(connectionName));
             addButtonOnPanel(connectionName);
+            addConnectionButtons.append(createAddConnectionButtonCode(connectionName));
         }
 
         source = Paths.get(path,
@@ -168,7 +183,9 @@ public class ToolbarViewImplBuilder extends AbstractBuilder<ToolbarViewImplBuild
         replaceElements.put(MAIN_PACKAGE_MARKER, mainPackage);
         replaceElements.put(UI_FIELDS_MARKER, uiFields.toString());
         replaceElements.put(FIELDS_INITIALIZE_MARKER, createFields.toString());
+        replaceElements.put(BIND_ELEMENT_BUTTONS_MARKER, bindElementButtons.toString());
         replaceElements.put(ACTION_DELEGATES_MARKER, methods.toString());
+        replaceElements.put(ADD_CONNECTION_BUTTONS_MARKER, addConnectionButtons.toString());
 
         super.build();
 
@@ -207,6 +224,23 @@ public class ToolbarViewImplBuilder extends AbstractBuilder<ToolbarViewImplBuild
     }
 
     @Nonnull
+    private String createBindElementButtonCode(@Nonnull String elementName) {
+        Map<String, String> masks = new LinkedHashMap<>(2);
+        masks.put(ELEMENT_NAME_MARKER, elementName);
+        masks.put(ARGUMENT_NAME_MARKER, changeFirstSymbolToLowCase(elementName));
+
+        return ContentReplacer.replace(BIND_ELEMENT_BUTTONS_FIELD, masks);
+    }
+
+    @Nonnull
+    private String createAddConnectionButtonCode(@Nonnull String connectionName) {
+        Map<String, String> masks = new LinkedHashMap<>(1);
+        masks.put(ARGUMENT_NAME_MARKER, changeFirstSymbolToLowCase(connectionName));
+
+        return ContentReplacer.replace(ADD_CONNECTION_BUTTONS_FIELD, masks);
+    }
+
+    @Nonnull
     private String createOnElementButtonClickedCode(@Nonnull String elementName) {
         Map<String, String> masks = new LinkedHashMap<>(2);
         masks.put(ELEMENT_NAME_MARKER, elementName);
@@ -216,7 +250,7 @@ public class ToolbarViewImplBuilder extends AbstractBuilder<ToolbarViewImplBuild
     }
 
     private void addButtonOnPanel(@Nonnull String elementName) {
-        dockLayoutPanelBuilder.withNorth(32, pushButtonProvider.get()
+        dockLayoutPanelBuilder.withNorth(37, pushButtonProvider.get()
                                                                .withPrefix("g")
                                                                .withName(changeFirstSymbolToLowCase(elementName))
                                                                .withAddStyle("style.buttonStyle")

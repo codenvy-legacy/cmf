@@ -35,6 +35,8 @@ import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -56,6 +58,10 @@ public class WorkspaceViewImpl extends WorkspaceView {
 
     @UiField
     FlowPanel mainPanel;
+    @UiField
+    Button    zoomIn;
+    @UiField
+    Button    zoomOut;
 
     private final DiagramController     controller;
     private final PickupDragController  dragController;
@@ -108,6 +114,28 @@ public class WorkspaceViewImpl extends WorkspaceView {
     @Override
     public void clearDiagram() {
         controller.clearDiagram();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setZoomInButtonEnable(boolean enable) {
+        zoomIn.setEnabled(enable);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setZoomOutButtonEnable(boolean enable) {
+        zoomOut.setEnabled(enable);
+    }
+
+    @UiHandler("zoomIn")
+    public void handleClick(ClickEvent event) {
+        delegate.onZoomInButtonClicked();
+    }
+
+    @UiHandler("zoomOut")
+    public void onZoomOutButtonClicked(ClickEvent event) {
+        delegate.onZoomOutButtonClicked();
     }
 
     /** {@inheritDoc} */

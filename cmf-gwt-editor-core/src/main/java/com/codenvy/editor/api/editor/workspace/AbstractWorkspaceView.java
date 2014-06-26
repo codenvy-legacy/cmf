@@ -73,9 +73,32 @@ public abstract class AbstractWorkspaceView extends AbstractView<AbstractWorkspa
          *         the identifier of moved diagram element
          */
         void onDiagramElementMoved(@Nonnull String elementId, int x, int y);
+
+        /** Performs any actions appropriate in response to the user having pressed the Zoom In button. */
+        void onZoomInButtonClicked();
+
+        /** Performs any actions appropriate in response to the user having pressed the Zoom Out button. */
+        void onZoomOutButtonClicked();
+
     }
 
     /** Clear diagram content. */
     public abstract void clearDiagram();
+
+    /**
+     * Change the enable state of the Zoom In button.
+     *
+     * @param enable
+     *         <code>true</code> to enable the button, <code>false</code> to disable it
+     */
+    public abstract void setZoomInButtonEnable(boolean enable);
+
+    /**
+     * Change the enable state of the Zoom Out button.
+     *
+     * @param enable
+     *         <code>true</code> to enable the button, <code>false</code> to disable it
+     */
+    public abstract void setZoomOutButtonEnable(boolean enable);
 
 }

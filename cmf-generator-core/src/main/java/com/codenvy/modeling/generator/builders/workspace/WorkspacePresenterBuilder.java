@@ -79,15 +79,15 @@ public class WorkspacePresenterBuilder extends AbstractBuilder<WorkspacePresente
             FOUR_TABS + "break;\n" +
             THREE_TABS + "case CREATING_connectionUpperName_TARGET:\n" +
             FOUR_TABS + "((WorkspaceView)view).addconnectionName(prevSelectedElement, selectedElement);\n" +
-            FOUR_TABS + "source = elements.get(prevSelectedElement);\n" +
-            FOUR_TABS + "connectionName argumentName = new connectionName((Shape)source, (Shape)element);\n" +
+            FOUR_TABS + "source = (Shape)elements.get(prevSelectedElement);\n" +
+            FOUR_TABS + "connectionName argumentName = new connectionName(source, element);\n" +
             FOUR_TABS + "elements.put(element.getId(), element);\n\n" +
             FOUR_TABS + "parent = source.getParent();\n" +
             FOUR_TABS + "if (parent != null) {\n" +
             FIVE_TABS + "parent.addLink(argumentName);\n" +
             FOUR_TABS + "}\n" +
             FOUR_TABS + "setState(CREATING_NOTHING);\n\n" +
-            FOUR_TABS + "notifyListeners();\n" +
+            FOUR_TABS + "notifyDiagramChangeListeners();\n" +
             FOUR_TABS + "break;\n";
 
     private static final String CREATE_STATE_MARKER = "createState";

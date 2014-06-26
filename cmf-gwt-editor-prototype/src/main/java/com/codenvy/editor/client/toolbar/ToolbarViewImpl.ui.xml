@@ -23,20 +23,27 @@
             width: 100%;
             height: 100%;
         }
+
+        .buttonStyle {
+            width: 25px;
+            height: 27px;
+            position: relative !important;
+            left: 3px !important;
+        }
     </ui:style>
 
-    <g:DockLayoutPanel unit="PX" addStyleDependentNames="{style.fullSize}">
+    <g:DockLayoutPanel unit="PX" addStyleNames="{style.fullSize}" ui:field="mainPanel">
 
-        <g:north size="50">
-            <g:PushButton ui:field="shape1" addStyleDependentNames="{style.fullSize}"/>
+        <g:north size="37">
+            <g:PushButton ui:field="shape1" addStyleNames="{style.buttonStyle}"/>
         </g:north>
 
-        <g:north size="50">
-            <g:PushButton ui:field="shape2" addStyleDependentNames="{style.fullSize}"/>
+        <g:north size="37">
+            <g:PushButton ui:field="shape2" addStyleNames="{style.buttonStyle}"/>
         </g:north>
 
-        <g:north size="50">
-            <g:PushButton ui:field="link1" addStyleDependentNames="{style.fullSize}"/>
+        <g:north size="37">
+            <g:PushButton ui:field="link1" addStyleNames="{style.buttonStyle}"/>
         </g:north>
 
     </g:DockLayoutPanel>

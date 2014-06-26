@@ -16,13 +16,21 @@
 package com.codenvy.modeling.generator.builders.workspace;
 
 import com.codenvy.modeling.generator.AbstractBuilderTest;
+import com.codenvy.modeling.generator.builders.xml.api.widgets.GButton;
+import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GFlowPanel;
 import com.codenvy.modeling.generator.builders.xml.impl.GFieldImpl;
+import com.codenvy.modeling.generator.builders.xml.impl.GStyleImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.UIXmlBuilderImpl;
+import com.codenvy.modeling.generator.builders.xml.impl.widgets.GButtonImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.containers.GFlowPanelImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.containers.GScrollPanelImpl;
+import com.google.inject.Provider;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,20 +46,43 @@ import static com.codenvy.modeling.generator.builders.PathConstants.MAIN_SOURCE_
 import static com.codenvy.modeling.generator.builders.PathConstants.WORKSPACE_PACKAGE;
 import static com.codenvy.modeling.generator.builders.ResourceNameConstants.WORKSPACE_VIEW_IMPL;
 import static org.junit.Assert.assertFalse;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Valeriy Svydenko
+ * @author Andrey Plotnikov
  */
 public class WorkspaceViewImplBuilderTest extends AbstractBuilderTest {
+
+    @Mock
+    private Provider<GFlowPanel> flowPanelProvider;
+    @Mock
+    private Provider<GButton>    buttonProvider;
+
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
 
+        when(flowPanelProvider.get()).thenAnswer(new Answer<Object>() {
+            @Override
+            public GFlowPanel answer(InvocationOnMock invocation) throws Throwable {
+                return new GFlowPanelImpl();
+            }
+        });
+        when(buttonProvider.get()).thenAnswer(new Answer<Object>() {
+            @Override
+            public GButton answer(InvocationOnMock invocation) throws Throwable {
+                return new GButtonImpl();
+            }
+        });
+
         workspaceViewImplBuilder = new WorkspaceViewImplBuilder(new UIXmlBuilderImpl(),
                                                                 new GFieldImpl(),
                                                                 new GScrollPanelImpl(),
-                                                                new GFlowPanelImpl());
+                                                                flowPanelProvider,
+                                                                buttonProvider,
+                                                                new GStyleImpl());
 
         generateSources();
     }

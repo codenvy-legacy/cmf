@@ -21,7 +21,9 @@ import com.google.gwt.xml.client.XMLParser;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The abstract implementation of {@link Shape}. It contains the implementation of general methods which might not be changed.
@@ -35,11 +37,14 @@ public abstract class AbstractShape extends AbstractElement implements Shape, Co
     private       int                 x;
     private       int                 y;
 
+    protected final Set<String> components;
+
     protected AbstractShape(String elementName, List<String> properties) {
         super(elementName, properties);
 
         this.shapes = new ArrayList<>();
         this.links = new ArrayList<>();
+        this.components = new HashSet<>();
     }
 
     /** {@inheritDoc} */
@@ -166,6 +171,18 @@ public abstract class AbstractShape extends AbstractElement implements Shape, Co
         Document xml = XMLParser.parse(content);
 
         deserialize(xml.getFirstChild());
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isContainer() {
+        return !components.isEmpty();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Set<String> getComponents() {
+        return components;
     }
 
 }
