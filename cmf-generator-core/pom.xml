@@ -70,11 +70,6 @@
             <artifactId>gwt-links</artifactId>
             <version>${version.gwt.links}</version>
         </dependency>
-        <dependency>
-            <groupId>joist</groupId>
-            <artifactId>joist-util</artifactId>
-            <version>${version.joist}</version>
-        </dependency>
         <!--Dependencies for testing-->
         <dependency>
             <groupId>com.codenvy.cmf</groupId>

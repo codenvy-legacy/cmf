@@ -56,7 +56,6 @@
         <version.gwt.links>1.4.3-SNAPSHOT</version.gwt.links>
         <version.hibernate.validator>5.1.0.Final</version.hibernate.validator>
         <version.javax.el>2.2.4</version.javax.el>
-        <version.joist>1.7.0</version.joist>
         <version.junit>4.11</version.junit>
         <version.logback>1.1.1</version.logback>
         <version.maven.core>3.2.1</version.maven.core>
