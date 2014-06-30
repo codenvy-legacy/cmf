@@ -19,9 +19,18 @@ grammar Diagram;
 import Common;
 
 diagram                 :
+                            rootElement
                             elements
                             connections?
                         ;
+
+rootElement             :
+                            elementName
+                            BEGIN
+                                rootElementBody
+                            END
+                        ;
+
 elements                :
                             'Elements'
                             BEGIN
@@ -29,7 +38,7 @@ elements                :
                             END
                         ;
 
-connections              :
+connections             :
                             'Connections'
                             BEGIN
                                 connection+
@@ -48,6 +57,13 @@ connection              :
                             BEGIN
                                 connectionBody
                             END
+                        ;
+
+rootElementBody         :
+                            elementRelation
+                            elementComponents
+                            elementProperties?
+
                         ;
 
 connectionBody          :
@@ -124,7 +140,7 @@ elementProperty         :
                             END
                         ;
 
-propertyBody             :
+propertyBody            :
                             propertyType
                             propertyValue?
                         ;

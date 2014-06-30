@@ -18,7 +18,6 @@ package com.codenvy.modeling.generator.builders.maingwt;
 import com.codenvy.modeling.configuration.metamodel.diagram.Connection;
 import com.codenvy.modeling.configuration.metamodel.diagram.Element;
 import com.codenvy.modeling.generator.builders.AbstractBuilder;
-import com.codenvy.modeling.generator.builders.OffsetBuilderConstants;
 import com.google.inject.Inject;
 
 import javax.annotation.Nonnull;
@@ -28,7 +27,6 @@ import java.util.Properties;
 import java.util.Set;
 
 import static com.codenvy.modeling.generator.GenerationController.Param.MAIN_PACKAGE;
-import static com.codenvy.modeling.generator.builders.ResourceNameConstants.EDITOR_STATE;
 import static com.codenvy.modeling.generator.builders.EditorStateConstants.CREATE_CONNECTION_SOURCE_STATE_FORMAT;
 import static com.codenvy.modeling.generator.builders.EditorStateConstants.CREATE_CONNECTION_TARGET_STATE_FORMAT;
 import static com.codenvy.modeling.generator.builders.EditorStateConstants.CREATE_ELEMENT_STATE_FORMAT;
@@ -36,10 +34,12 @@ import static com.codenvy.modeling.generator.builders.EditorStateConstants.CREAT
 import static com.codenvy.modeling.generator.builders.FileExtensionConstants.JAVA;
 import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.ALL_ELEMENTS_MARKER;
 import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.CURRENT_PACKAGE_MARKER;
+import static com.codenvy.modeling.generator.builders.OffsetBuilderConstants.OFFSET;
 import static com.codenvy.modeling.generator.builders.PathConstants.CLIENT_PACKAGE;
 import static com.codenvy.modeling.generator.builders.PathConstants.JAVA_SOURCE_FOLDER;
 import static com.codenvy.modeling.generator.builders.PathConstants.MAIN_SOURCE_PATH;
 import static com.codenvy.modeling.generator.builders.PathConstants.MY_GWT_PACKAGE;
+import static com.codenvy.modeling.generator.builders.ResourceNameConstants.EDITOR_STATE;
 
 /**
  * @author Valeriy Svydenko
@@ -62,24 +62,17 @@ public class StateBuilder extends AbstractBuilder<StateBuilder> {
 
         StringBuilder elementsEnum = new StringBuilder();
 
-        Element rootElement = findRootElement(elements);
-
         for (Element element : elements) {
-            if (!element.equals(rootElement)) {
-                elementsEnum.append(String.format(CREATE_ELEMENT_STATE_FORMAT, element.getName().toUpperCase()))
-                            .append(",\n").append(OffsetBuilderConstants.OFFSET);
-            }
+            elementsEnum.append(OFFSET).append(String.format(CREATE_ELEMENT_STATE_FORMAT, element.getName().toUpperCase())).append(",\n");
         }
 
         for (Connection connection : connections) {
             String connectionName = connection.getName().toUpperCase();
-            elementsEnum.append(String.format(CREATE_CONNECTION_SOURCE_STATE_FORMAT, connectionName))
-                        .append(",\n").append(OffsetBuilderConstants.OFFSET);
-            elementsEnum.append(String.format(CREATE_CONNECTION_TARGET_STATE_FORMAT, connectionName))
-                        .append(",\n").append(OffsetBuilderConstants.OFFSET);
+            elementsEnum.append(OFFSET).append(String.format(CREATE_CONNECTION_SOURCE_STATE_FORMAT, connectionName)).append(",\n");
+            elementsEnum.append(OFFSET).append(String.format(CREATE_CONNECTION_TARGET_STATE_FORMAT, connectionName)).append(",\n");
         }
 
-        elementsEnum.append(CREATE_NOTHING_STATE);
+        elementsEnum.append(OFFSET).append(CREATE_NOTHING_STATE);
 
         source = Paths.get(path,
                            MAIN_SOURCE_PATH,

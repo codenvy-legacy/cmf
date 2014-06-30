@@ -42,9 +42,9 @@ import static com.codenvy.modeling.generator.builders.PathConstants.TOOLBAR_PACK
 
 /**
  * @author Andrey Plotnikov
+ * @author Valeriy Svydenko
  */
-public class
-        ToolbarViewBuilder extends AbstractBuilder<ToolbarViewBuilder> {
+public class ToolbarViewBuilder extends AbstractBuilder<ToolbarViewBuilder> {
 
     private static final String CREATE_ON_ELEMENT_BUTTON_CLICKED_CODE_FORMAT = TWO_TABS + "void onelementNameButtonClicked();\n\n";
 
@@ -81,17 +81,12 @@ public class
     /** {@inheritDoc} */
     @Override
     public void build() throws IOException {
-        // TODO need to add some behaviour when main element isn't found
-        Element rootElement = findRootElement(elements);
-
         String toolbarPackage = mainPackage + '.' + CLIENT_PACKAGE + '.' + TOOLBAR_PACKAGE;
 
         StringBuilder actionDelegates = new StringBuilder();
 
         for (Element element : elements) {
-            if (!element.equals(rootElement)) {
-                actionDelegates.append(createOnElementButtonClickedCode(element.getName()));
-            }
+            actionDelegates.append(createOnElementButtonClickedCode(element.getName()));
         }
 
         for (Connection connection : connections) {

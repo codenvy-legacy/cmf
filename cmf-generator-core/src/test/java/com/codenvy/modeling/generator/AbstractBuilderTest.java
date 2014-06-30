@@ -47,7 +47,9 @@ import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 
 import javax.annotation.Nonnull;
 import java.io.File;
@@ -193,6 +195,10 @@ public abstract class AbstractBuilderTest {
         Component component2 = new Component();
         component2.setName("Element2");
 
+        final Element rootElement = new Element();
+        rootElement.setName("MainElement");
+        rootElement.setComponents(new LinkedHashSet<>(Arrays.asList(component1, component2)));
+
         Element element1 = new Element();
         element1.setName("Element1");
         element1.setProperties(new LinkedHashSet<>(Arrays.asList(property1, property2, property3, property4)));
@@ -202,25 +208,28 @@ public abstract class AbstractBuilderTest {
         element2.setName("Element2");
         element2.setProperties(new LinkedHashSet<>(Arrays.asList(property1, property2, property3, property4)));
 
-        Element mainElement = new Element();
-        mainElement.setName("MainElement");
-        mainElement.setComponents(new LinkedHashSet<>(Arrays.asList(component1, component2)));
-
         Connection connection = mock(Connection.class);
         when(connection.getName()).thenReturn("Connection1");
 
         when(configurationFactory.getInstance(any(ConfigurationFactory.ConfigurationPaths.class))).thenReturn(configuration);
 
         connections = new HashSet<>(Arrays.asList(connection));
-        elements = new LinkedHashSet<>(Arrays.asList(mainElement, element1, element2));
+        elements = new LinkedHashSet<>(Arrays.asList(element1, element2));
 
         when(configuration.getDiagramConfiguration().getElements()).thenReturn(elements);
         when(configuration.getDiagramConfiguration().getConnections()).thenReturn(connections);
+        when(configuration.getDiagramConfiguration().getRootElement()).thenAnswer(new Answer<Element>() {
+            @Override
+            public Element answer(InvocationOnMock invocation) throws Throwable {
+                return rootElement;
+            }
+        });
 
         when(elementBuilderProvider.get()).thenReturn(elementBuilder);
         when(elementBuilder.path(anyString())).thenReturn(elementBuilder);
         when(elementBuilder.mainPackage(anyString())).thenReturn(elementBuilder);
         when(elementBuilder.elements(anySet())).thenReturn(elementBuilder);
+        when(elementBuilder.rootElement((Element)anyObject())).thenReturn(elementBuilder);
         when(elementBuilder.currentElement((Element)anyObject())).thenReturn(elementBuilder);
         when(elementBuilder.needRemoveTemplate(anyBoolean())).thenReturn(elementBuilder);
 
@@ -257,37 +266,32 @@ public abstract class AbstractBuilderTest {
         when(stateBuilder.properties((Properties)anyObject())).thenReturn(stateBuilder);
         when(stateBuilder.elements(anySet())).thenReturn(stateBuilder);
         when(stateBuilder.connections(anySet())).thenReturn(stateBuilder);
-        when(stateBuilder.needRemoveTemplate(anyBoolean())).thenReturn(stateBuilder);
 
         when(editorResourcesBuilder.path(anyString())).thenReturn(editorResourcesBuilder);
         when(editorResourcesBuilder.properties((Properties)anyObject())).thenReturn(editorResourcesBuilder);
-        when(editorResourcesBuilder.needRemoveTemplate(anyBoolean())).thenReturn(editorResourcesBuilder);
 
         when(editorEntryPointBuilder.path(anyString())).thenReturn(editorEntryPointBuilder);
         when(editorEntryPointBuilder.properties((Properties)anyObject())).thenReturn(editorEntryPointBuilder);
-        when(editorEntryPointBuilder.needRemoveTemplate(anyBoolean())).thenReturn(editorEntryPointBuilder);
 
         when(editorPresenterBuilder.path(anyString())).thenReturn(editorPresenterBuilder);
+        when(editorPresenterBuilder.rootElement((Element)anyObject())).thenReturn(editorPresenterBuilder);
         when(editorPresenterBuilder.properties((Properties)anyObject())).thenReturn(editorPresenterBuilder);
         when(editorPresenterBuilder.elements(anySet())).thenReturn(editorPresenterBuilder);
-        when(editorPresenterBuilder.needRemoveTemplate(anyBoolean())).thenReturn(editorPresenterBuilder);
         when(editorPresenterBuilder.needRemoveTemplateParentFolder(anyBoolean())).thenReturn(editorPresenterBuilder);
 
         when(injectorBuilder.path(anyString())).thenReturn(injectorBuilder);
         when(injectorBuilder.mainPackage(anyString())).thenReturn(injectorBuilder);
         when(injectorBuilder.editorName(anyString())).thenReturn(injectorBuilder);
-        when(injectorBuilder.needRemoveTemplate(anyBoolean())).thenReturn(injectorBuilder);
         when(injectorBuilder.needRemoveTemplateParentFolder(anyBoolean())).thenReturn(injectorBuilder);
 
         when(ginModuleBuilder.path(anyString())).thenReturn(ginModuleBuilder);
         when(ginModuleBuilder.mainPackage(anyString())).thenReturn(ginModuleBuilder);
-        when(ginModuleBuilder.needRemoveTemplate(anyBoolean())).thenReturn(ginModuleBuilder);
 
         when(editorFactoryBuilder.path(anyString())).thenReturn(editorFactoryBuilder);
         when(editorFactoryBuilder.mainPackage(anyString())).thenReturn(editorFactoryBuilder);
-        when(editorFactoryBuilder.needRemoveTemplate(anyBoolean())).thenReturn(editorFactoryBuilder);
 
         when(workspacePresenterBuilder.path(anyString())).thenReturn(workspacePresenterBuilder);
+        when(workspacePresenterBuilder.rootElement((Element)anyObject())).thenReturn(workspacePresenterBuilder);
         when(workspacePresenterBuilder.mainPackage(anyString())).thenReturn(workspacePresenterBuilder);
         when(workspacePresenterBuilder.elements(anySet())).thenReturn(workspacePresenterBuilder);
         when(workspacePresenterBuilder.connections(anySet())).thenReturn(workspacePresenterBuilder);
@@ -320,7 +324,6 @@ public abstract class AbstractBuilderTest {
         when(toolbarViewImplBuilder.needRemoveTemplateParentFolder(anyBoolean())).thenReturn(toolbarViewImplBuilder);
 
         when(resourcesBuilder.properties((Properties)anyObject())).thenReturn(resourcesBuilder);
-        when(resourcesBuilder.needRemoveTemplate(anyBoolean())).thenReturn(resourcesBuilder);
 
         targetPath = temporaryFolder.getRoot().getAbsolutePath() + "/testProject";
 

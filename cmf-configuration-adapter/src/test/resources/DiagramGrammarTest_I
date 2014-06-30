@@ -1,3 +1,25 @@
+RootElement {
+    Relation {
+        SINGLE
+    }
+
+    Components {
+        { element1 }
+        { element2 }
+    }
+
+    Properties {
+        testPropertyName {
+            Type {
+                STRING
+            }
+            Value {
+                testPropertyValue
+            }
+        }
+    }
+}
+
 Elements {
     testElementNameOne {
         Relation {

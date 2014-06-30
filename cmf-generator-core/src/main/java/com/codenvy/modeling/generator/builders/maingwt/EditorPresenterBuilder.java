@@ -27,8 +27,6 @@ import java.util.Set;
 
 import static com.codenvy.modeling.generator.GenerationController.Param.EDITOR_NAME;
 import static com.codenvy.modeling.generator.GenerationController.Param.MAIN_PACKAGE;
-import static com.codenvy.modeling.generator.builders.ResourceNameConstants.EDITOR_PRESENTER;
-import static com.codenvy.modeling.generator.builders.ResourceNameConstants.PROPERTIES_PANEL_PRESENTER;
 import static com.codenvy.modeling.generator.builders.FileExtensionConstants.JAVA;
 import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.CONSTRUCTOR_ARGUMENTS;
 import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.CONSTRUCTOR_BODY;
@@ -45,6 +43,8 @@ import static com.codenvy.modeling.generator.builders.PathConstants.JAVA_SOURCE_
 import static com.codenvy.modeling.generator.builders.PathConstants.MAIN_SOURCE_PATH;
 import static com.codenvy.modeling.generator.builders.PathConstants.MY_GWT_PACKAGE;
 import static com.codenvy.modeling.generator.builders.PathConstants.PROPERTIES_PANEL_PACKAGE;
+import static com.codenvy.modeling.generator.builders.ResourceNameConstants.EDITOR_PRESENTER;
+import static com.codenvy.modeling.generator.builders.ResourceNameConstants.PROPERTIES_PANEL_PRESENTER;
 
 /**
  * @author Valeriy Svydenko
@@ -53,6 +53,7 @@ public class EditorPresenterBuilder extends AbstractBuilder<EditorPresenterBuild
 
     private Properties   properties;
     private Set<Element> elements;
+    private Element      rootElement;
 
     @Inject
     public EditorPresenterBuilder() {
@@ -73,9 +74,6 @@ public class EditorPresenterBuilder extends AbstractBuilder<EditorPresenterBuild
         String propertiesPanelPackage = clientPackage + '.' + PROPERTIES_PANEL_PACKAGE + '.';
         String elementsPackage = clientPackage + '.' + ELEMENTS_PACKAGE + '.';
 
-
-        Element rootElement = findRootElement(elements);
-
         for (Element element : elements) {
             if (!element.equals(rootElement)) {
                 String elementName = element.getName();
@@ -92,11 +90,11 @@ public class EditorPresenterBuilder extends AbstractBuilder<EditorPresenterBuild
                                     .append(elementPropertiesPanelArgument).append(",\n");
 
                 constructorBody.append("\n")
-                        .append(TWO_TABS)
-                        .append("propertiesPanelManager.register(").append(elementName).append(".class, ")
-                        .append(elementPropertiesPanelArgument).append(");\n")
-                        .append(TWO_TABS)
-                        .append(elementPropertiesPanelArgument).append(".addListener(this);\n");
+                               .append(TWO_TABS)
+                               .append("propertiesPanelManager.register(").append(elementName).append(".class, ")
+                               .append(elementPropertiesPanelArgument).append(");\n")
+                               .append(TWO_TABS)
+                               .append(elementPropertiesPanelArgument).append(".addListener(this);\n");
 
             }
         }
@@ -132,6 +130,13 @@ public class EditorPresenterBuilder extends AbstractBuilder<EditorPresenterBuild
     @Nonnull
     public EditorPresenterBuilder elements(@Nonnull Set<Element> elements) {
         this.elements = elements;
+
+        return this;
+    }
+
+    @Nonnull
+    public EditorPresenterBuilder rootElement(@Nonnull Element element) {
+        this.rootElement = element;
 
         return this;
     }

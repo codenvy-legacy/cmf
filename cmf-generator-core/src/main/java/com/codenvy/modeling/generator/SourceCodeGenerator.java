@@ -18,6 +18,7 @@ package com.codenvy.modeling.generator;
 import com.codenvy.modeling.configuration.Configuration;
 import com.codenvy.modeling.configuration.ConfigurationFactory;
 import com.codenvy.modeling.configuration.metamodel.diagram.Connection;
+import com.codenvy.modeling.configuration.metamodel.diagram.DiagramConfiguration;
 import com.codenvy.modeling.configuration.metamodel.diagram.Element;
 import com.codenvy.modeling.configuration.metamodel.diagram.Property;
 import com.codenvy.modeling.generator.builders.elements.ConnectionBuilder;
@@ -243,29 +244,20 @@ public class SourceCodeGenerator {
     private void createInjectModule(@Nonnull String projectPath,
                                     @Nonnull String packageName,
                                     @Nonnull String editorName) throws IOException {
-
         editorFactoryBuilder.path(projectPath)
-
                             .mainPackage(packageName)
-
-                            .needRemoveTemplate(true)
 
                             .build();
 
         ginModuleBuilder.path(projectPath)
-
                         .mainPackage(packageName)
-
-                        .needRemoveTemplate(true)
 
                         .build();
 
         injectorBuilder.path(projectPath)
-
                        .mainPackage(packageName)
                        .editorName(editorName)
 
-                       .needRemoveTemplate(true)
                        .needRemoveTemplateParentFolder(true)
 
                        .build();
@@ -274,27 +266,37 @@ public class SourceCodeGenerator {
     private void createElements(@Nonnull String projectPath,
                                 @Nonnull String packageName,
                                 @Nonnull Configuration configuration) throws IOException {
+        DiagramConfiguration diagramConfiguration = configuration.getDiagramConfiguration();
+        Set<Element> elements = diagramConfiguration.getElements();
+        Element rootElement = diagramConfiguration.getRootElement();
 
-        Set<Element> elements = configuration.getDiagramConfiguration().getElements();
-
-        for (Iterator<Element> iterator = elements.iterator(); iterator.hasNext(); ) {
-            Element element = iterator.next();
-
+        for (Element element : elements) {
             elementBuilderProvider.get()
 
                                   .path(projectPath)
-
-                                  .needRemoveTemplate(!iterator.hasNext())
-
                                   .mainPackage(packageName)
                                   .elements(elements)
-
+                                  .rootElement(rootElement)
                                   .currentElement(element)
+
+                                  .needRemoveTemplate(false)
 
                                   .build();
         }
 
-        Set<Connection> connections = configuration.getDiagramConfiguration().getConnections();
+        elementBuilderProvider.get()
+
+                              .path(projectPath)
+                              .mainPackage(packageName)
+                              .elements(elements)
+                              .rootElement(rootElement)
+                              .currentElement(rootElement)
+
+                              .needRemoveTemplate(true)
+
+                              .build();
+
+        Set<Connection> connections = diagramConfiguration.getConnections();
 
         for (Iterator<Connection> iterator = connections.iterator(); iterator.hasNext(); ) {
             Connection connection = iterator.next();
@@ -302,13 +304,11 @@ public class SourceCodeGenerator {
             connectionBuilderProvider.get()
 
                                      .path(projectPath)
+                                     .mainPackage(packageName)
+                                     .connection(connection)
 
                                      .needRemoveTemplate(!iterator.hasNext())
                                      .needRemoveTemplateParentFolder(!iterator.hasNext())
-
-                                     .mainPackage(packageName)
-
-                                     .connection(connection)
 
                                      .build();
         }
@@ -318,40 +318,31 @@ public class SourceCodeGenerator {
                                        @Nonnull Configuration configuration) throws IOException {
 
         String targetPath = properties.getProperty(TARGET_PATH.name());
-        Set<Element> elements = configuration.getDiagramConfiguration().getElements();
+        DiagramConfiguration diagramConfiguration = configuration.getDiagramConfiguration();
+        Set<Element> elements = diagramConfiguration.getElements();
 
         stateBuilder.path(targetPath)
-
                     .properties(properties)
-                    .connections(configuration.getDiagramConfiguration().getConnections())
+                    .connections(diagramConfiguration.getConnections())
                     .elements(elements)
-
-                    .needRemoveTemplate(true)
 
                     .build();
 
         editorResourcesBuilder.path(targetPath)
-
                               .properties(properties)
-
-                              .needRemoveTemplate(true)
 
                               .build();
 
         editorEntryPointBuilder.path(targetPath)
-
                                .properties(properties)
-
-                               .needRemoveTemplate(true)
 
                                .build();
 
         editorPresenterBuilder.path(targetPath)
-
                               .properties(properties)
                               .elements(elements)
+                              .rootElement(diagramConfiguration.getRootElement())
 
-                              .needRemoveTemplate(true)
                               .needRemoveTemplateParentFolder(true)
 
                               .build();
@@ -360,19 +351,19 @@ public class SourceCodeGenerator {
     private void createWorkspace(@Nonnull String projectPath,
                                  @Nonnull String packageName,
                                  @Nonnull Configuration configuration) throws IOException {
-        Set<Element> elements = configuration.getDiagramConfiguration().getElements();
-        Set<Connection> connections = configuration.getDiagramConfiguration().getConnections();
+        DiagramConfiguration diagramConfiguration = configuration.getDiagramConfiguration();
+        Set<Element> elements = diagramConfiguration.getElements();
+        Set<Connection> connections = diagramConfiguration.getConnections();
 
         workspacePresenterBuilder.path(projectPath)
-
                                  .mainPackage(packageName)
                                  .elements(elements)
                                  .connections(connections)
+                                 .rootElement(diagramConfiguration.getRootElement())
 
                                  .build();
 
         workspaceViewBuilder.path(projectPath)
-
                             .mainPackage(packageName)
                             .elements(elements)
                             .connections(connections)
@@ -380,23 +371,23 @@ public class SourceCodeGenerator {
                             .build();
 
         workspaceViewImplBuilder.path(projectPath)
-
                                 .mainPackage(packageName)
                                 .elements(elements)
                                 .connections(connections)
 
                                 .needRemoveTemplateParentFolder(true)
+
                                 .build();
     }
 
     private void createToolbar(@Nonnull String projectPath,
                                @Nonnull String packageName,
                                @Nonnull Configuration configuration) throws IOException {
-        Set<Element> elements = configuration.getDiagramConfiguration().getElements();
-        Set<Connection> connections = configuration.getDiagramConfiguration().getConnections();
+        DiagramConfiguration diagramConfiguration = configuration.getDiagramConfiguration();
+        Set<Element> elements = diagramConfiguration.getElements();
+        Set<Connection> connections = diagramConfiguration.getConnections();
 
         toolbarPresenterBuilder.path(projectPath)
-
                                .mainPackage(packageName)
                                .elements(elements)
                                .connections(connections)
@@ -404,7 +395,6 @@ public class SourceCodeGenerator {
                                .build();
 
         toolbarViewBuilder.path(projectPath)
-
                           .mainPackage(packageName)
                           .elements(elements)
                           .connections(connections)
@@ -412,12 +402,12 @@ public class SourceCodeGenerator {
                           .build();
 
         toolbarViewImplBuilder.path(projectPath)
-
                               .mainPackage(packageName)
                               .elements(elements)
                               .connections(connections)
 
                               .needRemoveTemplateParentFolder(true)
+
                               .build();
     }
 
@@ -434,38 +424,35 @@ public class SourceCodeGenerator {
 
             propertiesPanelPresenterBuilder.get()
 
-                                           .needRemoveTemplate(!hasNext)
-
                                            .path(projectPath)
-
                                            .mainPackage(packageName)
                                            .element(element)
                                            .properties(properties)
+
+                                           .needRemoveTemplate(!hasNext)
 
                                            .build();
 
             propertiesPanelViewBuilder.get()
 
-                                      .needRemoveTemplate(!hasNext)
-
                                       .path(projectPath)
-
                                       .mainPackage(packageName)
                                       .element(element)
                                       .properties(properties)
+
+                                      .needRemoveTemplate(!hasNext)
 
                                       .build();
 
             propertiesPanelViewImplBuilder.get()
 
-                                          .needRemoveTemplate(!hasNext)
-                                          .needRemoveTemplateParentFolder(!hasNext)
-
                                           .path(projectPath)
-
                                           .mainPackage(packageName)
                                           .element(element)
                                           .properties(properties)
+
+                                          .needRemoveTemplateParentFolder(!hasNext)
+                                          .needRemoveTemplate(!hasNext)
 
                                           .build();
         }
@@ -473,8 +460,6 @@ public class SourceCodeGenerator {
 
     private void generateResourcesFolder(@Nonnull Properties properties) throws IOException {
         resourcesBuilder.properties(properties)
-
-                        .needRemoveTemplate(true)
 
                         .build();
     }

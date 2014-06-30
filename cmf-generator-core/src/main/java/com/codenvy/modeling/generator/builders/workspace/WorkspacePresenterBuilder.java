@@ -100,6 +100,7 @@ public class WorkspacePresenterBuilder extends AbstractBuilder<WorkspacePresente
     private String          mainPackage;
     private Set<Element>    elements;
     private Set<Connection> connections;
+    private Element         rootElement;
 
     @Inject
     public WorkspacePresenterBuilder() {
@@ -125,12 +126,15 @@ public class WorkspacePresenterBuilder extends AbstractBuilder<WorkspacePresente
         return this;
     }
 
+    @Nonnull
+    public WorkspacePresenterBuilder rootElement(@Nonnull Element rootElement) {
+        this.rootElement = rootElement;
+        return this;
+    }
+
     /** {@inheritDoc} */
     @Override
     public void build() throws IOException {
-        // TODO need to add some behaviour when main element isn't found
-        Element rootElement = findRootElement(elements);
-
         String clientPackage = mainPackage + '.' + CLIENT_PACKAGE;
         String workspacePackage = clientPackage + '.' + WORKSPACE_PACKAGE;
         String elementsPackage = clientPackage + '.' + ELEMENTS_PACKAGE + '.';
@@ -144,20 +148,20 @@ public class WorkspacePresenterBuilder extends AbstractBuilder<WorkspacePresente
 
         staticImports.append(stateClassImport).append(CREATE_NOTHING_STATE).append(";\n");
 
+        imports.append("import ").append(elementsPackage).append(rootElement.getName()).append(";\n");
+
         for (Element element : elements) {
             String elementName = element.getName();
             String elementPackage = elementsPackage + elementName;
 
             imports.append("import ").append(elementPackage).append(";\n");
 
-            if (!element.equals(rootElement)) {
-                createElements.append(createElementCode(elementName));
+            createElements.append(createElementCode(elementName));
 
-                staticImports.append(stateClassImport).append(String.format(CREATE_ELEMENT_STATE_FORMAT, elementName.toUpperCase()))
-                             .append(";\n");
+            staticImports.append(stateClassImport).append(String.format(CREATE_ELEMENT_STATE_FORMAT, elementName.toUpperCase()))
+                         .append(";\n");
 
-                createGraphicalElements.append(createGraphicalElementCode(elementName));
-            }
+            createGraphicalElements.append(createGraphicalElementCode(elementName));
         }
 
         for (Connection connection : connections) {

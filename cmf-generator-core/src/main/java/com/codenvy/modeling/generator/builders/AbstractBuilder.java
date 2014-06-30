@@ -16,22 +16,17 @@
 
 package com.codenvy.modeling.generator.builders;
 
-import com.codenvy.modeling.configuration.metamodel.diagram.Component;
-import com.codenvy.modeling.configuration.metamodel.diagram.Element;
 import com.codenvy.modeling.configuration.metamodel.diagram.Property;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @author Andrey Plotnikov
@@ -106,25 +101,6 @@ public abstract class AbstractBuilder<T extends AbstractBuilder> {
             default:
                 return String.class;
         }
-    }
-
-    @Nullable
-    protected Element findRootElement(@Nonnull Set<Element> elements) {
-        Set<String> subElements = new HashSet<>();
-
-        for (Element element : elements) {
-            for (Component component : element.getComponents()) {
-                subElements.add(component.getName());
-            }
-        }
-
-        for (Element element : elements) {
-            if (!subElements.contains(element.getName())) {
-                return element;
-            }
-        }
-
-        return null;
     }
 
     public void build() throws IOException {

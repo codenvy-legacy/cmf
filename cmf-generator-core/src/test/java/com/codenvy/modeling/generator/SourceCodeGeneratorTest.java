@@ -42,6 +42,7 @@ import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anySet;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 /**
@@ -158,25 +159,27 @@ public class SourceCodeGeneratorTest extends AbstractBuilderTest {
     public void propertiesPanelPresenterShouldBeGenerated() throws Exception {
         verify(propertiesPanelPresenterBuilderProvider, atLeast(2)).get();
 
+        verify(propertiesPanelPresenterBuilder).needRemoveTemplate(eq(false));
         verify(propertiesPanelPresenterBuilder).needRemoveTemplate(eq(true));
-        verify(propertiesPanelPresenterBuilder, atLeast(2)).path(eq(targetPath));
-        verify(propertiesPanelPresenterBuilder, atLeast(2)).properties(anySet());
-        verify(propertiesPanelPresenterBuilder, atLeast(2)).element((Element)anyObject());
-        verify(propertiesPanelPresenterBuilder, atLeast(2)).mainPackage(eq(MY_PACKAGE));
-        verify(propertiesPanelPresenterBuilder, atLeast(2)).build();
+        verify(propertiesPanelPresenterBuilder, times(2)).path(eq(targetPath));
+        verify(propertiesPanelPresenterBuilder, times(2)).properties(anySet());
+        verify(propertiesPanelPresenterBuilder, times(2)).element((Element)anyObject());
+        verify(propertiesPanelPresenterBuilder, times(2)).mainPackage(eq(MY_PACKAGE));
+        verify(propertiesPanelPresenterBuilder, times(2)).build();
     }
 
     @SuppressWarnings("unchecked")
     @Test
     public void propertiesPanelViewShouldBeGenerated() throws Exception {
-        verify(propertiesPanelViewBuilderProvider, atLeast(2)).get();
+        verify(propertiesPanelViewBuilderProvider, times(2)).get();
 
+        verify(propertiesPanelViewBuilder).needRemoveTemplate(eq(false));
         verify(propertiesPanelViewBuilder).needRemoveTemplate(eq(true));
-        verify(propertiesPanelViewBuilder, atLeast(2)).path(eq(targetPath));
-        verify(propertiesPanelViewBuilder, atLeast(2)).properties(anySet());
-        verify(propertiesPanelViewBuilder, atLeast(2)).element((Element)anyObject());
-        verify(propertiesPanelViewBuilder, atLeast(2)).mainPackage(eq(MY_PACKAGE));
-        verify(propertiesPanelViewBuilder, atLeast(2)).build();
+        verify(propertiesPanelViewBuilder, times(2)).path(eq(targetPath));
+        verify(propertiesPanelViewBuilder, times(2)).properties(anySet());
+        verify(propertiesPanelViewBuilder, times(2)).element((Element)anyObject());
+        verify(propertiesPanelViewBuilder, times(2)).mainPackage(eq(MY_PACKAGE));
+        verify(propertiesPanelViewBuilder, times(2)).build();
     }
 
     @SuppressWarnings("unchecked")
@@ -184,30 +187,33 @@ public class SourceCodeGeneratorTest extends AbstractBuilderTest {
     public void propertiesPanelViewImplShouldBeGenerated() throws Exception {
         verify(propertiesPanelViewImplBuilderProvider, atLeast(2)).get();
 
+        verify(propertiesPanelViewImplBuilder).needRemoveTemplate(eq(false));
         verify(propertiesPanelViewImplBuilder).needRemoveTemplate(eq(true));
-        verify(propertiesPanelViewImplBuilder, atLeast(2)).path(eq(targetPath));
-        verify(propertiesPanelViewImplBuilder, atLeast(2)).properties(anySet());
-        verify(propertiesPanelViewImplBuilder, atLeast(2)).element((Element)anyObject());
-        verify(propertiesPanelViewImplBuilder, atLeast(2)).mainPackage(eq(MY_PACKAGE));
-        verify(propertiesPanelViewImplBuilder, atLeast(2)).build();
+        verify(propertiesPanelViewImplBuilder, times(2)).path(eq(targetPath));
+        verify(propertiesPanelViewImplBuilder, times(2)).properties(anySet());
+        verify(propertiesPanelViewImplBuilder, times(2)).element((Element)anyObject());
+        verify(propertiesPanelViewImplBuilder, times(2)).mainPackage(eq(MY_PACKAGE));
+        verify(propertiesPanelViewImplBuilder, times(2)).build();
     }
 
     @Test
     public void elementShouldBeGenerated() throws Exception {
-        verify(elementBuilderProvider, atLeast(2)).get();
+        verify(elementBuilderProvider, times(3)).get();
 
+        verify(elementBuilder, times(2)).needRemoveTemplate(eq(false));
         verify(elementBuilder).needRemoveTemplate(eq(true));
-        verify(elementBuilder, atLeast(2)).path(eq(targetPath));
-        verify(elementBuilder, atLeast(2)).currentElement((Element)anyObject());
-        verify(elementBuilder, atLeast(2)).elements(eq(elements));
-        verify(elementBuilder, atLeast(2)).mainPackage(eq(MY_PACKAGE));
-        verify(elementBuilder, atLeast(2)).build();
+        verify(elementBuilder, times(3)).path(eq(targetPath));
+        verify(elementBuilder, times(3)).currentElement((Element)anyObject());
+        verify(elementBuilder, times(3)).elements(eq(elements));
+        verify(elementBuilder, times(3)).mainPackage(eq(MY_PACKAGE));
+        verify(elementBuilder, times(3)).build();
     }
 
     @Test
     public void connectionShouldBeGenerated() throws Exception {
         verify(connectionBuilderProvider).get();
 
+        verify(connectionBuilder).needRemoveTemplate(eq(true));
         verify(connectionBuilder).needRemoveTemplate(eq(true));
         verify(connectionBuilder).path(eq(targetPath));
         verify(connectionBuilder).needRemoveTemplateParentFolder(anyBoolean());
@@ -220,7 +226,6 @@ public class SourceCodeGeneratorTest extends AbstractBuilderTest {
     public void editorFactoryShouldBeGenerated() throws Exception {
         verify(editorFactoryBuilder).path(eq(targetPath));
         verify(editorFactoryBuilder).mainPackage(eq(MY_PACKAGE));
-        verify(editorFactoryBuilder).needRemoveTemplate(eq(true));
         verify(editorFactoryBuilder).build();
     }
 
@@ -228,7 +233,6 @@ public class SourceCodeGeneratorTest extends AbstractBuilderTest {
     public void ginModuleShouldBeGenerated() throws Exception {
         verify(ginModuleBuilder).path(eq(targetPath));
         verify(ginModuleBuilder).mainPackage(eq(MY_PACKAGE));
-        verify(ginModuleBuilder).needRemoveTemplate(eq(true));
         verify(ginModuleBuilder).build();
     }
 
@@ -236,7 +240,6 @@ public class SourceCodeGeneratorTest extends AbstractBuilderTest {
     public void injectorShouldBeGenerated() throws Exception {
         verify(injectorBuilder).path(eq(targetPath));
         verify(injectorBuilder).mainPackage(eq(MY_PACKAGE));
-        verify(injectorBuilder).needRemoveTemplate(eq(true));
         verify(injectorBuilder).needRemoveTemplateParentFolder(eq(true));
         verify(injectorBuilder).build();
     }
@@ -244,7 +247,6 @@ public class SourceCodeGeneratorTest extends AbstractBuilderTest {
     @Test
     public void resourcesShouldBeGenerated() throws Exception {
         verify(resourcesBuilder).properties(eq(properties));
-        verify(resourcesBuilder).needRemoveTemplate(eq(true));
         verify(resourcesBuilder).build();
     }
 
@@ -252,7 +254,6 @@ public class SourceCodeGeneratorTest extends AbstractBuilderTest {
     public void editorEntryPointShouldBeGenerated() throws Exception {
         verify(editorEntryPointBuilder).path(eq(targetPath));
         verify(editorEntryPointBuilder).properties(eq(properties));
-        verify(editorEntryPointBuilder).needRemoveTemplate(eq(true));
         verify(editorFactoryBuilder).build();
     }
 
@@ -261,7 +262,6 @@ public class SourceCodeGeneratorTest extends AbstractBuilderTest {
         verify(editorPresenterBuilder).path(eq(targetPath));
         verify(editorPresenterBuilder).properties(eq(properties));
         verify(editorPresenterBuilder).elements(eq(elements));
-        verify(editorPresenterBuilder).needRemoveTemplate(eq(true));
         verify(editorPresenterBuilder).needRemoveTemplateParentFolder(eq(true));
         verify(editorPresenterBuilder).build();
     }
@@ -270,7 +270,6 @@ public class SourceCodeGeneratorTest extends AbstractBuilderTest {
     public void editorResourceShouldBeGenerated() throws Exception {
         verify(editorResourcesBuilder).path(eq(targetPath));
         verify(editorResourcesBuilder).properties(eq(properties));
-        verify(editorResourcesBuilder).needRemoveTemplate(eq(true));
         verify(editorResourcesBuilder).build();
     }
 
@@ -280,7 +279,6 @@ public class SourceCodeGeneratorTest extends AbstractBuilderTest {
         verify(stateBuilder).properties(eq(properties));
         verify(stateBuilder).elements(eq(elements));
         verify(stateBuilder).connections(eq(connections));
-        verify(stateBuilder).needRemoveTemplate(eq(true));
         verify(stateBuilder).build();
     }
 }

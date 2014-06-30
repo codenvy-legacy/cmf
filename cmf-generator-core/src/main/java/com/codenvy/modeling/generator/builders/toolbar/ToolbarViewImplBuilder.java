@@ -53,6 +53,7 @@ import static com.codenvy.modeling.generator.builders.PathConstants.TOOLBAR_PACK
 
 /**
  * @author Andrey Plotnikov
+ * @author Valeriy Svydenko
  */
 public class ToolbarViewImplBuilder extends AbstractBuilder<ToolbarViewImplBuilder> {
 
@@ -122,9 +123,6 @@ public class ToolbarViewImplBuilder extends AbstractBuilder<ToolbarViewImplBuild
     /** {@inheritDoc} */
     @Override
     public void build() throws IOException {
-        // TODO need to add some behaviour when main element isn't found
-        Element rootElement = findRootElement(elements);
-
         String toolbarPackage = mainPackage + '.' + CLIENT_PACKAGE + '.' + TOOLBAR_PACKAGE;
 
         GDockLayoutPanel dockLayoutPanel = dockLayoutPanelBuilder.withPrefix("g")
@@ -145,15 +143,13 @@ public class ToolbarViewImplBuilder extends AbstractBuilder<ToolbarViewImplBuild
         StringBuilder addConnectionButtons = new StringBuilder();
 
         for (Element element : elements) {
-            if (!element.equals(rootElement)) {
-                String elementName = element.getName();
+            String elementName = element.getName();
 
-                uiFields.append(createFieldCode(elementName));
-                createFields.append(createElementFieldInitializeCode(elementName));
-                methods.append(createOnElementButtonClickedCode(elementName));
-                bindElementButtons.append(createBindElementButtonCode(elementName));
-                addButtonOnPanel(elementName);
-            }
+            uiFields.append(createFieldCode(elementName));
+            createFields.append(createElementFieldInitializeCode(elementName));
+            methods.append(createOnElementButtonClickedCode(elementName));
+            bindElementButtons.append(createBindElementButtonCode(elementName));
+            addButtonOnPanel(elementName);
         }
 
         for (Connection connection : connections) {

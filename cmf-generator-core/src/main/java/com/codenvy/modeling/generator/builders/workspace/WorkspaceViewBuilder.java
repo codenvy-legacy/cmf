@@ -43,6 +43,7 @@ import static com.codenvy.modeling.generator.builders.PathConstants.WORKSPACE_PA
 
 /**
  * @author Andrey Plotnikov
+ * @author Valeriy Svydenko
  */
 public class WorkspaceViewBuilder extends AbstractBuilder<WorkspaceViewBuilder> {
 
@@ -86,9 +87,6 @@ public class WorkspaceViewBuilder extends AbstractBuilder<WorkspaceViewBuilder> 
     /** {@inheritDoc} */
     @Override
     public void build() throws IOException {
-        // TODO need to add some behaviour when main element isn't found
-        Element rootElement = findRootElement(elements);
-
         String clientPackage = mainPackage + '.' + CLIENT_PACKAGE + '.';
         String workspacePackage = clientPackage + WORKSPACE_PACKAGE;
         String elementsPackage = clientPackage + ELEMENTS_PACKAGE + '.';
@@ -97,12 +95,10 @@ public class WorkspaceViewBuilder extends AbstractBuilder<WorkspaceViewBuilder> 
         StringBuilder methods = new StringBuilder();
 
         for (Element element : elements) {
-            if (!element.equals(rootElement)) {
-                String elementName = element.getName();
+            String elementName = element.getName();
 
-                imports.append("import ").append(elementsPackage).append(elementName).append(";\n");
-                methods.append(createAddElementMethodCode(elementName));
-            }
+            imports.append("import ").append(elementsPackage).append(elementName).append(";\n");
+            methods.append(createAddElementMethodCode(elementName));
         }
 
         for (Connection connection : connections) {

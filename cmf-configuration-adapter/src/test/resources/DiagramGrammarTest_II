@@ -1,3 +1,14 @@
+RootElement {
+    Relation {
+        SINGLE
+    }
+
+    Components {
+        { element1 }
+        { element2 }
+    }
+}
+
 Elements {
     testElementNameOne{}
     testElementNameTwo{}

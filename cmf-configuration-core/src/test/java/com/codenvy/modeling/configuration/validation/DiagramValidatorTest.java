@@ -36,21 +36,31 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-/** @author Valeriy Svydenko */
+/**
+ * @author Valeriy Svydenko
+ */
 public class DiagramValidatorTest {
     public static final String SIMPLE_STRING = "simple_text";
 
-    public PropertyInitializer   propertyInitializer   = new PropertyInitializer();
-    public ComponentInitializer  componentInitializer  = new ComponentInitializer();
-    public ElementInitializer    elementInitializer    = new ElementInitializer();
-    public PairInitializer       pairInitializer       = new PairInitializer();
-    public ConnectionInitializer connectionInitializer = new ConnectionInitializer();
+    public PropertyInitializer    propertyInitializer    = new PropertyInitializer();
+    public ComponentInitializer   componentInitializer   = new ComponentInitializer();
+    public ElementInitializer     elementInitializer     = new ElementInitializer();
+    public PairInitializer        pairInitializer        = new PairInitializer();
+    public ConnectionInitializer  connectionInitializer  = new ConnectionInitializer();
+    public RootElementInitializer rootElementInitializer = new RootElementInitializer();
 
     @Rule
-    public TestRule chainElement    = RuleChain
+    public TestRule chainElement = RuleChain
             .outerRule(propertyInitializer)
             .around(componentInitializer)
             .around(elementInitializer);
+
+    @Rule
+    public TestRule chainRootElement = RuleChain
+            .outerRule(propertyInitializer)
+            .around(componentInitializer)
+            .around(rootElementInitializer);
+
     @Rule
     public TestRule chainConnection = RuleChain
             .outerRule(pairInitializer)
@@ -108,6 +118,44 @@ public class DiagramValidatorTest {
     @Test
     public void componentValidationShouldResultWithoutError() {
         Report report = ConfigurationConstraintsValidator.validate(componentInitializer.getComponent());
+
+        assertFalse(report.hasErrors());
+    }
+
+    //test root element
+    @Test
+    public void rootElementValidationShouldResultInErrorIfRelationIsNull() {
+        rootElementInitializer.getElement().setRelation(null);
+
+        Report report = ConfigurationConstraintsValidator.validate(rootElementInitializer.getElement());
+
+        assertTrue(report.hasErrors());
+        assertEquals(1, report.getErrors().size());
+    }
+
+    @Test
+    public void rootElementValidationShouldResultInErrorIfPropertiesIsEmpty() {
+        rootElementInitializer.getElement().setProperties(new LinkedHashSet<Property>());
+
+        Report report = ConfigurationConstraintsValidator.validate(rootElementInitializer.getElement());
+
+        assertTrue(report.hasErrors());
+        assertEquals(1, report.getErrors().size());
+    }
+
+    @Test
+    public void rootElementValidationShouldResultInErrorIfComponentsIsEmpty() {
+        rootElementInitializer.getElement().setComponents(new LinkedHashSet<Component>());
+
+        Report report = ConfigurationConstraintsValidator.validate(rootElementInitializer.getElement());
+
+        assertTrue(report.hasErrors());
+        assertEquals(1, report.getErrors().size());
+    }
+
+    @Test
+    public void rootElementValidationShouldResultWithoutError() {
+        Report report = ConfigurationConstraintsValidator.validate(elementInitializer.getElement());
 
         assertFalse(report.hasErrors());
     }
@@ -299,6 +347,30 @@ public class DiagramValidatorTest {
 
         protected Element getElement() {
             return element;
+        }
+    }
+
+    private class RootElementInitializer extends ExternalResource {
+        private Element rootElement;
+
+        @Override
+        protected void before() throws Throwable {
+            rootElement = new Element();
+
+            Set<Property> properties = new LinkedHashSet<>();
+            properties.add(propertyInitializer.getProperty());
+
+            Set<Component> components = new LinkedHashSet<>();
+            components.add(componentInitializer.getComponent());
+
+            rootElement.setName(SIMPLE_STRING);
+            rootElement.setRelation(Element.Relation.MULTIPLE);
+            rootElement.setComponents(components);
+            rootElement.setProperties(properties);
+        }
+
+        protected Element getElement() {
+            return rootElement;
         }
     }
 

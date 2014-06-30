@@ -49,6 +49,7 @@ public class DiagramAdapterTest {
 
     private static Set<Element>    elements;
     private static Set<Connection> connections;
+    private static Element         rootElement;
 
     private int numberOfGrammar;
 
@@ -67,11 +68,39 @@ public class DiagramAdapterTest {
 
         elements = configuration.getElements();
         connections = configuration.getConnections();
+        rootElement = configuration.getRootElement();
     }
 
     @Parameters
     public static Iterable<Object[]> dataOfConfigurations() {
         return Arrays.asList(new Object[][]{{DIAGRAM_GRAMMAR_TEST_I, 1}, {DIAGRAM_GRAMMAR_TEST_II, 2}});
+    }
+
+    @Test
+    public void rootElementShouldBeExist() throws Exception {
+        assertNotNull(rootElement);
+    }
+
+    @Test
+    public void rootElementMustHaveRelationValue() throws Exception {
+        assertNotNull(rootElement.getRelation());
+    }
+
+    @Test
+    public void rootElementMustHaveTwoComponents() throws Exception {
+        assertEquals(2, rootElement.getComponents().size());
+    }
+
+    @Test
+    public void rootElementMustHaveComponents() throws Exception {
+        assertFalse(rootElement.getComponents().isEmpty());
+    }
+
+    @Test
+    public void componentsOfRootElementMustHaveName() throws Exception {
+        for (Component component : rootElement.getComponents()) {
+            assertFalse(component.getName().isEmpty());
+        }
     }
 
     @Test

@@ -56,6 +56,7 @@ import static com.codenvy.modeling.generator.builders.PathConstants.MAIN_SOURCE_
 
 /**
  * @author Andrey Plotnikov
+ * @author Valeriy Svydenko
  */
 public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
 
@@ -155,6 +156,7 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
     private Element      element;
     private String       mainPackage;
     private Set<Element> elements;
+    private Element      rootElement;
 
     @Inject
     public ElementBuilder() {
@@ -175,6 +177,12 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
     }
 
     @Nonnull
+    public ElementBuilder rootElement(@Nonnull Element element) {
+        this.rootElement = element;
+        return this;
+    }
+
+    @Nonnull
     public ElementBuilder currentElement(@Nonnull Element element) {
         this.element = element;
         return this;
@@ -183,9 +191,6 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
     /** {@inheritDoc} */
     @Override
     public void build() throws IOException {
-        // TODO need to add some behaviour when main element isn't found
-        Element rootElement = findRootElement(elements);
-
         String elementName = element.getName();
         Set<Property> properties = element.getProperties();
 
@@ -232,7 +237,7 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
             serializationCode.append(createSerializePropertyCode(propertyName));
 
             if (iterator.hasNext()) {
-                serializationCode.append(" +\n" + TWO_TABS);
+                serializationCode.append(" +\n").append(TWO_TABS);
             }
         }
 

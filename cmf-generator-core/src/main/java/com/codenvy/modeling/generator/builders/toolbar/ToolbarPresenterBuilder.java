@@ -29,8 +29,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import static com.codenvy.modeling.generator.builders.ResourceNameConstants.EDITOR_STATE;
-import static com.codenvy.modeling.generator.builders.ResourceNameConstants.TOOLBAR_PRESENTER;
 import static com.codenvy.modeling.generator.builders.EditorStateConstants.CREATE_CONNECTION_SOURCE_STATE_FORMAT;
 import static com.codenvy.modeling.generator.builders.EditorStateConstants.CREATE_ELEMENT_STATE_FORMAT;
 import static com.codenvy.modeling.generator.builders.FileExtensionConstants.JAVA;
@@ -47,6 +45,8 @@ import static com.codenvy.modeling.generator.builders.PathConstants.CLIENT_PACKA
 import static com.codenvy.modeling.generator.builders.PathConstants.JAVA_SOURCE_FOLDER;
 import static com.codenvy.modeling.generator.builders.PathConstants.MAIN_SOURCE_PATH;
 import static com.codenvy.modeling.generator.builders.PathConstants.TOOLBAR_PACKAGE;
+import static com.codenvy.modeling.generator.builders.ResourceNameConstants.EDITOR_STATE;
+import static com.codenvy.modeling.generator.builders.ResourceNameConstants.TOOLBAR_PRESENTER;
 
 /**
  * @author Andrey Plotnikov
@@ -98,9 +98,6 @@ public class ToolbarPresenterBuilder extends AbstractBuilder<ToolbarPresenterBui
     /** {@inheritDoc} */
     @Override
     public void build() throws IOException {
-        // TODO need to add some behaviour when main element isn't found
-        Element rootElement = findRootElement(elements);
-
         String clientPackage = mainPackage + '.' + CLIENT_PACKAGE;
         String toolbarPackage = clientPackage + '.' + TOOLBAR_PACKAGE;
         String stateClassImport = "import static " + clientPackage + '.' + EDITOR_STATE + '.';
@@ -109,15 +106,13 @@ public class ToolbarPresenterBuilder extends AbstractBuilder<ToolbarPresenterBui
         StringBuilder methods = new StringBuilder();
 
         for (Element element : elements) {
-            if (!element.equals(rootElement)) {
-                String elementName = element.getName();
+            String elementName = element.getName();
 
-                staticImports.append(stateClassImport)
-                             .append(String.format(CREATE_ELEMENT_STATE_FORMAT, elementName.toUpperCase()))
-                             .append(";\n");
+            staticImports.append(stateClassImport)
+                         .append(String.format(CREATE_ELEMENT_STATE_FORMAT, elementName.toUpperCase()))
+                         .append(";\n");
 
-                methods.append(createOnElementButtonClickedCode(elementName));
-            }
+            methods.append(createOnElementButtonClickedCode(elementName));
         }
 
         for (Connection connection : connections) {

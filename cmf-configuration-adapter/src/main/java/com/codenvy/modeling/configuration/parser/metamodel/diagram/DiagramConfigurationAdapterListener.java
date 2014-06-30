@@ -29,11 +29,17 @@ import org.antlr.v4.runtime.misc.NotNull;
 import javax.annotation.Nonnull;
 import java.util.Stack;
 
+import static com.codenvy.modeling.configuration.metamodel.diagram.Element.Relation;
+import static com.codenvy.modeling.configuration.metamodel.diagram.Property.Type;
+
 /**
  * @author Dmitry Kuleshov
  * @author Andrey Plotnikov
+ * @author Valeriy Svydenko
  */
 public class DiagramConfigurationAdapterListener extends DiagramBaseListener {
+
+    private Element rootElement;
 
     private final Stack<Element>       elementStack;
     private final Stack<Property>      propertyStack;
@@ -59,18 +65,31 @@ public class DiagramConfigurationAdapterListener extends DiagramBaseListener {
     }
 
     @Override
+    public void enterRootElement(@NotNull DiagramParser.RootElementContext ctx) {
+        rootElement = new Element();
+    }
+
+    @Override
+    public void exitRootElement(@NotNull DiagramParser.RootElementContext ctx) {
+        diagramConfiguration.setRootElement(rootElement);
+        rootElement = null;
+    }
+
+    @Override
     public void enterElement(@NotNull DiagramParser.ElementContext ctx) {
         elementStack.push(new Element());
     }
 
     @Override
     public void exitElementName(@NotNull DiagramParser.ElementNameContext ctx) {
-        elementStack.peek().setName(ctx.TEXT().getText());
+        Element element = rootElement == null ? elementStack.peek() : rootElement;
+        element.setName(ctx.TEXT().getText());
     }
 
     @Override
     public void exitElementRelation(@NotNull DiagramParser.ElementRelationContext ctx) {
-        elementStack.peek().setRelation(Element.Relation.valueOf(ctx.RELATION().getText().toUpperCase()));
+        Element element = rootElement == null ? elementStack.peek() : rootElement;
+        element.setRelation(Relation.valueOf(ctx.RELATION().getText().toUpperCase()));
     }
 
     @Override
@@ -85,7 +104,7 @@ public class DiagramConfigurationAdapterListener extends DiagramBaseListener {
 
     @Override
     public void exitPropertyType(@NotNull DiagramParser.PropertyTypeContext ctx) {
-        propertyStack.peek().setType(Property.Type.valueOf(ctx.PROPERTY_TYPE().getText()));
+        propertyStack.peek().setType(Type.valueOf(ctx.PROPERTY_TYPE().getText()));
     }
 
     @Override
@@ -95,7 +114,8 @@ public class DiagramConfigurationAdapterListener extends DiagramBaseListener {
 
     @Override
     public void exitElementProperty(@NotNull DiagramParser.ElementPropertyContext ctx) {
-        elementStack.peek().addProperty(propertyStack.pop());
+        Element element = rootElement == null ? elementStack.peek() : rootElement;
+        element.addProperty(propertyStack.pop());
     }
 
     @Override
@@ -106,7 +126,9 @@ public class DiagramConfigurationAdapterListener extends DiagramBaseListener {
     @Override
     public void exitElementComponent(@NotNull DiagramParser.ElementComponentContext ctx) {
         componentStack.peek().setName(ctx.TEXT().getText());
-        elementStack.peek().addComponent(componentStack.pop());
+
+        Element element = rootElement == null ? elementStack.peek() : rootElement;
+        element.addComponent(componentStack.pop());
     }
 
     @Override

@@ -19,6 +19,7 @@ package com.codenvy.modeling.configuration.metamodel.diagram;
 import com.google.inject.Inject;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -32,6 +33,9 @@ public class DiagramConfiguration {
     @Valid
     private Set<Element> elements;
 
+    @NotNull
+    private Element rootElement;
+
     @Size(min = 1)
     @Valid
     private Set<Connection> connections;
@@ -40,6 +44,14 @@ public class DiagramConfiguration {
     public DiagramConfiguration() {
         elements = new LinkedHashSet<>();
         connections = new LinkedHashSet<>();
+    }
+
+    public Element getRootElement() {
+        return rootElement;
+    }
+
+    public void setRootElement(Element rootElement) {
+        this.rootElement = rootElement;
     }
 
     public Set<Element> getElements() {
