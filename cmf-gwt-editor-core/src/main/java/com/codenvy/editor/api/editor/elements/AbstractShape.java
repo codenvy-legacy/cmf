@@ -39,12 +39,15 @@ public abstract class AbstractShape extends AbstractElement implements Shape, Co
 
     protected final Set<String> components;
 
-    protected AbstractShape(String elementName, List<String> properties) {
-        super(elementName, properties);
+    protected AbstractShape(@Nonnull String elementName, @Nonnull List<String> properties, @Nonnull List<String> internalProperties) {
+        super(elementName, properties, internalProperties);
 
         this.shapes = new ArrayList<>();
         this.links = new ArrayList<>();
         this.components = new HashSet<>();
+
+        this.x = UNDEFINED_POSITION;
+        this.y = UNDEFINED_POSITION;
     }
 
     /** {@inheritDoc} */
@@ -140,6 +143,7 @@ public abstract class AbstractShape extends AbstractElement implements Shape, Co
         return 0;
     }
 
+    /** {@inheritDoc} */
     @Nonnull
     @Override
     public String serialize() {
@@ -157,9 +161,39 @@ public abstract class AbstractShape extends AbstractElement implements Shape, Co
         return content.toString();
     }
 
+    /** {@inheritDoc} */
+    @Nonnull
+    @Override
+    public String serializeInternalFormat() {
+        StringBuilder content = new StringBuilder("<" + getElementName() + ">\n");
+        content.append(serializeInternalProperties());
+
+        Collections.sort(shapes);
+
+        for (Shape shape : shapes) {
+            content.append(shape.serializeInternalFormat());
+        }
+
+        for (Link link : links) {
+            content.append(link.serializeInternalFormat());
+        }
+
+        content.append("</").append(getElementName()).append(">\n");
+
+        return content.toString();
+    }
+
     @Nonnull
     protected String serializeProperties() {
         return "";
+    }
+
+    @Nonnull
+    protected String serializeInternalProperties() {
+        return serializeProperties() +
+               "<x>\n" + getX() + "\n</x>\n" +
+               "<y>\n" + getY() + "\n</y>\n" +
+               "<uuid>\n" + id + "\n</uuid>\n";
     }
 
     /** {@inheritDoc} */
@@ -171,6 +205,17 @@ public abstract class AbstractShape extends AbstractElement implements Shape, Co
         Document xml = XMLParser.parse(content);
 
         deserialize(xml.getFirstChild());
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void deserializeInternalFormat(@Nonnull String content) {
+        shapes.clear();
+        links.clear();
+
+        Document xml = XMLParser.parse(content);
+
+        deserializeInternalFormat(xml.getFirstChild());
     }
 
     /** {@inheritDoc} */

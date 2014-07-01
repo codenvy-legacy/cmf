@@ -30,8 +30,6 @@ import com.codenvy.editor.client.propertiespanel.shape1.Shape1PropertiesPanelPre
 import com.codenvy.editor.client.propertiespanel.shape2.Shape2PropertiesPanelPresenter;
 import com.google.inject.Inject;
 
-import javax.annotation.Nonnull;
-
 /**
  * @author Andrey Plotnikov
  */
@@ -66,19 +64,6 @@ public class EditorPresenter extends AbstractEditor implements EditorView.Action
         selectionManager.addListener(propertiesPanelManager);
         workspace.addDiagramChangeListener(this);
         workspace.addMainElementChangeListener(toolbar);
-    }
-
-    /** {@inheritDoc} */
-    @Nonnull
-    @Override
-    public String serialize() {
-        return workspace.serialize();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void deserialize(@Nonnull String content) {
-        workspace.deserialize(content);
     }
 
 }

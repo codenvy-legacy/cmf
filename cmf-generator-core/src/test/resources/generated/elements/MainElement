@@ -1,20 +1,24 @@
 package my.package.client.elements;
 
 import com.google.gwt.xml.client.Node;
+import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 import com.codenvy.editor.api.editor.elements.AbstractShape;
+import com.codenvy.editor.api.editor.elements.Element;
+import com.codenvy.editor.api.editor.elements.Link;
 import com.google.gwt.xml.client.NodeList;
 import com.codenvy.editor.api.editor.elements.Shape;
 
 public class MainElement extends AbstractShape {
 
-    public MainElement(String name, List<String> properties) {
-        super(name, properties);
+    public MainElement(@Nonnull String MainElement, @Nonnull List<String> properties, @Nonnull List<String> internalProperties) {
+        super(MainElement, properties, internalProperties);
     }
 
     public MainElement() {
-        this("MainElement", new ArrayList<String>());
+        this("MainElement", new ArrayList<String>(), Arrays.asList("x", "y", "uuid"));
 
         components.add("Element1");
         components.add("Element2");
@@ -31,20 +35,50 @@ public class MainElement extends AbstractShape {
             if (isProperty(name)) {
                 applyProperty(item);
             } else {
-                Shape shape = findElement(name);
-                shape.deserialize(item);
-                addShape(shape);
+                Element element = findElement(name);
+                element.deserialize(item);
+
+                if (element instanceof Shape) {
+                    addShape((Shape)element);
+                } else {
+                    addLink((Link)element);
+                }
             }
         }
     }
 
-    private Shape findElement(String elementName) {
+    @Override
+    public void deserializeInternalFormat(Node node) {
+        NodeList childNodes = node.getChildNodes();
+
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Node item = childNodes.item(i);
+            String name = item.getNodeName();
+
+            if (isInternalProperty(name)) {
+                applyProperty(item);
+            } else {
+                Element element = findElement(name);
+                element.deserializeInternalFormat(item);
+
+                if (element instanceof Shape) {
+                    addShape((Shape)element);
+                } else {
+                    addLink((Link)element);
+                }
+            }
+        }
+    }
+
+    private Element findElement(@Nonnull String elementName) {
         switch (elementName) {
             case "Element1":
                 return new Element1();
             case "Element2":
-            default:
                 return new Element2();
+            case "Connection1":
+            default:
+                return new Connection1();
         }
     }
 

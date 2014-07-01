@@ -17,12 +17,15 @@
 package com.codenvy.editor.client.elements;
 
 import com.codenvy.editor.api.editor.elements.AbstractShape;
+import com.codenvy.editor.api.editor.elements.Element;
+import com.codenvy.editor.api.editor.elements.Link;
 import com.codenvy.editor.api.editor.elements.Shape;
 import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -31,14 +34,14 @@ import java.util.List;
 public class MainElement extends AbstractShape {
 
     public MainElement() {
-        this("MainElement", new ArrayList<String>());
+        this("MainElement", new ArrayList<String>(), Arrays.asList("x", "y", "uuid"));
 
         components.add("Shape1");
         components.add("Shape2");
     }
 
-    public MainElement(String elementName, List<String> properties) {
-        super(elementName, properties);
+    public MainElement(@Nonnull String elementName, @Nonnull List<String> properties, @Nonnull List<String> internalProperties) {
+        super(elementName, properties, internalProperties);
     }
 
     /** {@inheritDoc} */
@@ -53,21 +56,53 @@ public class MainElement extends AbstractShape {
             if (isProperty(name)) {
                 applyProperty(item);
             } else {
-                Shape shape = findElement(name);
-                shape.deserialize(item);
-                addShape(shape);
+                Element element = findElement(name);
+                element.deserialize(item);
+
+                if (element instanceof Shape) {
+                    addShape((Shape)element);
+                } else {
+                    addLink((Link)element);
+                }
             }
         }
     }
 
-    private Shape findElement(@Nonnull String elementName) {
+    /** {@inheritDoc} */
+    @Override
+    public void deserializeInternalFormat(@Nonnull Node node) {
+        NodeList childNodes = node.getChildNodes();
+
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Node item = childNodes.item(i);
+            String name = item.getNodeName();
+
+            if (isInternalProperty(name)) {
+                applyProperty(item);
+            } else {
+                Element element = findElement(name);
+                element.deserializeInternalFormat(item);
+
+                if (element instanceof Shape) {
+                    addShape((Shape)element);
+                } else {
+                    addLink((Link)element);
+                }
+            }
+        }
+    }
+
+    private Element findElement(@Nonnull String elementName) {
         switch (elementName) {
             case "Shape1":
                 return new Shape1();
 
             case "Shape2":
-            default:
                 return new Shape2();
+
+            case "Link1":
+            default:
+                return new Link1();
         }
     }
 

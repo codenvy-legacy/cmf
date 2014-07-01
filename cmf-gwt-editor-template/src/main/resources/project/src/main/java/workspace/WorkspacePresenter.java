@@ -4,6 +4,7 @@ import main_package.client.State;
 
 import com.codenvy.editor.api.editor.EditorState;
 import com.codenvy.editor.api.editor.SelectionManager;
+import com.codenvy.editor.api.editor.elements.Link;
 import com.codenvy.editor.api.editor.elements.Shape;
 import com.codenvy.editor.api.editor.workspace.AbstractWorkspacePresenter;
 import com.codenvy.editor.api.editor.workspace.AbstractWorkspaceView;
@@ -78,21 +79,35 @@ create_graphic_connections        }
         selectionManager.setElement(null);
         selectedElement = null;
 
-        int x = 100;
-        int y = 100;
-
         ((AbstractWorkspaceView)view).setZoomInButtonEnable(false);
         ((AbstractWorkspaceView)view).setZoomOutButtonEnable(nodeElement.getParent() != null);
 
+        int defaultX = 100;
+        int defaultY = 100;
+
         for (Shape shape : mainElement.getShapes()) {
+            int x = shape.getX();
+            int y = shape.getY();
+
+            if (x == Shape.UNDEFINED_POSITION) {
+                x = defaultX;
+                defaultX += 100;
+            }
+
+            if (y == Shape.UNDEFINED_POSITION) {
+                y = defaultY;
+                defaultY += 100;
+            }
+
 create_graphical_elements
             shape.setX(x);
             shape.setY(y);
 
             elements.put(shape.getId(), shape);
-
-            x += 100;
         }
+
+        for (Link link : mainElement.getLinks()) {
+create_links        }
 
         notifyMainElementChangeListeners();
     }

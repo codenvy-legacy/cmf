@@ -82,7 +82,15 @@ public abstract class AbstractEditor<T> extends AbstractPresenter implements Abs
 
     /** @return a serialized text type of diagram */
     @Nonnull
-    public abstract String serialize();
+    public String serialize() {
+        return workspace.serialize();
+    }
+
+    /** @return a serialized internal text type of diagram */
+    @Nonnull
+    public String serializeInternalFormat() {
+        return workspace.serializeInternalFormat();
+    }
 
     /**
      * Convert a text type of diagram to a graphical type.
@@ -90,7 +98,19 @@ public abstract class AbstractEditor<T> extends AbstractPresenter implements Abs
      * @param content
      *         content that need to be parsed
      */
-    public abstract void deserialize(@Nonnull String content);
+    public void deserialize(@Nonnull String content) {
+        workspace.deserialize(content);
+    }
+
+    /**
+     * Convert an internal text type of diagram to a graphical type.
+     *
+     * @param content
+     *         content that need to be parsed
+     */
+    public void deserializeInternalFormat(@Nonnull String content) {
+        workspace.deserializeInternalFormat(content);
+    }
 
     public interface EditorChangeListener {
 

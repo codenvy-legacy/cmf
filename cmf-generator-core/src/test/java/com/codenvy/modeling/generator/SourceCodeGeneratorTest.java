@@ -205,6 +205,7 @@ public class SourceCodeGeneratorTest extends AbstractBuilderTest {
         verify(elementBuilder, times(3)).path(eq(targetPath));
         verify(elementBuilder, times(3)).currentElement((Element)anyObject());
         verify(elementBuilder, times(3)).elements(eq(elements));
+        verify(elementBuilder, times(3)).connections(eq(connections));
         verify(elementBuilder, times(3)).mainPackage(eq(MY_PACKAGE));
         verify(elementBuilder, times(3)).build();
     }

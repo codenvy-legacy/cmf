@@ -4,28 +4,17 @@ import com.codenvy.editor.api.editor.elements.AbstractLink;
 import com.codenvy.editor.api.editor.elements.Shape;
 import com.google.gwt.xml.client.Node;
 
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 
 public class connectionName extends AbstractLink {
 
-    public connectionName(Shape source, Shape target) {
-        super(source, target, "connectionName", new ArrayList<String>());
+    public connectionName() {
+        this(null, null);
     }
 
-    @Override
-    public void deserialize(@Nonnull String content) {
-
-    }
-
-    @Override
-    public void deserialize(@Nonnull Node node) {
-
-    }
-
-    @Override
-    public void applyProperty(Node node) {
-
+    public connectionName(@Nullable String source, @Nullable String target) {
+        super(source, target, "connectionName", new ArrayList<String>(), new ArrayList<String>());
     }
 
 }

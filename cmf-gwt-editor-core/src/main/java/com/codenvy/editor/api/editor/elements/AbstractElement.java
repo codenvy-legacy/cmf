@@ -26,15 +26,18 @@ import java.util.List;
  */
 public abstract class AbstractElement implements Element {
 
-    private final String       id;
+    protected String id;
+
     private       Shape        parent;
     private       String       title;
     private       String       elementName;
     private final List<String> properties;
+    private final List<String> internalProperties;
 
-    protected AbstractElement(@Nonnull String elementName, @Nonnull List<String> properties) {
+    protected AbstractElement(@Nonnull String elementName, @Nonnull List<String> properties, @Nonnull List<String> internalProperties) {
         this.elementName = elementName;
         this.properties = properties;
+        this.internalProperties = internalProperties;
         this.title = elementName;
         id = UUID.get();
     }
@@ -87,6 +90,17 @@ public abstract class AbstractElement implements Element {
      */
     protected boolean isProperty(@Nonnull String name) {
         return properties.contains(name);
+    }
+
+    /**
+     * Returns <code>true</code> if a given XML tag name is internal property name.
+     *
+     * @param name
+     *         XML tag name
+     * @return <code>true</code> if a given XML tag name is internal property name, <code>false</code> if it is not
+     */
+    protected boolean isInternalProperty(@Nonnull String name) {
+        return internalProperties.contains(name);
     }
 
 }

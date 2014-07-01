@@ -27,6 +27,8 @@ import java.util.Set;
  */
 public interface Shape extends Element {
 
+    int UNDEFINED_POSITION = -1;
+
     /**
      * Add an inner shape into this one shape.
      *
@@ -100,5 +102,21 @@ public interface Shape extends Element {
 
     /** @return <code>true</code> if this shape has an ability to have inner components, <code>false</code> it doesn't */
     boolean isContainer();
+
+    /**
+     * Deserialize diagram element with all inner elements.
+     *
+     * @param content
+     *         a serialized content
+     */
+    void deserialize(@Nonnull String content);
+
+    /**
+     * Deserialize diagram element with all inner elements and all properties(include internal properties).
+     *
+     * @param content
+     *         a serialized content
+     */
+    void deserializeInternalFormat(@Nonnull String content);
 
 }

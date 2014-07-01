@@ -35,7 +35,7 @@ import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.EDI
 import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.IMPORT_ELEMENTS;
 import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.IMPORT_PROPERTIES_PANEL_ELEMENTS;
 import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.MAIN_PACKAGE_MARKER;
-import static com.codenvy.modeling.generator.builders.OffsetBuilderConstants.SIX_TABS;
+import static com.codenvy.modeling.generator.builders.OffsetBuilderConstants.OFFSET;
 import static com.codenvy.modeling.generator.builders.OffsetBuilderConstants.TWO_TABS;
 import static com.codenvy.modeling.generator.builders.PathConstants.CLIENT_PACKAGE;
 import static com.codenvy.modeling.generator.builders.PathConstants.ELEMENTS_PACKAGE;
@@ -48,12 +48,12 @@ import static com.codenvy.modeling.generator.builders.ResourceNameConstants.PROP
 
 /**
  * @author Valeriy Svydenko
+ * @author Andrey Plotnikov
  */
 public class EditorPresenterBuilder extends AbstractBuilder<EditorPresenterBuilder> {
 
     private Properties   properties;
     private Set<Element> elements;
-    private Element      rootElement;
 
     @Inject
     public EditorPresenterBuilder() {
@@ -63,6 +63,7 @@ public class EditorPresenterBuilder extends AbstractBuilder<EditorPresenterBuild
 
     @Override
     public void build() throws IOException {
+        String editorName = properties.getProperty(EDITOR_NAME.name());
         String packageName = properties.getProperty(MAIN_PACKAGE.name());
 
         StringBuilder importPropertiesPanelElements = new StringBuilder();
@@ -73,30 +74,44 @@ public class EditorPresenterBuilder extends AbstractBuilder<EditorPresenterBuild
         String clientPackage = packageName + '.' + CLIENT_PACKAGE;
         String propertiesPanelPackage = clientPackage + '.' + PROPERTIES_PANEL_PACKAGE + '.';
         String elementsPackage = clientPackage + '.' + ELEMENTS_PACKAGE + '.';
+        // number 9 is amount of symbols in line where constructor is defined(except amount of symbols of editor name).
+        String constructorParamOffset = createOffset(editorName.length() + 9);
+
+        constructorArguments.append(OFFSET)
+                            .append(constructorParamOffset)
+                            .append("EditorFactory").append(' ')
+                            .append("editorFactory").append(",\n");
+        constructorArguments.append(OFFSET)
+                            .append(constructorParamOffset)
+                            .append("SelectionManager").append(' ')
+                            .append("selectionManager").append(",\n");
+        constructorArguments.append(OFFSET)
+                            .append(constructorParamOffset)
+                            .append("EmptyPropertiesPanelPresenter").append(' ')
+                            .append("emptyPropertiesPanelPresenter").append(",\n");
 
         for (Element element : elements) {
-            if (!element.equals(rootElement)) {
-                String elementName = element.getName();
-                String elementPropertiesPanelName = elementName + PROPERTIES_PANEL_PRESENTER;
-                String elementPropertiesPanelArgument = changeFirstSymbolToLowCase(elementPropertiesPanelName);
+            String elementName = element.getName();
+            String elementPropertiesPanelName = elementName + PROPERTIES_PANEL_PRESENTER;
+            String elementPropertiesPanelArgument = changeFirstSymbolToLowCase(elementPropertiesPanelName);
 
-                importPropertiesPanelElements.append("import ").append(propertiesPanelPackage).append(elementName.toLowerCase())
-                                             .append('.').append(elementPropertiesPanelName).append(";\n");
+            importPropertiesPanelElements.append("import ").append(propertiesPanelPackage).append(elementName.toLowerCase())
+                                         .append('.').append(elementPropertiesPanelName).append(";\n");
 
-                importElements.append("import ").append(elementsPackage).append(elementName).append(";\n");
+            importElements.append("import ").append(elementsPackage).append(elementName).append(";\n");
 
-                constructorArguments.append(SIX_TABS)
-                                    .append(elementPropertiesPanelName).append(' ')
-                                    .append(elementPropertiesPanelArgument).append(",\n");
+            constructorArguments.append(OFFSET)
+                                .append(constructorParamOffset)
+                                .append(elementPropertiesPanelName).append(' ')
+                                .append(elementPropertiesPanelArgument).append(",\n");
 
-                constructorBody.append("\n")
-                               .append(TWO_TABS)
-                               .append("propertiesPanelManager.register(").append(elementName).append(".class, ")
-                               .append(elementPropertiesPanelArgument).append(");\n")
-                               .append(TWO_TABS)
-                               .append(elementPropertiesPanelArgument).append(".addListener(this);\n");
+            constructorBody.append("\n")
+                           .append(TWO_TABS)
+                           .append("propertiesPanelManager.register(").append(elementName).append(".class, ")
+                           .append(elementPropertiesPanelArgument).append(");\n")
+                           .append(TWO_TABS)
+                           .append(elementPropertiesPanelArgument).append(".addListener(this);\n");
 
-            }
         }
 
         constructorArguments.delete(constructorArguments.lastIndexOf(","), constructorArguments.length());
@@ -114,7 +129,7 @@ public class EditorPresenterBuilder extends AbstractBuilder<EditorPresenterBuild
                            JAVA_SOURCE_FOLDER,
                            convertPathToPackageName(properties.getProperty(MAIN_PACKAGE.name())),
                            CLIENT_PACKAGE,
-                           properties.getProperty(EDITOR_NAME.name()) + JAVA);
+                           editorName + JAVA);
 
         replaceElements.put(CURRENT_PACKAGE_MARKER, clientPackage);
         replaceElements.put(IMPORT_PROPERTIES_PANEL_ELEMENTS, importPropertiesPanelElements.toString());
@@ -122,21 +137,24 @@ public class EditorPresenterBuilder extends AbstractBuilder<EditorPresenterBuild
         replaceElements.put(CONSTRUCTOR_ARGUMENTS, constructorArguments.toString());
         replaceElements.put(CONSTRUCTOR_BODY, constructorBody.toString());
         replaceElements.put(MAIN_PACKAGE_MARKER, packageName);
-        replaceElements.put(EDITOR_NAME_MARKER, properties.getProperty(EDITOR_NAME.name()));
+        replaceElements.put(EDITOR_NAME_MARKER, editorName);
 
         super.build();
+    }
+
+    private String createOffset(int amount) {
+        StringBuilder whiteSpaces = new StringBuilder();
+
+        for (int i = 0; i < amount; i++) {
+            whiteSpaces.append(' ');
+        }
+
+        return whiteSpaces.toString();
     }
 
     @Nonnull
     public EditorPresenterBuilder elements(@Nonnull Set<Element> elements) {
         this.elements = elements;
-
-        return this;
-    }
-
-    @Nonnull
-    public EditorPresenterBuilder rootElement(@Nonnull Element element) {
-        this.rootElement = element;
 
         return this;
     }

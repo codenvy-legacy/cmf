@@ -24,28 +24,28 @@ import javax.annotation.Nonnull;
  */
 public interface Link extends Element {
 
-    /** @return a source shape element */
+    /** @return a source shape element id */
     @Nonnull
-    Shape getSource();
+    String getSource();
 
     /**
-     * Change a source shape element.
+     * Change a source shape element id.
      *
      * @param source
-     *         a source element that need to be applied
+     *         a source element id that need to be applied
      */
-    void setSource(@Nonnull Shape source);
+    void setSource(@Nonnull String source);
 
-    /** @return a target shape element */
+    /** @return a target shape element id */
     @Nonnull
-    Shape getTarget();
+    String getTarget();
 
     /**
-     * Change a target shape element.
+     * Change a target shape element id.
      *
      * @param target
-     *         a source element that need to be applied
+     *         a source element id that need to be applied
      */
-    void setTarget(@Nonnull Shape target);
+    void setTarget(@Nonnull String target);
 
 }

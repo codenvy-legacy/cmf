@@ -17,6 +17,7 @@ package com.codenvy.editor.client.workspace;
 
 import com.codenvy.editor.api.editor.EditorState;
 import com.codenvy.editor.api.editor.SelectionManager;
+import com.codenvy.editor.api.editor.elements.Link;
 import com.codenvy.editor.api.editor.elements.Shape;
 import com.codenvy.editor.api.editor.workspace.AbstractWorkspacePresenter;
 import com.codenvy.editor.api.editor.workspace.AbstractWorkspaceView;
@@ -108,7 +109,7 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
 
                 source = (Shape)elements.get(prevSelectedElement);
 
-                Link1 link = new Link1(source, element);
+                Link1 link = new Link1(source.getId(), element.getId());
 
                 elements.put(element.getId(), element);
 
@@ -135,10 +136,23 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
         ((AbstractWorkspaceView)view).setZoomInButtonEnable(false);
         ((AbstractWorkspaceView)view).setZoomOutButtonEnable(nodeElement.getParent() != null);
 
-        int x = 100;
-        int y = 100;
+        int defaultX = 100;
+        int defaultY = 100;
 
         for (Shape shape : mainElement.getShapes()) {
+            int x = shape.getX();
+            int y = shape.getY();
+
+            if (x == Shape.UNDEFINED_POSITION) {
+                x = defaultX;
+                defaultX += 100;
+            }
+
+            if (y == Shape.UNDEFINED_POSITION) {
+                y = defaultY;
+                defaultY += 100;
+            }
+
             if (shape instanceof Shape1) {
                 ((WorkspaceView)view).addShape1(x, y, (Shape1)shape);
             } else if (shape instanceof Shape2) {
@@ -149,8 +163,12 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
             shape.setY(y);
 
             elements.put(shape.getId(), shape);
+        }
 
-            x += 100;
+        for (Link link : mainElement.getLinks()) {
+            if (link instanceof Link1) {
+                ((WorkspaceView)view).addLink(link.getSource(), link.getTarget());
+            }
         }
 
         notifyMainElementChangeListeners();

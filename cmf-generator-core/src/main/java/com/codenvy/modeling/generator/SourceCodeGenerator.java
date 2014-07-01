@@ -269,6 +269,7 @@ public class SourceCodeGenerator {
         DiagramConfiguration diagramConfiguration = configuration.getDiagramConfiguration();
         Set<Element> elements = diagramConfiguration.getElements();
         Element rootElement = diagramConfiguration.getRootElement();
+        Set<Connection> connections = diagramConfiguration.getConnections();
 
         for (Element element : elements) {
             elementBuilderProvider.get()
@@ -276,6 +277,7 @@ public class SourceCodeGenerator {
                                   .path(projectPath)
                                   .mainPackage(packageName)
                                   .elements(elements)
+                                  .connections(connections)
                                   .rootElement(rootElement)
                                   .currentElement(element)
 
@@ -289,14 +291,13 @@ public class SourceCodeGenerator {
                               .path(projectPath)
                               .mainPackage(packageName)
                               .elements(elements)
+                              .connections(connections)
                               .rootElement(rootElement)
                               .currentElement(rootElement)
 
                               .needRemoveTemplate(true)
 
                               .build();
-
-        Set<Connection> connections = diagramConfiguration.getConnections();
 
         for (Iterator<Connection> iterator = connections.iterator(); iterator.hasNext(); ) {
             Connection connection = iterator.next();
@@ -341,7 +342,6 @@ public class SourceCodeGenerator {
         editorPresenterBuilder.path(targetPath)
                               .properties(properties)
                               .elements(elements)
-                              .rootElement(diagramConfiguration.getRootElement())
 
                               .needRemoveTemplateParentFolder(true)
 

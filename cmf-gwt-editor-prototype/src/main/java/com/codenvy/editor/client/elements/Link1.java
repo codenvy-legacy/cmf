@@ -16,10 +16,9 @@
 package com.codenvy.editor.client.elements;
 
 import com.codenvy.editor.api.editor.elements.AbstractLink;
-import com.codenvy.editor.api.editor.elements.Shape;
-import com.google.gwt.xml.client.Node;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 
 /**
@@ -29,12 +28,16 @@ public class Link1 extends AbstractLink {
 
     private String color;
 
-    public Link1(@Nonnull Shape source, @Nonnull Shape target) {
-        this(target, source, "GREEN");
+    public Link1() {
+        this(null, null);
     }
 
-    public Link1(@Nonnull Shape source, @Nonnull Shape target, @Nonnull String color) {
-        super(source, target, "Link1", new ArrayList<String>());
+    public Link1(@Nullable String source, @Nullable String target) {
+        this(source, target, "GREEN");
+    }
+
+    public Link1(@Nullable String source, @Nullable String target, @Nonnull String color) {
+        super(source, target, "Link1", new ArrayList<String>(), new ArrayList<String>());
 
         this.color = color;
     }
@@ -46,21 +49,6 @@ public class Link1 extends AbstractLink {
 
     public void setColor(@Nonnull String color) {
         this.color = color;
-    }
-
-    @Override
-    public void deserialize(@Nonnull String content) {
-        // it isn't implemented for now.
-    }
-
-    @Override
-    public void deserialize(@Nonnull Node node) {
-        // it isn't implemented for now.
-    }
-
-    @Override
-    public void applyProperty(@Nonnull Node node) {
-        // this class doesn't have any properties. That's why this method is empty
     }
 
 }

@@ -17,8 +17,10 @@
 package com.codenvy.modeling.generator.builders.elements;
 
 import com.codenvy.editor.api.editor.elements.AbstractShape;
+import com.codenvy.editor.api.editor.elements.Link;
 import com.codenvy.editor.api.editor.elements.Shape;
 import com.codenvy.modeling.configuration.metamodel.diagram.Component;
+import com.codenvy.modeling.configuration.metamodel.diagram.Connection;
 import com.codenvy.modeling.configuration.metamodel.diagram.Element;
 import com.codenvy.modeling.configuration.metamodel.diagram.Property;
 import com.codenvy.modeling.generator.builders.AbstractBuilder;
@@ -45,6 +47,7 @@ import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.GET
 import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.IMPORT_MARKER;
 import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.PROPERTY_NAME_MARKER;
 import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.PROPERTY_TYPE_MARKER;
+import static com.codenvy.modeling.generator.builders.OffsetBuilderConstants.FIVE_TABS;
 import static com.codenvy.modeling.generator.builders.OffsetBuilderConstants.FOUR_TABS;
 import static com.codenvy.modeling.generator.builders.OffsetBuilderConstants.OFFSET;
 import static com.codenvy.modeling.generator.builders.OffsetBuilderConstants.THREE_TABS;
@@ -61,12 +64,14 @@ import static com.codenvy.modeling.generator.builders.PathConstants.MAIN_SOURCE_
 public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
 
     private static final String MAIN_ELEMENT_SUPER_CONSTRUCTOR =
-            OFFSET + "public elementName(String name, List<String> properties) {\n" +
-            TWO_TABS + "super(name, properties);\n" +
+            OFFSET +
+            "public elementName(@Nonnull String elementName, @Nonnull List<String> properties, @Nonnull List<String> internalProperties) {\n" +
+            TWO_TABS + "super(elementName, properties, internalProperties);\n" +
             OFFSET + "}\n\n";
 
     private static final String ELEMENT_CONSTRUCTOR = OFFSET + "public elementName() {\n" +
-                                                      TWO_TABS + "generalConstructor(\"elementName\", propertiesList);\n\n" +
+                                                      TWO_TABS +
+                                                      "generalConstructor(\"elementName\", propertiesList, internalPropertiesList);\n\n" +
                                                       "propertiesInitialization" +
                                                       "components" +
                                                       OFFSET + "}\n\n";
@@ -87,12 +92,36 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
                                                      THREE_TABS + "if (isProperty(name)) {\n" +
                                                      FOUR_TABS + "applyProperty(item);\n" +
                                                      THREE_TABS + "} else {\n" +
-                                                     FOUR_TABS + "Shape shape = findElement(name);\n" +
-                                                     FOUR_TABS + "shape.deserialize(item);\n" +
-                                                     FOUR_TABS + "addShape(shape);\n" +
+                                                     FOUR_TABS + "Element element = findElement(name);\n" +
+                                                     FOUR_TABS + "element.deserialize(item);\n\n" +
+                                                     FOUR_TABS + "if (element instanceof Shape) {\n" +
+                                                     FIVE_TABS + "addShape((Shape)element);\n" +
+                                                     FOUR_TABS + "} else {\n" +
+                                                     FIVE_TABS + "addLink((Link)element);\n" +
+                                                     FOUR_TABS + "}\n" +
                                                      THREE_TABS + "}\n" +
                                                      TWO_TABS + "}\n" +
                                                      OFFSET + "}\n\n";
+
+    private static final String DESERIALIZE_INTERNAL_FORMAT_METHOD = OFFSET + "@Override\n" +
+                                                                     OFFSET + "public void deserializeInternalFormat(Node node) {\n" +
+                                                                     TWO_TABS + "NodeList childNodes = node.getChildNodes();\n\n" +
+                                                                     TWO_TABS + "for (int i = 0; i < childNodes.getLength(); i++) {\n" +
+                                                                     THREE_TABS + "Node item = childNodes.item(i);\n" +
+                                                                     THREE_TABS + "String name = item.getNodeName();\n\n" +
+                                                                     THREE_TABS + "if (isInternalProperty(name)) {\n" +
+                                                                     FOUR_TABS + "applyProperty(item);\n" +
+                                                                     THREE_TABS + "} else {\n" +
+                                                                     FOUR_TABS + "Element element = findElement(name);\n" +
+                                                                     FOUR_TABS + "element.deserializeInternalFormat(item);\n\n" +
+                                                                     FOUR_TABS + "if (element instanceof Shape) {\n" +
+                                                                     FIVE_TABS + "addShape((Shape)element);\n" +
+                                                                     FOUR_TABS + "} else {\n" +
+                                                                     FIVE_TABS + "addLink((Link)element);\n" +
+                                                                     FOUR_TABS + "}\n" +
+                                                                     THREE_TABS + "}\n" +
+                                                                     TWO_TABS + "}\n" +
+                                                                     OFFSET + "}\n\n";
 
     private static final String SERIALIZE_PROPERTIES_METHOD = OFFSET + "@Override\n" +
                                                               OFFSET + "protected String serializeProperties() {\n" +
@@ -105,7 +134,7 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
                                                           THREE_TABS + SEVEN_WHITE_SPACE + "argumentName +\n" +
                                                           TWO_TABS + SEVEN_WHITE_SPACE + "\"</propertyName>\"";
 
-    private static final String FIND_ELEMENT_METHOD = OFFSET + "private Shape findElement(String elementName) {\n" +
+    private static final String FIND_ELEMENT_METHOD = OFFSET + "private Element findElement(@Nonnull String elementName) {\n" +
                                                       TWO_TABS + "switch (elementName) {\n" +
                                                       "findElements" +
                                                       TWO_TABS + "}\n" +
@@ -124,7 +153,17 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
 
     private static final String APPLY_PROPERTIES_CODE = TWO_TABS + "String nodeName = node.getNodeName();\n" +
                                                         TWO_TABS + "String nodeValue = node.getChildNodes().item(0).getNodeValue();\n\n" +
-                                                        TWO_TABS + "switch (nodeName) {\nfindProperty" +
+                                                        TWO_TABS + "switch (nodeName) {\n" +
+                                                        THREE_TABS + "case \"x\":\n" +
+                                                        FOUR_TABS + "setX(Integer.valueOf(nodeValue));\n" +
+                                                        THREE_TABS + "break;\n" +
+                                                        THREE_TABS + "case \"y\":\n" +
+                                                        FOUR_TABS + "setY(Integer.valueOf(nodeValue));\n" +
+                                                        THREE_TABS + "break;\n" +
+                                                        THREE_TABS + "case \"uuid\":\n" +
+                                                        FOUR_TABS + "id = nodeValue;\n" +
+                                                        THREE_TABS + "break;\n" +
+                                                        "findProperty" +
                                                         TWO_TABS + "}\n";
 
     private static final String ADD_COMPONENT_CODE = TWO_TABS + "components.add(\"elementName\");\n";
@@ -139,6 +178,7 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
     private static final String FIND_ELEMENT_MARKER              = "findElements";
     private static final String PROPERTIES_FIELDS_MARKER         = "properties_fields";
     private static final String PROPERTIES_MARKER                = "propertiesList";
+    private static final String INTERNAL_PROPERTIES_MARKER       = "internalPropertiesList";
     private static final String PROPERTY_VALUE_MARKER            = "propertyValue";
     private static final String PROPERTIES_INITIALIZATION_MARKER = "propertiesInitialization";
     private static final String APPLY_PROPERTIES_MARKER          = "applyProperties";
@@ -153,10 +193,11 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
 
     private static final String ELEMENT_CLASS_NAME = "Element";
 
-    private Element      element;
-    private String       mainPackage;
-    private Set<Element> elements;
-    private Element      rootElement;
+    private Element         element;
+    private String          mainPackage;
+    private Set<Element>    elements;
+    private Element         rootElement;
+    private Set<Connection> connections;
 
     @Inject
     public ElementBuilder() {
@@ -173,6 +214,12 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
     @Nonnull
     public ElementBuilder elements(@Nonnull Set<Element> elements) {
         this.elements = elements;
+        return this;
+    }
+
+    @Nonnull
+    public ElementBuilder connections(@Nonnull Set<Connection> connections) {
+        this.connections = connections;
         return this;
     }
 
@@ -200,6 +247,7 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
         StringBuilder propertiesInitialization = new StringBuilder();
         StringBuilder applyPropertiesValue = new StringBuilder();
         StringBuilder propertyNames = new StringBuilder();
+        StringBuilder internalPropertyNames = new StringBuilder("\"x\", \"y\", \"uuid\"");
         StringBuilder propertiesGetterAndSetters = new StringBuilder();
         StringBuilder imports = new StringBuilder();
         StringBuilder serializationCode = new StringBuilder();
@@ -221,6 +269,8 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
 
             applyPropertiesValue.append(createInitializePropertiesCode(propertyName, propertyType));
 
+            internalPropertyNames.append(", ").append('"').append(propertyName).append('"');
+
             propertyNames.append('"').append(propertyName).append('"');
             if (iterator.hasNext()) {
                 propertyNames.append(", ");
@@ -241,6 +291,8 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
             }
         }
 
+        imports.append("import ").append(Arrays.class.getName()).append(";\n");
+
         String propertiesList;
         String applyPropertiesMethod;
         String serializeProperties;
@@ -254,7 +306,6 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
             serializeProperties = createSerializePropertiesMethodCode("\"\"");
         } else {
             propertiesList = "Arrays.asList(" + propertyNames + ")";
-            imports.append("import ").append(Arrays.class.getName()).append(";\n");
 
             applyPropertiesMethod = createApplyPropertiesMethodCode(createApplyPropertiesCode(applyPropertiesValue.toString()));
 
@@ -276,6 +327,7 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
                           createElementConstructorCode(elementName,
                                                        "this",
                                                        propertiesList,
+                                                       "Arrays.asList(" + internalPropertyNames + ")",
                                                        propertiesInitialization.toString(),
                                                        components.toString());
             imports.append("import ").append(List.class.getName()).append(";\n");
@@ -283,23 +335,32 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
             extendClass = AbstractShape.class.getSimpleName();
             imports.append("import ").append(AbstractShape.class.getName()).append(";\n");
 
+            imports.append("import ").append(com.codenvy.editor.api.editor.elements.Element.class.getName()).append(";\n");
+            imports.append("import ").append(Link.class.getName()).append(";\n");
+
             StringBuilder code = new StringBuilder();
+
+            Iterator<Connection> connectionIterator = connections.iterator();
 
             for (Iterator<Element> iterator = elements.iterator(); iterator.hasNext(); ) {
                 Element element = iterator.next();
 
-                if (!element.equals(rootElement)) {
-                    code.append(createFindElementCode(element.getName(), !iterator.hasNext()));
-                }
+                code.append(createFindElementCode(element.getName(), !iterator.hasNext() && !connectionIterator.hasNext()));
             }
 
-            deserializeCode = DESERIALIZE_METHOD + createFindElementMethodCode(code.toString());
+            for (; connectionIterator.hasNext(); ) {
+                Connection connection = connectionIterator.next();
+                code.append(createFindElementCode(connection.getName(), !connectionIterator.hasNext()));
+            }
+
+            deserializeCode = DESERIALIZE_METHOD + DESERIALIZE_INTERNAL_FORMAT_METHOD + createFindElementMethodCode(code.toString());
             imports.append("import ").append(NodeList.class.getName()).append(";\n");
             imports.append("import ").append(Shape.class.getName()).append(";\n");
         } else {
             constructor = createElementConstructorCode(elementName,
                                                        "super",
                                                        propertiesList,
+                                                       "Arrays.asList(" + internalPropertyNames + ")",
                                                        propertiesInitialization.toString(),
                                                        components.toString());
 
@@ -345,6 +406,7 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
     private String createElementConstructorCode(@Nonnull String elementName,
                                                 @Nonnull String generalConstructor,
                                                 @Nonnull String properties,
+                                                @Nonnull String internalProperties,
                                                 @Nonnull String propertiesInitialization,
                                                 @Nonnull String components) {
         Map<String, String> masks = new LinkedHashMap<>(5);
@@ -352,6 +414,7 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
         masks.put(GENERAL_CONSTRUCTOR_MARKER, generalConstructor);
         masks.put(PROPERTIES_INITIALIZATION_MARKER, propertiesInitialization);
         masks.put(PROPERTIES_MARKER, properties);
+        masks.put(INTERNAL_PROPERTIES_MARKER, internalProperties);
         masks.put(COMPONENTS_MARKER, components);
 
         return ContentReplacer.replace(ELEMENT_CONSTRUCTOR, masks);

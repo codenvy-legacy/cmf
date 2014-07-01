@@ -114,8 +114,18 @@ public abstract class AbstractWorkspacePresenter<T> extends AbstractPresenter im
         return ContentFormatter.formatXML(ContentFormatter.trimXML(mainElement.serialize()));
     }
 
+    @Nonnull
+    public String serializeInternalFormat() {
+        return ContentFormatter.trimXML(mainElement.serializeInternalFormat());
+    }
+
     public void deserialize(@Nonnull String content) {
         mainElement.deserialize(ContentFormatter.trimXML(content));
+        showElements(mainElement);
+    }
+
+    public void deserializeInternalFormat(@Nonnull String content) {
+        mainElement.deserializeInternalFormat(ContentFormatter.trimXML(content));
         showElements(mainElement);
     }
 

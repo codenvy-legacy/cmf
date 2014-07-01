@@ -70,12 +70,12 @@ public interface Element {
     String serialize();
 
     /**
-     * Deserialize diagram element with all inner elements.
+     * Serialize diagram element with all inner elements and all properties(include internal properties).
      *
-     * @param content
-     *         a serialized content
+     * @return serialized view of diagram element
      */
-    void deserialize(@Nonnull String content);
+    @Nonnull
+    String serializeInternalFormat();
 
     /**
      * Deserialize diagram element with all inner elements.
@@ -84,6 +84,14 @@ public interface Element {
      *         XML node that need to be deserialized
      */
     void deserialize(@Nonnull Node node);
+
+    /**
+     * Deserialize diagram element with all inner elements and all properties(include internal properties).
+     *
+     * @param node
+     *         XML node that need to be deserialized
+     */
+    void deserializeInternalFormat(@Nonnull Node node);
 
     /**
      * Apply property from XML node to the diagram element.

@@ -11,15 +11,10 @@ import main_package.client.inject.EditorFactory;
 import_properties_panel_elements
 import com.google.inject.Inject;
 
-import javax.annotation.Nonnull;
-
 public class editor_name extends AbstractEditor implements EditorView.ActionDelegate {
 
     @Inject
-    public editor_name ( EditorView view,
-                        EditorFactory editorFactory,
-                        SelectionManager selectionManager,
-                        EmptyPropertiesPanelPresenter emptyPropertiesPanelPresenter,
+    public editor_name (EditorView view,
 constructor_arguments) {
         super(view);
 
@@ -37,19 +32,6 @@ constructor_body
         selectionManager.addListener(propertiesPanelManager);
         workspace.addDiagramChangeListener(this);
         workspace.addMainElementChangeListener(toolbar);
-    }
-
-    /** {@inheritDoc} */
-    @Nonnull
-    @Override
-    public String serialize() {
-        return workspace.serialize();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void deserialize(@Nonnull String content) {
-        workspace.deserialize(content);
     }
 
 }

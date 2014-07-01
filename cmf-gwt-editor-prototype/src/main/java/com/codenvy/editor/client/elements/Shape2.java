@@ -16,6 +16,7 @@
 package com.codenvy.editor.client.elements;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * @author Andrey Plotnikov
@@ -23,7 +24,7 @@ import java.util.ArrayList;
 public class Shape2 extends MainElement {
 
     public Shape2() {
-        super("Shape2", new ArrayList<String>());
+        super("Shape2", new ArrayList<String>(), Arrays.asList("x", "y", "uuid"));
     }
 
 }

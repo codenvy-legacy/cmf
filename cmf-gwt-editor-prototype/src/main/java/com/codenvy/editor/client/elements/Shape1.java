@@ -28,7 +28,7 @@ public class Shape1 extends MainElement {
     private String property1;
 
     public Shape1() {
-        super("Shape1", Arrays.asList("property1"));
+        super("Shape1", Arrays.asList("property1"), Arrays.asList("property1", "x", "y", "uuid"));
 
         property1 = "property1";
     }
@@ -55,6 +55,15 @@ public class Shape1 extends MainElement {
         switch (nodeName) {
             case "property1":
                 property1 = nodeValue;
+                break;
+            case "x":
+                setX(Integer.valueOf(nodeValue));
+                break;
+            case "y":
+                setY(Integer.valueOf(nodeValue));
+                break;
+            case "uuid":
+                id = nodeValue;
                 break;
         }
     }

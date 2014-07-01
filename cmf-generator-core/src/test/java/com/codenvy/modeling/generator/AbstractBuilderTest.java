@@ -229,6 +229,7 @@ public abstract class AbstractBuilderTest {
         when(elementBuilder.path(anyString())).thenReturn(elementBuilder);
         when(elementBuilder.mainPackage(anyString())).thenReturn(elementBuilder);
         when(elementBuilder.elements(anySet())).thenReturn(elementBuilder);
+        when(elementBuilder.connections(anySet())).thenReturn(elementBuilder);
         when(elementBuilder.rootElement((Element)anyObject())).thenReturn(elementBuilder);
         when(elementBuilder.currentElement((Element)anyObject())).thenReturn(elementBuilder);
         when(elementBuilder.needRemoveTemplate(anyBoolean())).thenReturn(elementBuilder);
@@ -274,7 +275,6 @@ public abstract class AbstractBuilderTest {
         when(editorEntryPointBuilder.properties((Properties)anyObject())).thenReturn(editorEntryPointBuilder);
 
         when(editorPresenterBuilder.path(anyString())).thenReturn(editorPresenterBuilder);
-        when(editorPresenterBuilder.rootElement((Element)anyObject())).thenReturn(editorPresenterBuilder);
         when(editorPresenterBuilder.properties((Properties)anyObject())).thenReturn(editorPresenterBuilder);
         when(editorPresenterBuilder.elements(anySet())).thenReturn(editorPresenterBuilder);
         when(editorPresenterBuilder.needRemoveTemplateParentFolder(anyBoolean())).thenReturn(editorPresenterBuilder);

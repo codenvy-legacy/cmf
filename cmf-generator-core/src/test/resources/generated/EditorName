@@ -14,17 +14,15 @@ import my.package.client.propertiespanel.element2.Element2PropertiesPanelPresent
 
 import com.google.inject.Inject;
 
-import javax.annotation.Nonnull;
-
 public class EditorName extends AbstractEditor implements EditorView.ActionDelegate {
 
     @Inject
-    public EditorName ( EditorView view,
-                        EditorFactory editorFactory,
-                        SelectionManager selectionManager,
-                        EmptyPropertiesPanelPresenter emptyPropertiesPanelPresenter,
-                        Element1PropertiesPanelPresenter element1PropertiesPanelPresenter,
-                        Element2PropertiesPanelPresenter element2PropertiesPanelPresenter) {
+    public EditorName (EditorView view,
+                       EditorFactory editorFactory,
+                       SelectionManager selectionManager,
+                       EmptyPropertiesPanelPresenter emptyPropertiesPanelPresenter,
+                       Element1PropertiesPanelPresenter element1PropertiesPanelPresenter,
+                       Element2PropertiesPanelPresenter element2PropertiesPanelPresenter) {
         super(view);
 
         EditorState<State> state = new EditorState<>(State.CREATING_NOTHING);
@@ -46,19 +44,6 @@ public class EditorName extends AbstractEditor implements EditorView.ActionDeleg
         selectionManager.addListener(propertiesPanelManager);
         workspace.addDiagramChangeListener(this);
         workspace.addMainElementChangeListener(toolbar);
-    }
-
-    /** {@inheritDoc} */
-    @Nonnull
-    @Override
-    public String serialize() {
-        return workspace.serialize();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void deserialize(@Nonnull String content) {
-        workspace.deserialize(content);
     }
 
 }

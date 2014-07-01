@@ -1,6 +1,7 @@
 package my.package.client.elements;
 
 import com.google.gwt.xml.client.Node;
+import javax.annotation.Nonnull;
 import java.util.Arrays;
 
 public class Element1 extends MainElement {
@@ -10,7 +11,7 @@ public class Element1 extends MainElement {
     private Double property4;
 
     public Element1() {
-        super("Element1", Arrays.asList("Property1", "Property2", "Property3", "Property4"));
+        super("Element1", Arrays.asList("Property1", "Property2", "Property3", "Property4"), Arrays.asList("x", "y", "uuid", "Property1", "Property2", "Property3", "Property4"));
 
         property1 = 10;
         property2 = true;
@@ -73,6 +74,15 @@ public class Element1 extends MainElement {
         String nodeValue = node.getChildNodes().item(0).getNodeValue();
 
         switch (nodeName) {
+            case "x":
+                setX(Integer.valueOf(nodeValue));
+            break;
+            case "y":
+                setY(Integer.valueOf(nodeValue));
+            break;
+            case "uuid":
+                id = nodeValue;
+            break;
             case "Property1":
                 property1 = Integer.valueOf(nodeValue);
             break;

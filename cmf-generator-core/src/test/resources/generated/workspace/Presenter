@@ -4,6 +4,7 @@ import my.package.client.State;
 
 import com.codenvy.editor.api.editor.EditorState;
 import com.codenvy.editor.api.editor.SelectionManager;
+import com.codenvy.editor.api.editor.elements.Link;
 import com.codenvy.editor.api.editor.elements.Shape;
 import com.codenvy.editor.api.editor.workspace.AbstractWorkspacePresenter;
 import com.codenvy.editor.api.editor.workspace.AbstractWorkspaceView;
@@ -98,7 +99,7 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
             case CREATING_CONNECTION1_TARGET:
                 ((WorkspaceView)view).addConnection1(prevSelectedElement, selectedElement);
                 source = (Shape)elements.get(prevSelectedElement);
-                Connection1 connection1 = new Connection1(source, element);
+                Connection1 connection1 = new Connection1(source.getId(), element.getId());
                 elements.put(element.getId(), element);
 
                 parent = source.getParent();
@@ -120,13 +121,26 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
         selectionManager.setElement(null);
         selectedElement = null;
 
-        int x = 100;
-        int y = 100;
-
         ((AbstractWorkspaceView)view).setZoomInButtonEnable(false);
         ((AbstractWorkspaceView)view).setZoomOutButtonEnable(nodeElement.getParent() != null);
 
+        int defaultX = 100;
+        int defaultY = 100;
+
         for (Shape shape : mainElement.getShapes()) {
+            int x = shape.getX();
+            int y = shape.getY();
+
+            if (x == Shape.UNDEFINED_POSITION) {
+                x = defaultX;
+                defaultX += 100;
+            }
+
+            if (y == Shape.UNDEFINED_POSITION) {
+                y = defaultY;
+                defaultY += 100;
+            }
+
             if (shape instanceof Element1) {
                 ((WorkspaceView)view).addElement1(x, y, (Element1)shape);
             }
@@ -138,8 +152,12 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
             shape.setY(y);
 
             elements.put(shape.getId(), shape);
+        }
 
-            x += 100;
+        for (Link link : mainElement.getLinks()) {
+            if (link instanceof Connection1) {
+                ((WorkspaceView)view).addConnection1(link.getSource(), link.getTarget());
+            }
         }
 
         notifyMainElementChangeListeners();

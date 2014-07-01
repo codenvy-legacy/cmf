@@ -73,6 +73,11 @@ public class WorkspacePresenterBuilder extends AbstractBuilder<WorkspacePresente
             FOUR_TABS + "((WorkspaceView)view).addelementName(x, y, (elementName)shape);\n" +
             THREE_TABS + "}\n";
 
+    private static final String CREATE_LINK_CODE_FORMAT =
+            THREE_TABS + "if (link instanceof connectionName) {\n" +
+            FOUR_TABS + "((WorkspaceView)view).addconnectionName(link.getSource(), link.getTarget());\n" +
+            THREE_TABS + "}\n";
+
     private static final String CREATE_CONNECTION_CODE_FORMAT =
             THREE_TABS + "case CREATING_connectionUpperName_SOURCE:\n" +
             FOUR_TABS + "setState(CREATING_connectionUpperName_TARGET);\n" +
@@ -80,7 +85,7 @@ public class WorkspacePresenterBuilder extends AbstractBuilder<WorkspacePresente
             THREE_TABS + "case CREATING_connectionUpperName_TARGET:\n" +
             FOUR_TABS + "((WorkspaceView)view).addconnectionName(prevSelectedElement, selectedElement);\n" +
             FOUR_TABS + "source = (Shape)elements.get(prevSelectedElement);\n" +
-            FOUR_TABS + "connectionName argumentName = new connectionName(source, element);\n" +
+            FOUR_TABS + "connectionName argumentName = new connectionName(source.getId(), element.getId());\n" +
             FOUR_TABS + "elements.put(element.getId(), element);\n\n" +
             FOUR_TABS + "parent = source.getParent();\n" +
             FOUR_TABS + "if (parent != null) {\n" +
@@ -96,6 +101,7 @@ public class WorkspacePresenterBuilder extends AbstractBuilder<WorkspacePresente
     private static final String CREATE_GRAPHIC_ELEMENTS_MARKER    = "create_graphic_elements";
     private static final String CREATE_GRAPHIC_CONNECTIONS_MARKER = "create_graphic_connections";
     private static final String CREATE_GRAPHICAL_ELEMENTS_MARKER  = "create_graphical_elements";
+    private static final String CREATE_LINKS_MARKER               = "create_links";
 
     private String          mainPackage;
     private Set<Element>    elements;
@@ -145,6 +151,7 @@ public class WorkspacePresenterBuilder extends AbstractBuilder<WorkspacePresente
         StringBuilder imports = new StringBuilder();
         StringBuilder createConnections = new StringBuilder();
         StringBuilder createGraphicalElements = new StringBuilder();
+        StringBuilder createLinks = new StringBuilder();
 
         staticImports.append(stateClassImport).append(CREATE_NOTHING_STATE).append(";\n");
 
@@ -177,6 +184,8 @@ public class WorkspacePresenterBuilder extends AbstractBuilder<WorkspacePresente
                     .append(stateClassImport).append(String.format(CREATE_CONNECTION_TARGET_STATE_FORMAT, upperCaseName)).append(";\n");
 
             imports.append("import ").append(connectionPackage).append(";\n");
+
+            createLinks.append(createLinkCode(connectionName));
         }
 
         source = Paths.get(path,
@@ -198,6 +207,7 @@ public class WorkspacePresenterBuilder extends AbstractBuilder<WorkspacePresente
         replaceElements.put(IMPORT_MARKER, imports.toString());
         replaceElements.put(MAIN_ELEMENT_NAME_MARKER, rootElement.getName());
         replaceElements.put(CREATE_GRAPHIC_ELEMENTS_MARKER, createElements.toString());
+        replaceElements.put(CREATE_LINKS_MARKER, createLinks.toString());
         replaceElements.put(CREATE_GRAPHIC_CONNECTIONS_MARKER, createConnections.toString());
         replaceElements.put(CREATE_GRAPHICAL_ELEMENTS_MARKER, createGraphicalElements.toString());
 
@@ -222,6 +232,14 @@ public class WorkspacePresenterBuilder extends AbstractBuilder<WorkspacePresente
         createGraphicalElementMasks.put(ELEMENT_NAME_MARKER, elementName);
 
         return ContentReplacer.replace(CREATE_GRAPHICAL_ELEMENT_CODE_FORMAT, createGraphicalElementMasks);
+    }
+
+    @Nonnull
+    private String createLinkCode(@Nonnull String connectionName) {
+        Map<String, String> createGraphicalElementMasks = new LinkedHashMap<>(1);
+        createGraphicalElementMasks.put(CONNECTION_NAME_MARKER, connectionName);
+
+        return ContentReplacer.replace(CREATE_LINK_CODE_FORMAT, createGraphicalElementMasks);
     }
 
     @Nonnull
