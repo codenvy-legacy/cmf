@@ -15,6 +15,8 @@
  */
 package com.codenvy.editor.api.editor.common;
 
+import com.codenvy.ide.collections.Array;
+import com.codenvy.ide.util.StringUtils;
 import com.google.gwt.xml.client.NamedNodeMap;
 import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
@@ -47,8 +49,8 @@ public class ContentFormatter {
     public static String trimXML(@NotNull String xmlContent) {
         StringBuilder trimXML = new StringBuilder();
 
-        String[] rows = xmlContent.split("\n");
-        for (String row : rows) {
+        Array<String> rows = StringUtils.split(xmlContent, "\n");
+        for (String row : rows.asIterable()) {
             trimXML.append(row.trim());
         }
 

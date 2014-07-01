@@ -96,7 +96,6 @@ create_graphic_connections        }
 
             if (y == Shape.UNDEFINED_POSITION) {
                 y = defaultY;
-                defaultY += 100;
             }
 
 create_graphical_elements

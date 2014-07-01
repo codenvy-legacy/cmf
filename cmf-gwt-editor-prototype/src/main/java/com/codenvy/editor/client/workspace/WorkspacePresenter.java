@@ -150,7 +150,6 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
 
             if (y == Shape.UNDEFINED_POSITION) {
                 y = defaultY;
-                defaultY += 100;
             }
 
             if (shape instanceof Shape1) {
