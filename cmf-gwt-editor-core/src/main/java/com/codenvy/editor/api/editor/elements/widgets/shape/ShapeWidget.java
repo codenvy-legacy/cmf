@@ -17,8 +17,11 @@ package com.codenvy.editor.api.editor.elements.widgets.shape;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.ContextMenuEvent;
+import com.google.gwt.event.dom.client.ContextMenuHandler;
 import com.google.gwt.event.dom.client.HasAllMouseHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.dom.client.HasContextMenuHandlers;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
@@ -49,7 +52,7 @@ import javax.annotation.Nonnull;
  * @author Andrey Plotnikov
  * @author Valeriy Svydenko
  */
-public class ShapeWidget extends Composite implements HasAllMouseHandlers, HasClickHandlers {
+public class ShapeWidget extends Composite implements HasAllMouseHandlers, HasClickHandlers, HasContextMenuHandlers {
 
     interface ShapeWidgetUiBinder extends UiBinder<Widget, ShapeWidget> {
     }
@@ -148,6 +151,12 @@ public class ShapeWidget extends Composite implements HasAllMouseHandlers, HasCl
     @Override
     public HandlerRegistration addMouseWheelHandler(MouseWheelHandler handler) {
         return addDomHandler(handler, MouseWheelEvent.getType());
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public HandlerRegistration addContextMenuHandler(ContextMenuHandler handler) {
+        return addDomHandler(handler, ContextMenuEvent.getType());
     }
 
 }

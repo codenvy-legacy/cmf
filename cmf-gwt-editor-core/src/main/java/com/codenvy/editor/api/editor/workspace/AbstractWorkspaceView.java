@@ -67,6 +67,18 @@ public abstract class AbstractWorkspaceView extends AbstractView<AbstractWorkspa
         void onDiagramElementClicked(@Nonnull String elementId);
 
         /**
+         * Performs some actions in response to a user's right mouse button clicking on diagram element.
+         *
+         * @param elementId
+         *         the identifier of clicked diagram element
+         * @param x
+         *         the mouse x-position
+         * @param y
+         *         the mouse y-position
+         */
+        void onDiagramElementRightClicked(@Nonnull String elementId, int x, int y);
+
+        /**
          * Performs some actions in response to a user's moving on diagram element.
          *
          * @param elementId
@@ -80,10 +92,21 @@ public abstract class AbstractWorkspaceView extends AbstractView<AbstractWorkspa
         /** Performs any actions appropriate in response to the user having pressed the Zoom Out button. */
         void onZoomOutButtonClicked();
 
+        /** Performs any actions appropriate in response to the user having pressed the Delete button on keyboard. */
+        void onDeleteButtonPressed();
+
     }
 
     /** Clear diagram content. */
     public abstract void clearDiagram();
+
+    /**
+     * Remove a diagram element by id.
+     *
+     * @param elementId
+     *         id of diagram element which needs to be removed
+     */
+    public abstract void removeElement(@Nonnull String elementId);
 
     /**
      * Change the enable state of the Zoom In button.

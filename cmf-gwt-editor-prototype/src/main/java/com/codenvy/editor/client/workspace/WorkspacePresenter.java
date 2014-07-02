@@ -26,7 +26,6 @@ import com.codenvy.editor.client.elements.Link1;
 import com.codenvy.editor.client.elements.MainElement;
 import com.codenvy.editor.client.elements.Shape1;
 import com.codenvy.editor.client.elements.Shape2;
-import com.google.gwt.user.client.Window;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
@@ -43,13 +42,6 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
     @Inject
     public WorkspacePresenter(WorkspaceView view, @Assisted EditorState<State> state, @Assisted SelectionManager selectionManager) {
         super(view, state, new MainElement(), selectionManager);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void onRightMouseButtonClicked(int x, int y) {
-        // TODO add implementation
-        Window.alert("onRightMouseButtonClicked");
     }
 
     /** {@inheritDoc} */
@@ -76,13 +68,6 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
                 setState(CREATING_NOTING);
                 break;
         }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void onMouseMoved(int x, int y) {
-        // TODO add implementation
-//        Window.alert("onMouseMoved");
     }
 
     /** {@inheritDoc} */

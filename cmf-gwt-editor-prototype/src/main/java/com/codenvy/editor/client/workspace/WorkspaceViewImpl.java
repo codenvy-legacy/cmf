@@ -1,5 +1,5 @@
 /*
- * Copyright [2014] Codenvy, S.A.
+ * Copyright 2014 Codenvy, S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,9 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.ContextMenuEvent;
 import com.google.gwt.event.dom.client.ContextMenuHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
@@ -38,6 +41,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -57,11 +61,13 @@ public class WorkspaceViewImpl extends WorkspaceView {
     }
 
     @UiField
-    FlowPanel mainPanel;
+    FlowPanel  mainPanel;
     @UiField
-    Button    zoomIn;
+    Button     zoomIn;
     @UiField
-    Button    zoomOut;
+    Button     zoomOut;
+    @UiField
+    FocusPanel focusPanel;
 
     private final DiagramController     controller;
     private final PickupDragController  dragController;
@@ -87,14 +93,14 @@ public class WorkspaceViewImpl extends WorkspaceView {
     }
 
     private void bind() {
-        mainPanel.addDomHandler(new ClickHandler() {
+        focusPanel.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 delegate.onLeftMouseButtonClicked(event.getRelativeX(mainPanel.getElement()), event.getRelativeY(mainPanel.getElement()));
             }
-        }, ClickEvent.getType());
+        });
 
-        mainPanel.addDomHandler(new ContextMenuHandler() {
+        focusPanel.addDomHandler(new ContextMenuHandler() {
             @Override
             public void onContextMenu(ContextMenuEvent event) {
                 NativeEvent nativeEvent = event.getNativeEvent();
@@ -102,18 +108,34 @@ public class WorkspaceViewImpl extends WorkspaceView {
             }
         }, ContextMenuEvent.getType());
 
-        mainPanel.addDomHandler(new MouseMoveHandler() {
+        focusPanel.addMouseMoveHandler(new MouseMoveHandler() {
             @Override
             public void onMouseMove(MouseMoveEvent event) {
                 delegate.onMouseMoved(event.getRelativeX(mainPanel.getElement()), event.getRelativeY(mainPanel.getElement()));
             }
-        }, MouseMoveEvent.getType());
+        });
+
+        focusPanel.addDomHandler(new KeyDownHandler() {
+            @Override
+            public void onKeyDown(KeyDownEvent event) {
+                if (event.getNativeKeyCode() == KeyCodes.KEY_DELETE) {
+                    delegate.onDeleteButtonPressed();
+                }
+            }
+        }, KeyDownEvent.getType());
     }
 
     /** {@inheritDoc} */
     @Override
     public void clearDiagram() {
         controller.clearDiagram();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void removeElement(@Nonnull String elementId) {
+        Widget widget = elements.get(elementId);
+        controller.deleteWidget(widget);
     }
 
     /** {@inheritDoc} */
@@ -155,20 +177,30 @@ public class WorkspaceViewImpl extends WorkspaceView {
 
         elementWidget.setTitle(shape.getTitle());
         elementWidget.setIcon(resource);
-        elementWidget.addDomHandler(new MouseDownHandler() {
+
+        elementWidget.addMouseDownHandler(new MouseDownHandler() {
             @Override
             public void onMouseDown(MouseDownEvent event) {
                 delegate.onDiagramElementClicked(shape.getId());
             }
-        }, MouseDownEvent.getType());
-        elementWidget.addDomHandler(new MouseUpHandler() {
+        });
+
+        elementWidget.addMouseUpHandler(new MouseUpHandler() {
             @Override
             public void onMouseUp(MouseUpEvent event) {
                 delegate.onDiagramElementMoved(shape.getId(),
                                                elementWidget.getAbsoluteLeft() - mainPanel.getAbsoluteLeft(),
                                                elementWidget.getAbsoluteTop() - mainPanel.getAbsoluteTop());
             }
-        }, MouseUpEvent.getType());
+        });
+
+        elementWidget.addContextMenuHandler(new ContextMenuHandler() {
+            @Override
+            public void onContextMenu(ContextMenuEvent event) {
+                NativeEvent nativeEvent = event.getNativeEvent();
+                delegate.onDiagramElementRightClicked(shape.getId(), nativeEvent.getClientX(), nativeEvent.getClientY());
+            }
+        });
 
         controller.addWidget(elementWidget, x, y);
         dragController.makeDraggable(elementWidget);

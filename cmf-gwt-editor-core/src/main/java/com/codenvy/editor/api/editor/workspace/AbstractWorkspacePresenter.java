@@ -22,7 +22,9 @@ import com.codenvy.editor.api.editor.common.ContentFormatter;
 import com.codenvy.editor.api.editor.elements.Element;
 import com.codenvy.editor.api.editor.elements.Shape;
 import com.codenvy.editor.api.mvp.AbstractPresenter;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import com.orange.links.client.menu.ContextMenu;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -47,8 +49,9 @@ public abstract class AbstractWorkspacePresenter<T> extends AbstractPresenter im
     private final   List<DiagramChangeListener>     diagramChangeListeners;
     private final   List<MainElementChangeListener> mainElementChangeListeners;
     protected       Shape                           nodeElement;
+    private final   ContextMenu                     contextMenu;
 
-    protected AbstractWorkspacePresenter(@Nonnull AbstractWorkspaceView view,
+    protected AbstractWorkspacePresenter(@Nonnull final AbstractWorkspaceView view,
                                          @Nonnull EditorState<T> state,
                                          @Nonnull Shape mainElement,
                                          @Nonnull SelectionManager selectionManager) {
@@ -66,6 +69,15 @@ public abstract class AbstractWorkspacePresenter<T> extends AbstractPresenter im
         this.selectedElement = mainElement.getId();
 
         this.elements.put(selectedElement, mainElement);
+
+        this.contextMenu = new ContextMenu();
+        this.contextMenu.addItem("Delete", new Command() {
+            @Override
+            public void execute() {
+                deleteSelectedElement();
+                contextMenu.hide();
+            }
+        });
     }
 
     /** {@inheritDoc} */
@@ -127,6 +139,44 @@ public abstract class AbstractWorkspacePresenter<T> extends AbstractPresenter im
     public void deserializeInternalFormat(@Nonnull String content) {
         mainElement.deserializeInternalFormat(ContentFormatter.trimXML(content));
         showElements(mainElement);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onRightMouseButtonClicked(int x, int y) {
+        // TODO add implementation
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onMouseMoved(int x, int y) {
+        // TODO add implementation
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onDeleteButtonPressed() {
+        deleteSelectedElement();
+    }
+
+    private void deleteSelectedElement() {
+        Shape element = (Shape)elements.remove(selectedElement);
+
+        if (element != null) {
+            nodeElement.removeShape(element);
+            ((AbstractWorkspaceView)view).removeElement(selectedElement);
+
+            notifyDiagramChangeListeners();
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onDiagramElementRightClicked(@Nonnull String elementId, int x, int y) {
+        selectedElement = elementId;
+
+        contextMenu.setPopupPosition(x, y);
+        contextMenu.show();
     }
 
     /** {@inheritDoc} */

@@ -46,6 +46,11 @@
             <version>${version.gin}</version>
         </dependency>
         <dependency>
+            <groupId>com.orange.links</groupId>
+            <artifactId>gwt-links</artifactId>
+            <version>${version.gwt.links}</version>
+        </dependency>
+        <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
             <version>${version.gwt}</version>

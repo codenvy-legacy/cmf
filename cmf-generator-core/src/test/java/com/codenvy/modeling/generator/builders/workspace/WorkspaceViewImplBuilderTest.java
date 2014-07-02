@@ -23,6 +23,7 @@ import com.codenvy.modeling.generator.builders.xml.impl.GStyleImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.UIXmlBuilderImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.GButtonImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.containers.GFlowPanelImpl;
+import com.codenvy.modeling.generator.builders.xml.impl.widgets.containers.GFocusPanelImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.containers.GScrollPanelImpl;
 import com.google.inject.Provider;
 
@@ -82,7 +83,8 @@ public class WorkspaceViewImplBuilderTest extends AbstractBuilderTest {
                                                                 new GScrollPanelImpl(),
                                                                 flowPanelProvider,
                                                                 buttonProvider,
-                                                                new GStyleImpl());
+                                                                new GStyleImpl(),
+                                                                new GFocusPanelImpl());
 
         generateSources();
     }

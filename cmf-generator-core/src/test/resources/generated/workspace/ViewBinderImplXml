@@ -14,13 +14,18 @@
             z-index: 3;
             right: 30px;
         }
+        .focusPanel:focus{
+            outline: none !important;
+        }
     </ui:style>
-    <g:ScrollPanel addStyleNames="{res.editorCSS.fullSize}">
-        <g:FlowPanel ui:field="mainPanel" addStyleNames="{res.editorCSS.fullSize}">
-            <g:FlowPanel addStyleNames="{style.rightFixedPosition}">
-                <g:Button ui:field="zoomIn" text="Zoom In" width="90px" addStyleNames="{style.button}"/>
-                <g:Button ui:field="zoomOut" text="Zoom Out" width="90px" addStyleNames="{style.button}"/>
+    <g:FocusPanel ui:field="focusPanel" addStyleNames="{style.focusPanel}">
+        <g:ScrollPanel addStyleNames="{res.editorCSS.fullSize}">
+            <g:FlowPanel ui:field="mainPanel" addStyleNames="{res.editorCSS.fullSize}">
+                <g:FlowPanel addStyleNames="{style.rightFixedPosition}">
+                    <g:Button ui:field="zoomIn" text="Zoom In" width="90px" addStyleNames="{style.button}"/>
+                    <g:Button ui:field="zoomOut" text="Zoom Out" width="90px" addStyleNames="{style.button}"/>
+                </g:FlowPanel>
             </g:FlowPanel>
-        </g:FlowPanel>
-    </g:ScrollPanel>
+        </g:ScrollPanel>
+    </g:FocusPanel>
 </ui:UiBinder>

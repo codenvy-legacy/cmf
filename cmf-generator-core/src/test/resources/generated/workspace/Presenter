@@ -33,12 +33,6 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
 
     /** {@inheritDoc} */
     @Override
-    public void onRightMouseButtonClicked(int x, int y) {
-
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public void onLeftMouseButtonClicked(int x, int y) {
         selectionManager.setElement(null);
 
@@ -60,12 +54,6 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
                 setState(CREATING_NOTHING);
                 break;
         }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void onMouseMoved(int x, int y) {
-
     }
 
     /** {@inheritDoc} */

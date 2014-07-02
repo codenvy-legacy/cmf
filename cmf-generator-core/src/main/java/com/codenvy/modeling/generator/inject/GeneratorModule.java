@@ -37,6 +37,7 @@ import com.codenvy.modeling.generator.builders.xml.api.widgets.GTextArea;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.GTextBox;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GDockLayoutPanel;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GFlowPanel;
+import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GFocusPanel;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GScrollPanel;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GSimpleLayoutPanel;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GSplitLayoutPanel;
@@ -51,6 +52,7 @@ import com.codenvy.modeling.generator.builders.xml.impl.widgets.GTextAreaImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.GTextBoxImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.containers.GDockLayoutPanelImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.containers.GFlowPanelImpl;
+import com.codenvy.modeling.generator.builders.xml.impl.widgets.containers.GFocusPanelImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.containers.GScrollPanelImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.containers.GSimpleLayoutPanelImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.containers.GSplitLayoutPanelImpl;
@@ -92,6 +94,7 @@ public class GeneratorModule extends AbstractModule {
         bind(GScrollPanel.class).to(GScrollPanelImpl.class);
         bind(GFlowPanel.class).to(GFlowPanelImpl.class);
         bind(GSimpleLayoutPanel.class).to(GSimpleLayoutPanelImpl.class);
+        bind(GFocusPanel.class).to(GFocusPanelImpl.class);
         bind(GDockLayoutPanel.class).to(GDockLayoutPanelImpl.class);
         bind(GSplitLayoutPanel.class).to(GSplitLayoutPanelImpl.class);
     }
