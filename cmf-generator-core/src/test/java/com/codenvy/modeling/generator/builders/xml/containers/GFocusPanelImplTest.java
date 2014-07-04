@@ -44,7 +44,7 @@ public class GFocusPanelImplTest extends AbstractXmlBuilderTest {
     }
 
     @Test
-    public void simpleSimpleLayoutPanelShouldBeCreated() throws Exception {
+    public void simpleFocusPanelShouldBeCreated() throws Exception {
         String actualContent = builder.withPrefix("g").build();
 
         String expectedContent = "<g:FocusPanel>\n" +
@@ -59,7 +59,7 @@ public class GFocusPanelImplTest extends AbstractXmlBuilderTest {
     }
 
     @Test
-    public void simpleSimpleLayoutPanelWithTitleParamShouldBeCreated() throws Exception {
+    public void simpleFocusPanelWithTitleParamShouldBeCreated() throws Exception {
         String actualContent = builder.withPrefix("g").withTitle("title").build();
 
         String expectedContent = "<g:FocusPanel title=\"title\">\n" +
@@ -69,7 +69,7 @@ public class GFocusPanelImplTest extends AbstractXmlBuilderTest {
     }
 
     @Test
-    public void simpleSimpleLayoutPanelWithVisibleParamShouldBeCreated() throws Exception {
+    public void simpleFocusPanelWithVisibleParamShouldBeCreated() throws Exception {
         String actualContent = builder.withPrefix("g").setInvisible().build();
 
         String expectedContent = "<g:FocusPanel visible=\"false\">\n" +
@@ -79,7 +79,7 @@ public class GFocusPanelImplTest extends AbstractXmlBuilderTest {
     }
 
     @Test
-    public void simpleSimpleLayoutPanelWithNameParamShouldBeCreated() throws Exception {
+    public void simpleFocusPanelWithNameParamShouldBeCreated() throws Exception {
         String actualContent = builder.withPrefix("g").withName("name").build();
 
         String expectedContent = "<g:FocusPanel ui:field=\"name\">\n" +
@@ -89,7 +89,7 @@ public class GFocusPanelImplTest extends AbstractXmlBuilderTest {
     }
 
     @Test
-    public void simpleSimpleLayoutPanelWithStyleParamShouldBeCreated() throws Exception {
+    public void simpleFocusPanelWithStyleParamShouldBeCreated() throws Exception {
         String actualContent = builder.withPrefix("g").withStyle("style1").withStyle("style2").build();
 
         String expectedContent = "<g:FocusPanel styleName=\"{style1} {style2}\">\n" +
@@ -99,7 +99,7 @@ public class GFocusPanelImplTest extends AbstractXmlBuilderTest {
     }
 
     @Test
-    public void simpleSimpleLayoutPanelWithAdditionalStyleParamShouldBeCreated() throws Exception {
+    public void simpleFocusPanelWithAdditionalStyleParamShouldBeCreated() throws Exception {
         String actualContent = builder.withPrefix("g").withAddStyle("style1").withAddStyle("style2").build();
 
         String expectedContent = "<g:FocusPanel addStyleNames=\"{style1} {style2}\">\n" +
@@ -109,7 +109,7 @@ public class GFocusPanelImplTest extends AbstractXmlBuilderTest {
     }
 
     @Test
-    public void simpleSimpleLayoutPanelWithHeightParamShouldBeCreated() throws Exception {
+    public void simpleFocusPanelWithHeightParamShouldBeCreated() throws Exception {
         String actualContent = builder.withPrefix("g").withHeight("10px").build();
 
         String expectedContent = "<g:FocusPanel height=\"10px\">\n" +
@@ -119,7 +119,7 @@ public class GFocusPanelImplTest extends AbstractXmlBuilderTest {
     }
 
     @Test
-    public void simpleSimpleLayoutPanelWithWidthParamShouldBeCreated() throws Exception {
+    public void simpleFocusPanelWithWidthParamShouldBeCreated() throws Exception {
         String actualContent = builder.withPrefix("g").withWidth("10px").build();
 
         String expectedContent = "<g:FocusPanel width=\"10px\">\n" +
@@ -129,7 +129,7 @@ public class GFocusPanelImplTest extends AbstractXmlBuilderTest {
     }
 
     @Test
-    public void simpleSimpleLayoutPanelWithDebugIdParamShouldBeCreated() throws Exception {
+    public void simpleFocusPanelWithDebugIdParamShouldBeCreated() throws Exception {
         String actualContent = builder.withPrefix("g").withDebugId("debugId").build();
 
         String expectedContent = "<g:FocusPanel debugId=\"debugId\">\n" +
@@ -139,7 +139,7 @@ public class GFocusPanelImplTest extends AbstractXmlBuilderTest {
     }
 
     @Test
-    public void simpleSimpleLayoutPanelWithWidgetsShouldBeCreated() throws Exception {
+    public void simpleFocusPanelWithWidgetsShouldBeCreated() throws Exception {
         GWidget<GWidget> widget1 = createWidget(OFFSET + "widget 1");
         GWidget<GWidget> widget2 = createWidget(OFFSET + "widget 2");
         GWidget<GWidget> widget3 = createWidget(OFFSET + "widget 3");
@@ -161,7 +161,7 @@ public class GFocusPanelImplTest extends AbstractXmlBuilderTest {
     }
 
     @Test
-    public void complexSimpleLayoutPanelShouldBeCreated() throws Exception {
+    public void complexFocusPanelShouldBeCreated() throws Exception {
         GWidget<GWidget> widget1 = createWidget(OFFSET + "widget 1");
         GWidget<GWidget> widget2 = createWidget(OFFSET + "widget 2");
 

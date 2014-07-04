@@ -26,19 +26,10 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
     @Override
     public void onLeftMouseButtonClicked(int x, int y) {
         selectionManager.setElement(null);
+        ((AbstractWorkspaceView)view).setZoomInButtonEnable(false);
 
         switch (getState()) {
 create_graphic_elements        }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void onDiagramElementMoved(@Nonnull String elementId, int x, int y) {
-        Shape shape = (Shape)elements.get(elementId);
-        shape.setX(x);
-        shape.setY(y);
-
-        notifyDiagramChangeListeners();
     }
 
     /** {@inheritDoc} */
@@ -59,30 +50,29 @@ create_graphic_elements        }
 create_graphic_connections        }
     }
 
-    protected void showElements(@Nonnull Shape mainElement) {
+    @Override
+    protected void showElements(@Nonnull Shape element) {
         ((AbstractWorkspaceView)view).clearDiagram();
-        elements.clear();
 
-        nodeElement = mainElement;
-        selectionManager.setElement(null);
-        selectedElement = null;
+        nodeElement = element;
+        Shape selectedElement = null;
 
-        ((AbstractWorkspaceView)view).setZoomInButtonEnable(false);
         ((AbstractWorkspaceView)view).setZoomOutButtonEnable(nodeElement.getParent() != null);
+        ((AbstractWorkspaceView)view).setAutoAlignmentParam(nodeElement.isAutoAligned());
 
         int defaultX = 100;
         int defaultY = 100;
 
-        for (Shape shape : mainElement.getShapes()) {
+        for (Shape shape : nodeElement.getShapes()) {
             int x = shape.getX();
             int y = shape.getY();
 
-            if (x == Shape.UNDEFINED_POSITION) {
+            if (x == Shape.UNDEFINED_POSITION || nodeElement.isAutoAligned()) {
                 x = defaultX;
                 defaultX += 100;
             }
 
-            if (y == Shape.UNDEFINED_POSITION) {
+            if (y == Shape.UNDEFINED_POSITION || nodeElement.isAutoAligned()) {
                 y = defaultY;
             }
 
@@ -90,8 +80,16 @@ create_graphical_elements
             shape.setX(x);
             shape.setY(y);
 
+            if (shape.getId().equals(this.selectedElement)) {
+                selectedElement = shape;
+            }
+
             elements.put(shape.getId(), shape);
         }
+
+        selectionManager.setElement(selectedElement);
+        ((AbstractWorkspaceView)view).setZoomInButtonEnable(selectedElement != null && selectedElement.isContainer());
+        this.selectedElement = selectedElement != null ? selectedElement.getId() : null;
 
         for (Link link : mainElement.getLinks()) {
 create_links        }

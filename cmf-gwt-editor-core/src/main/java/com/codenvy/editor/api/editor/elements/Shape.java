@@ -119,4 +119,15 @@ public interface Shape extends Element {
      */
     void deserializeInternalFormat(@Nonnull String content);
 
+    /**
+     * Changes the auto-alignment state of the element.
+     *
+     * @param isAutoAligned
+     *         <code>true</code> to enable auto-alignment state of inner elements, <code>false</code> to disable it
+     */
+    void setAutoAlignmentParam(boolean isAutoAligned);
+
+    /** @return <code>true</code> if the auto-alignment state of inner elements is enabled, <code>false</code> it isn't */
+    boolean isAutoAligned();
+
 }

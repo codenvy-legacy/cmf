@@ -18,14 +18,15 @@
             outline: none !important;
         }
     </ui:style>
-    <g:FocusPanel ui:field="focusPanel" addStyleNames="{style.focusPanel}">
-        <g:ScrollPanel addStyleNames="{res.editorCSS.fullSize}">
+    <g:ScrollPanel addStyleNames="{res.editorCSS.fullSize}">
+        <g:FocusPanel ui:field="focusPanel" addStyleNames="{style.focusPanel} {res.editorCSS.fullSize}">
             <g:FlowPanel ui:field="mainPanel" addStyleNames="{res.editorCSS.fullSize}">
                 <g:FlowPanel addStyleNames="{style.rightFixedPosition}">
+                    <g:CheckBox ui:field="autoAlignment" text="auto-alignment"/>
                     <g:Button ui:field="zoomIn" text="Zoom In" width="90px" addStyleNames="{style.button}"/>
                     <g:Button ui:field="zoomOut" text="Zoom Out" width="90px" addStyleNames="{style.button}"/>
                 </g:FlowPanel>
             </g:FlowPanel>
-        </g:ScrollPanel>
-    </g:FocusPanel>
+        </g:FocusPanel>
+    </g:ScrollPanel>
 </ui:UiBinder>

@@ -40,6 +40,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -68,6 +69,8 @@ public class WorkspaceViewImpl extends WorkspaceView {
     Button     zoomOut;
     @UiField
     FocusPanel focusPanel;
+    @UiField
+    CheckBox   autoAlignment;
 
     private final DiagramController     controller;
     private final PickupDragController  dragController;
@@ -150,14 +153,31 @@ public class WorkspaceViewImpl extends WorkspaceView {
         zoomOut.setEnabled(enable);
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public void setAutoAlignmentParam(boolean isAutoAligned) {
+        autoAlignment.setValue(isAutoAligned);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isAutoAligned() {
+        return autoAlignment.getValue();
+    }
+
     @UiHandler("zoomIn")
-    public void handleClick(ClickEvent event) {
+    public void onZoomInButtonClicked(ClickEvent event) {
         delegate.onZoomInButtonClicked();
     }
 
     @UiHandler("zoomOut")
     public void onZoomOutButtonClicked(ClickEvent event) {
         delegate.onZoomOutButtonClicked();
+    }
+
+    @UiHandler("autoAlignment")
+    public void onAutoAlignmentParamChanged(ClickEvent event) {
+        delegate.onAutoAlignmentParamChanged();
     }
 
     /** {@inheritDoc} */

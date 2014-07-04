@@ -13,18 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codenvy.editor.client.elements;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+package com.codenvy.modeling.generator.builders.xml.impl.widgets;
+
+import com.codenvy.modeling.generator.builders.xml.api.widgets.GCheckBox;
+import com.google.inject.Inject;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Andrey Plotnikov
  */
-public class Shape2 extends MainElement {
+public class GCheckBoxImpl extends AbstractGWidget<GCheckBox> implements GCheckBox {
 
-    public Shape2() {
-        super("Shape2", new ArrayList<String>(), Arrays.asList("x", "y", "uuid", "autoAlign"));
+    @Inject
+    public GCheckBoxImpl() {
+        super(CHECKBOX_FORMAT);
+
+        builder = this;
+    }
+
+    /** {@inheritDoc} */
+    @Nonnull
+    @Override
+    public GCheckBox withFormValue(boolean value) {
+        addParam(FORM_VALUE_PARAM_NAME, String.valueOf(value));
+
+        return builder;
     }
 
 }

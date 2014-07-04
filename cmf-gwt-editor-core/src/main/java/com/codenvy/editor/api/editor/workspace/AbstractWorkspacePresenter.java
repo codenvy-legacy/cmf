@@ -166,6 +166,10 @@ public abstract class AbstractWorkspacePresenter<T> extends AbstractPresenter im
             nodeElement.removeShape(element);
             ((AbstractWorkspaceView)view).removeElement(selectedElement);
 
+            if (nodeElement.isAutoAligned()) {
+                showElements(nodeElement);
+            }
+
             notifyDiagramChangeListeners();
         }
     }
@@ -207,7 +211,18 @@ public abstract class AbstractWorkspacePresenter<T> extends AbstractPresenter im
         shape.setX(x);
         shape.setY(y);
 
+        if (nodeElement.isAutoAligned()) {
+            showElements(nodeElement);
+        }
+
         notifyDiagramChangeListeners();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onAutoAlignmentParamChanged() {
+        nodeElement.setAutoAlignmentParam(((AbstractWorkspaceView)view).isAutoAligned());
+        showElements(nodeElement);
     }
 
     /** {@inheritDoc} */
@@ -215,7 +230,7 @@ public abstract class AbstractWorkspacePresenter<T> extends AbstractPresenter im
     public void go(@Nonnull AcceptsOneWidget container) {
         super.go(container);
 
-        ((AbstractWorkspaceView)view).setZoomInButtonEnable(false);
+        showElements(mainElement);
     }
 
     protected void addShape(@Nonnull Shape shape, int x, int y) {
@@ -226,10 +241,14 @@ public abstract class AbstractWorkspacePresenter<T> extends AbstractPresenter im
 
         nodeElement.addShape(shape);
 
+        if (nodeElement.isAutoAligned()) {
+            showElements(nodeElement);
+        }
+
         notifyDiagramChangeListeners();
     }
 
-    protected abstract void showElements(@Nonnull Shape mainElement);
+    protected abstract void showElements(@Nonnull Shape element);
 
     public interface DiagramChangeListener {
 

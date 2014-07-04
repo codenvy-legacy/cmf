@@ -95,6 +95,8 @@ public abstract class AbstractWorkspaceView extends AbstractView<AbstractWorkspa
         /** Performs any actions appropriate in response to the user having pressed the Delete button on keyboard. */
         void onDeleteButtonPressed();
 
+        /** Performs any actions appropriate in response to the user having changed the auto-alignment state. */
+        void onAutoAlignmentParamChanged();
     }
 
     /** Clear diagram content. */
@@ -123,5 +125,16 @@ public abstract class AbstractWorkspaceView extends AbstractView<AbstractWorkspa
      *         <code>true</code> to enable the button, <code>false</code> to disable it
      */
     public abstract void setZoomOutButtonEnable(boolean enable);
+
+    /**
+     * Changes the auto-alignment state of the editor.
+     *
+     * @param isAutoAligned
+     *         <code>true</code> to enable auto-alignment state of diagram elements, <code>false</code> to disable it
+     */
+    public abstract void setAutoAlignmentParam(boolean isAutoAligned);
+
+    /** @return <code>true</code> if the auto-alignment param is selected, <code>false</code> it isn't */
+    public abstract boolean isAutoAligned();
 
 }

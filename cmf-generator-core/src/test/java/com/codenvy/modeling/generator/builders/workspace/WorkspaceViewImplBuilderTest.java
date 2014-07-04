@@ -22,6 +22,7 @@ import com.codenvy.modeling.generator.builders.xml.impl.GFieldImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.GStyleImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.UIXmlBuilderImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.GButtonImpl;
+import com.codenvy.modeling.generator.builders.xml.impl.widgets.GCheckBoxImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.containers.GFlowPanelImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.containers.GFocusPanelImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.containers.GScrollPanelImpl;
@@ -84,7 +85,8 @@ public class WorkspaceViewImplBuilderTest extends AbstractBuilderTest {
                                                                 flowPanelProvider,
                                                                 buttonProvider,
                                                                 new GStyleImpl(),
-                                                                new GFocusPanelImpl());
+                                                                new GFocusPanelImpl(),
+                                                                new GCheckBoxImpl());
 
         generateSources();
     }

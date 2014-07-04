@@ -30,6 +30,7 @@ import com.codenvy.modeling.generator.builders.xml.api.GField;
 import com.codenvy.modeling.generator.builders.xml.api.GStyle;
 import com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.GButton;
+import com.codenvy.modeling.generator.builders.xml.api.widgets.GCheckBox;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.GHtml;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.GLabel;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.GPushButton;
@@ -45,6 +46,7 @@ import com.codenvy.modeling.generator.builders.xml.impl.GFieldImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.GStyleImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.UIXmlBuilderImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.GButtonImpl;
+import com.codenvy.modeling.generator.builders.xml.impl.widgets.GCheckBoxImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.GHtmlImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.GLabelImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.GPushButtonImpl;
@@ -90,6 +92,7 @@ public class GeneratorModule extends AbstractModule {
         bind(GLabel.class).to(GLabelImpl.class);
         bind(GTextArea.class).to(GTextAreaImpl.class);
         bind(GTextBox.class).to(GTextBoxImpl.class);
+        bind(GCheckBox.class).to(GCheckBoxImpl.class);
 
         bind(GScrollPanel.class).to(GScrollPanelImpl.class);
         bind(GFlowPanel.class).to(GFlowPanelImpl.class);

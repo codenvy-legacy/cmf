@@ -38,6 +38,7 @@ public abstract class AbstractShape extends AbstractElement implements Shape, Co
     private       int                 y;
 
     protected final Set<String> components;
+    private         boolean     isAutoAligned;
 
     protected AbstractShape(@Nonnull String elementName, @Nonnull List<String> properties, @Nonnull List<String> internalProperties) {
         super(elementName, properties, internalProperties);
@@ -48,6 +49,8 @@ public abstract class AbstractShape extends AbstractElement implements Shape, Co
 
         this.x = UNDEFINED_POSITION;
         this.y = UNDEFINED_POSITION;
+
+        this.isAutoAligned = false;
     }
 
     /** {@inheritDoc} */
@@ -68,6 +71,8 @@ public abstract class AbstractShape extends AbstractElement implements Shape, Co
     @Nonnull
     @Override
     public List<Shape> getShapes() {
+        Collections.sort(shapes);
+
         ArrayList<Shape> list = new ArrayList<>();
         list.addAll(shapes);
 
@@ -193,7 +198,8 @@ public abstract class AbstractShape extends AbstractElement implements Shape, Co
         return serializeProperties() +
                "<x>\n" + getX() + "\n</x>\n" +
                "<y>\n" + getY() + "\n</y>\n" +
-               "<uuid>\n" + id + "\n</uuid>\n";
+               "<uuid>\n" + id + "\n</uuid>\n" +
+               "<autoAlign>\n" + isAutoAligned + "\n</autoAlign>\n";
     }
 
     /** {@inheritDoc} */
@@ -228,6 +234,18 @@ public abstract class AbstractShape extends AbstractElement implements Shape, Co
     @Override
     public Set<String> getComponents() {
         return components;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setAutoAlignmentParam(boolean isAutoAligned) {
+        this.isAutoAligned = isAutoAligned;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isAutoAligned() {
+        return isAutoAligned;
     }
 
 }

@@ -28,7 +28,7 @@ public class Shape1 extends MainElement {
     private String property1;
 
     public Shape1() {
-        super("Shape1", Arrays.asList("property1"), Arrays.asList("property1", "x", "y", "uuid"));
+        super("Shape1", Arrays.asList("property1"), Arrays.asList("property1", "x", "y", "uuid", "autoAlign"));
 
         property1 = "property1";
     }
@@ -64,6 +64,9 @@ public class Shape1 extends MainElement {
                 break;
             case "uuid":
                 id = nodeValue;
+                break;
+            case "autoAlign":
+                setAutoAlignmentParam(Boolean.valueOf(nodeValue));
                 break;
         }
     }

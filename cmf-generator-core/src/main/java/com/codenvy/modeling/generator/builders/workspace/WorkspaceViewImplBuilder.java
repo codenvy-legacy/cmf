@@ -24,6 +24,7 @@ import com.codenvy.modeling.generator.builders.xml.api.GField;
 import com.codenvy.modeling.generator.builders.xml.api.GStyle;
 import com.codenvy.modeling.generator.builders.xml.api.UIXmlBuilder;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.GButton;
+import com.codenvy.modeling.generator.builders.xml.api.widgets.GCheckBox;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GFlowPanel;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GFocusPanel;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GScrollPanel;
@@ -84,6 +85,7 @@ public class WorkspaceViewImplBuilder extends AbstractBuilder<WorkspaceViewImplB
     private final GStyle               styleBuilder;
     private final Provider<GButton>    buttonBuilderProvider;
     private final GFocusPanel          focusPanelBuilder;
+    private final GCheckBox            checkBoxBuilder;
     private       String               mainPackage;
     private       Set<Element>         elements;
     private       Set<Connection>      connections;
@@ -95,7 +97,8 @@ public class WorkspaceViewImplBuilder extends AbstractBuilder<WorkspaceViewImplB
                                     Provider<GFlowPanel> flowPanelBuilderProvider,
                                     Provider<GButton> buttonBuilderProvider,
                                     GStyle styleBuilder,
-                                    GFocusPanel focusPanelBuilder) {
+                                    GFocusPanel focusPanelBuilder,
+                                    GCheckBox checkBoxBuilder) {
         super();
         builder = this;
 
@@ -106,6 +109,7 @@ public class WorkspaceViewImplBuilder extends AbstractBuilder<WorkspaceViewImplB
         this.buttonBuilderProvider = buttonBuilderProvider;
         this.styleBuilder = styleBuilder;
         this.focusPanelBuilder = focusPanelBuilder;
+        this.checkBoxBuilder = checkBoxBuilder;
     }
 
     @Nonnull
@@ -160,14 +164,15 @@ public class WorkspaceViewImplBuilder extends AbstractBuilder<WorkspaceViewImplB
                               )
 
                     .setWidget(
-                            focusPanelBuilder
+                            scrollPanelBuilder
                                     .withPrefix("g")
-                                    .withName("focusPanel")
-                                    .withAddStyle("style.focusPanel")
+                                    .withAddStyle("res.editorCSS.fullSize")
 
                                     .withWidget(
-                                            scrollPanelBuilder
+                                            focusPanelBuilder
                                                     .withPrefix("g")
+                                                    .withName("focusPanel")
+                                                    .withAddStyle("style.focusPanel")
                                                     .withAddStyle("res.editorCSS.fullSize")
 
                                                     .withWidget(
@@ -185,6 +190,14 @@ public class WorkspaceViewImplBuilder extends AbstractBuilder<WorkspaceViewImplB
                                                                                     .withPrefix("g")
                                                                                     .withAddStyle("style.rightFixedPosition")
 
+                                                                                    .withWidget(
+                                                                                            checkBoxBuilder
+                                                                                                    .withPrefix("g")
+                                                                                                    .withName(
+                                                                                                            "autoAlignment")
+                                                                                                    .withText(
+                                                                                                            "auto-alignment")
+                                                                                               )
                                                                                     .withWidget(
                                                                                             buttonBuilderProvider
                                                                                                     .get()

@@ -34,7 +34,7 @@ import java.util.List;
 public class MainElement extends AbstractShape {
 
     public MainElement() {
-        this("MainElement", new ArrayList<String>(), Arrays.asList("x", "y", "uuid"));
+        this("MainElement", new ArrayList<String>(), Arrays.asList("x", "y", "uuid", "autoAlign"));
 
         components.add("Shape1");
         components.add("Shape2");

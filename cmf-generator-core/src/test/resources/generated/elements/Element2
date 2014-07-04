@@ -11,7 +11,7 @@ public class Element2 extends MainElement {
     private Double property4;
 
     public Element2() {
-        super("Element2", Arrays.asList("Property1", "Property2", "Property3", "Property4"), Arrays.asList("x", "y", "uuid", "Property1", "Property2", "Property3", "Property4"));
+        super("Element2", Arrays.asList("Property1", "Property2", "Property3", "Property4"), Arrays.asList("x", "y", "uuid", "autoAlign", "Property1", "Property2", "Property3", "Property4"));
 
         property1 = 10;
         property2 = true;
@@ -81,6 +81,9 @@ public class Element2 extends MainElement {
             break;
             case "uuid":
                 id = nodeValue;
+            break;
+            case "autoAlign":
+                setAutoAlignmentParam(Boolean.valueOf(nodeValue));
             break;
             case "Property1":
                 property1 = Integer.valueOf(nodeValue);

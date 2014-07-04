@@ -163,6 +163,9 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
                                                         THREE_TABS + "case \"uuid\":\n" +
                                                         FOUR_TABS + "id = nodeValue;\n" +
                                                         THREE_TABS + "break;\n" +
+                                                        THREE_TABS + "case \"autoAlign\":\n" +
+                                                        FOUR_TABS + "setAutoAlignmentParam(Boolean.valueOf(nodeValue));\n" +
+                                                        THREE_TABS + "break;\n" +
                                                         "findProperty" +
                                                         TWO_TABS + "}\n";
 
@@ -247,7 +250,7 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
         StringBuilder propertiesInitialization = new StringBuilder();
         StringBuilder applyPropertiesValue = new StringBuilder();
         StringBuilder propertyNames = new StringBuilder();
-        StringBuilder internalPropertyNames = new StringBuilder("\"x\", \"y\", \"uuid\"");
+        StringBuilder internalPropertyNames = new StringBuilder("\"x\", \"y\", \"uuid\", \"autoAlign\"");
         StringBuilder propertiesGetterAndSetters = new StringBuilder();
         StringBuilder imports = new StringBuilder();
         StringBuilder serializationCode = new StringBuilder();
