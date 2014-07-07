@@ -90,6 +90,7 @@ create_graphical_elements
         selectionManager.setElement(selectedElement);
         ((AbstractWorkspaceView)view).setZoomInButtonEnable(selectedElement != null && selectedElement.isContainer());
         this.selectedElement = selectedElement != null ? selectedElement.getId() : null;
+        ((AbstractWorkspaceView)view).selectElement(this.selectedElement);
 
         for (Link link : mainElement.getLinks()) {
 create_links        }

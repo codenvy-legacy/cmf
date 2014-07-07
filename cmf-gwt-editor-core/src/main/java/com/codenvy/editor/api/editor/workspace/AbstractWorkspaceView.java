@@ -18,6 +18,7 @@ package com.codenvy.editor.api.editor.workspace;
 import com.codenvy.editor.api.mvp.AbstractView;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * The abstract presentation of an editor workspace view.
@@ -136,5 +137,13 @@ public abstract class AbstractWorkspaceView extends AbstractView<AbstractWorkspa
 
     /** @return <code>true</code> if the auto-alignment param is selected, <code>false</code> it isn't */
     public abstract boolean isAutoAligned();
+
+    /**
+     * Select a diagram element.
+     *
+     * @param elementId
+     *         id of element which needs to be selected
+     */
+    public abstract void selectElement(@Nullable String elementId);
 
 }

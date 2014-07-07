@@ -28,6 +28,8 @@ public interface EditorResources extends ClientBundle {
 
         String fullSize();
 
+        String selectedElement();
+
     }
 
     @Source("editor.css")

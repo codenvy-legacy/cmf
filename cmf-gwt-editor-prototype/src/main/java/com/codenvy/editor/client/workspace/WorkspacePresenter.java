@@ -157,6 +157,7 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
         selectionManager.setElement(selectedElement);
         ((AbstractWorkspaceView)view).setZoomInButtonEnable(selectedElement != null && selectedElement.isContainer());
         this.selectedElement = selectedElement != null ? selectedElement.getId() : null;
+        ((AbstractWorkspaceView)view).selectElement(this.selectedElement);
 
         for (Link link : mainElement.getLinks()) {
             if (link instanceof Link1) {

@@ -241,6 +241,10 @@ public abstract class AbstractWorkspacePresenter<T> extends AbstractPresenter im
 
         nodeElement.addShape(shape);
 
+        ((AbstractWorkspaceView)view).setZoomInButtonEnable(shape.isContainer());
+        selectedElement = shape.getId();
+        selectionManager.setElement(shape);
+
         if (nodeElement.isAutoAligned()) {
             showElements(nodeElement);
         }

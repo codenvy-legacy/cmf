@@ -49,6 +49,7 @@ import com.google.inject.Provider;
 import com.orange.links.client.DiagramController;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -77,6 +78,7 @@ public class WorkspaceViewImpl extends WorkspaceView {
     private final Provider<ShapeWidget> widgetProvider;
     private final EditorResources       resources;
     private final Map<String, Widget>   elements;
+    private       Widget                selectedElement;
 
     @Inject
     public WorkspaceViewImpl(WorkspaceViewImplUiBinder ourUiBinder, Provider<ShapeWidget> widgetProvider, EditorResources resources) {
@@ -99,6 +101,7 @@ public class WorkspaceViewImpl extends WorkspaceView {
         focusPanel.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
+                selectElement((Widget)null);
                 delegate.onLeftMouseButtonClicked(event.getRelativeX(mainPanel.getElement()), event.getRelativeY(mainPanel.getElement()));
             }
         });
@@ -106,6 +109,7 @@ public class WorkspaceViewImpl extends WorkspaceView {
         focusPanel.addDomHandler(new ContextMenuHandler() {
             @Override
             public void onContextMenu(ContextMenuEvent event) {
+                selectElement((Widget)null);
                 NativeEvent nativeEvent = event.getNativeEvent();
                 delegate.onRightMouseButtonClicked(nativeEvent.getClientX(), nativeEvent.getClientY());
             }
@@ -138,7 +142,9 @@ public class WorkspaceViewImpl extends WorkspaceView {
     @Override
     public void removeElement(@Nonnull String elementId) {
         Widget widget = elements.get(elementId);
-        controller.deleteWidget(widget);
+        if (widget != null) {
+            controller.deleteWidget(widget);
+        }
     }
 
     /** {@inheritDoc} */
@@ -163,6 +169,13 @@ public class WorkspaceViewImpl extends WorkspaceView {
     @Override
     public boolean isAutoAligned() {
         return autoAlignment.getValue();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectElement(@Nullable String elementId) {
+        Widget widget = elements.get(elementId);
+        selectElement(widget);
     }
 
     @UiHandler("zoomIn")
@@ -192,7 +205,7 @@ public class WorkspaceViewImpl extends WorkspaceView {
         addShape(x, y, shape, resources.shape2());
     }
 
-    private void addShape(int x, int y, @Nonnull final Shape shape, @Nonnull ImageResource resource) {
+    private void addShape(int x, int y, @Nonnull final Shape shape, @Nonnull final ImageResource resource) {
         final ShapeWidget elementWidget = widgetProvider.get();
 
         elementWidget.setTitle(shape.getTitle());
@@ -201,7 +214,17 @@ public class WorkspaceViewImpl extends WorkspaceView {
         elementWidget.addMouseDownHandler(new MouseDownHandler() {
             @Override
             public void onMouseDown(MouseDownEvent event) {
-                delegate.onDiagramElementClicked(shape.getId());
+                selectElement(elementWidget);
+
+                switch (event.getNativeButton()) {
+                    case NativeEvent.BUTTON_RIGHT:
+                        delegate.onDiagramElementRightClicked(shape.getId(), event.getClientX(), event.getClientY());
+                        break;
+
+                    case NativeEvent.BUTTON_LEFT:
+                    default:
+                        delegate.onDiagramElementClicked(shape.getId());
+                }
             }
         });
 
@@ -214,18 +237,23 @@ public class WorkspaceViewImpl extends WorkspaceView {
             }
         });
 
-        elementWidget.addContextMenuHandler(new ContextMenuHandler() {
-            @Override
-            public void onContextMenu(ContextMenuEvent event) {
-                NativeEvent nativeEvent = event.getNativeEvent();
-                delegate.onDiagramElementRightClicked(shape.getId(), nativeEvent.getClientX(), nativeEvent.getClientY());
-            }
-        });
-
         controller.addWidget(elementWidget, x, y);
         dragController.makeDraggable(elementWidget);
 
         elements.put(shape.getId(), elementWidget);
+
+        selectElement(elementWidget);
+    }
+
+    private void selectElement(@Nullable Widget element) {
+        if (selectedElement != null) {
+            selectedElement.removeStyleName(resources.editorCSS().selectedElement());
+        }
+
+        selectedElement = element;
+        if (selectedElement != null) {
+            selectedElement.addStyleName(resources.editorCSS().selectedElement());
+        }
     }
 
     /** {@inheritDoc} */

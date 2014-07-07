@@ -8,9 +8,7 @@ public interface EditorResources extends ClientBundle {
 
     interface EditorCSS extends CssResource {
 
-        custom_style
-
-    }
+custom_style    }
 
     @Source("editor.css")
     EditorCSS editorCSS();

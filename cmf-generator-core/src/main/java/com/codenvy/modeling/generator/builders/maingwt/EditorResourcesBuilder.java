@@ -31,6 +31,7 @@ import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.CUR
 import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.CUSTOM_STYLE;
 import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.IMAGE_RESOURCES;
 import static com.codenvy.modeling.generator.builders.OffsetBuilderConstants.OFFSET;
+import static com.codenvy.modeling.generator.builders.OffsetBuilderConstants.TWO_TABS;
 import static com.codenvy.modeling.generator.builders.PathConstants.CLIENT_PACKAGE;
 import static com.codenvy.modeling.generator.builders.PathConstants.ICONS_FOLDER;
 import static com.codenvy.modeling.generator.builders.PathConstants.JAVA_SOURCE_FOLDER;
@@ -41,6 +42,7 @@ import static com.codenvy.modeling.generator.builders.ResourceNameConstants.EDIT
 
 /**
  * @author Valeriy Svydenko
+ * @author Andrey Plotnikov
  */
 public class EditorResourcesBuilder extends AbstractBuilder<EditorResourcesBuilder> {
 
@@ -73,7 +75,8 @@ public class EditorResourcesBuilder extends AbstractBuilder<EditorResourcesBuild
                            EDITOR_RESOURCES + JAVA);
 
         replaceElements.put(CURRENT_PACKAGE_MARKER, clientPackage);
-        replaceElements.put(CUSTOM_STYLE, "String fullSize();");
+        replaceElements.put(CUSTOM_STYLE, TWO_TABS + "String fullSize();\n\n" +
+                                          TWO_TABS + "String selectedElement();\n\n");
         replaceElements.put(IMAGE_RESOURCES, imageResources);
 
         super.build();
