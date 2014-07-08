@@ -72,6 +72,8 @@ public class WorkspaceViewImpl extends WorkspaceView {
     FocusPanel focusPanel;
     @UiField
     CheckBox   autoAlignment;
+    @UiField
+    FlowPanel  controlPanel;
 
     private final DiagramController     controller;
     private final PickupDragController  dragController;
@@ -101,7 +103,6 @@ public class WorkspaceViewImpl extends WorkspaceView {
         focusPanel.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                selectElement((Widget)null);
                 delegate.onLeftMouseButtonClicked(event.getRelativeX(mainPanel.getElement()), event.getRelativeY(mainPanel.getElement()));
             }
         });
@@ -109,7 +110,6 @@ public class WorkspaceViewImpl extends WorkspaceView {
         focusPanel.addDomHandler(new ContextMenuHandler() {
             @Override
             public void onContextMenu(ContextMenuEvent event) {
-                selectElement((Widget)null);
                 NativeEvent nativeEvent = event.getNativeEvent();
                 delegate.onRightMouseButtonClicked(nativeEvent.getClientX(), nativeEvent.getClientY());
             }
@@ -150,13 +150,31 @@ public class WorkspaceViewImpl extends WorkspaceView {
     /** {@inheritDoc} */
     @Override
     public void setZoomInButtonEnable(boolean enable) {
-        zoomIn.setEnabled(enable);
+        if (enable) {
+            controlPanel.add(zoomIn);
+
+            if (zoomOut.isAttached()) {
+                controlPanel.remove(zoomOut);
+                controlPanel.add(zoomOut);
+            }
+        } else {
+            controlPanel.remove(zoomIn);
+        }
     }
 
     /** {@inheritDoc} */
     @Override
     public void setZoomOutButtonEnable(boolean enable) {
-        zoomOut.setEnabled(enable);
+        if (enable) {
+            controlPanel.add(zoomOut);
+
+            if (zoomOut.isAttached()) {
+                controlPanel.remove(zoomIn);
+                controlPanel.add(zoomIn);
+            }
+        } else {
+            controlPanel.remove(zoomOut);
+        }
     }
 
     /** {@inheritDoc} */
@@ -174,8 +192,16 @@ public class WorkspaceViewImpl extends WorkspaceView {
     /** {@inheritDoc} */
     @Override
     public void selectElement(@Nullable String elementId) {
-        Widget widget = elements.get(elementId);
-        selectElement(widget);
+        Widget element = elements.get(elementId);
+
+        if (selectedElement != null) {
+            selectedElement.removeStyleName(resources.editorCSS().selectedElement());
+        }
+
+        selectedElement = element;
+        if (selectedElement != null) {
+            selectedElement.addStyleName(resources.editorCSS().selectedElement());
+        }
     }
 
     @UiHandler("zoomIn")
@@ -191,6 +217,8 @@ public class WorkspaceViewImpl extends WorkspaceView {
     @UiHandler("autoAlignment")
     public void onAutoAlignmentParamChanged(ClickEvent event) {
         delegate.onAutoAlignmentParamChanged();
+
+        event.stopPropagation();
     }
 
     /** {@inheritDoc} */
@@ -214,8 +242,6 @@ public class WorkspaceViewImpl extends WorkspaceView {
         elementWidget.addMouseDownHandler(new MouseDownHandler() {
             @Override
             public void onMouseDown(MouseDownEvent event) {
-                selectElement(elementWidget);
-
                 switch (event.getNativeButton()) {
                     case NativeEvent.BUTTON_RIGHT:
                         delegate.onDiagramElementRightClicked(shape.getId(), event.getClientX(), event.getClientY());
@@ -241,19 +267,6 @@ public class WorkspaceViewImpl extends WorkspaceView {
         dragController.makeDraggable(elementWidget);
 
         elements.put(shape.getId(), elementWidget);
-
-        selectElement(elementWidget);
-    }
-
-    private void selectElement(@Nullable Widget element) {
-        if (selectedElement != null) {
-            selectedElement.removeStyleName(resources.editorCSS().selectedElement());
-        }
-
-        selectedElement = element;
-        if (selectedElement != null) {
-            selectedElement.addStyleName(resources.editorCSS().selectedElement());
-        }
     }
 
     /** {@inheritDoc} */

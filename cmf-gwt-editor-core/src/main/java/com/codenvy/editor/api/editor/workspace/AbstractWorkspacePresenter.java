@@ -27,6 +27,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.orange.links.client.menu.ContextMenu;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -144,7 +145,7 @@ public abstract class AbstractWorkspacePresenter<T> extends AbstractPresenter im
     /** {@inheritDoc} */
     @Override
     public void onRightMouseButtonClicked(int x, int y) {
-        // TODO add implementation
+        selectElement(null);
     }
 
     /** {@inheritDoc} */
@@ -177,7 +178,7 @@ public abstract class AbstractWorkspacePresenter<T> extends AbstractPresenter im
     /** {@inheritDoc} */
     @Override
     public void onDiagramElementRightClicked(@Nonnull String elementId, int x, int y) {
-        selectedElement = elementId;
+        selectElement(elementId);
 
         contextMenu.setPopupPosition(x, y);
         contextMenu.show();
@@ -234,22 +235,31 @@ public abstract class AbstractWorkspacePresenter<T> extends AbstractPresenter im
     }
 
     protected void addShape(@Nonnull Shape shape, int x, int y) {
-        elements.put(shape.getId(), shape);
+        String shapeId = shape.getId();
+
+        elements.put(shapeId, shape);
+        nodeElement.addShape(shape);
 
         shape.setX(x);
         shape.setY(y);
 
-        nodeElement.addShape(shape);
-
-        ((AbstractWorkspaceView)view).setZoomInButtonEnable(shape.isContainer());
-        selectedElement = shape.getId();
-        selectionManager.setElement(shape);
+        selectElement(shapeId);
 
         if (nodeElement.isAutoAligned()) {
             showElements(nodeElement);
         }
 
         notifyDiagramChangeListeners();
+    }
+
+    protected void selectElement(@Nullable String elementId) {
+        selectedElement = elementId;
+        Shape shape = (Shape)elements.get(elementId);
+
+        selectionManager.setElement(shape);
+
+        ((AbstractWorkspaceView)view).selectElement(elementId);
+        ((AbstractWorkspaceView)view).setZoomInButtonEnable(shape != null && shape.isContainer());
     }
 
     protected abstract void showElements(@Nonnull Shape element);

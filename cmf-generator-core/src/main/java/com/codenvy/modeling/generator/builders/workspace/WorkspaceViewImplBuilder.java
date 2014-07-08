@@ -161,6 +161,7 @@ public class WorkspaceViewImplBuilder extends AbstractBuilder<WorkspaceViewImplB
                             styleBuilder.withStyle("button", "float: left; margin-left: 6px;")
                                         .withStyle("rightFixedPosition", "position: fixed; z-index: 3; right: 30px;")
                                         .withStyle("focusPanel:focus", "outline: none !important;")
+                                        .withStyle("checkBox", "float: right;")
                               )
 
                     .setWidget(
@@ -189,14 +190,14 @@ public class WorkspaceViewImplBuilder extends AbstractBuilder<WorkspaceViewImplB
 
                                                                                     .withPrefix("g")
                                                                                     .withAddStyle("style.rightFixedPosition")
+                                                                                    .withName("controlPanel")
 
                                                                                     .withWidget(
                                                                                             checkBoxBuilder
                                                                                                     .withPrefix("g")
-                                                                                                    .withName(
-                                                                                                            "autoAlignment")
-                                                                                                    .withText(
-                                                                                                            "auto-alignment")
+                                                                                                    .withName("autoAlignment")
+                                                                                                    .withText("auto-layout")
+                                                                                                    .withAddStyle("style.checkBox")
                                                                                                )
                                                                                     .withWidget(
                                                                                             buttonBuilderProvider

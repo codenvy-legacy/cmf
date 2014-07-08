@@ -25,8 +25,7 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
     /** {@inheritDoc} */
     @Override
     public void onLeftMouseButtonClicked(int x, int y) {
-        selectionManager.setElement(null);
-        ((AbstractWorkspaceView)view).setZoomInButtonEnable(false);
+        selectElement(null);
 
         switch (getState()) {
 create_graphic_elements        }
@@ -36,12 +35,9 @@ create_graphic_elements        }
     @Override
     public void onDiagramElementClicked(@Nonnull String elementId) {
         String prevSelectedElement = selectedElement;
-        selectedElement = elementId;
+        selectElement(elementId);
 
         Shape element = (Shape)elements.get(elementId);
-        selectionManager.setElement(element);
-
-        ((AbstractWorkspaceView)view).setZoomInButtonEnable(element.isContainer());
 
         Shape source;
         Shape parent;
@@ -55,7 +51,7 @@ create_graphic_connections        }
         ((AbstractWorkspaceView)view).clearDiagram();
 
         nodeElement = element;
-        Shape selectedElement = null;
+        String selectedElement = null;
 
         ((AbstractWorkspaceView)view).setZoomOutButtonEnable(nodeElement.getParent() != null);
         ((AbstractWorkspaceView)view).setAutoAlignmentParam(nodeElement.isAutoAligned());
@@ -81,16 +77,13 @@ create_graphical_elements
             shape.setY(y);
 
             if (shape.getId().equals(this.selectedElement)) {
-                selectedElement = shape;
+                selectedElement = shape.getId();
             }
 
             elements.put(shape.getId(), shape);
         }
 
-        selectionManager.setElement(selectedElement);
-        ((AbstractWorkspaceView)view).setZoomInButtonEnable(selectedElement != null && selectedElement.isContainer());
-        this.selectedElement = selectedElement != null ? selectedElement.getId() : null;
-        ((AbstractWorkspaceView)view).selectElement(this.selectedElement);
+        selectElement(selectedElement);
 
         for (Link link : mainElement.getLinks()) {
 create_links        }

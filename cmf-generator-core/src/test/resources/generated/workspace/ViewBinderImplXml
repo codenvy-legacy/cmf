@@ -17,12 +17,15 @@
         .focusPanel:focus{
             outline: none !important;
         }
+        .checkBox{
+            float: right;
+        }
     </ui:style>
     <g:ScrollPanel addStyleNames="{res.editorCSS.fullSize}">
         <g:FocusPanel ui:field="focusPanel" addStyleNames="{style.focusPanel} {res.editorCSS.fullSize}">
             <g:FlowPanel ui:field="mainPanel" addStyleNames="{res.editorCSS.fullSize}">
-                <g:FlowPanel addStyleNames="{style.rightFixedPosition}">
-                    <g:CheckBox ui:field="autoAlignment" text="auto-alignment"/>
+                <g:FlowPanel ui:field="controlPanel" addStyleNames="{style.rightFixedPosition}">
+                    <g:CheckBox ui:field="autoAlignment" text="auto-layout" addStyleNames="{style.checkBox}"/>
                     <g:Button ui:field="zoomIn" text="Zoom In" width="90px" addStyleNames="{style.button}"/>
                     <g:Button ui:field="zoomOut" text="Zoom Out" width="90px" addStyleNames="{style.button}"/>
                 </g:FlowPanel>
