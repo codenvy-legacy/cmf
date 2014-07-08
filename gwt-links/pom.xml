@@ -7,7 +7,7 @@
     <parent>
         <artifactId>cmf-parent</artifactId>
         <groupId>com.codenvy.cmf</groupId>
-        <version>1.0.0-M1-SNAPSHOT</version>
+        <version>1.0.0-M1-Alpha</version>
     </parent>
 
     <groupId>com.orange.links</groupId>
