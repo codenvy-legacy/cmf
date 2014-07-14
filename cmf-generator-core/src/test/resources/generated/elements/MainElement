@@ -22,6 +22,7 @@ public class MainElement extends AbstractShape {
 
         components.add("Element1");
         components.add("Element2");
+        targetElements.put("Connection1", new ArrayList<String>());
     }
 
     @Override

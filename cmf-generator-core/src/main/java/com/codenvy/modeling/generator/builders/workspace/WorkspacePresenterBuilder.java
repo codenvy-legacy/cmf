@@ -44,6 +44,7 @@ import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.MAI
 import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.STATIC_IMPORT_MARKER;
 import static com.codenvy.modeling.generator.builders.OffsetBuilderConstants.FIVE_TABS;
 import static com.codenvy.modeling.generator.builders.OffsetBuilderConstants.FOUR_TABS;
+import static com.codenvy.modeling.generator.builders.OffsetBuilderConstants.SIX_TABS;
 import static com.codenvy.modeling.generator.builders.OffsetBuilderConstants.THREE_TABS;
 import static com.codenvy.modeling.generator.builders.PathConstants.CLIENT_PACKAGE;
 import static com.codenvy.modeling.generator.builders.PathConstants.ELEMENTS_PACKAGE;
@@ -83,16 +84,26 @@ public class WorkspacePresenterBuilder extends AbstractBuilder<WorkspacePresente
             FOUR_TABS + "setState(CREATING_connectionUpperName_TARGET);\n" +
             FOUR_TABS + "break;\n" +
             THREE_TABS + "case CREATING_connectionUpperName_TARGET:\n" +
-            FOUR_TABS + "((WorkspaceView)view).addconnectionName(prevSelectedElement, selectedElement);\n" +
-            FOUR_TABS + "source = (Shape)elements.get(prevSelectedElement);\n" +
-            FOUR_TABS + "connectionName argumentName = new connectionName(source.getId(), element.getId());\n" +
-            FOUR_TABS + "elements.put(element.getId(), element);\n\n" +
-            FOUR_TABS + "parent = source.getParent();\n" +
-            FOUR_TABS + "if (parent != null) {\n" +
-            FIVE_TABS + "parent.addLink(argumentName);\n" +
+            FOUR_TABS + "if (selectedElement.canCreateConnection(\"connectionName\", element.getElementName())) {\n" +
+            FIVE_TABS + "((WorkspaceView)view).addconnectionName(prevSelectedElement, selectedElementId);\n" +
+            FIVE_TABS + "connectionName argumentName = new connectionName(selectedElement.getId(), element.getId());\n" +
+            FIVE_TABS + "elements.put(element.getId(), element);\n\n" +
+            FIVE_TABS + "parent = selectedElement.getParent();\n" +
+            FIVE_TABS + "if (parent != null) {\n" +
+            SIX_TABS + "parent.addLink(argumentName);\n" +
+            FIVE_TABS + "}\n\n" +
+            FIVE_TABS + "notifyDiagramChangeListeners();\n" +
+            FOUR_TABS + "}\n\n" +
+            FOUR_TABS + "setState(CREATING_NOTHING);\n" +
+            FOUR_TABS + "selectElement(elementId);\n\n" +
+            FOUR_TABS + "break;\n";
+
+    private static final String CHOOSE_CREATING_ELEMENT_STATE_CODE_FORMAT =
+            THREE_TABS + "case CREATING_connectionUpperName_TARGET:\n" +
+            FOUR_TABS + "Shape selectedElement = (Shape)elements.get(selectedElementId);\n" +
+            FOUR_TABS + "if (!selectedElement.canCreateConnection(\"connectionName\", element.getElementName())) {\n" +
+            FIVE_TABS + "((AbstractWorkspaceView)view).selectErrorElement(elementId);\n" +
             FOUR_TABS + "}\n" +
-            FOUR_TABS + "setState(CREATING_NOTHING);\n\n" +
-            FOUR_TABS + "notifyDiagramChangeListeners();\n" +
             FOUR_TABS + "break;\n";
 
     private static final String CREATE_STATE_MARKER = "createState";
@@ -102,6 +113,7 @@ public class WorkspacePresenterBuilder extends AbstractBuilder<WorkspacePresente
     private static final String CREATE_GRAPHIC_CONNECTIONS_MARKER = "create_graphic_connections";
     private static final String CREATE_GRAPHICAL_ELEMENTS_MARKER  = "create_graphical_elements";
     private static final String CREATE_LINKS_MARKER               = "create_links";
+    private static final String CREATING_ELEMENT_STATES_MARKER    = "creating_element_states";
 
     private String          mainPackage;
     private Set<Element>    elements;
@@ -152,6 +164,7 @@ public class WorkspacePresenterBuilder extends AbstractBuilder<WorkspacePresente
         StringBuilder createConnections = new StringBuilder();
         StringBuilder createGraphicalElements = new StringBuilder();
         StringBuilder createLinks = new StringBuilder();
+        StringBuilder chooseCreatingElementStates = new StringBuilder();
 
         staticImports.append(stateClassImport).append(CREATE_NOTHING_STATE).append(";\n");
 
@@ -186,6 +199,7 @@ public class WorkspacePresenterBuilder extends AbstractBuilder<WorkspacePresente
             imports.append("import ").append(connectionPackage).append(";\n");
 
             createLinks.append(createLinkCode(connectionName));
+            chooseCreatingElementStates.append(createChooseCreatingConnectionStateCode(connectionName));
         }
 
         source = Paths.get(path,
@@ -207,6 +221,7 @@ public class WorkspacePresenterBuilder extends AbstractBuilder<WorkspacePresente
         replaceElements.put(IMPORT_MARKER, imports.toString());
         replaceElements.put(MAIN_ELEMENT_NAME_MARKER, rootElement.getName());
         replaceElements.put(CREATE_GRAPHIC_ELEMENTS_MARKER, createElements.toString());
+        replaceElements.put(CREATING_ELEMENT_STATES_MARKER, chooseCreatingElementStates.toString());
         replaceElements.put(CREATE_LINKS_MARKER, createLinks.toString());
         replaceElements.put(CREATE_GRAPHIC_CONNECTIONS_MARKER, createConnections.toString());
         replaceElements.put(CREATE_GRAPHICAL_ELEMENTS_MARKER, createGraphicalElements.toString());
@@ -232,6 +247,15 @@ public class WorkspacePresenterBuilder extends AbstractBuilder<WorkspacePresente
         createGraphicalElementMasks.put(ELEMENT_NAME_MARKER, elementName);
 
         return ContentReplacer.replace(CREATE_GRAPHICAL_ELEMENT_CODE_FORMAT, createGraphicalElementMasks);
+    }
+
+    @Nonnull
+    private String createChooseCreatingConnectionStateCode(@Nonnull String connectionName) {
+        Map<String, String> markers = new LinkedHashMap<>(2);
+        markers.put(CONNECTION_NAME_MARKER, connectionName);
+        markers.put(CONNECTION_UPPER_NAME_MARKER, connectionName.toUpperCase());
+
+        return ContentReplacer.replace(CHOOSE_CREATING_ELEMENT_STATE_CODE_FORMAT, markers);
     }
 
     @Nonnull

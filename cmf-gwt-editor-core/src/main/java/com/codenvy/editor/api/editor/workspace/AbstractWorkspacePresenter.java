@@ -43,7 +43,7 @@ public abstract class AbstractWorkspacePresenter<T> extends AbstractPresenter im
 
     private EditorState<T> state;
 
-    protected       String                          selectedElement;
+    protected       String                          selectedElementId;
     protected final Shape                           mainElement;
     protected       SelectionManager                selectionManager;
     protected final Map<String, Element>            elements;
@@ -67,9 +67,9 @@ public abstract class AbstractWorkspacePresenter<T> extends AbstractPresenter im
         this.mainElementChangeListeners = new ArrayList<>();
 
         this.selectionManager.setElement(mainElement);
-        this.selectedElement = mainElement.getId();
+        this.selectedElementId = mainElement.getId();
 
-        this.elements.put(selectedElement, mainElement);
+        this.elements.put(selectedElementId, mainElement);
 
         this.contextMenu = new ContextMenu();
         this.contextMenu.addItem("Delete", new Command() {
@@ -161,11 +161,11 @@ public abstract class AbstractWorkspacePresenter<T> extends AbstractPresenter im
     }
 
     private void deleteSelectedElement() {
-        Shape element = (Shape)elements.remove(selectedElement);
+        Shape element = (Shape)elements.remove(selectedElementId);
 
         if (element != null) {
             nodeElement.removeShape(element);
-            ((AbstractWorkspaceView)view).removeElement(selectedElement);
+            ((AbstractWorkspaceView)view).removeElement(selectedElementId);
 
             if (nodeElement.isAutoAligned()) {
                 showElements(nodeElement);
@@ -186,8 +186,14 @@ public abstract class AbstractWorkspacePresenter<T> extends AbstractPresenter im
 
     /** {@inheritDoc} */
     @Override
+    public void onMouseOutDiagramElement(@Nonnull String elementId) {
+        ((AbstractWorkspaceView)view).unselectErrorElement(elementId);
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public void onZoomInButtonClicked() {
-        Shape element = (Shape)elements.get(selectedElement);
+        Shape element = (Shape)elements.get(selectedElementId);
 
         if (element != null) {
             showElements(element);
@@ -253,7 +259,7 @@ public abstract class AbstractWorkspacePresenter<T> extends AbstractPresenter im
     }
 
     protected void selectElement(@Nullable String elementId) {
-        selectedElement = elementId;
+        selectedElementId = elementId;
         Shape shape = (Shape)elements.get(elementId);
 
         selectionManager.setElement(shape);

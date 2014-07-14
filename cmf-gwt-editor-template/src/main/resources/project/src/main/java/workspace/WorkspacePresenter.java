@@ -4,6 +4,7 @@ import main_package.client.State;
 
 import com.codenvy.editor.api.editor.EditorState;
 import com.codenvy.editor.api.editor.SelectionManager;
+import com.codenvy.editor.api.editor.elements.Element;
 import com.codenvy.editor.api.editor.elements.Link;
 import com.codenvy.editor.api.editor.elements.Shape;
 import com.codenvy.editor.api.editor.workspace.AbstractWorkspacePresenter;
@@ -34,16 +35,31 @@ create_graphic_elements        }
     /** {@inheritDoc} */
     @Override
     public void onDiagramElementClicked(@Nonnull String elementId) {
-        String prevSelectedElement = selectedElement;
+        String prevSelectedElement = selectedElementId;
         selectElement(elementId);
 
+        Shape selectedElement = (Shape)elements.get(prevSelectedElement);
         Shape element = (Shape)elements.get(elementId);
 
-        Shape source;
+        ((AbstractWorkspaceView)view).unselectErrorElement(elementId);
+
         Shape parent;
 
         switch (getState()) {
 create_graphic_connections        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onMouseOverDiagramElement(@Nonnull String elementId) {
+        Element element = elements.get(elementId);
+        if (element == null) {
+            return;
+        }
+
+        switch (getState()) {
+creating_element_states            default:
+        }
     }
 
     @Override
@@ -76,7 +92,7 @@ create_graphical_elements
             shape.setX(x);
             shape.setY(y);
 
-            if (shape.getId().equals(this.selectedElement)) {
+            if (shape.getId().equals(selectedElementId)) {
                 selectedElement = shape.getId();
             }
 

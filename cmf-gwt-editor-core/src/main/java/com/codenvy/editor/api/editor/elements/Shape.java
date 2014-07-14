@@ -130,4 +130,16 @@ public interface Shape extends Element {
     /** @return <code>true</code> if the auto-alignment state of inner elements is enabled, <code>false</code> it isn't */
     boolean isAutoAligned();
 
+    /**
+     * Checks a possibility to create a connection between current and given elements.
+     *
+     * @param connection
+     *         name of connection that is going to create
+     * @param targetElement
+     *         target element of connection
+     * @return <code>true</code> if it is possible to create a this connection of connection between current and given elements,
+     * <code>false</code> it isn't
+     */
+    boolean canCreateConnection(@Nonnull String connection, @Nonnull String targetElement);
+
 }

@@ -7,3 +7,7 @@
     background: #6DAF6D !important;
     border: 2px solid #6DAF6D !important;
 }
+
+.errorElement {
+    border: 2px solid #FF0000 !important;
+}

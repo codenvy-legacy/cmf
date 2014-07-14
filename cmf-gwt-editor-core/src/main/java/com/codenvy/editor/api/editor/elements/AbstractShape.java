@@ -21,8 +21,10 @@ import com.google.gwt.xml.client.XMLParser;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -34,11 +36,13 @@ public abstract class AbstractShape extends AbstractElement implements Shape, Co
 
     private final List<AbstractShape> shapes;
     private final List<Link>          links;
-    private       int                 x;
-    private       int                 y;
 
-    protected final Set<String> components;
-    private         boolean     isAutoAligned;
+    protected final Set<String>               components;
+    protected final Map<String, List<String>> targetElements;
+
+    private int     x;
+    private boolean isAutoAligned;
+    private int     y;
 
     protected AbstractShape(@Nonnull String elementName, @Nonnull List<String> properties, @Nonnull List<String> internalProperties) {
         super(elementName, properties, internalProperties);
@@ -46,6 +50,7 @@ public abstract class AbstractShape extends AbstractElement implements Shape, Co
         this.shapes = new ArrayList<>();
         this.links = new ArrayList<>();
         this.components = new HashSet<>();
+        this.targetElements = new HashMap<>();
 
         this.x = UNDEFINED_POSITION;
         this.y = UNDEFINED_POSITION;
@@ -246,6 +251,13 @@ public abstract class AbstractShape extends AbstractElement implements Shape, Co
     @Override
     public boolean isAutoAligned() {
         return isAutoAligned;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean canCreateConnection(@Nonnull String connection, @Nonnull String targetElement) {
+        List<String> targetElements = this.targetElements.get(connection);
+        return targetElements.contains(targetElement);
     }
 
 }

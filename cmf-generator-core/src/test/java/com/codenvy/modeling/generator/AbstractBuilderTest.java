@@ -20,6 +20,7 @@ import com.codenvy.modeling.configuration.ConfigurationFactory;
 import com.codenvy.modeling.configuration.metamodel.diagram.Component;
 import com.codenvy.modeling.configuration.metamodel.diagram.Connection;
 import com.codenvy.modeling.configuration.metamodel.diagram.Element;
+import com.codenvy.modeling.configuration.metamodel.diagram.Pair;
 import com.codenvy.modeling.configuration.metamodel.diagram.Property;
 import com.codenvy.modeling.generator.builders.elements.ConnectionBuilder;
 import com.codenvy.modeling.generator.builders.elements.ElementBuilder;
@@ -210,6 +211,20 @@ public abstract class AbstractBuilderTest {
 
         Connection connection = mock(Connection.class);
         when(connection.getName()).thenReturn("Connection1");
+
+        Pair pair1 = new Pair();
+        pair1.setStart("Element1");
+        pair1.setFinish("Element1");
+
+        Pair pair2 = new Pair();
+        pair2.setStart("Element1");
+        pair2.setFinish("Element2");
+
+        Pair pair3 = new Pair();
+        pair3.setStart("Element2");
+        pair3.setFinish("Element2");
+
+        when(connection.getPairs()).thenReturn(new LinkedHashSet<>(Arrays.asList(pair1, pair2, pair3)));
 
         when(configurationFactory.getInstance(any(ConfigurationFactory.ConfigurationPaths.class))).thenReturn(configuration);
 

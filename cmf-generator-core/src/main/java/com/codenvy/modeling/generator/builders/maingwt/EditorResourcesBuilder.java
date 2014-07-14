@@ -76,7 +76,8 @@ public class EditorResourcesBuilder extends AbstractBuilder<EditorResourcesBuild
 
         replaceElements.put(CURRENT_PACKAGE_MARKER, clientPackage);
         replaceElements.put(CUSTOM_STYLE, TWO_TABS + "String fullSize();\n\n" +
-                                          TWO_TABS + "String selectedElement();\n\n");
+                                          TWO_TABS + "String selectedElement();\n\n" +
+                                          TWO_TABS + "String errorElement();\n\n");
         replaceElements.put(IMAGE_RESOURCES, imageResources);
 
         super.build();

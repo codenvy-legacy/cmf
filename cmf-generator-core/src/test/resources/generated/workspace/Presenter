@@ -4,6 +4,7 @@ import my.package.client.State;
 
 import com.codenvy.editor.api.editor.EditorState;
 import com.codenvy.editor.api.editor.SelectionManager;
+import com.codenvy.editor.api.editor.elements.Element;
 import com.codenvy.editor.api.editor.elements.Link;
 import com.codenvy.editor.api.editor.elements.Shape;
 import com.codenvy.editor.api.editor.workspace.AbstractWorkspacePresenter;
@@ -59,12 +60,14 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
     /** {@inheritDoc} */
     @Override
     public void onDiagramElementClicked(@Nonnull String elementId) {
-        String prevSelectedElement = selectedElement;
+        String prevSelectedElement = selectedElementId;
         selectElement(elementId);
 
+        Shape selectedElement = (Shape)elements.get(prevSelectedElement);
         Shape element = (Shape)elements.get(elementId);
 
-        Shape source;
+        ((AbstractWorkspaceView)view).unselectErrorElement(elementId);
+
         Shape parent;
 
         switch (getState()) {
@@ -72,19 +75,42 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
                 setState(CREATING_CONNECTION1_TARGET);
                 break;
             case CREATING_CONNECTION1_TARGET:
-                ((WorkspaceView)view).addConnection1(prevSelectedElement, selectedElement);
-                source = (Shape)elements.get(prevSelectedElement);
-                Connection1 connection1 = new Connection1(source.getId(), element.getId());
-                elements.put(element.getId(), element);
+                if (selectedElement.canCreateConnection("Connection1", element.getElementName())) {
+                    ((WorkspaceView)view).addConnection1(prevSelectedElement, selectedElementId);
+                    Connection1 connection1 = new Connection1(selectedElement.getId(), element.getId());
+                    elements.put(element.getId(), element);
 
-                parent = source.getParent();
-                if (parent != null) {
-                    parent.addLink(connection1);
+                    parent = selectedElement.getParent();
+                    if (parent != null) {
+                        parent.addLink(connection1);
+                    }
+
+                    notifyDiagramChangeListeners();
                 }
-                setState(CREATING_NOTHING);
 
-                notifyDiagramChangeListeners();
+                setState(CREATING_NOTHING);
+                selectElement(elementId);
+
                 break;
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onMouseOverDiagramElement(@Nonnull String elementId) {
+        Element element = elements.get(elementId);
+        if (element == null) {
+            return;
+        }
+
+        switch (getState()) {
+            case CREATING_CONNECTION1_TARGET:
+                Shape selectedElement = (Shape)elements.get(selectedElementId);
+                if (!selectedElement.canCreateConnection("Connection1", element.getElementName())) {
+                    ((AbstractWorkspaceView)view).selectErrorElement(elementId);
+                }
+                break;
+            default:
         }
     }
 
@@ -124,7 +150,7 @@ public class WorkspacePresenter extends AbstractWorkspacePresenter<State> {
             shape.setX(x);
             shape.setY(y);
 
-            if (shape.getId().equals(this.selectedElement)) {
+            if (shape.getId().equals(selectedElementId)) {
                 selectedElement = shape.getId();
             }
 

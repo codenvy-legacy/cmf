@@ -38,6 +38,8 @@ public class MainElement extends AbstractShape {
 
         components.add("Shape1");
         components.add("Shape2");
+
+        targetElements.put("Link1", new ArrayList<String>());
     }
 
     public MainElement(@Nonnull String elementName, @Nonnull List<String> properties, @Nonnull List<String> internalProperties) {

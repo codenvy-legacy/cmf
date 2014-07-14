@@ -18,6 +18,7 @@ public class Element1 extends MainElement {
         property3 = "some string";
         property4 = 12.3f;
         components.add("Element2");
+        targetElements.put("Connection1", Arrays.asList("Element1", "Element2"));
     }
 
     public Integer getProperty1() {

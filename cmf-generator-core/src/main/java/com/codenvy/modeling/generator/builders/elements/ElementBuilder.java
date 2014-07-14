@@ -22,6 +22,7 @@ import com.codenvy.editor.api.editor.elements.Shape;
 import com.codenvy.modeling.configuration.metamodel.diagram.Component;
 import com.codenvy.modeling.configuration.metamodel.diagram.Connection;
 import com.codenvy.modeling.configuration.metamodel.diagram.Element;
+import com.codenvy.modeling.configuration.metamodel.diagram.Pair;
 import com.codenvy.modeling.configuration.metamodel.diagram.Property;
 import com.codenvy.modeling.generator.builders.AbstractBuilder;
 import com.codenvy.modeling.generator.builders.ContentReplacer;
@@ -35,12 +36,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import static com.codenvy.modeling.generator.builders.FileExtensionConstants.JAVA;
 import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.ARGUMENT_NAME_MARKER;
+import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.CONNECTION_NAME_MARKER;
 import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.CURRENT_PACKAGE_MARKER;
 import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.ELEMENT_NAME_MARKER;
 import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.GETTER_AND_SETTER_PROPERTY_MARKER;
@@ -74,6 +77,7 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
                                                       "generalConstructor(\"elementName\", propertiesList, internalPropertiesList);\n\n" +
                                                       "propertiesInitialization" +
                                                       "components" +
+                                                      "targetElementLists" +
                                                       OFFSET + "}\n\n";
 
     private static final String PROPERTY_SETTER_AND_GETTER = OFFSET + "public propertyType getpropertyName() {\n" +
@@ -175,13 +179,17 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
                                                      FOUR_TABS + "argumentName = propertyType.valueOf(nodeValue);\n" +
                                                      THREE_TABS + "break;\n";
 
+    private static final String INITIALIZE_TARGET_ELEMENTS_CODE = TWO_TABS + "targetElements.put(\"connectionName\", target_elements);\n";
+
     private static final String INITIALIZE_PROPERTY = TWO_TABS + "argumentName = propertyValue;\n";
-    private static final String FIELD_PROPERTY      = OFFSET + "private propertyType argumentName;\n";
+
+    private static final String FIELD_PROPERTY = OFFSET + "private propertyType argumentName;\n";
 
     private static final String FIND_ELEMENT_MARKER              = "findElements";
     private static final String PROPERTIES_FIELDS_MARKER         = "properties_fields";
     private static final String PROPERTIES_MARKER                = "propertiesList";
     private static final String INTERNAL_PROPERTIES_MARKER       = "internalPropertiesList";
+    private static final String TARGET_ELEMENTS_LIST_MARKER      = "targetElementLists";
     private static final String PROPERTY_VALUE_MARKER            = "propertyValue";
     private static final String PROPERTIES_INITIALIZATION_MARKER = "propertiesInitialization";
     private static final String APPLY_PROPERTIES_MARKER          = "applyProperties";
@@ -193,6 +201,7 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
     private static final String APPLY_PROPERTIES_METHOD_MARKER   = "apply_property_method";
     private static final String EXTEND_ELEMENT_MARKER            = "extend_element";
     private static final String COMPONENTS_MARKER                = "components";
+    private static final String TARGET_ELEMENTS_MARKER           = "target_elements";
 
     private static final String ELEMENT_CLASS_NAME = "Element";
 
@@ -201,6 +210,8 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
     private Set<Element>    elements;
     private Element         rootElement;
     private Set<Connection> connections;
+
+    private boolean isArrayListClassImported;
 
     @Inject
     public ElementBuilder() {
@@ -254,6 +265,7 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
         StringBuilder propertiesGetterAndSetters = new StringBuilder();
         StringBuilder imports = new StringBuilder();
         StringBuilder serializationCode = new StringBuilder();
+        StringBuilder targetElements = new StringBuilder();
 
         boolean isFirst = true;
 
@@ -302,6 +314,7 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
 
         if (properties.isEmpty()) {
             propertiesList = "new ArrayList<String>()";
+            isArrayListClassImported = true;
             imports.append("import ").append(ArrayList.class.getName()).append(";\n");
 
             applyPropertiesMethod = createApplyPropertiesMethodCode("");
@@ -321,6 +334,17 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
             components.append(createAddComponentCode(component.getName()));
         }
 
+        for (Connection connection : connections) {
+            Set<Pair> pairs = filterPairsByElement(connection.getPairs());
+
+            if (pairs.isEmpty() && !isArrayListClassImported) {
+                isArrayListClassImported = true;
+                imports.append("import ").append(ArrayList.class.getName()).append(";\n");
+            }
+
+            targetElements.append(createInitializeTargetElementsCode(connection.getName(), pairs));
+        }
+
         String constructor;
         String extendClass;
         String deserializeCode = "";
@@ -332,6 +356,7 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
                                                        propertiesList,
                                                        "Arrays.asList(" + internalPropertyNames + ")",
                                                        propertiesInitialization.toString(),
+                                                       targetElements.toString(),
                                                        components.toString());
             imports.append("import ").append(List.class.getName()).append(";\n");
 
@@ -365,6 +390,7 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
                                                        propertiesList,
                                                        "Arrays.asList(" + internalPropertyNames + ")",
                                                        propertiesInitialization.toString(),
+                                                       targetElements.toString(),
                                                        components.toString());
 
             extendClass = rootElement.getName();
@@ -411,6 +437,7 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
                                                 @Nonnull String properties,
                                                 @Nonnull String internalProperties,
                                                 @Nonnull String propertiesInitialization,
+                                                @Nonnull String targetElements,
                                                 @Nonnull String components) {
         Map<String, String> masks = new LinkedHashMap<>(5);
         masks.put(ELEMENT_NAME_MARKER, elementName);
@@ -418,6 +445,7 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
         masks.put(PROPERTIES_INITIALIZATION_MARKER, propertiesInitialization);
         masks.put(PROPERTIES_MARKER, properties);
         masks.put(INTERNAL_PROPERTIES_MARKER, internalProperties);
+        masks.put(TARGET_ELEMENTS_LIST_MARKER, targetElements);
         masks.put(COMPONENTS_MARKER, components);
 
         return ContentReplacer.replace(ELEMENT_CONSTRUCTOR, masks);
@@ -516,6 +544,52 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
         masks.put(ELEMENT_NAME_MARKER, elementName);
 
         return ContentReplacer.replace(ADD_COMPONENT_CODE, masks);
+    }
+
+    @Nonnull
+    private String createInitializeTargetElementsCode(@Nonnull String connectionName, @Nonnull Set<Pair> pairs) {
+        Map<String, String> masks = new LinkedHashMap<>(2);
+        masks.put(CONNECTION_NAME_MARKER, connectionName);
+        masks.put(TARGET_ELEMENTS_MARKER, createTargetElementsForConnection(pairs));
+
+        return ContentReplacer.replace(INITIALIZE_TARGET_ELEMENTS_CODE, masks);
+    }
+
+    @Nonnull
+    private String createTargetElementsForConnection(@Nonnull Set<Pair> pairs) {
+        String elementName = element.getName();
+        StringBuilder result = new StringBuilder();
+
+        if (pairs.isEmpty()) {
+            return "new ArrayList<String>()";
+        }
+
+        for (Iterator<Pair> iterator = pairs.iterator(); iterator.hasNext(); ) {
+            Pair pair = iterator.next();
+
+            if (elementName.equals(pair.getStart())) {
+                result.append('"').append(pair.getFinish()).append('"');
+            }
+
+            if (iterator.hasNext()) {
+                result.append(", ");
+            }
+        }
+
+        return "Arrays.asList(" + result + ')';
+    }
+
+    private Set<Pair> filterPairsByElement(@Nonnull Set<Pair> pairs) {
+        String elementName = element.getName();
+        Set<Pair> filteredPairs = new LinkedHashSet<>();
+
+        for (Pair pair : pairs) {
+            if (elementName.equals(pair.getStart())) {
+                filteredPairs.add(pair);
+            }
+        }
+
+        return filteredPairs;
     }
 
 }

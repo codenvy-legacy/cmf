@@ -29,6 +29,8 @@ public abstract class AbstractWorkspaceView extends AbstractView<AbstractWorkspa
 
     /** Required for delegating functions in the view. */
     public interface ActionDelegate extends AbstractView.ActionDelegate {
+        /* Workspace actions */
+
         /**
          * Performs some actions in response to a user's doing right mouse click.
          *
@@ -59,6 +61,20 @@ public abstract class AbstractWorkspaceView extends AbstractView<AbstractWorkspa
          */
         void onMouseMoved(int x, int y);
 
+        /** Performs any actions appropriate in response to the user having pressed the Zoom In button. */
+        void onZoomInButtonClicked();
+
+        /** Performs any actions appropriate in response to the user having pressed the Zoom Out button. */
+        void onZoomOutButtonClicked();
+
+        /** Performs any actions appropriate in response to the user having pressed the Delete button on keyboard. */
+        void onDeleteButtonPressed();
+
+        /** Performs any actions appropriate in response to the user having changed the auto-alignment state. */
+        void onAutoAlignmentParamChanged();
+
+        /* Elements actions */
+
         /**
          * Performs some actions in response to a user's clicking on diagram element.
          *
@@ -84,20 +100,29 @@ public abstract class AbstractWorkspaceView extends AbstractView<AbstractWorkspa
          *
          * @param elementId
          *         the identifier of moved diagram element
+         * @param x
+         *         the mouse x-position
+         * @param y
+         *         the mouse y-position
          */
         void onDiagramElementMoved(@Nonnull String elementId, int x, int y);
 
-        /** Performs any actions appropriate in response to the user having pressed the Zoom In button. */
-        void onZoomInButtonClicked();
+        /**
+         * Performs some actions in response to a user's moving mouse over diagram element.
+         *
+         * @param elementId
+         *         the identifier of diagram element
+         */
+        void onMouseOverDiagramElement(@Nonnull String elementId);
 
-        /** Performs any actions appropriate in response to the user having pressed the Zoom Out button. */
-        void onZoomOutButtonClicked();
+        /**
+         * Performs some actions in response to a user's moving mouse out diagram element.
+         *
+         * @param elementId
+         *         the identifier of diagram element
+         */
+        void onMouseOutDiagramElement(@Nonnull String elementId);
 
-        /** Performs any actions appropriate in response to the user having pressed the Delete button on keyboard. */
-        void onDeleteButtonPressed();
-
-        /** Performs any actions appropriate in response to the user having changed the auto-alignment state. */
-        void onAutoAlignmentParamChanged();
     }
 
     /** Clear diagram content. */
@@ -145,5 +170,21 @@ public abstract class AbstractWorkspaceView extends AbstractView<AbstractWorkspa
      *         id of element which needs to be selected
      */
     public abstract void selectElement(@Nullable String elementId);
+
+    /**
+     * Select a diagram element as error element (Which has some problems. For example: it is impossible to create a connection or etc).
+     *
+     * @param elementId
+     *         id of element which needs to be selected
+     */
+    public abstract void selectErrorElement(@Nullable String elementId);
+
+    /**
+     * Unselect a diagram element as error element (Which has some problems. For example: it is impossible to create a connection or etc).
+     *
+     * @param elementId
+     *         id of element which needs to be selected
+     */
+    public abstract void unselectErrorElement(@Nullable String elementId);
 
 }

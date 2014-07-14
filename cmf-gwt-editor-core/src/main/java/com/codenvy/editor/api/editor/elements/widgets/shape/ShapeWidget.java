@@ -52,7 +52,7 @@ import javax.annotation.Nonnull;
  * @author Andrey Plotnikov
  * @author Valeriy Svydenko
  */
-public class ShapeWidget extends Composite implements HasAllMouseHandlers, HasClickHandlers, HasContextMenuHandlers {
+public class ShapeWidget extends Composite implements HasAllMouseHandlers, HasClickHandlers {
 
     interface ShapeWidgetUiBinder extends UiBinder<Widget, ShapeWidget> {
     }
@@ -151,12 +151,6 @@ public class ShapeWidget extends Composite implements HasAllMouseHandlers, HasCl
     @Override
     public HandlerRegistration addMouseWheelHandler(MouseWheelHandler handler) {
         return addDomHandler(handler, MouseWheelEvent.getType());
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public HandlerRegistration addContextMenuHandler(ContextMenuHandler handler) {
-        return addDomHandler(handler, ContextMenuEvent.getType());
     }
 
 }

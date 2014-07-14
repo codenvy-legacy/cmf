@@ -30,6 +30,8 @@ public interface EditorResources extends ClientBundle {
 
         String selectedElement();
 
+        String errorElement();
+
     }
 
     @Source("editor.css")

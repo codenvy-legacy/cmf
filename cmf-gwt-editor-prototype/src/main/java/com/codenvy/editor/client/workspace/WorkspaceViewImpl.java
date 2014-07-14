@@ -33,6 +33,10 @@ import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
 import com.google.gwt.event.dom.client.MouseMoveHandler;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOutHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.resources.client.ImageResource;
@@ -204,6 +208,24 @@ public class WorkspaceViewImpl extends WorkspaceView {
         }
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public void selectErrorElement(@Nullable String elementId) {
+        Widget element = elements.get(elementId);
+        if (element != null) {
+            element.addStyleName(resources.editorCSS().errorElement());
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void unselectErrorElement(@Nullable String elementId) {
+        Widget element = elements.get(elementId);
+        if (element != null) {
+            element.removeStyleName(resources.editorCSS().errorElement());
+        }
+    }
+
     @UiHandler("zoomIn")
     public void onZoomInButtonClicked(ClickEvent event) {
         delegate.onZoomInButtonClicked();
@@ -235,6 +257,7 @@ public class WorkspaceViewImpl extends WorkspaceView {
 
     private void addShape(int x, int y, @Nonnull final Shape shape, @Nonnull final ImageResource resource) {
         final ShapeWidget elementWidget = widgetProvider.get();
+        final String elementId = shape.getId();
 
         elementWidget.setTitle(shape.getTitle());
         elementWidget.setIcon(resource);
@@ -244,12 +267,12 @@ public class WorkspaceViewImpl extends WorkspaceView {
             public void onMouseDown(MouseDownEvent event) {
                 switch (event.getNativeButton()) {
                     case NativeEvent.BUTTON_RIGHT:
-                        delegate.onDiagramElementRightClicked(shape.getId(), event.getClientX(), event.getClientY());
+                        delegate.onDiagramElementRightClicked(elementId, event.getClientX(), event.getClientY());
                         break;
 
                     case NativeEvent.BUTTON_LEFT:
                     default:
-                        delegate.onDiagramElementClicked(shape.getId());
+                        delegate.onDiagramElementClicked(elementId);
                 }
             }
         });
@@ -257,9 +280,23 @@ public class WorkspaceViewImpl extends WorkspaceView {
         elementWidget.addMouseUpHandler(new MouseUpHandler() {
             @Override
             public void onMouseUp(MouseUpEvent event) {
-                delegate.onDiagramElementMoved(shape.getId(),
+                delegate.onDiagramElementMoved(elementId,
                                                elementWidget.getAbsoluteLeft() - mainPanel.getAbsoluteLeft(),
                                                elementWidget.getAbsoluteTop() - mainPanel.getAbsoluteTop());
+            }
+        });
+
+        elementWidget.addMouseOverHandler(new MouseOverHandler() {
+            @Override
+            public void onMouseOver(MouseOverEvent event) {
+                delegate.onMouseOverDiagramElement(elementId);
+            }
+        });
+
+        elementWidget.addMouseOutHandler(new MouseOutHandler() {
+            @Override
+            public void onMouseOut(MouseOutEvent event) {
+                delegate.onMouseOutDiagramElement(elementId);
             }
         });
 

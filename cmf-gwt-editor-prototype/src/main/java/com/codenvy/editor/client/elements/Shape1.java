@@ -31,6 +31,8 @@ public class Shape1 extends MainElement {
         super("Shape1", Arrays.asList("property1"), Arrays.asList("property1", "x", "y", "uuid", "autoAlign"));
 
         property1 = "property1";
+
+        targetElements.put("Link1", Arrays.asList("Shape1", "Shape2"));
     }
 
     public String getProperty1() {

@@ -25,6 +25,8 @@ public class Shape2 extends MainElement {
 
     public Shape2() {
         super("Shape2", new ArrayList<String>(), Arrays.asList("x", "y", "uuid", "autoAlign"));
+
+        targetElements.put("Link1", Arrays.asList("Shape2"));
     }
 
 }
