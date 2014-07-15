@@ -16,6 +16,8 @@
 package com.codenvy.editor.api.editor.elements;
 
 import com.google.gwt.xml.client.Document;
+import com.google.gwt.xml.client.Node;
+import com.google.gwt.xml.client.NodeList;
 import com.google.gwt.xml.client.XMLParser;
 
 import javax.annotation.Nonnull;
@@ -228,6 +230,56 @@ public abstract class AbstractShape extends AbstractElement implements Shape, Co
 
         deserializeInternalFormat(xml.getFirstChild());
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public void deserialize(@Nonnull Node node) {
+        NodeList childNodes = node.getChildNodes();
+
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Node item = childNodes.item(i);
+            String name = item.getNodeName();
+
+            if (isProperty(name)) {
+                applyProperty(item);
+            } else {
+                Element element = findElement(name);
+                element.deserialize(item);
+
+                if (element instanceof Shape) {
+                    addShape((Shape)element);
+                } else {
+                    addLink((Link)element);
+                }
+            }
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void deserializeInternalFormat(@Nonnull Node node) {
+        NodeList childNodes = node.getChildNodes();
+
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Node item = childNodes.item(i);
+            String name = item.getNodeName();
+
+            if (isInternalProperty(name)) {
+                applyProperty(item);
+            } else {
+                Element element = findElement(name);
+                element.deserializeInternalFormat(item);
+
+                if (element instanceof Shape) {
+                    addShape((Shape)element);
+                } else {
+                    addLink((Link)element);
+                }
+            }
+        }
+    }
+
+    protected abstract Element findElement(@Nonnull String elementName);
 
     /** {@inheritDoc} */
     @Override

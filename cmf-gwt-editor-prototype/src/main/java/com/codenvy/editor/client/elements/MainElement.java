@@ -18,10 +18,7 @@ package com.codenvy.editor.client.elements;
 
 import com.codenvy.editor.api.editor.elements.AbstractShape;
 import com.codenvy.editor.api.editor.elements.Element;
-import com.codenvy.editor.api.editor.elements.Link;
-import com.codenvy.editor.api.editor.elements.Shape;
 import com.google.gwt.xml.client.Node;
-import com.google.gwt.xml.client.NodeList;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -46,55 +43,7 @@ public class MainElement extends AbstractShape {
         super(elementName, properties, internalProperties);
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public void deserialize(@Nonnull Node node) {
-        NodeList childNodes = node.getChildNodes();
-
-        for (int i = 0; i < childNodes.getLength(); i++) {
-            Node item = childNodes.item(i);
-            String name = item.getNodeName();
-
-            if (isProperty(name)) {
-                applyProperty(item);
-            } else {
-                Element element = findElement(name);
-                element.deserialize(item);
-
-                if (element instanceof Shape) {
-                    addShape((Shape)element);
-                } else {
-                    addLink((Link)element);
-                }
-            }
-        }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void deserializeInternalFormat(@Nonnull Node node) {
-        NodeList childNodes = node.getChildNodes();
-
-        for (int i = 0; i < childNodes.getLength(); i++) {
-            Node item = childNodes.item(i);
-            String name = item.getNodeName();
-
-            if (isInternalProperty(name)) {
-                applyProperty(item);
-            } else {
-                Element element = findElement(name);
-                element.deserializeInternalFormat(item);
-
-                if (element instanceof Shape) {
-                    addShape((Shape)element);
-                } else {
-                    addLink((Link)element);
-                }
-            }
-        }
-    }
-
-    private Element findElement(@Nonnull String elementName) {
+    protected Element findElement(@Nonnull String elementName) {
         switch (elementName) {
             case "Shape1":
                 return new Shape1();
