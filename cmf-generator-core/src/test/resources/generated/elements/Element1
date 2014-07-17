@@ -12,7 +12,7 @@ public class Element1 extends MainElement {
     private String property5;
 
     public Element1() {
-        super("Element1", Arrays.asList("Property1", "Property2", "Property3", "Property4", "Property5"), Arrays.asList("x", "y", "uuid", "autoAlign", "Property1", "Property2", "Property3", "Property4", "Property5"));
+        super("element1", Arrays.asList("Property1", "Property2", "Property3", "Property4", "Property5"), Arrays.asList("x", "y", "uuid", "autoAlign", "Property1", "Property2", "Property3", "Property4", "Property5"));
 
         property1 = 10;
         property2 = true;
@@ -65,21 +65,11 @@ public class Element1 extends MainElement {
 
     @Override
     protected String serializeProperties() {
-        return "<Property1>" +
-                   property1 +
-               "</Property1>" +
-               "<Property2>" +
-                   property2 +
-               "</Property2>" +
-               "<Property3>" +
-                   property3 +
-               "</Property3>" +
-               "<Property4>" +
-                   property4 +
-               "</Property4>" +
-               "<Property5>" +
-                   property5 +
-               "</Property5>";
+        return "property1=" +"\"" + property1 +"\"" + " " +
+               "property2=" +"\"" + property2 +"\"" + " " +
+               "property3=" +"\"" + property3 +"\"" + " " +
+               "property4=" +"\"" + property4 +"\"" + " " +
+               "property5=" +"\"" + property5 +"\"" + " ";
     }
 
     @Override

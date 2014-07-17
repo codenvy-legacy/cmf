@@ -46,7 +46,9 @@ public abstract class AbstractShape extends AbstractElement implements Shape, Co
     private boolean isAutoAligned;
     private int     y;
 
-    protected AbstractShape(@Nonnull String elementName, @Nonnull List<String> properties, @Nonnull List<String> internalProperties) {
+    protected AbstractShape(@Nonnull String elementName,
+                            @Nonnull List<String> properties,
+                            @Nonnull List<String> internalProperties) {
         super(elementName, properties, internalProperties);
 
         this.shapes = new ArrayList<>();
@@ -159,8 +161,7 @@ public abstract class AbstractShape extends AbstractElement implements Shape, Co
     @Nonnull
     @Override
     public String serialize() {
-        StringBuilder content = new StringBuilder("<" + getElementName() + ">\n");
-        content.append(serializeProperties());
+        StringBuilder content = new StringBuilder("<" + getElementName() + ' ' + serializeProperties() + ">\n");
 
         Collections.sort(shapes);
 
@@ -177,8 +178,7 @@ public abstract class AbstractShape extends AbstractElement implements Shape, Co
     @Nonnull
     @Override
     public String serializeInternalFormat() {
-        StringBuilder content = new StringBuilder("<" + getElementName() + ">\n");
-        content.append(serializeInternalProperties());
+        StringBuilder content = new StringBuilder("<" + getElementName() + ' ' + serializeInternalProperties() + ">\n");
 
         Collections.sort(shapes);
 

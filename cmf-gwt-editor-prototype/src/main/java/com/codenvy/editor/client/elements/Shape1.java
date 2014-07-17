@@ -19,6 +19,7 @@ import com.google.gwt.xml.client.Node;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Andrey Plotnikov
@@ -26,11 +27,13 @@ import java.util.Arrays;
 public class Shape1 extends MainElement {
 
     private String property1;
+    private String property2;
 
     public Shape1() {
-        super("Shape1", Arrays.asList("property1"), Arrays.asList("property1", "x", "y", "uuid", "autoAlign"));
+        super("Shape1", Arrays.asList("property1", "property2"), Arrays.asList("property1", "x", "y", "uuid", "autoAlign"));
 
         property1 = "property1";
+        property2 = "property2";
 
         targetElements.put("Link1", Arrays.asList("Shape1", "Shape2"));
     }
@@ -46,7 +49,18 @@ public class Shape1 extends MainElement {
     @Nonnull
     @Override
     protected String serializeProperties() {
-        return "<property1>\n" + property1 + "\n</property1>\n";
+        String result = "";
+        List<String> properties = Arrays.asList(property1, property2);
+
+        for (String resultString : properties) {
+            if (resultString == null) {
+                result = "";
+            } else {
+                result += resultString;
+            }
+        }
+
+        return result;
     }
 
     @Override

@@ -10,12 +10,12 @@ import com.codenvy.editor.api.editor.elements.Element;
 
 public class MainElement extends AbstractShape {
 
-    public MainElement(@Nonnull String MainElement, @Nonnull List<String> properties, @Nonnull List<String> internalProperties) {
-        super(MainElement, properties, internalProperties);
+    public MainElement(@Nonnull String mainElement, @Nonnull List<String> properties, @Nonnull List<String> internalProperties) {
+        super(mainElement, properties, internalProperties);
     }
 
     public MainElement() {
-        this("MainElement", new ArrayList<String>(), Arrays.asList("x", "y", "uuid", "autoAlign"));
+        this("mainElement", new ArrayList<String>(), Arrays.asList("x", "y", "uuid", "autoAlign"));
 
         components.add("Element1");
         components.add("Element2");

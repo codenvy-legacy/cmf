@@ -39,7 +39,10 @@ public class MainElement extends AbstractShape {
         targetElements.put("Link1", new ArrayList<String>());
     }
 
-    public MainElement(@Nonnull String elementName, @Nonnull List<String> properties, @Nonnull List<String> internalProperties) {
+    public MainElement(@Nonnull String elementName,
+                       @Nonnull List<String> properties,
+                       @Nonnull List<String> internalProperties) {
+
         super(elementName, properties, internalProperties);
     }
 

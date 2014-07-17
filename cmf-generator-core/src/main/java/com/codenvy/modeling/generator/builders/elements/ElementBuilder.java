@@ -63,18 +63,18 @@ import static com.codenvy.modeling.generator.builders.PathConstants.MAIN_SOURCE_
 public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
 
     private static final String MAIN_ELEMENT_SUPER_CONSTRUCTOR =
-            OFFSET + "public elementName(@Nonnull String elementName, @Nonnull List<String> properties, " +
+            OFFSET + "public elementName(@Nonnull String argumentName, @Nonnull List<String> properties, " +
             "@Nonnull List<String> internalProperties) {\n" +
-            TWO_TABS + "super(elementName, properties, internalProperties);\n" +
+            TWO_TABS + "super(argumentName, properties, internalProperties);\n" +
             OFFSET + "}\n\n";
 
-    private static final String ELEMENT_CONSTRUCTOR = OFFSET + "public elementName() {\n" +
-                                                      TWO_TABS +
-                                                      "generalConstructor(\"elementName\", propertiesList, internalPropertiesList);\n\n" +
-                                                      "propertiesInitialization" +
-                                                      "components" +
-                                                      "targetElementLists" +
-                                                      OFFSET + "}\n\n";
+    private static final String ELEMENT_CONSTRUCTOR =
+            OFFSET + "public elementName() {\n" +
+            TWO_TABS + "generalConstructor(\"argumentName\", propertiesList, internalPropertiesList);\n\n" +
+            "propertiesInitialization" +
+            "components" +
+            "targetElementLists" +
+            OFFSET + "}\n\n";
 
     private static final String PROPERTY_SETTER_AND_GETTER = OFFSET + "public propertyType getpropertyName() {\n" +
                                                              TWO_TABS + "return argumentName;\n" +
@@ -90,9 +90,7 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
 
     public static final String SEVEN_WHITE_SPACE = "       ";
 
-    private static final String SERIALIZE_PROPERTY_CODE = "\"<propertyName>\" +\n" +
-                                                          THREE_TABS + SEVEN_WHITE_SPACE + "argumentName +\n" +
-                                                          TWO_TABS + SEVEN_WHITE_SPACE + "\"</propertyName>\"";
+    private static final String SERIALIZE_PROPERTY_CODE = "\"argumentName=\" +\"\\\"\" + argumentName +\"\\\"\" + \" \"";
 
     private static final String FIND_ELEMENT_METHOD = OFFSET + "protected Element findElement(@Nonnull String elementName) {\n" +
                                                       TWO_TABS + "switch (elementName) {\n" +
@@ -378,8 +376,9 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
 
     @Nonnull
     private String createMainElementSuperConstructorCode(@Nonnull String elementName) {
-        Map<String, String> masks = new LinkedHashMap<>(1);
+        Map<String, String> masks = new LinkedHashMap<>(2);
         masks.put(ELEMENT_NAME_MARKER, elementName);
+        masks.put(ARGUMENT_NAME_MARKER, changeFirstSymbolToLowCase(elementName));
 
         return ContentReplacer.replace(MAIN_ELEMENT_SUPER_CONSTRUCTOR, masks);
     }
@@ -392,8 +391,9 @@ public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
                                                 @Nonnull String propertiesInitialization,
                                                 @Nonnull String targetElements,
                                                 @Nonnull String components) {
-        Map<String, String> masks = new LinkedHashMap<>(5);
+        Map<String, String> masks = new LinkedHashMap<>(8);
         masks.put(ELEMENT_NAME_MARKER, elementName);
+        masks.put(ARGUMENT_NAME_MARKER, changeFirstSymbolToLowCase(elementName));
         masks.put(GENERAL_CONSTRUCTOR_MARKER, generalConstructor);
         masks.put(PROPERTIES_INITIALIZATION_MARKER, propertiesInitialization);
         masks.put(PROPERTIES_MARKER, properties);
