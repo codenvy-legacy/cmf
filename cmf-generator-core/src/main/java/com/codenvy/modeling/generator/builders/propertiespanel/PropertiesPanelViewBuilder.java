@@ -26,6 +26,7 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -34,6 +35,7 @@ import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.ARG
 import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.CURRENT_PACKAGE_MARKER;
 import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.ELEMENT_NAME_MARKER;
 import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.GETTER_AND_SETTER_PROPERTY_MARKER;
+import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.IMPORT_ELEMENTS;
 import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.MAIN_PACKAGE_MARKER;
 import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.PROPERTY_CHANGE_METHODS_MARKER;
 import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.PROPERTY_NAME_MARKER;
@@ -47,23 +49,33 @@ import static com.codenvy.modeling.generator.builders.PathConstants.PROPERTIES_P
 
 /**
  * @author Andrey Plotnikov
+ * @author Valeriy Svydenko
  */
 public class PropertiesPanelViewBuilder extends AbstractBuilder<PropertiesPanelViewBuilder> {
 
-    private static final String GET_AND_SET_PROPERTY    = OFFSET + "public abstract propertyType getpropertyName();\n\n" +
-                                                          OFFSET + "public abstract void setpropertyName(propertyType argumentName);\n\n";
     private static final String PROPERTY_CHANGED_METHOD = TWO_TABS + "void onpropertyNameChanged();\n\n";
 
     private static final String PROPERTIES_PANEL_VIEW_NAME = "PropertiesPanelView";
 
+    private static final String GET_AND_SET_SIMPLE_PROPERTY =
+            OFFSET + "public abstract propertyType getpropertyName();\n\n" +
+            OFFSET + "public abstract void setpropertyName(propertyType argumentName);\n\n";
+
+    private static final String GET_AND_SET_CUSTOM_PROPERTY =
+            OFFSET + "public abstract propertyType getpropertyName();\n\n" +
+            OFFSET + "public abstract void selectpropertyName(propertyType argumentName);\n\n" +
+            OFFSET + "public abstract void setpropertyName(List<String> argumentName);\n\n";
+
     private String        mainPackage;
     private Set<Property> properties;
     private Element       element;
+    private boolean       hasConfiguredProperty;
 
     @Inject
     public PropertiesPanelViewBuilder() {
         super();
         builder = this;
+        hasConfiguredProperty = false;
     }
 
     @Nonnull
@@ -93,13 +105,25 @@ public class PropertiesPanelViewBuilder extends AbstractBuilder<PropertiesPanelV
 
         StringBuilder changedPropertiesMethods = new StringBuilder();
         StringBuilder propertyGetterAndSetters = new StringBuilder();
+        StringBuilder importElements = new StringBuilder();
 
         for (Property property : properties) {
             String propertyName = property.getName();
             Class propertyType = convertPropertyTypeToJavaClass(property);
 
+            if (isSimplePropertyType(property)) {
+                propertyGetterAndSetters.append(createPropertyGetterAndSetterMethodCode(propertyName,
+                                                                                        propertyType.getSimpleName(),
+                                                                                        GET_AND_SET_SIMPLE_PROPERTY));
+            } else {
+                hasConfiguredProperty = true;
+
+                propertyGetterAndSetters.append(createPropertyGetterAndSetterMethodCode(propertyName,
+                                                                                        propertyType.getSimpleName(),
+                                                                                        GET_AND_SET_CUSTOM_PROPERTY));
+            }
+
             changedPropertiesMethods.append(createPropertyChangedMethodCode(propertyName));
-            propertyGetterAndSetters.append(createPropertyGetterAndSetterMethodCode(propertyName, propertyType.getSimpleName()));
         }
 
         source = Paths.get(path,
@@ -122,6 +146,14 @@ public class PropertiesPanelViewBuilder extends AbstractBuilder<PropertiesPanelV
         replaceElements.put(PROPERTY_CHANGE_METHODS_MARKER, changedPropertiesMethods.toString());
         replaceElements.put(GETTER_AND_SETTER_PROPERTY_MARKER, propertyGetterAndSetters.toString());
 
+        if (hasConfiguredProperty) {
+            importElements.append("import ").append(List.class.getName()).append(";\n");
+            replaceElements.put(IMPORT_ELEMENTS, importElements.toString());
+            hasConfiguredProperty = false;
+        } else {
+            replaceElements.put(IMPORT_ELEMENTS, importElements.toString());
+        }
+
         super.build();
     }
 
@@ -135,13 +167,15 @@ public class PropertiesPanelViewBuilder extends AbstractBuilder<PropertiesPanelV
     }
 
     @Nonnull
-    private String createPropertyGetterAndSetterMethodCode(@Nonnull String propertyName, @Nonnull String propertyType) {
+    private String createPropertyGetterAndSetterMethodCode(@Nonnull String propertyName,
+                                                           @Nonnull String propertyType,
+                                                           @Nonnull String inputContent) {
         Map<String, String> masks = new LinkedHashMap<>(3);
         masks.put(PROPERTY_NAME_MARKER, propertyName);
         masks.put(PROPERTY_TYPE_MARKER, propertyType);
         masks.put(ARGUMENT_NAME_MARKER, changeFirstSymbolToLowCase(propertyName));
 
-        return ContentReplacer.replace(GET_AND_SET_PROPERTY, masks);
+        return ContentReplacer.replace(inputContent, masks);
     }
 
 }

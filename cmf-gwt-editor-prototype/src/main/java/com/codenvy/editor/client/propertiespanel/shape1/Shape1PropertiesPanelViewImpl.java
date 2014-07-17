@@ -15,18 +15,21 @@
  */
 package com.codenvy.editor.client.propertiespanel.shape1;
 
-import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * @author Andrey Plotnikov
+ * @author Valeriy Svydenko
  */
 public class Shape1PropertiesPanelViewImpl extends Shape1PropertiesPanelView {
 
@@ -34,7 +37,7 @@ public class Shape1PropertiesPanelViewImpl extends Shape1PropertiesPanelView {
     }
 
     @UiField
-    TextBox property1;
+    ListBox property1;
 
     @Inject
     public Shape1PropertiesPanelViewImpl(Shape1PropertiesPanelViewImplUiBinder ourUiBinder) {
@@ -45,17 +48,35 @@ public class Shape1PropertiesPanelViewImpl extends Shape1PropertiesPanelView {
     @Nonnull
     @Override
     public String getProperty1() {
-        return property1.getText();
+        int index = property1.getSelectedIndex();
+        return index != -1 ? property1.getValue(property1.getSelectedIndex()) : "";
     }
 
     /** {@inheritDoc} */
     @Override
-    public void setProperty1(@Nonnull String property1) {
-        this.property1.setText(property1);
+    public void selectProperty1(@Nonnull String property1) {
+        for (int i = 0; i < this.property1.getItemCount(); i++) {
+            if (this.property1.getValue(i).equals(property1)) {
+                this.property1.setItemSelected(i, true);
+                return;
+            }
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setProperty1(@Nullable List<String> property1) {
+        if (property1 == null) {
+            return;
+        }
+        this.property1.clear();
+        for (String value : property1) {
+            this.property1.addItem(value);
+        }
     }
 
     @UiHandler("property1")
-    public void onProperty1Changed(KeyUpEvent event) {
+    public void onProperty1Changed(ChangeEvent event) {
         delegate.onProperty1Changed();
     }
 

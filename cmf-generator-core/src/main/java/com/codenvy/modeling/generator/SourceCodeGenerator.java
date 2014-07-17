@@ -17,10 +17,12 @@ package com.codenvy.modeling.generator;
 
 import com.codenvy.modeling.configuration.Configuration;
 import com.codenvy.modeling.configuration.ConfigurationFactory;
+import com.codenvy.modeling.configuration.ParseConfigurationException;
 import com.codenvy.modeling.configuration.metamodel.diagram.Connection;
 import com.codenvy.modeling.configuration.metamodel.diagram.DiagramConfiguration;
 import com.codenvy.modeling.configuration.metamodel.diagram.Element;
 import com.codenvy.modeling.configuration.metamodel.diagram.Property;
+import com.codenvy.modeling.configuration.metamodel.diagram.PropertyType;
 import com.codenvy.modeling.generator.builders.elements.ConnectionBuilder;
 import com.codenvy.modeling.generator.builders.elements.ElementBuilder;
 import com.codenvy.modeling.generator.builders.inject.EditorFactoryBuilder;
@@ -149,7 +151,8 @@ public class SourceCodeGenerator {
      * @param configurationFactory
      *         provides configuration
      */
-    public void generate(@Nonnull Properties properties, @Nonnull ConfigurationFactory configurationFactory) throws IOException {
+    public void generate(@Nonnull Properties properties, @Nonnull ConfigurationFactory configurationFactory)
+            throws IOException, ParseConfigurationException {
         Configuration configuration = configurationFactory.getInstance(new ConfigurationFactory.ConfigurationPaths(properties));
 
         copyProjectHierarchy(properties);
@@ -321,6 +324,7 @@ public class SourceCodeGenerator {
         String targetPath = properties.getProperty(TARGET_PATH.name());
         DiagramConfiguration diagramConfiguration = configuration.getDiagramConfiguration();
         Set<Element> elements = diagramConfiguration.getElements();
+        Set<PropertyType> propertyTypes = diagramConfiguration.getPropertyTypes();
 
         stateBuilder.path(targetPath)
                     .properties(properties)
@@ -342,6 +346,7 @@ public class SourceCodeGenerator {
         editorPresenterBuilder.path(targetPath)
                               .properties(properties)
                               .elements(elements)
+                              .propertyTypes(propertyTypes)
 
                               .needRemoveTemplateParentFolder(true)
 

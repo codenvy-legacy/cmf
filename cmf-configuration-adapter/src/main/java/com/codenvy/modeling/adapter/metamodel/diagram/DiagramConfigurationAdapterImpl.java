@@ -17,6 +17,7 @@
 package com.codenvy.modeling.adapter.metamodel.diagram;
 
 import com.codenvy.modeling.configuration.DiagramConfigurationAdapter;
+import com.codenvy.modeling.configuration.ParseConfigurationException;
 import com.codenvy.modeling.configuration.metamodel.diagram.DiagramConfiguration;
 import com.codenvy.modeling.configuration.parser.metamodel.diagram.DiagramConfigurationAdapterListener;
 import com.codenvy.modeling.configuration.parser.metamodel.diagram.DiagramLexer;
@@ -38,6 +39,7 @@ import java.nio.file.Paths;
 /**
  * @author Dmitry Kuleshov
  * @author Andrey Plotnikov
+ * @author Valeriy Svydenko
  */
 public class DiagramConfigurationAdapterImpl implements DiagramConfigurationAdapter {
 
@@ -53,7 +55,7 @@ public class DiagramConfigurationAdapterImpl implements DiagramConfigurationAdap
 
     @Nonnull
     @Override
-    public DiagramConfiguration getConfiguration() throws IOException {
+    public DiagramConfiguration getConfiguration() throws IOException, ParseConfigurationException {
         ANTLRInputStream antlrInputStream = new ANTLRInputStream(inputStream);
         DiagramLexer lexer = new DiagramLexer(antlrInputStream);
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);

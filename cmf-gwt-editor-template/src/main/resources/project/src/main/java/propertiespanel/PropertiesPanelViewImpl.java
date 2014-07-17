@@ -9,7 +9,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 import javax.annotation.Nonnull;
-
+import_elements
 public class elementNamePropertiesPanelViewImpl extends elementNamePropertiesPanelView {
 
     interface elementNamePropertiesPanelViewImplUiBinder extends UiBinder<Widget, elementNamePropertiesPanelViewImpl> {

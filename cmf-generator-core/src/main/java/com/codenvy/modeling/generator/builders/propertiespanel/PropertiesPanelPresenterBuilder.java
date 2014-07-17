@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static com.codenvy.modeling.generator.builders.FileExtensionConstants.JAVA;
+import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.CONFIGURED_PROPERTY_TYPE_MARKER;
 import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.CURRENT_PACKAGE_MARKER;
 import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.ELEMENT_NAME_MARKER;
 import static com.codenvy.modeling.generator.builders.MarkerBuilderConstants.MAIN_PACKAGE_MARKER;
@@ -44,17 +45,22 @@ import static com.codenvy.modeling.generator.builders.PathConstants.PROPERTIES_P
 
 /**
  * @author Andrey Plotnikov
+ * @author Valeriy Svydenko
  */
 public class PropertiesPanelPresenterBuilder extends AbstractBuilder<PropertiesPanelPresenterBuilder> {
 
-    private static final String PROPERTY_CHANGED_METHOD =
+    private static final String PROPERTY_CHANGED_METHOD    =
             OFFSET + "@Override\n" +
             OFFSET + "public void onpropertyNameChanged() {\n" +
             TWO_TABS + "element.setpropertyName(((elementNamePropertiesPanelView)view).getpropertyName());\n" +
             TWO_TABS + "notifyListeners();\n" +
             OFFSET + "}\n\n";
-    private static final String PROPERTY_INITIALIZE     =
+    private static final String SIMPLE_PROPERTY_INITIALIZE =
             TWO_TABS + "((elementNamePropertiesPanelView)view).setpropertyName(element.getpropertyName());\n";
+    private static final String CUSTOM_PROPERTY_INITIALIZE =
+            TWO_TABS + "((elementNamePropertiesPanelView)view)" +
+            ".setpropertyName(propertyTypeManager.getValuesOfTypeByName(\"configuredPropertyType\"));\n" +
+            TWO_TABS + "((elementNamePropertiesPanelView)view).selectpropertyName(element.getpropertyName());\n";
 
     private static final String INITIALIZE_PROPERTY_FIELDS_MARKER = "initialize_property_fields";
 
@@ -102,7 +108,7 @@ public class PropertiesPanelPresenterBuilder extends AbstractBuilder<PropertiesP
             String propertyName = property.getName();
 
             methods.append(createPropertyChangedMethodCode(elementName, propertyName));
-            initializeProperties.append(createPropertyInitializeCode(elementName, propertyName));
+            initializeProperties.append(createPropertyInitializeCode(elementName, propertyName, property));
         }
 
         source = Paths.get(path,
@@ -138,12 +144,19 @@ public class PropertiesPanelPresenterBuilder extends AbstractBuilder<PropertiesP
     }
 
     @Nonnull
-    private String createPropertyInitializeCode(@Nonnull String elementName, @Nonnull String propertyName) {
+    private String createPropertyInitializeCode(@Nonnull String elementName,
+                                                @Nonnull String propertyName,
+                                                @Nonnull Property property) {
         Map<String, String> masks = new LinkedHashMap<>(2);
         masks.put(ELEMENT_NAME_MARKER, elementName);
         masks.put(PROPERTY_NAME_MARKER, propertyName);
 
-        return ContentReplacer.replace(PROPERTY_INITIALIZE, masks);
+        if (isSimplePropertyType(property)) {
+            return ContentReplacer.replace(SIMPLE_PROPERTY_INITIALIZE, masks);
+        } else {
+            masks.put(CONFIGURED_PROPERTY_TYPE_MARKER, property.getType());
+            return ContentReplacer.replace(CUSTOM_PROPERTY_INITIALIZE, masks);
+        }
     }
 
 }

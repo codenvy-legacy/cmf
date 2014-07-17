@@ -6,8 +6,10 @@ import com.codenvy.editor.api.editor.EditorView;
 import com.codenvy.editor.api.editor.SelectionManager;
 import com.codenvy.editor.api.editor.propertiespanel.PropertiesPanelManager;
 import com.codenvy.editor.api.editor.propertiespanel.empty.EmptyPropertiesPanelPresenter;
+import com.codenvy.editor.api.editor.propertytypes.PropertyTypeManager;
 import my.package.client.elements.Element1;
 import my.package.client.elements.Element2;
+import java.util.Arrays;
 import my.package.client.inject.EditorFactory;
 import my.package.client.propertiespanel.element1.Element1PropertiesPanelPresenter;
 import my.package.client.propertiespanel.element2.Element2PropertiesPanelPresenter;
@@ -22,7 +24,8 @@ public class EditorName extends AbstractEditor implements EditorView.ActionDeleg
                        SelectionManager selectionManager,
                        EmptyPropertiesPanelPresenter emptyPropertiesPanelPresenter,
                        Element1PropertiesPanelPresenter element1PropertiesPanelPresenter,
-                       Element2PropertiesPanelPresenter element2PropertiesPanelPresenter) {
+                       Element2PropertiesPanelPresenter element2PropertiesPanelPresenter,
+                       PropertyTypeManager propertyTypeManager) {
         super(view);
 
         EditorState<State> state = new EditorState<>(State.CREATING_NOTHING);
@@ -37,6 +40,9 @@ public class EditorName extends AbstractEditor implements EditorView.ActionDeleg
 
         propertiesPanelManager.register(Element2.class, element2PropertiesPanelPresenter);
         element2PropertiesPanelPresenter.addListener(this);
+
+        propertyTypeManager.register("property1", Arrays.asList("pr1", "pr2"));
+        propertyTypeManager.register("property2", Arrays.asList("pr3", "pr4"));
 
         propertiesPanelManager.register(null, emptyPropertiesPanelPresenter);
         emptyPropertiesPanelPresenter.addListener(this);

@@ -17,11 +17,13 @@ package com.codenvy.modeling.generator;
 
 import com.codenvy.modeling.configuration.Configuration;
 import com.codenvy.modeling.configuration.ConfigurationFactory;
+import com.codenvy.modeling.configuration.ParseConfigurationException;
 import com.codenvy.modeling.configuration.metamodel.diagram.Component;
 import com.codenvy.modeling.configuration.metamodel.diagram.Connection;
 import com.codenvy.modeling.configuration.metamodel.diagram.Element;
 import com.codenvy.modeling.configuration.metamodel.diagram.Pair;
 import com.codenvy.modeling.configuration.metamodel.diagram.Property;
+import com.codenvy.modeling.configuration.metamodel.diagram.PropertyType;
 import com.codenvy.modeling.generator.builders.elements.ConnectionBuilder;
 import com.codenvy.modeling.generator.builders.elements.ElementBuilder;
 import com.codenvy.modeling.generator.builders.inject.EditorFactoryBuilder;
@@ -163,6 +165,7 @@ public abstract class AbstractBuilderTest {
     protected String              targetPath;
     protected Set<Connection>     connections;
     protected Set<Element>        elements;
+    protected Set<PropertyType>   propertyTypes;
 
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
@@ -172,23 +175,28 @@ public abstract class AbstractBuilderTest {
     public void setUp() throws Exception {
         Property property1 = new Property();
         property1.setName("Property1");
-        property1.setType(INTEGER);
+        property1.setType(INTEGER.name());
         property1.setValue("10");
 
         Property property2 = new Property();
         property2.setName("Property2");
-        property2.setType(BOOLEAN);
+        property2.setType(BOOLEAN.name());
         property2.setValue("true");
 
         Property property3 = new Property();
         property3.setName("Property3");
-        property3.setType(STRING);
+        property3.setType(STRING.name());
         property3.setValue("some string");
 
         Property property4 = new Property();
         property4.setName("Property4");
-        property4.setType(FLOAT);
+        property4.setType(FLOAT.name());
         property4.setValue("12.3f");
+
+        Property property5 = new Property();
+        property5.setName("Property5");
+        property5.setType("property1");
+        property5.setValue("pr1");
 
         Component component1 = new Component();
         component1.setName("Element1");
@@ -202,7 +210,7 @@ public abstract class AbstractBuilderTest {
 
         Element element1 = new Element();
         element1.setName("Element1");
-        element1.setProperties(new LinkedHashSet<>(Arrays.asList(property1, property2, property3, property4)));
+        element1.setProperties(new LinkedHashSet<>(Arrays.asList(property1, property2, property3, property4, property5)));
         element1.setComponents(new LinkedHashSet<>(Arrays.asList(component2)));
 
         Element element2 = new Element();
@@ -226,13 +234,23 @@ public abstract class AbstractBuilderTest {
 
         when(connection.getPairs()).thenReturn(new LinkedHashSet<>(Arrays.asList(pair1, pair2, pair3)));
 
+        PropertyType propertyType1 = new PropertyType();
+        propertyType1.setName("property1");
+        propertyType1.setValues(new LinkedHashSet<>(Arrays.asList("pr1", "pr2")));
+
+        PropertyType propertyType2 = new PropertyType();
+        propertyType2.setName("property2");
+        propertyType2.setValues(new LinkedHashSet<>(Arrays.asList("pr3", "pr4")));
+
         when(configurationFactory.getInstance(any(ConfigurationFactory.ConfigurationPaths.class))).thenReturn(configuration);
 
         connections = new HashSet<>(Arrays.asList(connection));
         elements = new LinkedHashSet<>(Arrays.asList(element1, element2));
+        propertyTypes = new LinkedHashSet<>(Arrays.asList(propertyType1, propertyType2));
 
         when(configuration.getDiagramConfiguration().getElements()).thenReturn(elements);
         when(configuration.getDiagramConfiguration().getConnections()).thenReturn(connections);
+        when(configuration.getDiagramConfiguration().getPropertyTypes()).thenReturn(propertyTypes);
         when(configuration.getDiagramConfiguration().getRootElement()).thenAnswer(new Answer<Element>() {
             @Override
             public Element answer(InvocationOnMock invocation) throws Throwable {
@@ -292,6 +310,7 @@ public abstract class AbstractBuilderTest {
         when(editorPresenterBuilder.path(anyString())).thenReturn(editorPresenterBuilder);
         when(editorPresenterBuilder.properties((Properties)anyObject())).thenReturn(editorPresenterBuilder);
         when(editorPresenterBuilder.elements(anySet())).thenReturn(editorPresenterBuilder);
+        when(editorPresenterBuilder.propertyTypes(anySet())).thenReturn(editorPresenterBuilder);
         when(editorPresenterBuilder.needRemoveTemplateParentFolder(anyBoolean())).thenReturn(editorPresenterBuilder);
 
         when(injectorBuilder.path(anyString())).thenReturn(injectorBuilder);
@@ -392,7 +411,7 @@ public abstract class AbstractBuilderTest {
         return resourceFolder + File.separator + convertPathToPackageName(packageName);
     }
 
-    protected void generateSources() throws IOException {
+    protected void generateSources() throws IOException, ParseConfigurationException {
         generator = new SourceCodeGenerator(workspacePresenterBuilder,
                                             workspaceViewBuilder,
                                             workspaceViewImplBuilder,

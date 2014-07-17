@@ -16,12 +16,14 @@
 
 package com.codenvy.modeling.configuration.parser.metamodel.diagram;
 
+import com.codenvy.modeling.configuration.ParseConfigurationException;
 import com.codenvy.modeling.configuration.metamodel.diagram.Component;
 import com.codenvy.modeling.configuration.metamodel.diagram.Connection;
 import com.codenvy.modeling.configuration.metamodel.diagram.DiagramConfiguration;
 import com.codenvy.modeling.configuration.metamodel.diagram.Element;
 import com.codenvy.modeling.configuration.metamodel.diagram.Pair;
 import com.codenvy.modeling.configuration.metamodel.diagram.Property;
+import com.codenvy.modeling.configuration.metamodel.diagram.PropertyType;
 import com.google.inject.Inject;
 
 import org.antlr.v4.runtime.misc.NotNull;
@@ -30,7 +32,6 @@ import javax.annotation.Nonnull;
 import java.util.Stack;
 
 import static com.codenvy.modeling.configuration.metamodel.diagram.Element.Relation;
-import static com.codenvy.modeling.configuration.metamodel.diagram.Property.Type;
 
 /**
  * @author Dmitry Kuleshov
@@ -39,7 +40,8 @@ import static com.codenvy.modeling.configuration.metamodel.diagram.Property.Type
  */
 public class DiagramConfigurationAdapterListener extends DiagramBaseListener {
 
-    private Element rootElement;
+    private Element      rootElement;
+    private PropertyType propertyType;
 
     private final Stack<Element>       elementStack;
     private final Stack<Property>      propertyStack;
@@ -60,7 +62,8 @@ public class DiagramConfigurationAdapterListener extends DiagramBaseListener {
     }
 
     @Nonnull
-    public DiagramConfiguration getDiagramConfiguration() {
+    public DiagramConfiguration getDiagramConfiguration() throws ParseConfigurationException {
+        validElementProperties();
         return diagramConfiguration;
     }
 
@@ -104,7 +107,7 @@ public class DiagramConfigurationAdapterListener extends DiagramBaseListener {
 
     @Override
     public void exitPropertyType(@NotNull DiagramParser.PropertyTypeContext ctx) {
-        propertyStack.peek().setType(Type.valueOf(ctx.PROPERTY_TYPE().getText()));
+        propertyStack.peek().setType(ctx.TEXT().getText());
     }
 
     @Override
@@ -116,6 +119,23 @@ public class DiagramConfigurationAdapterListener extends DiagramBaseListener {
     public void exitElementProperty(@NotNull DiagramParser.ElementPropertyContext ctx) {
         Element element = rootElement == null ? elementStack.peek() : rootElement;
         element.addProperty(propertyStack.pop());
+    }
+
+    @Override
+    public void enterNewPropertyType(@NotNull DiagramParser.NewPropertyTypeContext ctx) {
+        propertyType = new PropertyType();
+    }
+
+    @Override
+    public void exitPropertyTypeName(@NotNull DiagramParser.PropertyTypeNameContext ctx) {
+        propertyType.setName(ctx.TEXT().getText());
+
+        diagramConfiguration.addPropertyType(propertyType);
+    }
+
+    @Override
+    public void exitValueOfPropertyType(@NotNull DiagramParser.ValueOfPropertyTypeContext ctx) {
+        propertyType.addValue(ctx.TEXT().getText());
     }
 
     @Override
@@ -174,5 +194,27 @@ public class DiagramConfigurationAdapterListener extends DiagramBaseListener {
     @Override
     public void exitConnection(@NotNull DiagramParser.ConnectionContext ctx) {
         diagramConfiguration.addConnection(connectionStack.pop());
+    }
+
+    private void validElementProperties() throws ParseConfigurationException {
+        for (Element element : diagramConfiguration.getElements()) {
+            for (Property property : element.getProperties()) {
+                validPropertyType(property);
+            }
+        }
+    }
+
+    private void validPropertyType(@Nonnull Property property) throws ParseConfigurationException {
+        try {
+            Property.Type.valueOf(property.getType());
+        } catch (IllegalArgumentException e) {
+            for (PropertyType type : diagramConfiguration.getPropertyTypes()) {
+                if (type.getName().equals(property.getType())) {
+                    return;
+                }
+            }
+
+            throw new ParseConfigurationException("Property type \"" + property.getType() + "\" is not configured", e);
+        }
     }
 }

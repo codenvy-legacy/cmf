@@ -1,11 +1,11 @@
 /*
- * Copyright 2014 Codenvy, S.A.
+ * Copyright [2014] Codenvy, S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,17 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.codenvy.modeling.configuration;
 
-import javax.annotation.Nonnull;
-import java.io.IOException;
-
 /**
- * @author Dmitry Kuleshov
+ * The exception is indicating when a source code cannot be generated correctly.
+ * The message text provides a further description of the problem.
+ *
  * @author Valeriy Svydenko
  */
-public interface Adapter<T> {
-    @Nonnull
-    T getConfiguration() throws IOException, ParseConfigurationException;
+public class ParseConfigurationException extends Exception {
+
+    /**
+     * @param message
+     * @param cause
+     */
+    public ParseConfigurationException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public ParseConfigurationException(String message) {
+        super(message);
+    }
 }

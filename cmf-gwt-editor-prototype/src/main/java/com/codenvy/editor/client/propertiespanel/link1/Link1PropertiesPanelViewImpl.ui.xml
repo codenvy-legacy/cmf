@@ -20,10 +20,12 @@
 
     <ui:with field="res" type="com.codenvy.editor.client.EditorResources"/>
 
-    <g:DockLayoutPanel unit="PX" addStyleNames="{res.editorCSS.fullSize}">
-        <g:center>
-            <g:Label text="Link 1 properties panel"/>
-        </g:center>
-    </g:DockLayoutPanel>
+    <g:ScrollPanel addStyleNames="{res.editorCSS.fullSize}">
+        <g:DockLayoutPanel unit="PX" addStyleNames="{res.editorCSS.fullSize}">
+            <g:center>
+                <g:Label text="Link 1 properties panel"/>
+            </g:center>
+        </g:DockLayoutPanel>
+    </g:ScrollPanel>
 
 </ui:UiBinder>

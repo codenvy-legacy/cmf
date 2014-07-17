@@ -1,6 +1,7 @@
 package my.package.client.propertiespanel.element1;
 
 import com.codenvy.editor.api.editor.propertiespanel.AbstractPropertiesPanel;
+import com.codenvy.editor.api.editor.propertytypes.PropertyTypeManager;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import my.package.client.elements.Element1;
@@ -9,8 +10,8 @@ public class Element1PropertiesPanelPresenter extends AbstractPropertiesPanel<El
         implements Element1PropertiesPanelView.ActionDelegate {
 
     @Inject
-    public Element1PropertiesPanelPresenter(Element1PropertiesPanelView view) {
-        super(view);
+    public Element1PropertiesPanelPresenter(Element1PropertiesPanelView view, PropertyTypeManager propertyTypeManager) {
+        super(view, propertyTypeManager);
     }
 
     @Override
@@ -38,6 +39,12 @@ public class Element1PropertiesPanelPresenter extends AbstractPropertiesPanel<El
     }
 
     @Override
+    public void onProperty5Changed() {
+        element.setProperty5(((Element1PropertiesPanelView)view).getProperty5());
+        notifyListeners();
+    }
+
+    @Override
     public void go(AcceptsOneWidget container) {
         super.go(container);
 
@@ -45,6 +52,8 @@ public class Element1PropertiesPanelPresenter extends AbstractPropertiesPanel<El
         ((Element1PropertiesPanelView)view).setProperty2(element.getProperty2());
         ((Element1PropertiesPanelView)view).setProperty3(element.getProperty3());
         ((Element1PropertiesPanelView)view).setProperty4(element.getProperty4());
+        ((Element1PropertiesPanelView)view).setProperty5(propertyTypeManager.getValuesOfTypeByName("property1"));
+        ((Element1PropertiesPanelView)view).selectProperty5(element.getProperty5());
     }
 
 }

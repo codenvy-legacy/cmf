@@ -1,6 +1,7 @@
 package my.package.client.propertiespanel.element2;
 
 import com.codenvy.editor.api.editor.propertiespanel.AbstractPropertiesPanel;
+import com.codenvy.editor.api.editor.propertytypes.PropertyTypeManager;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import my.package.client.elements.Element2;
@@ -9,8 +10,8 @@ public class Element2PropertiesPanelPresenter extends AbstractPropertiesPanel<El
         implements Element2PropertiesPanelView.ActionDelegate {
 
     @Inject
-    public Element2PropertiesPanelPresenter(Element2PropertiesPanelView view) {
-        super(view);
+    public Element2PropertiesPanelPresenter(Element2PropertiesPanelView view, PropertyTypeManager propertyTypeManager) {
+        super(view, propertyTypeManager);
     }
 
     @Override

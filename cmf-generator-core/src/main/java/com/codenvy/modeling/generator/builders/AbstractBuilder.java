@@ -28,6 +28,9 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static com.codenvy.modeling.configuration.metamodel.diagram.Property.Type;
+import static com.codenvy.modeling.configuration.metamodel.diagram.Property.Type.valueOf;
+
 /**
  * @author Andrey Plotnikov
  * @author Valeriy Svydenko
@@ -66,6 +69,15 @@ public abstract class AbstractBuilder<T extends AbstractBuilder> {
         return builder;
     }
 
+    protected boolean isSimplePropertyType(@Nonnull Property property) {
+        for (Type type : Type.values()) {
+            if (type.toString().equals(property.getType())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Nonnull
     protected String changeFirstSymbolToLowCase(@Nonnull String name) {
         return name.substring(0, 1).toLowerCase() + name.substring(1);
@@ -87,7 +99,10 @@ public abstract class AbstractBuilder<T extends AbstractBuilder> {
 
     @Nonnull
     protected Class convertPropertyTypeToJavaClass(@Nonnull Property property) {
-        switch (property.getType()) {
+        if (!isSimplePropertyType(property)) {
+            return String.class;
+        }
+        switch (valueOf(property.getType())) {
             case INTEGER:
                 return Integer.class;
 

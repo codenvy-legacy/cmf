@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Codenvy, S.A.
+ * Copyright [2014] Codenvy, S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,24 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.codenvy.modeling.configuration.metamodel.diagram;
 
 import com.codenvy.modeling.configuration.validation.constraints.ConfigurationConstraintsValidator;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
- * @author Dmitry Kuleshov
  * @author Valeriy Svydenko
  */
-public class Property {
+public class PropertyType {
     @Pattern(regexp = ConfigurationConstraintsValidator.SIMPLE_TEXT)
     private String name;
-    @Pattern(regexp = ConfigurationConstraintsValidator.SIMPLE_TEXT)
-    private String value;
-    @Pattern(regexp = ConfigurationConstraintsValidator.SIMPLE_TEXT)
-    private String type;
+    @Size(min = 1)
+    @Valid
+    private Set<String> values = new LinkedHashSet<>();
 
     public String getName() {
         return name;
@@ -40,23 +41,16 @@ public class Property {
         this.name = name;
     }
 
-    public String getValue() {
-        return value;
+    public Set<String> getValues() {
+        return values;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public void setValues(Set<String> values) {
+        this.values = values;
     }
 
-    public String getType() {
-        return type;
+    public void addValue(String value) {
+        values.add(value);
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public enum Type {
-        BOOLEAN, INTEGER, FLOAT, STRING
-    }
 }

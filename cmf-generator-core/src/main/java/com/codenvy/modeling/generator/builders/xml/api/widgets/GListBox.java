@@ -13,22 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codenvy.editor.client.propertiespanel.shape2;
 
-import com.codenvy.editor.api.editor.propertiespanel.AbstractPropertiesPanel;
-import com.codenvy.editor.api.editor.propertytypes.PropertyTypeManager;
-import com.codenvy.editor.client.elements.Shape2;
-import com.google.inject.Inject;
+package com.codenvy.modeling.generator.builders.xml.api.widgets;
 
 /**
- * @author Andrey Plotnikov
+ * The builder for ListBox GWT widget.
+ * <p/>
+ * The returned result must look like the following content:
+ * <pre>
+ * {@code
+ * <g:ListBox width="100%" ui:field="commitARevision" addStyleNames="{res.gitCSS.textFont} {style.withoutPadding}"
+ *            debugId="git-showHistory-commitARevision"/>
+ * }
+ * </pre>
+ *
  * @author Valeriy Svydenko
  */
-public class Shape2PropertiesPanelPresenter extends AbstractPropertiesPanel<Shape2> implements Shape2PropertiesPanelView.ActionDelegate {
+public interface GListBox extends GWidget<GListBox>, HasEnable<GListBox>, HasFocus<GListBox> {
 
-    @Inject
-    public Shape2PropertiesPanelPresenter(Shape2PropertiesPanelView view, PropertyTypeManager propertyTypeManager) {
-        super(view, propertyTypeManager);
-    }
+    String LIST_BOX_FORMAT = "<%s:ListBox%s/>";
 
 }

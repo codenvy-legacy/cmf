@@ -32,6 +32,7 @@ import static com.codenvy.modeling.configuration.ConfigurationFactory.Configurat
 /**
  * @author Dmitry Kuleshov
  * @author Andrey Plotnikov
+ * @author Valeriy Svydenko
  */
 public class Configuration {
 
@@ -54,7 +55,7 @@ public class Configuration {
 
     @Inject
     public Configuration(ConfigurationAdapterFactory configurationAdapterFactory,
-                         @Assisted ConfigurationPaths configurationPaths) throws IOException {
+                         @Assisted ConfigurationPaths configurationPaths) throws IOException, ParseConfigurationException {
         this.diagramConfiguration = configurationAdapterFactory
                 .createDiagramConfAdapter(configurationPaths.getDiagram())
                 .getConfiguration();

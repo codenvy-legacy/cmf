@@ -16,6 +16,7 @@
 package com.codenvy.editor.client.propertiespanel.shape1;
 
 import com.codenvy.editor.api.editor.propertiespanel.AbstractPropertiesPanel;
+import com.codenvy.editor.api.editor.propertytypes.PropertyTypeManager;
 import com.codenvy.editor.client.elements.Shape1;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
@@ -24,12 +25,13 @@ import javax.annotation.Nonnull;
 
 /**
  * @author Andrey Plotnikov
+ * @author Valeriy Svydenko
  */
 public class Shape1PropertiesPanelPresenter extends AbstractPropertiesPanel<Shape1> implements Shape1PropertiesPanelView.ActionDelegate {
 
     @Inject
-    public Shape1PropertiesPanelPresenter(Shape1PropertiesPanelView view) {
-        super(view);
+    public Shape1PropertiesPanelPresenter(Shape1PropertiesPanelView view, PropertyTypeManager propertyTypeManager) {
+        super(view, propertyTypeManager);
     }
 
     /** {@inheritDoc} */
@@ -37,7 +39,8 @@ public class Shape1PropertiesPanelPresenter extends AbstractPropertiesPanel<Shap
     public void go(@Nonnull AcceptsOneWidget container) {
         super.go(container);
 
-        ((Shape1PropertiesPanelView)view).setProperty1(element.getProperty1());
+        ((Shape1PropertiesPanelView)view).setProperty1(propertyTypeManager.getValuesOfTypeByName("property1"));
+        ((Shape1PropertiesPanelView)view).selectProperty1(element.getProperty1());
     }
 
     /** {@inheritDoc} */

@@ -4,30 +4,32 @@
              xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:g='urn:import:com.google.gwt.user.client.ui'>
     <ui:with field='res' type='my.package.client.EditorResources'/>
-    <g:DockLayoutPanel>
-        <g:north size="50.00">
-            <g:FlowPanel>
-                <g:Label text="Property1"/>
-                <g:TextBox ui:field="property1" width="120px"/>
-            </g:FlowPanel>
-        </g:north>
-        <g:north size="50.00">
-            <g:FlowPanel>
-                <g:Label text="Property2"/>
-                <g:TextBox ui:field="property2" width="120px"/>
-            </g:FlowPanel>
-        </g:north>
-        <g:north size="50.00">
-            <g:FlowPanel>
-                <g:Label text="Property3"/>
-                <g:TextBox ui:field="property3" width="120px"/>
-            </g:FlowPanel>
-        </g:north>
-        <g:north size="50.00">
-            <g:FlowPanel>
-                <g:Label text="Property4"/>
-                <g:TextBox ui:field="property4" width="120px"/>
-            </g:FlowPanel>
-        </g:north>
-    </g:DockLayoutPanel>
+    <g:ScrollPanel addStyleNames="{res.editorCSS.fullSize}">
+        <g:DockLayoutPanel>
+            <g:north size="50.00">
+                <g:FlowPanel>
+                    <g:Label text="Property1"/>
+                    <g:TextBox ui:field="property1" width="120px"/>
+                </g:FlowPanel>
+            </g:north>
+            <g:north size="50.00">
+                <g:FlowPanel>
+                    <g:Label text="Property2"/>
+                    <g:TextBox ui:field="property2" width="120px"/>
+                </g:FlowPanel>
+            </g:north>
+            <g:north size="50.00">
+                <g:FlowPanel>
+                    <g:Label text="Property3"/>
+                    <g:TextBox ui:field="property3" width="120px"/>
+                </g:FlowPanel>
+            </g:north>
+            <g:north size="50.00">
+                <g:FlowPanel>
+                    <g:Label text="Property4"/>
+                    <g:TextBox ui:field="property4" width="120px"/>
+                </g:FlowPanel>
+            </g:north>
+        </g:DockLayoutPanel>
+    </g:ScrollPanel>
 </ui:UiBinder>

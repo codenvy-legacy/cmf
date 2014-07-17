@@ -15,13 +15,16 @@
  */
 package com.codenvy.modeling.generator.builders.maingwt;
 
+import com.codenvy.editor.api.editor.propertytypes.PropertyTypeManager;
 import com.codenvy.modeling.configuration.metamodel.diagram.Element;
+import com.codenvy.modeling.configuration.metamodel.diagram.PropertyType;
 import com.codenvy.modeling.generator.builders.AbstractBuilder;
 import com.google.inject.Inject;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.Set;
 
@@ -51,9 +54,9 @@ import static com.codenvy.modeling.generator.builders.ResourceNameConstants.PROP
  * @author Andrey Plotnikov
  */
 public class EditorPresenterBuilder extends AbstractBuilder<EditorPresenterBuilder> {
-
-    private Properties   properties;
-    private Set<Element> elements;
+    private Properties        properties;
+    private Set<Element>      elements;
+    private Set<PropertyType> propertyTypes;
 
     @Inject
     public EditorPresenterBuilder() {
@@ -63,6 +66,8 @@ public class EditorPresenterBuilder extends AbstractBuilder<EditorPresenterBuild
 
     @Override
     public void build() throws IOException {
+        boolean isPropertyTypesNotEmpty = propertyTypes != null && !propertyTypes.isEmpty();
+
         String editorName = properties.getProperty(EDITOR_NAME.name());
         String packageName = properties.getProperty(MAIN_PACKAGE.name());
 
@@ -70,6 +75,10 @@ public class EditorPresenterBuilder extends AbstractBuilder<EditorPresenterBuild
         StringBuilder importElements = new StringBuilder();
         StringBuilder constructorArguments = new StringBuilder();
         StringBuilder constructorBody = new StringBuilder();
+
+        if (isPropertyTypesNotEmpty) {
+            importElements.append("import ").append(PropertyTypeManager.class.getName()).append(";\n");
+        }
 
         String clientPackage = packageName + '.' + CLIENT_PACKAGE;
         String propertiesPanelPackage = clientPackage + '.' + PROPERTIES_PANEL_PACKAGE + '.';
@@ -114,8 +123,32 @@ public class EditorPresenterBuilder extends AbstractBuilder<EditorPresenterBuild
 
         }
 
-        constructorArguments.delete(constructorArguments.lastIndexOf(","), constructorArguments.length());
+        if (isPropertyTypesNotEmpty) {
+            importElements.append("import ").append(Arrays.class.getName()).append(";\n");
+
+            constructorArguments.append(OFFSET)
+                                .append(constructorParamOffset)
+                                .append("PropertyTypeManager propertyTypeManager").append(",\n");
+
+            constructorBody.append("\n");
+
+            for (PropertyType type : propertyTypes) {
+                Set<String> values = type.getValues();
+
+                constructorBody.append(TWO_TABS)
+                               .append("propertyTypeManager.register(").append("\"").append(type.getName()).append("\", Arrays.asList(");
+
+                for (String value : values) {
+                    constructorBody.append("\"").append(value).append("\", ");
+                }
+
+                constructorBody.delete(constructorBody.lastIndexOf(", "), constructorBody.length());
+                constructorBody.append("));\n");
+            }
+        }
+
         constructorBody.deleteCharAt(constructorBody.lastIndexOf("\n"));
+        constructorArguments.delete(constructorArguments.lastIndexOf(","), constructorArguments.length());
         importElements.deleteCharAt(importElements.lastIndexOf("\n"));
 
         source = Paths.get(path,
@@ -155,6 +188,13 @@ public class EditorPresenterBuilder extends AbstractBuilder<EditorPresenterBuild
     @Nonnull
     public EditorPresenterBuilder elements(@Nonnull Set<Element> elements) {
         this.elements = elements;
+
+        return this;
+    }
+
+    @Nonnull
+    public EditorPresenterBuilder propertyTypes(@Nonnull Set<PropertyType> propertyTypes) {
+        this.propertyTypes = propertyTypes;
 
         return this;
     }

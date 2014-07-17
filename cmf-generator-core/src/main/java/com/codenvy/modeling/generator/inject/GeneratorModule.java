@@ -33,6 +33,7 @@ import com.codenvy.modeling.generator.builders.xml.api.widgets.GButton;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.GCheckBox;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.GHtml;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.GLabel;
+import com.codenvy.modeling.generator.builders.xml.api.widgets.GListBox;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.GPushButton;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.GTextArea;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.GTextBox;
@@ -49,6 +50,7 @@ import com.codenvy.modeling.generator.builders.xml.impl.widgets.GButtonImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.GCheckBoxImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.GHtmlImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.GLabelImpl;
+import com.codenvy.modeling.generator.builders.xml.impl.widgets.GListBoxImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.GPushButtonImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.GTextAreaImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.GTextBoxImpl;
@@ -65,6 +67,7 @@ import com.google.inject.assistedinject.FactoryModuleBuilder;
  * The module that contains information about configuration of generator.
  *
  * @author Andrey Plotnikov
+ * @author Valeriy Svydenko
  */
 public class GeneratorModule extends AbstractModule {
 
@@ -92,6 +95,7 @@ public class GeneratorModule extends AbstractModule {
         bind(GLabel.class).to(GLabelImpl.class);
         bind(GTextArea.class).to(GTextAreaImpl.class);
         bind(GTextBox.class).to(GTextBoxImpl.class);
+        bind(GListBox.class).to(GListBoxImpl.class);
         bind(GCheckBox.class).to(GCheckBoxImpl.class);
 
         bind(GScrollPanel.class).to(GScrollPanelImpl.class);

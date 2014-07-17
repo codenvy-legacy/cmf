@@ -2,6 +2,7 @@ package my.package.client.propertiespanel.element1;
 
 import com.codenvy.editor.api.mvp.AbstractView;
 import com.google.inject.ImplementedBy;
+import java.util.List;
 
 @ImplementedBy(Element1PropertiesPanelViewImpl.class)
 public abstract class Element1PropertiesPanelView extends AbstractView<Element1PropertiesPanelView.ActionDelegate> {
@@ -15,6 +16,8 @@ public abstract class Element1PropertiesPanelView extends AbstractView<Element1P
         void onProperty3Changed();
 
         void onProperty4Changed();
+
+        void onProperty5Changed();
 
     }
 
@@ -33,5 +36,11 @@ public abstract class Element1PropertiesPanelView extends AbstractView<Element1P
     public abstract Double getProperty4();
 
     public abstract void setProperty4(Double property4);
+
+    public abstract String getProperty5();
+
+    public abstract void selectProperty5(String property5);
+
+    public abstract void setProperty5(List<String> property5);
 
 }

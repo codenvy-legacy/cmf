@@ -25,9 +25,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Set;
 
+import static com.codenvy.modeling.configuration.metamodel.diagram.Property.Type;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -47,9 +49,10 @@ public class DiagramAdapterTest {
     private static final String DIAGRAM_GRAMMAR_TEST_I  = "/DiagramGrammarTest_I";
     private static final String DIAGRAM_GRAMMAR_TEST_II = "/DiagramGrammarTest_II";
 
-    private static Set<Element>    elements;
-    private static Set<Connection> connections;
-    private static Element         rootElement;
+    private static Set<Element>      elements;
+    private static Set<Connection>   connections;
+    private static Set<PropertyType> propertyTypes;
+    private static Element           rootElement;
 
     private int numberOfGrammar;
 
@@ -69,6 +72,7 @@ public class DiagramAdapterTest {
         elements = configuration.getElements();
         connections = configuration.getConnections();
         rootElement = configuration.getRootElement();
+        propertyTypes = configuration.getPropertyTypes();
     }
 
     @Parameters
@@ -175,8 +179,7 @@ public class DiagramAdapterTest {
         for (Element e : elements) {
             if (!e.getProperties().isEmpty()) {
                 for (Property prop : e.getProperties()) {
-                    assertFalse(prop.getType().name().isEmpty());
-                    assertNotNull(Property.Type.valueOf(prop.getType().name()));
+                    assertFalse(prop.getType().isEmpty());
                 }
             }
         }
@@ -184,13 +187,37 @@ public class DiagramAdapterTest {
 
     @Test
     public void propertiesTypeShouldBeDefined() {
+        boolean isDefaultProp;
+        boolean isNewProp;
+
         for (Element e : elements) {
             if (!e.getProperties().isEmpty()) {
                 for (Property prop : e.getProperties()) {
-                    assertEquals(Property.Type.STRING, prop.getType());
+                    isDefaultProp = isDefaultPropertyType(prop);
+                    isNewProp = isNewPropertyType(prop);
+
+                    assertTrue(isDefaultProp || isNewProp);
                 }
             }
         }
+    }
+
+    private boolean isDefaultPropertyType(@Nonnull Property property) {
+        for (Type type : Type.values()) {
+            if (type.toString().equals(property.getType())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isNewPropertyType(@Nonnull Property property) {
+        for (PropertyType type : propertyTypes) {
+            if (type.getName().equals(property.getType())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Test

@@ -32,6 +32,7 @@ import org.junit.rules.TestRule;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import static com.codenvy.modeling.configuration.metamodel.diagram.Property.Type.BOOLEAN;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -88,8 +89,8 @@ public class DiagramValidatorTest {
     }
 
     @Test
-    public void propertyValidationShouldResultInErrorIfTypeIsNull() {
-        propertyInitializer.getProperty().setType(null);
+    public void propertyValidationShouldResultInErrorIfTypeIsEmpty() {
+        propertyInitializer.getProperty().setType("");
 
         Report report = ConfigurationConstraintsValidator.validate(propertyInitializer.getProperty());
 
@@ -302,7 +303,7 @@ public class DiagramValidatorTest {
             property = new Property();
 
             property.setName(SIMPLE_STRING);
-            property.setType(Property.Type.BOOLEAN);
+            property.setType(BOOLEAN.name());
             property.setValue(SIMPLE_STRING);
         }
 

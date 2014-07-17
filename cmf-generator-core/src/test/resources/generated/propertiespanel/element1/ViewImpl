@@ -9,6 +9,9 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 import javax.annotation.Nonnull;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.user.client.ui.ListBox;
+import java.util.List;
 
 public class Element1PropertiesPanelViewImpl extends Element1PropertiesPanelView {
 
@@ -23,6 +26,8 @@ public class Element1PropertiesPanelViewImpl extends Element1PropertiesPanelView
     TextBox property3;
     @UiField
     TextBox property4;
+    @UiField
+    ListBox property5;
 
     @Inject
     public Element1PropertiesPanelViewImpl(Element1PropertiesPanelViewImplUiBinder ourUiBinder) {
@@ -87,6 +92,38 @@ public class Element1PropertiesPanelViewImpl extends Element1PropertiesPanelView
     @UiHandler("property4")
     public void onProperty4Changed(KeyUpEvent event) {
         delegate.onProperty4Changed();
+    }
+
+    @Override
+    public String getProperty5() {
+        int index = property5.getSelectedIndex();
+        return index != -1 ? property5.getValue(property5.getSelectedIndex()) : "";
+    }
+
+    @Override
+    public void setProperty5(List<String> property5) {
+        if (property5 == null) {
+            return;
+        }
+        this.property5.clear();
+        for (String value : property5) {
+            this.property5.addItem(value);
+        }
+    }
+
+    @Override
+    public void selectProperty5(String property5) {
+        for (int i = 0; i < this.property5.getItemCount(); i++) {
+            if (this.property5.getValue(i).equals(property5)) {
+                this.property5.setItemSelected(i, true);
+                return;
+            }
+        }
+    }
+
+    @UiHandler("property5")
+    public void onProperty5Changed(ChangeEvent event) {
+        delegate.onProperty5Changed();
     }
 
 }

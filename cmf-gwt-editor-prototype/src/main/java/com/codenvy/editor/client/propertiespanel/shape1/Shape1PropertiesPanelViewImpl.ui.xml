@@ -20,16 +20,18 @@
 
     <ui:with field="res" type="com.codenvy.editor.client.EditorResources"/>
 
-    <g:DockLayoutPanel unit="PX" addStyleNames="{res.editorCSS.fullSize}">
-        <g:north size="30">
-            <g:Label text="Shape 1 properties panel"/>
-        </g:north>
-        <g:north size="50">
-            <g:FlowPanel>
-                <g:Label text="Property 1"/>
-                <g:TextBox ui:field="property1" width="120px"/>
-            </g:FlowPanel>
-        </g:north>
-    </g:DockLayoutPanel>
+    <g:ScrollPanel addStyleNames="{res.editorCSS.fullSize}">
+        <g:DockLayoutPanel unit="PX" addStyleNames="{res.editorCSS.fullSize}">
+            <g:north size="30">
+                <g:Label text="Shape 1 properties panel"/>
+            </g:north>
+            <g:north size="50">
+                <g:FlowPanel>
+                    <g:Label text="Property 1"/>
+                    <g:ListBox ui:field="property1" width="120px"/>
+                </g:FlowPanel>
+            </g:north>
+        </g:DockLayoutPanel>
+    </g:ScrollPanel>
 
 </ui:UiBinder>

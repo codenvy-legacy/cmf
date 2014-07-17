@@ -27,6 +27,7 @@ import java.util.Set;
 /**
  * @author Dmitry Kuleshov
  * @author Andrey Plotnikov
+ * @author Valeriy Svydenko
  */
 public class DiagramConfiguration {
     @Size(min = 1)
@@ -40,10 +41,15 @@ public class DiagramConfiguration {
     @Valid
     private Set<Connection> connections;
 
+    @Size(min = 1)
+    @Valid
+    private Set<PropertyType> propertyTypes;
+
     @Inject
     public DiagramConfiguration() {
         elements = new LinkedHashSet<>();
         connections = new LinkedHashSet<>();
+        propertyTypes = new LinkedHashSet<>();
     }
 
     public Element getRootElement() {
@@ -62,6 +68,10 @@ public class DiagramConfiguration {
         this.elements = elements;
     }
 
+    public void addElement(Element element) {
+        elements.add(element);
+    }
+
     public Set<Connection> getConnections() {
         return connections;
     }
@@ -74,7 +84,15 @@ public class DiagramConfiguration {
         connections.add(connection);
     }
 
-    public void addElement(Element element) {
-        elements.add(element);
+    public Set<PropertyType> getPropertyTypes() {
+        return propertyTypes;
+    }
+
+    public void setPropertyTypes(Set<PropertyType> propertyTypes) {
+        this.propertyTypes = propertyTypes;
+    }
+
+    public void addPropertyType(PropertyType propertyType) {
+        propertyTypes.add(propertyType);
     }
 }

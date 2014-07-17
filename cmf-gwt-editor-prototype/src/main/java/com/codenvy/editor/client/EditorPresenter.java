@@ -21,6 +21,7 @@ import com.codenvy.editor.api.editor.EditorView;
 import com.codenvy.editor.api.editor.SelectionManager;
 import com.codenvy.editor.api.editor.propertiespanel.PropertiesPanelManager;
 import com.codenvy.editor.api.editor.propertiespanel.empty.EmptyPropertiesPanelPresenter;
+import com.codenvy.editor.api.editor.propertytypes.PropertyTypeManager;
 import com.codenvy.editor.client.elements.Link1;
 import com.codenvy.editor.client.elements.Shape1;
 import com.codenvy.editor.client.elements.Shape2;
@@ -30,8 +31,11 @@ import com.codenvy.editor.client.propertiespanel.shape1.Shape1PropertiesPanelPre
 import com.codenvy.editor.client.propertiespanel.shape2.Shape2PropertiesPanelPresenter;
 import com.google.inject.Inject;
 
+import java.util.Arrays;
+
 /**
  * @author Andrey Plotnikov
+ * @author Valeriy Svydenko
  */
 public class EditorPresenter extends AbstractEditor implements EditorView.ActionDelegate {
 
@@ -42,7 +46,8 @@ public class EditorPresenter extends AbstractEditor implements EditorView.Action
                            Shape1PropertiesPanelPresenter shape1PropertiesPanelPresenter,
                            Shape2PropertiesPanelPresenter shape2PropertiesPanelPresenter,
                            Link1PropertiesPanelPresenter link1PropertiesPanelPresenter,
-                           EmptyPropertiesPanelPresenter emptyPropertiesPanelPresenter) {
+                           EmptyPropertiesPanelPresenter emptyPropertiesPanelPresenter,
+                           PropertyTypeManager propertyTypeManager) {
         super(view);
 
         EditorState<State> state = new EditorState<>(State.CREATING_NOTING);
@@ -60,6 +65,8 @@ public class EditorPresenter extends AbstractEditor implements EditorView.Action
         shape2PropertiesPanelPresenter.addListener(this);
         link1PropertiesPanelPresenter.addListener(this);
         emptyPropertiesPanelPresenter.addListener(this);
+
+        propertyTypeManager.register("property1", Arrays.asList("value1", "value2"));
 
         selectionManager.addListener(propertiesPanelManager);
         workspace.addDiagramChangeListener(this);

@@ -22,6 +22,7 @@ diagram                 :
                             rootElement
                             elements
                             connections?
+                            propertyTypes?
                         ;
 
 rootElement             :
@@ -152,7 +153,7 @@ propertyName            :
 propertyType            :
                             'Type'
                             BEGIN
-                                PROPERTY_TYPE
+                                TEXT
                             END
                         ;
 
@@ -170,6 +171,30 @@ elementRelation         :
                             END
                         ;
 
+propertyTypes           :
+                            'PropertyTypes'
+                            BEGIN
+                                newPropertyType+
+                            END
+                        ;
+
+newPropertyType         :
+                            propertyTypeName
+                            BEGIN
+                                valueOfPropertyType+
+                            END
+                        ;
+
+propertyTypeName        :
+                            TEXT
+                        ;
+
+valueOfPropertyType     :
+                            BEGIN
+                                TEXT
+                            END
+                        ;
+
 RELATION                :
                             'SINGLE'    |
                             'single'    |
@@ -181,16 +206,3 @@ CONNECTION_TYPE         :
                             'NONDIRECTED'   |
                             'POSITIONAL'
                         ;
-PROPERTY_TYPE           :
-                            'BOOLEAN'   |
-                            'boolean'   |
-
-                            'INTEGER'   |
-                            'integer'   |
-
-                            'FLOAT'     |
-                            'float'     |
-
-                            'STRING'    |
-                            'string'
-                         ;

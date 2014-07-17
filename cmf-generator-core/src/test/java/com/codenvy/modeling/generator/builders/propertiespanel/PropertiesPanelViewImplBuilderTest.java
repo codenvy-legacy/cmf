@@ -17,14 +17,17 @@ package com.codenvy.modeling.generator.builders.propertiespanel;
 
 import com.codenvy.modeling.generator.AbstractBuilderTest;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.GLabel;
+import com.codenvy.modeling.generator.builders.xml.api.widgets.GListBox;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.GTextBox;
 import com.codenvy.modeling.generator.builders.xml.api.widgets.containers.GFlowPanel;
 import com.codenvy.modeling.generator.builders.xml.impl.GFieldImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.UIXmlBuilderImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.GLabelImpl;
+import com.codenvy.modeling.generator.builders.xml.impl.widgets.GListBoxImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.GTextBoxImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.containers.GDockLayoutPanelImpl;
 import com.codenvy.modeling.generator.builders.xml.impl.widgets.containers.GFlowPanelImpl;
+import com.codenvy.modeling.generator.builders.xml.impl.widgets.containers.GScrollPanelImpl;
 import com.google.inject.Provider;
 
 import org.junit.Before;
@@ -64,6 +67,8 @@ public class PropertiesPanelViewImplBuilderTest extends AbstractBuilderTest {
     private Provider<GLabel>     labelProvider;
     @Mock
     private Provider<GTextBox>   textBoxProvider;
+    @Mock
+    private Provider<GListBox>   listBoxProvider;
 
     @Override
     @Before
@@ -88,6 +93,12 @@ public class PropertiesPanelViewImplBuilderTest extends AbstractBuilderTest {
                 return new GTextBoxImpl();
             }
         });
+        when(listBoxProvider.get()).thenAnswer(new Answer<GListBox>() {
+            @Override
+            public GListBox answer(InvocationOnMock invocation) throws Throwable {
+                return new GListBoxImpl();
+            }
+        });
 
         when(propertiesPanelViewImplBuilderProvider.get()).thenAnswer(new Answer<PropertiesPanelViewImplBuilder>() {
             @Override
@@ -97,7 +108,9 @@ public class PropertiesPanelViewImplBuilderTest extends AbstractBuilderTest {
                                                           new GFieldImpl(),
                                                           flowPanelProvider,
                                                           labelProvider,
-                                                          textBoxProvider);
+                                                          textBoxProvider,
+                                                          listBoxProvider,
+                                                          new GScrollPanelImpl());
             }
         });
 
@@ -124,7 +137,7 @@ public class PropertiesPanelViewImplBuilderTest extends AbstractBuilderTest {
 
     @Test
     public void element2PropertiesPanelViewImplBinderShouldBeGenerated() throws IOException {
-        assertContent(File.separator + PROPERTIES_PANEL_PACKAGE + File.separator + ELEMENT1 + File.separator + VIEW_BINDER_IMPL,
+        assertContent(File.separator + PROPERTIES_PANEL_PACKAGE + File.separator + ELEMENT2 + File.separator + VIEW_BINDER_IMPL,
                       clientFolder, PROPERTIES_PANEL_PACKAGE, ELEMENT2, VIEW_IMPL_NAME2 + UI_XML);
     }
 

@@ -9,14 +9,16 @@ public class Element1 extends MainElement {
     private Boolean property2;
     private String property3;
     private Double property4;
+    private String property5;
 
     public Element1() {
-        super("Element1", Arrays.asList("Property1", "Property2", "Property3", "Property4"), Arrays.asList("x", "y", "uuid", "autoAlign", "Property1", "Property2", "Property3", "Property4"));
+        super("Element1", Arrays.asList("Property1", "Property2", "Property3", "Property4", "Property5"), Arrays.asList("x", "y", "uuid", "autoAlign", "Property1", "Property2", "Property3", "Property4", "Property5"));
 
         property1 = 10;
         property2 = true;
         property3 = "some string";
         property4 = 12.3f;
+        property5 = "pr1";
         components.add("Element2");
         targetElements.put("Connection1", Arrays.asList("Element1", "Element2"));
     }
@@ -53,6 +55,14 @@ public class Element1 extends MainElement {
         this.property4 = property4;
     }
 
+    public String getProperty5() {
+        return property5;
+    }
+
+    public void setProperty5(String property5) {
+        this.property5 = property5;
+    }
+
     @Override
     protected String serializeProperties() {
         return "<Property1>" +
@@ -66,7 +76,10 @@ public class Element1 extends MainElement {
                "</Property3>" +
                "<Property4>" +
                    property4 +
-               "</Property4>";
+               "</Property4>" +
+               "<Property5>" +
+                   property5 +
+               "</Property5>";
     }
 
     @Override
@@ -98,6 +111,9 @@ public class Element1 extends MainElement {
             break;
             case "Property4":
                 property4 = Double.valueOf(nodeValue);
+            break;
+            case "Property5":
+                property5 = String.valueOf(nodeValue);
             break;
         }
     }

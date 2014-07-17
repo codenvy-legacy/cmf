@@ -45,10 +45,10 @@ Elements {
         Properties {
             testPropertyName {
                 Type {
-                    STRING
+                    testPropertyType1
                 }
                 Value {
-                    testPropertyValue
+                    value1
                 }
             }
         }
@@ -78,5 +78,13 @@ Connections {
             {start1 <> finish1}
             {start2 <> finish2}
         }
+    }
+}
+
+PropertyTypes {
+    testPropertyType1 {
+        { value1 }
+        { value2 }
+        { value3 }
     }
 }

@@ -36,17 +36,18 @@ public interface MarkerBuilderConstants {
     String GROUP_ID_MASK      = "group_id";
     String ARTIFACT_NAME_MASK = "artifact_name";
 
-    String ELEMENT_NAME_MARKER          = "elementName";
-    String CONNECTION_NAME_MARKER       = "connectionName";
-    String PROPERTY_NAME_MARKER         = "propertyName";
-    String PROPERTY_TYPE_MARKER         = "propertyType";
-    String ARGUMENT_NAME_MARKER         = "argumentName";
-    String ELEMENT_UPPER_NAME_MARKER    = "elementUpperName";
-    String CONNECTION_UPPER_NAME_MARKER = "connectionUpperName";
-    String ENTRY_POINT_CLASS_MARKER     = "entry_point";
-    String ALL_ELEMENTS_MARKER          = "all_elements";
-    String IMAGE_RESOURCES              = "image_resources";
-    String CUSTOM_STYLE                 = "custom_style";
+    String ELEMENT_NAME_MARKER             = "elementName";
+    String CONNECTION_NAME_MARKER          = "connectionName";
+    String PROPERTY_NAME_MARKER            = "propertyName";
+    String PROPERTY_TYPE_MARKER            = "propertyType";
+    String CONFIGURED_PROPERTY_TYPE_MARKER = "configuredPropertyType";
+    String ARGUMENT_NAME_MARKER            = "argumentName";
+    String ELEMENT_UPPER_NAME_MARKER       = "elementUpperName";
+    String CONNECTION_UPPER_NAME_MARKER    = "connectionUpperName";
+    String ENTRY_POINT_CLASS_MARKER        = "entry_point";
+    String ALL_ELEMENTS_MARKER             = "all_elements";
+    String IMAGE_RESOURCES                 = "image_resources";
+    String CUSTOM_STYLE                    = "custom_style";
 
     String IMPORT_PROPERTIES_PANEL_ELEMENTS = "import_properties_panel_elements";
     String IMPORT_ELEMENTS                  = "import_elements";

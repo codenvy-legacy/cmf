@@ -17,6 +17,7 @@
 package com.codenvy.modeling.generator;
 
 import com.codenvy.modeling.configuration.ConfigurationFactory;
+import com.codenvy.modeling.configuration.ParseConfigurationException;
 import com.codenvy.modeling.generator.common.ProjectDescriptionReader;
 import com.google.inject.Inject;
 
@@ -55,8 +56,8 @@ public class GenerationController {
         Properties properties = new ProjectDescriptionReader(baseDir).getProjectProperties();
         try {
             sourceCodeGenerator.generate(properties, configurationFactory);
-        } catch (IOException e) {
-            LOG.error("Some problem happened during code generating.", e);
+        } catch (IOException | ParseConfigurationException e) {
+            LOG.error(e.getMessage(), e);
         }
     }
 

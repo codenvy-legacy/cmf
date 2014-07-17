@@ -16,17 +16,19 @@
 package com.codenvy.editor.client.propertiespanel.link1;
 
 import com.codenvy.editor.api.editor.propertiespanel.AbstractPropertiesPanel;
+import com.codenvy.editor.api.editor.propertytypes.PropertyTypeManager;
 import com.codenvy.editor.client.elements.Link1;
 import com.google.inject.Inject;
 
 /**
  * @author Andrey Plotnikov
+ * @author Valeriy Svydenko
  */
 public class Link1PropertiesPanelPresenter extends AbstractPropertiesPanel<Link1> implements Link1PropertiesPanelView.ActionDelegate {
 
     @Inject
-    public Link1PropertiesPanelPresenter(Link1PropertiesPanelView view) {
-        super(view);
+    public Link1PropertiesPanelPresenter(Link1PropertiesPanelView view, PropertyTypeManager propertyTypeManager) {
+        super(view, propertyTypeManager);
     }
 
 }

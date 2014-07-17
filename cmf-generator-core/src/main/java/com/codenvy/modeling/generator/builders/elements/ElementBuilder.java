@@ -17,8 +17,6 @@
 package com.codenvy.modeling.generator.builders.elements;
 
 import com.codenvy.editor.api.editor.elements.AbstractShape;
-import com.codenvy.editor.api.editor.elements.Link;
-import com.codenvy.editor.api.editor.elements.Shape;
 import com.codenvy.modeling.configuration.metamodel.diagram.Component;
 import com.codenvy.modeling.configuration.metamodel.diagram.Connection;
 import com.codenvy.modeling.configuration.metamodel.diagram.Element;
@@ -26,7 +24,6 @@ import com.codenvy.modeling.configuration.metamodel.diagram.Pair;
 import com.codenvy.modeling.configuration.metamodel.diagram.Property;
 import com.codenvy.modeling.generator.builders.AbstractBuilder;
 import com.codenvy.modeling.generator.builders.ContentReplacer;
-import com.google.gwt.xml.client.NodeList;
 import com.google.inject.Inject;
 
 import javax.annotation.Nonnull;
@@ -66,8 +63,8 @@ import static com.codenvy.modeling.generator.builders.PathConstants.MAIN_SOURCE_
 public class ElementBuilder extends AbstractBuilder<ElementBuilder> {
 
     private static final String MAIN_ELEMENT_SUPER_CONSTRUCTOR =
-            OFFSET +
-            "public elementName(@Nonnull String elementName, @Nonnull List<String> properties, @Nonnull List<String> internalProperties) {\n" +
+            OFFSET + "public elementName(@Nonnull String elementName, @Nonnull List<String> properties, " +
+            "@Nonnull List<String> internalProperties) {\n" +
             TWO_TABS + "super(elementName, properties, internalProperties);\n" +
             OFFSET + "}\n\n";
 

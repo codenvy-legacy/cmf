@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Codenvy, S.A.
+ * Copyright [2014] Codenvy, S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,22 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codenvy.editor.client.propertiespanel.shape2;
+package com.codenvy.modeling.generator.builders.xml.impl.widgets;
 
-import com.codenvy.editor.api.editor.propertiespanel.AbstractPropertiesPanel;
-import com.codenvy.editor.api.editor.propertytypes.PropertyTypeManager;
-import com.codenvy.editor.client.elements.Shape2;
+import com.codenvy.modeling.generator.builders.xml.api.widgets.GListBox;
 import com.google.inject.Inject;
 
 /**
- * @author Andrey Plotnikov
+ * The implementation of {@link GListBox}.
+ *
  * @author Valeriy Svydenko
  */
-public class Shape2PropertiesPanelPresenter extends AbstractPropertiesPanel<Shape2> implements Shape2PropertiesPanelView.ActionDelegate {
+public class GListBoxImpl extends AbstractGWidget<GListBox> implements GListBox {
 
     @Inject
-    public Shape2PropertiesPanelPresenter(Shape2PropertiesPanelView view, PropertyTypeManager propertyTypeManager) {
-        super(view, propertyTypeManager);
-    }
+    public GListBoxImpl() {
+        super(LIST_BOX_FORMAT);
 
+        builder = this;
+    }
 }
